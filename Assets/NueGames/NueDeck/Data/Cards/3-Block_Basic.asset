@@ -13,35 +13,21 @@ MonoBehaviour:
   m_Name: 3-Block_Basic
   m_EditorClassIdentifier: 
   id: 3_block_basic
-  cardName: Basic block
+  cardName: "\u57FA\u7840\u683C\u6321"
   manaCost: 1
   cardSprite: {fileID: -1513487178384027574, guid: a707003c96586cc41b22ae32a9cdb636, type: 3}
+  rarity: 0
   usableWithoutTarget: 1
+  exhaustAfterPlay: 0
+  isPowerCard: 0
   cardActionDataList:
   - cardActionType: 2
     actionTargetType: 1
     actionValue: 5
     actionDelay: 0
+    hitCount: 1
   cardDescriptionDataList:
-  - descriptionText: 'Gain '
-    enableOverrideColor: 0
-    overrideColor: {r: 0, g: 0, b: 0, a: 1}
-    useModifier: 0
-    modifiedActionValueIndex: 0
-    modiferStats: 0
-    usePrefixOnModifiedValue: 0
-    modifiedValuePrefix: '*'
-    overrideColorOnValueScaled: 0
-  - descriptionText: 
-    enableOverrideColor: 1
-    overrideColor: {r: 0, g: 0.41176474, b: 0.6666667, a: 1}
-    useModifier: 1
-    modifiedActionValueIndex: 0
-    modiferStats: 0
-    usePrefixOnModifiedValue: 1
-    modifiedValuePrefix: '*'
-    overrideColorOnValueScaled: 1
-  - descriptionText: ' block'
+  - descriptionText: "\u83B7\u5F97 5 \u70B9\u683C\u6321"
     enableOverrideColor: 0
     overrideColor: {r: 0, g: 0, b: 0, a: 1}
     useModifier: 0
@@ -52,3 +38,6 @@ MonoBehaviour:
     overrideColorOnValueScaled: 0
   specialKeywordsList: 00000000
   audioType: 2
+  upgradedCardName: 
+  upgradedManaCost: -1
+  upgradedCardActionDataList: []

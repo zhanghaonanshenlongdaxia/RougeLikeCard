@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 13-Attack_WeakStrike
   m_EditorClassIdentifier: 
   id: card_weak_strike
-  cardName: Crippling Strike
+  cardName: "\u81F4\u6B8B\u6253\u51FB"
   manaCost: 2
   cardSprite: {fileID: 0}
   rarity: 0
@@ -25,12 +25,14 @@ MonoBehaviour:
     actionTargetType: 0
     actionValue: 5
     actionDelay: 0
+    hitCount: 1
   - cardActionType: 10
     actionTargetType: 0
     actionValue: 1
     actionDelay: 0
+    hitCount: 1
   cardDescriptionDataList:
-  - descriptionText: Deal 5 damage. Apply 1 Weak.
+  - descriptionText: "\u9020\u6210 5 \u70B9\u4F24\u5BB3\uFF0C\u65BD\u52A0 1 \u5C42\u865A\u5F31"
     enableOverrideColor: 0
     overrideColor: {r: 0, g: 0, b: 0, a: 0}
     useModifier: 0

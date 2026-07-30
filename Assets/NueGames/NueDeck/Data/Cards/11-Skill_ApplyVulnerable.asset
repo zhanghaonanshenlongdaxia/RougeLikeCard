@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 11-Skill_ApplyVulnerable
   m_EditorClassIdentifier: 
   id: card_vulnerable
-  cardName: Expose
+  cardName: "\u7834\u7EFD"
   manaCost: 1
   cardSprite: {fileID: 0}
   rarity: 0
@@ -25,8 +25,9 @@ MonoBehaviour:
     actionTargetType: 0
     actionValue: 2
     actionDelay: 0
+    hitCount: 1
   cardDescriptionDataList:
-  - descriptionText: Apply 2 Vulnerable.
+  - descriptionText: "\u65BD\u52A0 2 \u5C42\u6613\u4F24"
     enableOverrideColor: 0
     overrideColor: {r: 0, g: 0, b: 0, a: 0}
     useModifier: 0
