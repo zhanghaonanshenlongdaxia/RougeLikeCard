@@ -81,7 +81,8 @@ namespace CardGame
         public void OnCardPlayed(CardBase targetCard)
         {
             var model = CardModel;
-            if (targetCard.CardData.ExhaustAfterPlay)
+            // Power牌和消耗牌都直接消耗，不进弃牌堆
+            if (targetCard.CardData.ExhaustAfterPlay || targetCard.CardData.IsPowerCard)
                 targetCard.Exhaust();
             else
                 targetCard.Discard();

@@ -28,6 +28,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1e5671bf6b0f90b428df809497a2f125, type: 2}
   - {fileID: 11400000, guid: 5d6b018bf7dec554ba0a2eabfd89d3b1, type: 2}
   - {fileID: 11400000, guid: ffd3079242e164645ba9365c7c965def, type: 2}
+  - {fileID: 11400000, guid: ca645216af639e343afd6d5e32b4ed0a, type: 2}
+  - {fileID: 11400000, guid: 6f33a7ba2f10f6c4c8fe5ae7fc5716c1, type: 2}
+  - {fileID: 11400000, guid: ac09f1eec95b32947ad3d85cc636e412, type: 2}
+  - {fileID: 11400000, guid: ba3726e69e5801f4fba5b74b99169e8a, type: 2}
   cardPrefab: {fileID: 2689473134106589740, guid: a9728682a56595f4989b8f224d934689, type: 3}
   defaultName: Nue
   useStageSystem: 0

@@ -15,7 +15,11 @@ namespace NueGames.NueDeck.Scripts.Card.CardActions
             var selfCharacter = actionParameters.SelfCharacter;
             
             var value = actionParameters.Value + selfCharacter.CharacterStats.StatusDict[StatusType.Strength].StatusValue; 
-            
+
+            // 虚弱：攻击造成的伤害减少25%
+            if (selfCharacter.CharacterStats.StatusDict[StatusType.Weak].IsActive)
+                value = Mathf.RoundToInt(value * 0.75f);
+
             targetCharacter.CharacterStats.Damage(Mathf.RoundToInt(value));
 
             if (FxManager != null)

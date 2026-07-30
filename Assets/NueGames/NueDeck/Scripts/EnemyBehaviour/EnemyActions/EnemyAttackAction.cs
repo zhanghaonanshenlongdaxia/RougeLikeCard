@@ -14,6 +14,11 @@ namespace NueGames.NueDeck.Scripts.EnemyBehaviour.EnemyActions
             var value = Mathf.RoundToInt(actionParameters.Value +
                                          actionParameters.SelfCharacter.CharacterStats.StatusDict[StatusType.Strength]
                                              .StatusValue);
+
+            // 虚弱：攻击造成的伤害减少25%
+            if (actionParameters.SelfCharacter.CharacterStats.StatusDict[StatusType.Weak].IsActive)
+                value = Mathf.RoundToInt(value * 0.75f);
+
             actionParameters.TargetCharacter.CharacterStats.Damage(value);
             if (FxManager != null)
             {

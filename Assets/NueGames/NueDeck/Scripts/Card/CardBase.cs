@@ -97,6 +97,9 @@ namespace NueGames.NueDeck.Scripts.Card
             CollectionManager.OnCardPlayed(this);
         }
 
+        // Power牌打出后消耗自身，效果通过永久状态持续
+        public virtual bool IsPowerCard => CardData.IsPowerCard;
+
         private static List<CharacterBase> DetermineTargets(CharacterBase targetCharacter, List<EnemyBase> allEnemies, List<AllyBase> allAllies,
             CardActionData playerAction)
         {

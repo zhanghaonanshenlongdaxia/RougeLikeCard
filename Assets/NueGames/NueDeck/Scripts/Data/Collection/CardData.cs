@@ -21,6 +21,8 @@ namespace NueGames.NueDeck.Scripts.Data.Collection
         [Header("Action Settings")]
         [SerializeField] private bool usableWithoutTarget;
         [SerializeField] private bool exhaustAfterPlay;
+        [Tooltip("Power牌：打出后消耗，效果整局战斗持续（通过永久状态如Strength/Dexterity）")]
+        [SerializeField] private bool isPowerCard;
         [SerializeField] private List<CardActionData> cardActionDataList;
         
         [Header("Description")]
@@ -30,13 +32,21 @@ namespace NueGames.NueDeck.Scripts.Data.Collection
         [Header("Fx")]
         [SerializeField] private AudioActionType audioType;
 
+        [Header("Upgrade")]
+        [Tooltip("升级后的卡牌名称（如 Strike+），留空则自动加+")]
+        [SerializeField] private string upgradedCardName;
+        [Tooltip("升级后的费用，-1表示不改变")]
+        [SerializeField] private int upgradedManaCost = -1;
+        [Tooltip("升级后替换的效果列表，留空则使用原效果")]
+        [SerializeField] private List<CardActionData> upgradedCardActionDataList;
+
         #region Cache
         public string Id => id;
         public bool UsableWithoutTarget => usableWithoutTarget;
-        public int ManaCost => manaCost;
-        public string CardName => cardName;
+        public int ManaCost => IsUpgraded && upgradedManaCost >= 0 ? upgradedManaCost : manaCost;
+        public string CardName => IsUpgraded ? (string.IsNullOrEmpty(upgradedCardName) ? cardName + "+" : upgradedCardName) : cardName;
         public Sprite CardSprite => cardSprite;
-        public List<CardActionData> CardActionDataList => cardActionDataList;
+        public List<CardActionData> CardActionDataList => IsUpgraded && upgradedCardActionDataList != null && upgradedCardActionDataList.Count > 0 ? upgradedCardActionDataList : cardActionDataList;
         public List<CardDescriptionData> CardDescriptionDataList => cardDescriptionDataList;
         public List<SpecialKeywords> KeywordsList => specialKeywordsList;
         public AudioActionType AudioType => audioType;
@@ -44,7 +54,34 @@ namespace NueGames.NueDeck.Scripts.Data.Collection
         public RarityType Rarity => rarity;
 
         public bool ExhaustAfterPlay => exhaustAfterPlay;
+        public bool IsPowerCard => isPowerCard;
 
+        /// <summary>卡牌是否已升级</summary>
+        public bool IsUpgraded { get; private set; }
+
+        /// <summary>升级后的费用（只读）</summary>
+        public int UpgradedManaCost => upgradedManaCost;
+
+        /// <summary>是否有升级效果数据</summary>
+        public bool HasUpgradeData => upgradedCardActionDataList != null && upgradedCardActionDataList.Count > 0 || upgradedManaCost >= 0 || !string.IsNullOrEmpty(upgradedCardName);
+
+        #endregion
+        
+        #region Upgrade Methods
+        /// <summary>升级卡牌（运行时调用）</summary>
+        public void Upgrade()
+        {
+            if (IsUpgraded) return;
+            IsUpgraded = true;
+            UpdateDescription();
+        }
+
+        /// <summary>降级卡牌（运行时调用）</summary>
+        public void Downgrade()
+        {
+            IsUpgraded = false;
+            UpdateDescription();
+        }
         #endregion
         
         #region Methods

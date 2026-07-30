@@ -7,6 +7,9 @@
         Poison,
         Exhaust,
         Dexterity,
-        Stun
+        Stun,
+        Weak,
+        Frail,
+        Vulnerable
     }
 }

@@ -29,3 +29,12 @@ MonoBehaviour:
   - iconStatus: 5
     iconSprite: {fileID: 1944889613778695005, guid: 1fb0c0cb02c616d49815abb7a9a0fc0f, type: 3}
     specialKeywords: 05000000
+  - iconStatus: 6
+    iconSprite: {fileID: 0}
+    specialKeywords: 06000000
+  - iconStatus: 7
+    iconSprite: {fileID: 0}
+    specialKeywords: 07000000
+  - iconStatus: 8
+    iconSprite: {fileID: 0}
+    specialKeywords: 08000000

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NueGames.NueDeck.Scripts.Enums;
+using UnityEngine;
 
 namespace NueGames.NueDeck.Scripts.Characters
 {
@@ -73,6 +74,15 @@ namespace NueGames.NueDeck.Scripts.Characters
             
             StatusDict[StatusType.Stun].DecreaseOverTurn = true;
             StatusDict[StatusType.Stun].OnTriggerAction += CheckStunStatus;
+
+            // 虚弱：攻击造成的伤害减少25%，回合结束递减
+            StatusDict[StatusType.Weak].DecreaseOverTurn = true;
+
+            // 脆弱：获得的格挡减少25%，回合结束递减
+            StatusDict[StatusType.Frail].DecreaseOverTurn = true;
+
+            // 易伤：受到的伤害增加50%，回合结束递减
+            StatusDict[StatusType.Vulnerable].DecreaseOverTurn = true;
             
         }
         #endregion
@@ -117,12 +127,16 @@ namespace NueGames.NueDeck.Scripts.Characters
             if (IsDeath) return;
             OnTakeDamageAction?.Invoke();
             var remainingDamage = value;
-            
+
+            // 易伤：受到的伤害增加50%
+            if (StatusDict[StatusType.Vulnerable].IsActive)
+                remainingDamage = Mathf.RoundToInt(remainingDamage * 1.5f);
+
             if (!canPierceArmor)
             {
                 if (StatusDict[StatusType.Block].IsActive)
                 {
-                    ApplyStatus(StatusType.Block,-value);
+                    ApplyStatus(StatusType.Block,-remainingDamage);
 
                     remainingDamage = 0;
                     if (StatusDict[StatusType.Block].StatusValue <= 0)

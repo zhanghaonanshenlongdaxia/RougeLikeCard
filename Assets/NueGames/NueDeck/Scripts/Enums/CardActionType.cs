@@ -11,6 +11,9 @@
         EarnMana,
         LifeSteal,
         Stun,
-        Exhaust
+        Exhaust,
+        ApplyWeak,
+        ApplyFrail,
+        ApplyVulnerable
     }
 }

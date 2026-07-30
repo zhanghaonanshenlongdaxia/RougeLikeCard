@@ -5,6 +5,9 @@
         Attack,
         Heal,
         Poison,
-        Block
+        Block,
+        ApplyWeak,
+        ApplyFrail,
+        ApplyVulnerable
     }
 }

@@ -14,10 +14,15 @@ namespace NueGames.NueDeck.Scripts.Card.CardActions
                 : actionParameters.SelfCharacter;
             
             if (!newTarget) return;
-            
-            newTarget.CharacterStats.ApplyStatus(StatusType.Block,
-                Mathf.RoundToInt(actionParameters.Value + actionParameters.SelfCharacter.CharacterStats
-                    .StatusDict[StatusType.Dexterity].StatusValue));
+
+            var blockValue = Mathf.RoundToInt(actionParameters.Value + actionParameters.SelfCharacter.CharacterStats
+                    .StatusDict[StatusType.Dexterity].StatusValue);
+
+            // 脆弱：获得的格挡减少25%
+            if (actionParameters.SelfCharacter.CharacterStats.StatusDict[StatusType.Frail].IsActive)
+                blockValue = Mathf.RoundToInt(blockValue * 0.75f);
+
+            newTarget.CharacterStats.ApplyStatus(StatusType.Block, blockValue);
 
             if (FxManager != null) 
                 FxManager.PlayFx(newTarget.transform, FxType.Block);
