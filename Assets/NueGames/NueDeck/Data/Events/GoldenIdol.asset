@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: GoldenIdol
+  m_EditorClassIdentifier: 
+  eventId: event_golden_idol
+  name: Golden Idol
+  description: You find a golden idol resting on a pedestal. It gleams temptingly.
+  eventImage: {fileID: 0}
+  choices:
+  - choiceText: Take the idol (Gain 50 gold, Lose 5 Max HP)
+    effectType: 2
+    effectValue: 50
+    cardId: 
+  - choiceText: Leave it (Gain 5 Max HP)
+    effectType: 4
+    effectValue: 5
+    cardId: 
+  - choiceText: Examine closely (Nothing happens)
+    effectType: 12
+    effectValue: 0
+    cardId: 

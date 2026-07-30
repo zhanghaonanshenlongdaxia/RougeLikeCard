@@ -13,10 +13,14 @@ namespace CardGame
             RegisterModel<ICardModel>(new CardModel());
             RegisterModel<IRelicModel>(new RelicModel());
             RegisterModel<IPotionModel>(new PotionModel());
+            RegisterModel<IMapModel>(new MapModel());
             RegisterSystem<IBattleSystem>(new BattleSystem());
             RegisterSystem<ICardSystem>(new CardSystem());
             RegisterSystem<IRelicSystem>(new RelicSystem());
             RegisterSystem<IPotionSystem>(new PotionSystem());
+            RegisterSystem<IShopSystem>(new ShopSystem());
+            RegisterSystem<ICampfireSystem>(new CampfireSystem());
+            RegisterSystem<IEventSystem>(new EventSystem());
         }
     }
 }

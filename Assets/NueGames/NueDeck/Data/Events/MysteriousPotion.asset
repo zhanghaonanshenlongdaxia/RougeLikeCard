@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: MysteriousPotion
+  m_EditorClassIdentifier: 
+  eventId: event_mysterious_potion
+  name: Mysterious Potion
+  description: A hooded figure offers you a strange bubbling potion.
+  eventImage: {fileID: 0}
+  choices:
+  - choiceText: 'Drink it (50% chance: heal 20, 50% chance: take 10 damage)'
+    effectType: 0
+    effectValue: 20
+    cardId: 
+  - choiceText: Refuse politely (Nothing)
+    effectType: 12
+    effectValue: 0
+    cardId: 
+  - choiceText: Buy it for 30 gold (Gain a random potion)
+    effectType: 10
+    effectValue: 1
+    cardId: 

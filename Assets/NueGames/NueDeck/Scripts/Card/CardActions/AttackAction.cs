@@ -1,4 +1,5 @@
-﻿using NueGames.NueDeck.Scripts.Enums;
+﻿using System.Collections;
+using NueGames.NueDeck.Scripts.Enums;
 using NueGames.NueDeck.Scripts.Managers;
 using UnityEngine;
 
@@ -14,19 +15,28 @@ namespace NueGames.NueDeck.Scripts.Card.CardActions
             var targetCharacter = actionParameters.TargetCharacter;
             var selfCharacter = actionParameters.SelfCharacter;
             
-            var value = actionParameters.Value + selfCharacter.CharacterStats.StatusDict[StatusType.Strength].StatusValue; 
+            var baseValue = actionParameters.Value + selfCharacter.CharacterStats.StatusDict[StatusType.Strength].StatusValue; 
 
             // 虚弱：攻击造成的伤害减少25%
             if (selfCharacter.CharacterStats.StatusDict[StatusType.Weak].IsActive)
-                value = Mathf.RoundToInt(value * 0.75f);
+                baseValue = Mathf.RoundToInt(baseValue * 0.75f);
 
-            targetCharacter.CharacterStats.Damage(Mathf.RoundToInt(value));
+            // 多段攻击：每次打击独立计算伤害
+            var hitCount = actionParameters.HitCount > 0 ? actionParameters.HitCount : 1;
+            var totalDamage = 0;
+            for (int i = 0; i < hitCount; i++)
+            {
+                targetCharacter.CharacterStats.Damage(Mathf.RoundToInt(baseValue));
+                totalDamage += Mathf.RoundToInt(baseValue);
+
+                if (FxManager != null)
+                {
+                    FxManager.PlayFx(targetCharacter.transform, FxType.Attack);
+                }
+            }
 
             if (FxManager != null)
-            {
-                FxManager.PlayFx(actionParameters.TargetCharacter.transform,FxType.Attack);
-                FxManager.SpawnFloatingText(actionParameters.TargetCharacter.TextSpawnRoot,value.ToString());
-            }
+                FxManager.SpawnFloatingText(targetCharacter.TextSpawnRoot, totalDamage.ToString());
            
             if (AudioManager != null) 
                 AudioManager.PlayOneShot(actionParameters.CardData.AudioType);

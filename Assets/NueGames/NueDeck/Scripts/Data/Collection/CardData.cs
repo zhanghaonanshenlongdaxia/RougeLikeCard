@@ -129,11 +129,14 @@ namespace NueGames.NueDeck.Scripts.Data.Collection
         [SerializeField] private ActionTargetType actionTargetType;
         [SerializeField] private float actionValue;
         [SerializeField] private float actionDelay;
+        [Tooltip("打击次数，用于多段攻击（如打3次每次5伤害）")]
+        [SerializeField] private int hitCount = 1;
 
         public ActionTargetType ActionTargetType => actionTargetType;
         public CardActionType CardActionType => cardActionType;
         public float ActionValue => actionValue;
         public float ActionDelay => actionDelay;
+        public int HitCount => hitCount > 0 ? hitCount : 1;
 
         #region Editor
 
