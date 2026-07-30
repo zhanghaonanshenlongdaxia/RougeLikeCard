@@ -95,6 +95,10 @@ namespace NueGames.NueDeck.Scripts.Card
                             target,self,CardData,this));
             }
             CollectionManager.OnCardPlayed(this);
+
+            // 遗物触发：打出卡牌
+            this.GetSystem<IRelicSystem>().TriggerRelics(RelicTriggerType.OnCardPlayed,
+                new RelicTriggerContext(player: self, enemies: allEnemies, cardId: CardData.Id));
         }
 
         // Power牌打出后消耗自身，效果通过永久状态持续

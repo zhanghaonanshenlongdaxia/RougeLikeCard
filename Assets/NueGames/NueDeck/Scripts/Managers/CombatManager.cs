@@ -90,6 +90,11 @@ namespace NueGames.NueDeck.Scripts.Managers
            
             UIManager.CombatCanvas.gameObject.SetActive(true);
             UIManager.InformationCanvas.gameObject.SetActive(true);
+
+            // 遗物触发：战斗开始
+            this.GetSystem<IRelicSystem>().TriggerRelics(RelicTriggerType.OnCombatStart,
+                new RelicTriggerContext(player: CurrentMainAlly, enemies: CurrentEnemiesList));
+
             CurrentCombatStateType = CombatStateType.AllyTurn;
         }
         
@@ -116,6 +121,10 @@ namespace NueGames.NueDeck.Scripts.Managers
                     
                     battleModel.CanSelectCards.Value = true;
                     UIManager.CombatCanvas.SetPileTexts();
+
+                    // 遗物触发：回合开始
+                    this.GetSystem<IRelicSystem>().TriggerRelics(RelicTriggerType.OnTurnStart,
+                        new RelicTriggerContext(player: CurrentMainAlly, enemies: CurrentEnemiesList));
                     
                     break;
                 case CombatStateType.EnemyTurn:
@@ -123,6 +132,10 @@ namespace NueGames.NueDeck.Scripts.Managers
                     OnEnemyTurnStarted?.Invoke();
                     
                     this.GetSystem<ICardSystem>().DiscardHand();
+
+                    // 遗物触发：回合结束（玩家回合结束时）
+                    this.GetSystem<IRelicSystem>().TriggerRelics(RelicTriggerType.OnTurnEnd,
+                        new RelicTriggerContext(player: CurrentMainAlly, enemies: CurrentEnemiesList));
                     
                     StartCoroutine(nameof(EnemyTurnRoutine));
                     
@@ -161,6 +174,11 @@ namespace NueGames.NueDeck.Scripts.Managers
         public void OnEnemyDeath(EnemyBase targetEnemy)
         {
             CurrentEnemiesList.Remove(targetEnemy);
+
+            // 遗物触发：敌人死亡
+            this.GetSystem<IRelicSystem>().TriggerRelics(RelicTriggerType.OnEnemyDeath,
+                new RelicTriggerContext(player: CurrentMainAlly, enemies: CurrentEnemiesList));
+
             if (CurrentEnemiesList.Count<=0)
                 WinCombat();
         }

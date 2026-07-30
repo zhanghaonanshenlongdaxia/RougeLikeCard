@@ -11,8 +11,12 @@ namespace CardGame
         {
             RegisterModel<IBattleModel>(new BattleModel());
             RegisterModel<ICardModel>(new CardModel());
+            RegisterModel<IRelicModel>(new RelicModel());
+            RegisterModel<IPotionModel>(new PotionModel());
             RegisterSystem<IBattleSystem>(new BattleSystem());
             RegisterSystem<ICardSystem>(new CardSystem());
+            RegisterSystem<IRelicSystem>(new RelicSystem());
+            RegisterSystem<IPotionSystem>(new PotionSystem());
         }
     }
 }

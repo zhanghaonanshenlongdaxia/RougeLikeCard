@@ -49,6 +49,8 @@ namespace NueGames.NueDeck.Scripts.Managers
                 DontDestroyOnLoad(gameObject);
                 CardActionProcessor.Initialize();
                 EnemyActionProcessor.Initialize();
+                RelicProcessor.Initialize();
+                PotionProcessor.Initialize();
                 InitGameplayData();
                 SyncBattleModel();
                 SetInitalHand();
