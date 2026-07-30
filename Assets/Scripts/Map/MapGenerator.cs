@@ -194,7 +194,7 @@ namespace CardGame
             }
 
             map.currentNodeIndex = nodeIndex;
-            map.currentFloor = node.floor;
+            map.currentFloor = node.floor + 1;
         }
     }
 }

@@ -2,38 +2,242 @@ using System.Collections.Generic;
 using CardGame;
 using NueGames.NueDeck.Scripts.Enums;
 using NueGames.NueDeck.Scripts.UI;
+using NueGames.NueDeck.Scripts.Utils;
 using QFramework;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using NueUIManager = NueGames.NueDeck.Scripts.Managers.UIManager;
 
 namespace NueGames.NueDeck.Scripts.Managers
 {
     public class MapManager : MonoBehaviour, IController
     {
-        [SerializeField] private List<EncounterButton> encounterButtonList;
+        [Header("References")]
+        [SerializeField] private Transform nodeParent;
+        [SerializeField] private GameObject nodeButtonPrefab;
+        [SerializeField] private Vector2 nodeSpacing = new Vector2(140, 55);
 
-        public List<EncounterButton> EncounterButtonList => encounterButtonList;
-        
+        [Header("Visual")]
+        [SerializeField] private Color combatColor = new Color(0.8f, 0.3f, 0.3f);
+        [SerializeField] private Color eliteColor = new Color(0.9f, 0.5f, 0.1f);
+        [SerializeField] private Color shopColor = new Color(0.3f, 0.7f, 0.9f);
+        [SerializeField] private Color campfireColor = new Color(0.9f, 0.6f, 0.2f);
+        [SerializeField] private Color eventColor = new Color(0.6f, 0.4f, 0.8f);
+        [SerializeField] private Color treasureColor = new Color(0.9f, 0.8f, 0.2f);
+        [SerializeField] private Color bossColor = new Color(0.5f, 0.1f, 0.5f);
+        [SerializeField] private Color startColor = new Color(0.5f, 0.5f, 0.5f);
+        [SerializeField] private Color lockedColor = new Color(0.3f, 0.3f, 0.3f, 0.5f);
+
         public IArchitecture GetArchitecture() => CardGameArchitecture.Interface;
-        
+
         private GameManager GameManager => GameManager.Instance;
-        
+        private NueUIManager UIManager => NueUIManager.Instance;
+
+        private readonly List<GameObject> _spawnedNodes = new List<GameObject>();
+        private readonly Dictionary<int, int> _nodeButtonToMapIndex = new Dictionary<int, int>();
+
         private void Start()
         {
-            PrepareEncounters();
+            BuildMap();
         }
-        
-        private void PrepareEncounters()
+
+        private void BuildMap()
         {
-            var currentEncounterId = this.GetModel<IBattleModel>().CurrentEncounterId;
-            for (int i = 0; i < EncounterButtonList.Count; i++)
+            var mapModel = this.GetModel<IMapModel>();
+
+            // 第一次进入或需要重新生成时生成地图
+            if (mapModel.CurrentMap == null || mapModel.CurrentMap.currentFloor == 0 && mapModel.CurrentMap.nodes[0].visited == false && _spawnedNodes.Count == 0)
             {
-                var btn = EncounterButtonList[i];
-                if (currentEncounterId == i)
-                    btn.SetStatus(EncounterButtonStatus.Active);
-                else if (currentEncounterId > i)
-                    btn.SetStatus(EncounterButtonStatus.Completed);
-                else
-                    btn.SetStatus(EncounterButtonStatus.Passive);
+                // 检查是否是完全新地图（起点未访问且没有已生成节点）
+                if (mapModel.CurrentMap == null)
+                {
+                    mapModel.CurrentMap = MapGenerator.GenerateMap(8, 3);
+                    Debug.Log($"[MapManager] Generated new map: {mapModel.CurrentMap.nodes.Count} nodes");
+                }
+            }
+
+            var map = mapModel.CurrentMap;
+
+            // 清除旧节点
+            foreach (var node in _spawnedNodes)
+            {
+                if (node) Destroy(node);
+            }
+            _spawnedNodes.Clear();
+            _nodeButtonToMapIndex.Clear();
+
+            // 计算每层的最大列数用于居中
+            var floorNodeCounts = new Dictionary<int, int>();
+            var floorNodeIndices = new Dictionary<int, List<int>>();
+            foreach (var node in map.nodes)
+            {
+                if (!floorNodeCounts.ContainsKey(node.floor))
+                {
+                    floorNodeCounts[node.floor] = 0;
+                    floorNodeIndices[node.floor] = new List<int>();
+                }
+                floorNodeCounts[node.floor]++;
+                floorNodeIndices[node.floor].Add(map.nodes.IndexOf(node));
+            }
+
+            // 按列号排序每层节点
+            foreach (var kvp in floorNodeIndices)
+            {
+                kvp.Value.Sort((a, b) =>
+                    map.nodes[a].column.CompareTo(map.nodes[b].column));
+            }
+
+            // 计算可用区域
+            float canvasHeight = 900f; // Canvas可用高度
+            float canvasWidth = 1600f; // Canvas可用宽度
+            int maxFloors = map.totalFloors + 1;
+            float floorHeight = canvasHeight / maxFloors;
+
+            foreach (var floorKvp in floorNodeIndices)
+            {
+                int floor = floorKvp.Key;
+                var nodeIndices = floorKvp.Value;
+
+                // Y 位置：floor 0 在顶部，往下递增
+                float y = canvasHeight / 2f - (floor + 0.5f) * floorHeight;
+
+                int nodeCount = nodeIndices.Count;
+                float colSpacing = Mathf.Min(nodeSpacing.x, canvasWidth / Mathf.Max(nodeCount, 1));
+                float totalWidth = (nodeCount - 1) * colSpacing;
+                float startX = -totalWidth / 2f;
+
+                for (int i = 0; i < nodeCount; i++)
+                {
+                    int mapIndex = nodeIndices[i];
+                    var mapNode = map.nodes[mapIndex];
+
+                    float x = startX + i * colSpacing;
+                    Vector2 pos = new Vector2(x, y);
+
+                    var nodeObj = Instantiate(nodeButtonPrefab, nodeParent);
+                    var nodeRT = nodeObj.GetComponent<RectTransform>();
+                    nodeRT.anchoredPosition = pos;
+                    _spawnedNodes.Add(nodeObj);
+
+                    int instanceId = nodeObj.GetInstanceID();
+                    _nodeButtonToMapIndex[instanceId] = mapIndex;
+
+                    // 设置节点文本和颜色
+                    var text = nodeObj.GetComponentInChildren<TextMeshProUGUI>();
+                    var button = nodeObj.GetComponent<Button>();
+                    var image = nodeObj.GetComponent<Image>();
+
+                    string nodeText = GetNodeDisplayText(mapNode.nodeType);
+                    bool isAvailable = mapNode.isAvailable && !mapNode.visited;
+                    bool isVisited = mapNode.visited;
+
+                    if (text) text.text = nodeText;
+
+                    // 颜色
+                    Color nodeColor = GetNodeColor(mapNode.nodeType);
+                    if (isVisited)
+                        nodeColor = Color.gray;
+                    else if (!isAvailable)
+                        nodeColor = lockedColor;
+
+                    if (image) image.color = nodeColor;
+                    if (button) button.interactable = isAvailable;
+
+                    // 绑定点击事件
+                    int capturedIndex = mapIndex;
+                    if (isAvailable && button)
+                    {
+                        button.onClick.AddListener(() => OnNodeClicked(capturedIndex));
+                    }
+                }
+            }
+
+            Debug.Log($"[MapManager] Map built with {_spawnedNodes.Count} nodes, available: {map.AvailableNodes.Count}");
+        }
+
+        private void OnNodeClicked(int mapIndex)
+        {
+            var mapModel = this.GetModel<IMapModel>();
+            var map = mapModel.CurrentMap;
+            if (mapIndex < 0 || mapIndex >= map.nodes.Count) return;
+
+            var node = map.nodes[mapIndex];
+            if (!node.isAvailable || node.visited) return;
+
+            Debug.Log($"[MapManager] Clicked node: Floor {node.floor}, Type {node.nodeType}");
+
+            // 访问节点
+            MapGenerator.VisitNode(map, mapIndex);
+
+            // 根据节点类型进入对应场景
+            switch (node.nodeType)
+            {
+                case MapNodeType.Combat:
+                case MapNodeType.Elite:
+                case MapNodeType.Boss:
+                    EnterCombat();
+                    break;
+                case MapNodeType.Shop:
+                    Debug.Log("[MapManager] Shop node - would open shop UI");
+                    EnterCombat(); // 暂时也进战斗
+                    break;
+                case MapNodeType.Campfire:
+                    Debug.Log("[MapManager] Campfire node - would open campfire UI");
+                    EnterCombat(); // 暂时也进战斗
+                    break;
+                case MapNodeType.Event:
+                    Debug.Log("[MapManager] Event node - would open event UI");
+                    EnterCombat(); // 暂时也进战斗
+                    break;
+                case MapNodeType.Treasure:
+                    Debug.Log("[MapManager] Treasure node - would give rewards");
+                    EnterCombat(); // 暂时也进战斗
+                    break;
+                case MapNodeType.Start:
+                    // Start node, just mark visited and refresh
+                    BuildMap();
+                    break;
+            }
+        }
+
+        private void EnterCombat()
+        {
+            if (GameManager && UIManager)
+            {
+                UIManager.ChangeScene(GameManager.SceneData.combatSceneIndex);
+            }
+        }
+
+        private string GetNodeDisplayText(MapNodeType type)
+        {
+            switch (type)
+            {
+                case MapNodeType.Combat: return "战斗";
+                case MapNodeType.Elite: return "精英";
+                case MapNodeType.Shop: return "商店";
+                case MapNodeType.Campfire: return "篝火";
+                case MapNodeType.Event: return "事件";
+                case MapNodeType.Treasure: return "宝箱";
+                case MapNodeType.Boss: return "Boss";
+                case MapNodeType.Start: return "起点";
+                default: return "?";
+            }
+        }
+
+        private Color GetNodeColor(MapNodeType type)
+        {
+            switch (type)
+            {
+                case MapNodeType.Combat: return combatColor;
+                case MapNodeType.Elite: return eliteColor;
+                case MapNodeType.Shop: return shopColor;
+                case MapNodeType.Campfire: return campfireColor;
+                case MapNodeType.Event: return eventColor;
+                case MapNodeType.Treasure: return treasureColor;
+                case MapNodeType.Boss: return bossColor;
+                case MapNodeType.Start: return startColor;
+                default: return Color.white;
             }
         }
     }

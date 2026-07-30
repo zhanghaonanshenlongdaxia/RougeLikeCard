@@ -6,14 +6,21 @@ using NueGames.NueDeck.Scripts.Data.Collection;
 using NueGames.NueDeck.Scripts.Data.Containers;
 using NueGames.NueDeck.Scripts.Enums;
 using NueGames.NueDeck.Scripts.NueExtentions;
+using NueGames.NueDeck.Scripts.Utils;
 using QFramework;
 using UnityEngine;
+using UnityEngine.UI;
+using NueUIManager = NueGames.NueDeck.Scripts.Managers.UIManager;
 
 namespace NueGames.NueDeck.Scripts.UI.Reward
 {
     public class RewardCanvas : CanvasBase, IController
     {
         public IArchitecture GetArchitecture() => CardGameArchitecture.Interface;
+
+        [Header("Continue Button")]
+        [SerializeField] private Button continueButton;
+        [SerializeField] private GameObject continueButtonObject;
         [Header("References")]
         [SerializeField] private RewardContainerData rewardContainerData;
         [SerializeField] private Transform rewardRoot;
@@ -35,6 +42,14 @@ namespace NueGames.NueDeck.Scripts.UI.Reward
         public void PrepareCanvas()
         {
             rewardPanelRoot.gameObject.SetActive(true);
+            
+            // 显示继续按钮
+            if (continueButtonObject) continueButtonObject.SetActive(true);
+            if (continueButton)
+            {
+                continueButton.onClick.RemoveAllListeners();
+                continueButton.onClick.AddListener(OnContinue);
+            }
         }
         public void BuildReward(RewardType rewardType)
         {
@@ -125,6 +140,17 @@ namespace NueGames.NueDeck.Scripts.UI.Reward
             Destroy(rewardContainer.gameObject);
         }
         #endregion
+
+        private void OnContinue()
+        {
+            // 隐藏继续按钮
+            if (continueButtonObject) continueButtonObject.SetActive(false);
+            
+            // 返回地图场景
+            var sceneChanger = FindObjectOfType<SceneChanger>();
+            if (sceneChanger) sceneChanger.OpenMapScene();
+            else Debug.LogError("[RewardCanvas] SceneChanger not found!");
+        }
         
     }
 }
