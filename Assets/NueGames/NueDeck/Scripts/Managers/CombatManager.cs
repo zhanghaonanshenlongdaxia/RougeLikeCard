@@ -82,6 +82,12 @@ namespace NueGames.NueDeck.Scripts.Managers
 
         public void StartCombat()
         {
+            // 重置战斗状态（防止上一场战斗的 EndCombat 残留）
+            var battleModel = this.GetModel<IBattleModel>();
+            battleModel.State.Value = CombatStateType.PrepareCombat;
+            battleModel.CanUseCards.Value = true;
+            battleModel.CanSelectCards.Value = true;
+
             BuildEnemies();
             BuildAllies();
             backgroundContainer.OpenSelectedBackground();
