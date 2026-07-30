@@ -179,23 +179,22 @@ namespace NueGames.NueDeck.Scripts.Managers
                     EnterCombat();
                     break;
                 case MapNodeType.Shop:
-                    Debug.Log("[MapManager] Shop node - would open shop UI");
-                    EnterCombat(); // 暂时也进战斗
+                    Debug.Log("[MapManager] Shop node - TODO: open shop UI");
+                    BuildMap(); // 暂时直接刷新地图
                     break;
                 case MapNodeType.Campfire:
-                    Debug.Log("[MapManager] Campfire node - would open campfire UI");
-                    EnterCombat(); // 暂时也进战斗
+                    Debug.Log("[MapManager] Campfire node - TODO: open campfire UI");
+                    BuildMap();
                     break;
                 case MapNodeType.Event:
-                    Debug.Log("[MapManager] Event node - would open event UI");
-                    EnterCombat(); // 暂时也进战斗
+                    Debug.Log("[MapManager] Event node - TODO: open event UI");
+                    BuildMap();
                     break;
                 case MapNodeType.Treasure:
-                    Debug.Log("[MapManager] Treasure node - would give rewards");
-                    EnterCombat(); // 暂时也进战斗
+                    Debug.Log("[MapManager] Treasure node - TODO: give rewards");
+                    BuildMap();
                     break;
                 case MapNodeType.Start:
-                    // Start node, just mark visited and refresh
                     BuildMap();
                     break;
             }

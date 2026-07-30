@@ -63,7 +63,7 @@ namespace NueGames.NueDeck.Scripts.Managers
         #region Setup
         private void Awake()
         {
-            if (Instance)
+            if (Instance && Instance != this)
             {
                 Destroy(gameObject);
                 return;

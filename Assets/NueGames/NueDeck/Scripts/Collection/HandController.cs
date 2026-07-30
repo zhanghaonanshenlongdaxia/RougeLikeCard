@@ -7,12 +7,34 @@ using NueGames.NueDeck.Scripts.Interfaces;
 using NueGames.NueDeck.Scripts.Managers;
 using QFramework;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using NueUIManager = NueGames.NueDeck.Scripts.Managers.UIManager;
 
 namespace NueGames.NueDeck.Scripts.Collection
 {
     public class HandController : MonoBehaviour, IController
     {
+        // Input 兼容：同时支持旧 Input 和新 Input System
+        private static bool IsMouseButtonDown()
+        {
+            if (Mouse.current != null) return Mouse.current.leftButton.wasPressedThisFrame;
+            return Input.GetMouseButtonDown(0);
+        }
+        private static bool IsMouseButtonUp()
+        {
+            if (Mouse.current != null) return Mouse.current.leftButton.wasReleasedThisFrame;
+            return Input.GetMouseButtonUp(0);
+        }
+        private static bool IsMouseButtonHeld()
+        {
+            if (Mouse.current != null) return Mouse.current.leftButton.isPressed;
+            return Input.GetMouseButton(0);
+        }
+        private static Vector2 GetMousePosition()
+        {
+            if (Mouse.current != null) return Mouse.current.position.ReadValue();
+            return Input.mousePosition;
+        }
         [Header("Card Settings")] 
         [SerializeField] private bool cardUprightWhenSelected = true;
         [SerializeField] private bool cardTilt = true;
@@ -86,7 +108,7 @@ namespace NueGames.NueDeck.Scripts.Collection
             _c = transform.TransformPoint(curveEnd);
             _handBounds = new Rect((handOffset - handSize / 2), handSize);
             _plane = new Plane(-Vector3.forward, transform.position);
-            _prevMousePos = Input.mousePosition;
+            _prevMousePos = GetMousePosition();
         }
         
 
@@ -131,7 +153,7 @@ namespace NueGames.NueDeck.Scripts.Collection
 
         private Vector2 HandleMouseInput(out int count, out float sqrDistance, out bool mouseButton)
         {
-            Vector2 mousePos = Input.mousePosition;
+            Vector2 mousePos = GetMousePosition();
 
             // Allows mouse to go outside game window but keeps cards within window
             // If mouse doesn't need to go outside, could use "Cursor.lockState = CursorLockMode.Confined;" instead
@@ -211,7 +233,7 @@ namespace NueGames.NueDeck.Scripts.Collection
                 // Handle Start Dragging
                 if (mouseHoveringOnSelected)
                 {
-                    var mouseButtonDown = Input.GetMouseButtonDown(0);
+                    var mouseButtonDown = IsMouseButtonDown();
                     if (mouseButtonDown)
                     {
                         _dragged = i;
@@ -307,7 +329,7 @@ namespace NueGames.NueDeck.Scripts.Collection
         private void PlayCard(Vector2 mousePos)
         {
             // Use Card
-            var mouseButtonUp = Input.GetMouseButtonUp(0);
+            var mouseButtonUp = IsMouseButtonUp();
             if (!mouseButtonUp) return;
             
             //Remove highlights
@@ -402,7 +424,7 @@ namespace NueGames.NueDeck.Scripts.Collection
             var point = transform.InverseTransformPoint(_mouseWorldPos);
             _mouseInsideHand = _handBounds.Contains(point);
 
-            mouseButton = Input.GetMouseButton(0);
+            mouseButton = IsMouseButtonHeld();
         }
 
         private void GetDistanceToCurrentSelectedCard(out int count, out float sqrDistance)
