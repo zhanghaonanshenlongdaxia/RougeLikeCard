@@ -15,6 +15,7 @@ namespace CardGame
             RegisterModel<IPotionModel>(new PotionModel());
             RegisterModel<IMapModel>(new MapModel());
             RegisterModel<IInventoryModel>(new InventoryModel());
+            RegisterModel<ILoadoutModel>(new LoadoutModel());
             RegisterSystem<IBattleSystem>(new BattleSystem());
             RegisterSystem<ICardSystem>(new CardSystem());
             RegisterSystem<IRelicSystem>(new RelicSystem());
@@ -23,6 +24,9 @@ namespace CardGame
             RegisterSystem<ICampfireSystem>(new CampfireSystem());
             RegisterSystem<IEventSystem>(new EventSystem());
             RegisterSystem<IInventorySystem>(new InventorySystem());
+            RegisterSystem<ILoadoutSystem>(new LoadoutSystem());
+            RegisterSystem<ICraftSystem>(new CraftSystem());
+            RegisterSystem<IEvacuateSystem>(new EvacuateSystem());
         }
     }
 }
