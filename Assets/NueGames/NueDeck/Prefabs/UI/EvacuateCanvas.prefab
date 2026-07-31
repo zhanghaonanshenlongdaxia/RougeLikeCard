@@ -3866,6 +3866,7 @@ GameObject:
   - component: {fileID: 4206698991676285209}
   - component: {fileID: 5528725590402472319}
   - component: {fileID: 9172785868080131580}
+  - component: {fileID: 5380227925479892147}
   m_Layer: 0
   m_Name: EvacuateCanvas
   m_TagString: Untagged
@@ -3957,6 +3958,22 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &5380227925479892147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5997044479253491603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f595076b59bd8924eb2908fe23a39655, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inventoryGridRoot: {fileID: 0}
+  safeBoxGridRoot: {fileID: 0}
+  evacuateButton: {fileID: 0}
+  continueButton: {fileID: 0}
 --- !u!1 &7037833848211268312
 GameObject:
   m_ObjectHideFlags: 0

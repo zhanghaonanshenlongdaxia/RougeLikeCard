@@ -1282,6 +1282,7 @@ GameObject:
   - component: {fileID: 2880636903596554102}
   - component: {fileID: 9209704192203112510}
   - component: {fileID: 1845371924587560190}
+  - component: {fileID: 9077637404961790249}
   m_Layer: 0
   m_Name: EventCanvas
   m_TagString: Untagged
@@ -1373,6 +1374,22 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &9077637404961790249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8957512989515464582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ddc8164daa81ba44a7ce22e7a87c7ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventImage: {fileID: 0}
+  descriptionText: {fileID: 0}
+  choicesRoot: {fileID: 0}
+  choiceButtonPrefab: {fileID: 0}
 --- !u!1 &9207403303805344755
 GameObject:
   m_ObjectHideFlags: 0

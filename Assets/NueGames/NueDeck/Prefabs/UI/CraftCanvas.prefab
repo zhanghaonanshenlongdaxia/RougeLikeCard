@@ -3471,6 +3471,7 @@ GameObject:
   - component: {fileID: 6995795759623461608}
   - component: {fileID: 5999128481786476080}
   - component: {fileID: 1725343352618742703}
+  - component: {fileID: 1794229491360292629}
   m_Layer: 0
   m_Name: CraftCanvas
   m_TagString: Untagged
@@ -3562,6 +3563,24 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &1794229491360292629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6307840262469226822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 892d29b6d39c83043a7955b2c0e83c2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  recipeListRoot: {fileID: 0}
+  detailTitle: {fileID: 0}
+  detailMats: {fileID: 0}
+  craftButton: {fileID: 0}
+  tabButtons: []
+  backButton: {fileID: 0}
 --- !u!1 &6373925851388089442
 GameObject:
   m_ObjectHideFlags: 0

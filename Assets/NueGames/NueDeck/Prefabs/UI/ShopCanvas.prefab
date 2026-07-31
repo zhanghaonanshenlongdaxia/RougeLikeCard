@@ -3597,6 +3597,7 @@ GameObject:
   - component: {fileID: 833391768418529450}
   - component: {fileID: 4509953871336556669}
   - component: {fileID: 4296363885969170569}
+  - component: {fileID: 1793255802198408406}
   m_Layer: 0
   m_Name: ShopCanvas
   m_TagString: Untagged
@@ -3688,6 +3689,24 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &1793255802198408406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4766529448338286275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c323b9f9b2a5ef445880e8ee32097cf2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardRowRoot: {fileID: 0}
+  relicRowRoot: {fileID: 0}
+  potionRowRoot: {fileID: 0}
+  removeCardButton: {fileID: 0}
+  goldText: {fileID: 0}
+  backButton: {fileID: 0}
 --- !u!1 &4783824850826704904
 GameObject:
   m_ObjectHideFlags: 0

@@ -395,6 +395,7 @@ GameObject:
   - component: {fileID: 5936044058414375802}
   - component: {fileID: 85254372376146885}
   - component: {fileID: 4591554076558429733}
+  - component: {fileID: 6331215673252081784}
   m_Layer: 0
   m_Name: MapBottomBar
   m_TagString: Untagged
@@ -514,6 +515,22 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &6331215673252081784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2874509737438520499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d18929f50a742174fb252b17e78af5e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inventoryButton: {fileID: 0}
+  checkpointText: {fileID: 0}
+  progressBarFill: {fileID: 0}
+  evacuateButton: {fileID: 0}
 --- !u!1 &4314317125278606638
 GameObject:
   m_ObjectHideFlags: 0

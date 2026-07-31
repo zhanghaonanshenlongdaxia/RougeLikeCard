@@ -146,6 +146,7 @@ GameObject:
   - component: {fileID: 8370557813390119291}
   - component: {fileID: 7247925480069968141}
   - component: {fileID: 833984917126923805}
+  - component: {fileID: 48243274986773362}
   m_Layer: 0
   m_Name: BaseCanvas
   m_TagString: Untagged
@@ -237,6 +238,31 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &48243274986773362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 343941374259942374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd46cdd2dd7a1304992758c9fe8f3437, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  alchemyButton: {fileID: 0}
+  forgingButton: {fileID: 0}
+  ritualButton: {fileID: 0}
+  inventoryButton: {fileID: 0}
+  loadoutButton: {fileID: 0}
+  adventureButton: {fileID: 0}
+  craftPanel: {fileID: 0}
+  inventoryPanel: {fileID: 0}
+  loadoutPanel: {fileID: 0}
+  realmText: {fileID: 0}
+  shenShiText: {fileID: 0}
+  goldText: {fileID: 0}
+  hpText: {fileID: 0}
 --- !u!1 &2689598661306243352
 GameObject:
   m_ObjectHideFlags: 0

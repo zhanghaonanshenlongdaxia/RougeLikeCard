@@ -1595,6 +1595,7 @@ GameObject:
   - component: {fileID: 4442272094504275649}
   - component: {fileID: 72685929826479784}
   - component: {fileID: 6784043156240852621}
+  - component: {fileID: 7569354013331496959}
   m_Layer: 0
   m_Name: LoadoutCanvas
   m_TagString: Untagged
@@ -1686,6 +1687,25 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &7569354013331496959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6736042124022345300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a89bb6a0f8f4bde409a3f642803aa334, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  basicCardRoot: {fileID: 0}
+  selectedCardRoot: {fileID: 0}
+  cardPoolRoot: {fileID: 0}
+  cardItemPrefab: {fileID: 0}
+  shenShiText: {fileID: 0}
+  startButton: {fileID: 0}
+  backButton: {fileID: 0}
 --- !u!1 &8734414351948075495
 GameObject:
   m_ObjectHideFlags: 0

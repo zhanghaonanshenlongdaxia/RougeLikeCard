@@ -97,6 +97,7 @@ GameObject:
   - component: {fileID: 7667435159240917706}
   - component: {fileID: 3644976795672931069}
   - component: {fileID: 6592876526699245810}
+  - component: {fileID: 845292632281039564}
   m_Layer: 0
   m_Name: CampfireCanvas
   m_TagString: Untagged
@@ -188,6 +189,23 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &845292632281039564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 442250289338413047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3504ddde7fa8ed04daa9be1f83f10287, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  restButton: {fileID: 0}
+  upgradeButton: {fileID: 0}
+  upgradeCardListRoot: {fileID: 0}
+  cardItemPrefab: {fileID: 0}
+  backButton: {fileID: 0}
 --- !u!1 &531889742082128050
 GameObject:
   m_ObjectHideFlags: 0
