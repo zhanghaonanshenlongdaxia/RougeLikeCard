@@ -25,7 +25,8 @@ namespace NueGames.NueDeck.Scripts.Utils
         }
         private IEnumerator DelaySceneChange(SceneType type)
         {
-            UIManager.SetCanvas(UIManager.Instance.InventoryCanvas,false,true);
+            if (UIManager.Instance.InventoryCanvas)
+                UIManager.SetCanvas(UIManager.Instance.InventoryCanvas,false,true);
             yield return StartCoroutine(UIManager.Instance.Fade(true));
 
             switch (type)

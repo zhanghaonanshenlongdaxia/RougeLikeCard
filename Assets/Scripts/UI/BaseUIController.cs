@@ -30,6 +30,32 @@ namespace CardGame.UI
 
         public IArchitecture GetArchitecture() => CardGameArchitecture.Interface;
 
+        private void Awake()
+        {
+            // 运行时绑定按钮（因为 Prefab 创建时 SerializeField 未赋值）
+            var buttons = GetComponentsInChildren<Button>(true);
+            foreach (var btn in buttons)
+            {
+                var name = btn.gameObject.name;
+                if (name == "Btn_0") btn.onClick.AddListener(OnAlchemy);
+                else if (name == "Btn_1") btn.onClick.AddListener(OnForging);
+                else if (name == "Btn_2") btn.onClick.AddListener(OnRitual);
+                else if (name == "Btn_3") btn.onClick.AddListener(OnInventory);
+                else if (name == "Btn_4") btn.onClick.AddListener(OnLoadout);
+                else if (name == "AdventureButton") btn.onClick.AddListener(OnAdventure);
+            }
+
+            // 查找子面板
+            var canvas = GetComponent<Canvas>() ?? GetComponentInChildren<Canvas>();
+            if (canvas == null)
+            {
+                // 在场景中查找
+                craftPanel = GameObject.Find("CraftCanvas");
+                inventoryPanel = GameObject.Find("InventoryCanvas");
+                loadoutPanel = GameObject.Find("LoadoutCanvas");
+            }
+        }
+
         private void OnEnable()
         {
             UpdateStatus();
