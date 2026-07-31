@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Scene Data
   m_EditorClassIdentifier: 
   mainMenuSceneIndex: 1
-  mapSceneIndex: 2
-  combatSceneIndex: 3
+  mapSceneIndex: 3
+  combatSceneIndex: 4

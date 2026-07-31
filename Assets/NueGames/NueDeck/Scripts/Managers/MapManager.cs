@@ -170,7 +170,7 @@ namespace NueGames.NueDeck.Scripts.Managers
             // 访问节点
             MapGenerator.VisitNode(map, mapIndex);
 
-            // 根据节点类型进入对应场景
+            // 根据节点类型进入对应场景或UI
             switch (node.nodeType)
             {
                 case MapNodeType.Combat:
@@ -179,20 +179,16 @@ namespace NueGames.NueDeck.Scripts.Managers
                     EnterCombat();
                     break;
                 case MapNodeType.Shop:
-                    Debug.Log("[MapManager] Shop node - TODO: open shop UI");
-                    BuildMap(); // 暂时直接刷新地图
+                    OpenUI("ShopCanvas");
                     break;
                 case MapNodeType.Campfire:
-                    Debug.Log("[MapManager] Campfire node - TODO: open campfire UI");
-                    BuildMap();
+                    OpenUI("CampfireCanvas");
                     break;
                 case MapNodeType.Event:
-                    Debug.Log("[MapManager] Event node - TODO: open event UI");
-                    BuildMap();
+                    OpenEventUI();
                     break;
                 case MapNodeType.Treasure:
-                    Debug.Log("[MapManager] Treasure node - TODO: give rewards");
-                    BuildMap();
+                    OpenUI("TreasureCanvas");
                     break;
                 case MapNodeType.Start:
                     BuildMap();
@@ -205,6 +201,90 @@ namespace NueGames.NueDeck.Scripts.Managers
             if (GameManager && UIManager)
             {
                 UIManager.ChangeScene(GameManager.SceneData.combatSceneIndex);
+            }
+        }
+
+        /// <summary>
+        /// 打开指定名称的 UI Canvas（从 Prefab 实例化或查找已有）
+        /// </summary>
+        private void OpenUI(string canvasName)
+        {
+            Debug.Log($"[MapManager] Open UI: {canvasName}");
+
+            // 先查找场景中是否已有
+            var existing = GameObject.Find(canvasName);
+            if (existing != null)
+            {
+                existing.SetActive(true);
+                return;
+            }
+
+            // 从 Prefab 加载
+            var prefab = UnityEngine.Resources.Load<GameObject>($"UI/{canvasName}");
+            if (prefab == null)
+            {
+                // 尝试从项目路径加载
+                prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
+                    $"Assets/NueGames/NueDeck/Prefabs/UI/{canvasName}.prefab");
+            }
+
+            if (prefab != null)
+            {
+                var instance = Instantiate(prefab);
+                instance.name = canvasName;
+                Debug.Log($"[MapManager] Instantiated {canvasName}");
+            }
+            else
+            {
+                Debug.LogWarning($"[MapManager] UI prefab not found: {canvasName}");
+                BuildMap(); // 找不到就刷新地图
+            }
+        }
+
+        /// <summary>
+        /// 打开事件UI，随机获取一个事件
+        /// </summary>
+        private void OpenEventUI()
+        {
+            Debug.Log("[MapManager] Open Event UI");
+            var eventSystem = this.GetSystem<CardGame.IEventSystem>();
+            var eventData = eventSystem.GetRandomEvent();
+            if (eventData == null)
+            {
+                Debug.LogWarning("[MapManager] No event data found, refreshing map");
+                BuildMap();
+                return;
+            }
+
+            // 查找或创建 EventCanvas
+            var existing = GameObject.Find("EventCanvas");
+            if (existing != null)
+            {
+                var controller = existing.GetComponent<CardGame.UI.EventUIController>();
+                if (controller != null)
+                {
+                    controller.ShowEvent(eventData);
+                    existing.SetActive(true);
+                    return;
+                }
+            }
+
+            var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
+                "Assets/NueGames/NueDeck/Prefabs/UI/EventCanvas.prefab");
+            if (prefab != null)
+            {
+                var instance = Instantiate(prefab);
+                instance.name = "EventCanvas";
+                var controller = instance.GetComponent<CardGame.UI.EventUIController>();
+                if (controller != null)
+                {
+                    controller.ShowEvent(eventData);
+                    Debug.Log($"[MapManager] Event UI shown: {eventData.name}");
+                }
+            }
+            else
+            {
+                BuildMap();
             }
         }
 

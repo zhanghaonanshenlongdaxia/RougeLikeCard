@@ -45,7 +45,8 @@ namespace CardGame.UI
             var uiManager = NueGames.NueDeck.Scripts.Managers.UIManager.Instance;
             if (uiManager != null && NueGames.NueDeck.Scripts.Managers.GameManager.Instance != null)
             {
-                uiManager.ChangeScene(NueGames.NueDeck.Scripts.Managers.GameManager.Instance.SceneData.mainMenuSceneIndex);
+                // 回到基地场景（mapSceneIndex - 1）
+                uiManager.ChangeScene(NueGames.NueDeck.Scripts.Managers.GameManager.Instance.SceneData.mapSceneIndex - 1);
             }
         }
     }

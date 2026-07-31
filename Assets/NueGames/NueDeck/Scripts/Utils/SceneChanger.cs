@@ -15,6 +15,7 @@ namespace NueGames.NueDeck.Scripts.Utils
         private enum SceneType
         {
             MainMenu,
+            Base,
             Map,
             Combat
         }
@@ -38,6 +39,10 @@ namespace NueGames.NueDeck.Scripts.Utils
                     GameManager.InitGameplayData();
                     GameManager.SetInitalHand();
                     break;
+                case SceneType.Base:
+                    // 基地场景索引 = mapSceneIndex - 1 (Base is before Map in build settings)
+                    UIManager.ChangeScene(GameManager.SceneData.mapSceneIndex - 1);
+                    break;
                 case SceneType.Map:
                     UIManager.ChangeScene(GameManager.SceneData.mapSceneIndex);
                     UIManager.SetCanvas(UIManager.CombatCanvas,false,true);
@@ -60,15 +65,20 @@ namespace NueGames.NueDeck.Scripts.Utils
         {
             StartCoroutine(DelaySceneChange(SceneType.Map));
         }
+        public void OpenBaseScene()
+        {
+            StartCoroutine(DelaySceneChange(SceneType.Base));
+        }
         public void OpenCombatScene()
         {
             StartCoroutine(DelaySceneChange(SceneType.Combat));
         }
         public void ChangeScene(int sceneId)
         {
-
             if (sceneId == GameManager.SceneData.mainMenuSceneIndex)
                 OpenMainMenuScene();
+            else if (sceneId == GameManager.SceneData.mapSceneIndex - 1)
+                OpenBaseScene();
             else if (sceneId == GameManager.SceneData.mapSceneIndex)
                 OpenMapScene();
             else if (sceneId == GameManager.SceneData.combatSceneIndex)

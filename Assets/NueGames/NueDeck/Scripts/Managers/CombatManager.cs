@@ -269,8 +269,40 @@ namespace NueGames.NueDeck.Scripts.Managers
             
             this.GetSystem<ICardSystem>().DiscardHand();
             this.GetSystem<ICardSystem>().ClearPiles();
-            UIManager.CombatCanvas.gameObject.SetActive(true);
-            UIManager.CombatCanvas.CombatLosePanel.SetActive(true);
+
+            // 触发死亡系统
+            this.GetSystem<CardGame.IEvacuateSystem>().OnDeath();
+
+            // 打开死亡UI
+            var existingDeath = GameObject.Find("DeathCanvas");
+            if (existingDeath != null)
+            {
+                var deathCtrl = existingDeath.GetComponent<CardGame.UI.DeathUIController>();
+                if (deathCtrl != null) deathCtrl.ShowDeath();
+                existingDeath.SetActive(true);
+            }
+            else
+            {
+                // 从 Prefab 加载
+                var prefab = Resources.Load<GameObject>("UI/DeathCanvas");
+                if (prefab == null)
+                    prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
+                        "Assets/NueGames/NueDeck/Prefabs/UI/DeathCanvas.prefab");
+                if (prefab != null)
+                {
+                    var instance = Instantiate(prefab);
+                    instance.name = "DeathCanvas";
+                    var deathCtrl = instance.GetComponent<CardGame.UI.DeathUIController>();
+                    if (deathCtrl != null) deathCtrl.ShowDeath();
+                    Debug.Log("[CombatManager] Death UI shown");
+                }
+                else
+                {
+                    // fallback: 使用原有的 CombatLosePanel
+                    UIManager.CombatCanvas.gameObject.SetActive(true);
+                    UIManager.CombatCanvas.CombatLosePanel.SetActive(true);
+                }
+            }
         }
         private void WinCombat()
         {
