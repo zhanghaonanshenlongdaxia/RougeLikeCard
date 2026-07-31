@@ -14,6 +14,7 @@ namespace CardGame
             RegisterModel<IRelicModel>(new RelicModel());
             RegisterModel<IPotionModel>(new PotionModel());
             RegisterModel<IMapModel>(new MapModel());
+            RegisterModel<IInventoryModel>(new InventoryModel());
             RegisterSystem<IBattleSystem>(new BattleSystem());
             RegisterSystem<ICardSystem>(new CardSystem());
             RegisterSystem<IRelicSystem>(new RelicSystem());
@@ -21,6 +22,7 @@ namespace CardGame
             RegisterSystem<IShopSystem>(new ShopSystem());
             RegisterSystem<ICampfireSystem>(new CampfireSystem());
             RegisterSystem<IEventSystem>(new EventSystem());
+            RegisterSystem<IInventorySystem>(new InventorySystem());
         }
     }
 }

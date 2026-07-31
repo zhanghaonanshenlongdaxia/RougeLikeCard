@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab029cd18e56ce43856e99494bf8415, type: 3}
+  m_Name: JiuZhuanLian
+  m_EditorClassIdentifier: 
+  materialId: mat_jiuzhuan
+  name: "\u4E5D\u8F6C\u83B2"
+  description: "\u6781\u4E3A\u7F55\u89C1\u7684\u7075\u8349\uFF0C\u53EF\u7528\u4E8E\u9AD8\u7EA7\u70BC\u4E39\u3002"
+  icon: {fileID: 0}
+  materialType: 0
+  rarity: 2
+  weight: 3
+  stackable: 1
+  maxStack: 99
