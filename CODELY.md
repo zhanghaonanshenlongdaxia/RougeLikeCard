@@ -5,6 +5,7 @@
 ### User
 
 ### Feedback
+- [2026-08-01 12:38:14] UIBindTool created (2026-07-31): Editor script at Assets/Editor/UIBindTool.cs. Menu: Tools→Auto Bind UI Components. Auto-matches [SerializeField] fields to child GameObjects by name (case-insensitive, recursive). Solves the problem of all SerializeField being null on code-generated prefabs. Usage: open prefab → Tools→Auto Bind → saves to prefab. Also added Awake auto-bind as fallback for all UI controllers (Event/Shop/Campfire/Treasure/Evacuate/BaseUIController). Key lesson: when creating prefabs via C# script (not in Editor), SerializeField references are never assigned - must either use UIBindTool or auto-find in Awake.
 
 ### Project
 - [2026-07-30 18:01:33] User is building a card game similar to Slay the Spire in Unity. Using QFramework for architecture + NueDeck (open-source MIT) as card game template. Project switched from Built-in to URP render pipeline. Unity 2022.3.62f2c1.
