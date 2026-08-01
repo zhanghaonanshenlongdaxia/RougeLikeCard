@@ -250,19 +250,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd46cdd2dd7a1304992758c9fe8f3437, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  alchemyButton: {fileID: 0}
-  forgingButton: {fileID: 0}
-  ritualButton: {fileID: 0}
-  inventoryButton: {fileID: 0}
-  loadoutButton: {fileID: 0}
-  adventureButton: {fileID: 0}
-  craftPanel: {fileID: 0}
-  inventoryPanel: {fileID: 0}
-  loadoutPanel: {fileID: 0}
-  realmText: {fileID: 0}
-  shenShiText: {fileID: 0}
-  goldText: {fileID: 0}
-  hpText: {fileID: 0}
+  alchemyButton: {fileID: 3618775601951839611}
+  forgingButton: {fileID: 3618775601951839611}
+  ritualButton: {fileID: 3618775601951839611}
+  inventoryButton: {fileID: 3618775601951839611}
+  loadoutButton: {fileID: 3618775601951839611}
+  adventureButton: {fileID: 7643724739282501413}
+  craftPanel: {fileID: 3699559645763487668}
+  inventoryPanel: {fileID: 3699559645763487668}
+  loadoutPanel: {fileID: 3699559645763487668}
+  realmText: {fileID: 2043660439325063110}
+  shenShiText: {fileID: 8909785692514718825}
+  goldText: {fileID: 2980747949338075248}
+  hpText: {fileID: 559208510401978613}
 --- !u!1 &2689598661306243352
 GameObject:
   m_ObjectHideFlags: 0

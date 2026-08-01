@@ -412,6 +412,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: BaseCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 2689598661306243352, guid: adbfd784df7e8c64c891326ad4c3f9a6, type: 3}
+      propertyPath: m_Name
+      value: RealmText
+      objectReference: {fileID: 0}
+    - target: {fileID: 2738017381563283513, guid: adbfd784df7e8c64c891326ad4c3f9a6, type: 3}
+      propertyPath: m_Name
+      value: GoldText
+      objectReference: {fileID: 0}
+    - target: {fileID: 3089424672570417488, guid: adbfd784df7e8c64c891326ad4c3f9a6, type: 3}
+      propertyPath: m_Name
+      value: ShenShiText
+      objectReference: {fileID: 0}
+    - target: {fileID: 4980730029874885383, guid: adbfd784df7e8c64c891326ad4c3f9a6, type: 3}
+      propertyPath: m_Name
+      value: RitualButton
+      objectReference: {fileID: 0}
     - target: {fileID: 5348054542273654240, guid: adbfd784df7e8c64c891326ad4c3f9a6, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -491,6 +507,26 @@ PrefabInstance:
     - target: {fileID: 5348054542273654240, guid: adbfd784df7e8c64c891326ad4c3f9a6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6030847876087834295, guid: adbfd784df7e8c64c891326ad4c3f9a6, type: 3}
+      propertyPath: m_Name
+      value: AlchemyButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 7568221953283970391, guid: adbfd784df7e8c64c891326ad4c3f9a6, type: 3}
+      propertyPath: m_Name
+      value: HPText
+      objectReference: {fileID: 0}
+    - target: {fileID: 7957056335428016535, guid: adbfd784df7e8c64c891326ad4c3f9a6, type: 3}
+      propertyPath: m_Name
+      value: ForgingButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 8326593308012823872, guid: adbfd784df7e8c64c891326ad4c3f9a6, type: 3}
+      propertyPath: m_Name
+      value: LoadoutButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 9045590460015352564, guid: adbfd784df7e8c64c891326ad4c3f9a6, type: 3}
+      propertyPath: m_Name
+      value: InventoryButton
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

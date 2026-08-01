@@ -1389,7 +1389,7 @@ MonoBehaviour:
   eventImage: {fileID: 2487994007818614715}
   descriptionText: {fileID: 4548717870179088126}
   choicesRoot: {fileID: 7250897803094625870}
-  choiceButtonPrefab: {fileID: 0}
+  choiceButtonPrefab: {fileID: 2741442043817296238}
 --- !u!1 &9207403303805344755
 GameObject:
   m_ObjectHideFlags: 0
