@@ -1,16 +1,17 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using QFramework;
 using NueGames.NueDeck.Scripts.Data.Collection;
 using NueGames.NueDeck.Scripts.Managers;
+using Alchemy.Inspector;
 
 namespace CardGame.UI
 {
     public class LoadoutUIController : MonoBehaviour, IController
     {
-        [Header("References")]
+        [FoldoutGroup("References")]
         [SerializeField] private Transform basicCardRoot;
         [SerializeField] private Transform selectedCardRoot;
         [SerializeField] private Transform cardPoolRoot;

@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using QFramework;
+using Alchemy.Inspector;
 
 namespace CardGame.UI
 {
     public class InventoryUIController : MonoBehaviour, IController
     {
-        [Header("References")]
+        [FoldoutGroup("References")]
         [SerializeField] private Transform itemGridRoot;
         [SerializeField] private GameObject itemSlotPrefab;
         [SerializeField] private TextMeshProUGUI weightText;

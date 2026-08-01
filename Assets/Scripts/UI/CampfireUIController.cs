@@ -1,9 +1,10 @@
-﻿using TMPro;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using QFramework;
 using System.Collections.Generic;
 using NueGames.NueDeck.Scripts.Data.Collection;
+using Alchemy.Inspector;
 
 namespace CardGame.UI
 {

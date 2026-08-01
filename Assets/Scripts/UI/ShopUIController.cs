@@ -1,7 +1,8 @@
-﻿using TMPro;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using QFramework;
+using Alchemy.Inspector;
 
 namespace CardGame.UI
 {

@@ -1,10 +1,11 @@
-﻿using TMPro;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using QFramework;
 using System.Collections.Generic;
 
 using NueUIManager = NueGames.NueDeck.Scripts.Managers.UIManager;
+using Alchemy.Inspector;
 
 namespace CardGame.UI
 {
@@ -58,7 +59,7 @@ namespace CardGame.UI
 
     public class BaseUIController : MonoBehaviour, IController
     {
-        [Header("Buttons")]
+        [FoldoutGroup("Buttons")]
         [SerializeField] private Button alchemyButton;
         [SerializeField] private Button forgingButton;
         [SerializeField] private Button ritualButton;
@@ -66,7 +67,7 @@ namespace CardGame.UI
         [SerializeField] private Button loadoutButton;
         [SerializeField] private Button adventureButton;
 
-        [Header("Status")]
+        [FoldoutGroup("Status")]
         [SerializeField] private TextMeshProUGUI realmText;
         [SerializeField] private TextMeshProUGUI shenShiText;
         [SerializeField] private TextMeshProUGUI goldText;
