@@ -9,44 +9,6 @@ using TMPro;
 
 namespace CardGame.Editor
 {
-    [CustomEditor(typeof(MonoBehaviour), true), CanEditMultipleObjects]
-    public class UIBindInspector : UnityEditor.Editor
-    {
-        public override void OnInspectorGUI()
-        {
-            DrawDefaultInspector();
-
-            // 在每个 MonoBehaviour 的 Inspector 底部加一个"清空绑定"按钮
-            if (GUILayout.Button("清空所有 SerializeField 绑定", GUILayout.Height(30)))
-            {
-                var type = target.GetType();
-                var fields = type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
-                    .Where(f => f.GetCustomAttributes(typeof(SerializeField), false).Length > 0);
-
-                var so = new SerializedObject(target);
-                bool dirty = false;
-                foreach (var field in fields)
-                {
-                    if (field.FieldType.IsSubclassOf(typeof(UnityEngine.Object)) || field.FieldType == typeof(UnityEngine.Object))
-                    {
-                        var prop = so.FindProperty(field.Name);
-                        if (prop != null && prop.objectReferenceValue != null)
-                        {
-                            prop.objectReferenceValue = null;
-                            dirty = true;
-                        }
-                    }
-                }
-                if (dirty)
-                {
-                    so.ApplyModifiedPropertiesWithoutUndo();
-                    EditorUtility.SetDirty(target);
-                    Debug.Log($"[Clear] {type.Name} - all bindings cleared");
-                }
-            }
-        }
-    }
-
     /// <summary>
     /// UI 组件智能绑定工具 v4
     /// - 支持覆盖已有绑定
