@@ -251,10 +251,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   alchemyButton: {fileID: 3618775601951839611}
-  forgingButton: {fileID: 3618775601951839611}
-  ritualButton: {fileID: 3618775601951839611}
-  inventoryButton: {fileID: 3618775601951839611}
-  loadoutButton: {fileID: 3618775601951839611}
+  forgingButton: {fileID: 3251513313247447762}
+  ritualButton: {fileID: 2552188462371065247}
+  inventoryButton: {fileID: 4013777907868326300}
+  loadoutButton: {fileID: 3184076348025945929}
   adventureButton: {fileID: 7643724739282501413}
   realmText: {fileID: 2043660439325063110}
   shenShiText: {fileID: 8909785692514718825}
