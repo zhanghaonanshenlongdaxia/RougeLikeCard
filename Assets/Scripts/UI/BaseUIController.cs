@@ -2,11 +2,60 @@
 using UnityEngine;
 using UnityEngine.UI;
 using QFramework;
+using System.Collections.Generic;
 
 using NueUIManager = NueGames.NueDeck.Scripts.Managers.UIManager;
 
 namespace CardGame.UI
 {
+    /// <summary>
+    /// 基地场景启动器 — 自动从 Prefab 实例化所有 UI
+    /// 挂在基地场景的一个空 GameObject 上
+    /// </summary>
+    public class BaseSceneInitializer : MonoBehaviour
+    {
+        private void Awake()
+        {
+            // 实例化 BaseCanvas
+            InstantiateCanvas("BaseCanvas");
+            // 子面板默认隐藏，需要时才实例化/显示
+        }
+
+        /// <summary>
+        /// 从 Prefab 路径实例化 Canvas，返回 GameObject
+        /// </summary>
+        public static GameObject InstantiateCanvas(string canvasName)
+        {
+            // 先检查场景中是否已存在
+            var existing = GameObject.Find(canvasName);
+            if (existing != null)
+            {
+                existing.SetActive(true);
+                return existing;
+            }
+
+            // 从 Prefab 加载
+            GameObject prefab = null;
+#if UNITY_EDITOR
+            prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
+                $"Assets/NueGames/NueDeck/Prefabs/UI/{canvasName}.prefab");
+#endif
+            if (prefab == null)
+                prefab = Resources.Load<GameObject>($"UI/{canvasName}");
+
+            if (prefab != null)
+            {
+                var instance = Instantiate(prefab);
+                instance.name = canvasName;
+                Debug.Log($"[BaseScene] Instantiated {canvasName}");
+                return instance;
+            }
+
+            Debug.LogWarning($"[BaseScene] Prefab not found: {canvasName}");
+            return null;
+        }
+    }
+
     public class BaseUIController : MonoBehaviour, IController
     {
         [Header("Buttons")]
@@ -37,22 +86,12 @@ namespace CardGame.UI
             foreach (var btn in buttons)
             {
                 var name = btn.gameObject.name;
-                if (name == "Btn_0") btn.onClick.AddListener(OnAlchemy);
-                else if (name == "Btn_1") btn.onClick.AddListener(OnForging);
-                else if (name == "Btn_2") btn.onClick.AddListener(OnRitual);
-                else if (name == "Btn_3") btn.onClick.AddListener(OnInventory);
-                else if (name == "Btn_4") btn.onClick.AddListener(OnLoadout);
-                else if (name == "AdventureButton") btn.onClick.AddListener(OnAdventure);
-            }
-
-            // 查找子面板
-            var canvas = GetComponent<Canvas>() ?? GetComponentInChildren<Canvas>();
-            if (canvas == null)
-            {
-                // 在场景中查找
-                craftPanel = GameObject.Find("CraftCanvas");
-                inventoryPanel = GameObject.Find("InventoryCanvas");
-                loadoutPanel = GameObject.Find("LoadoutCanvas");
+                if (name == "AlchemyButton") { alchemyButton = btn; btn.onClick.AddListener(OnAlchemy); }
+                else if (name == "ForgingButton") { forgingButton = btn; btn.onClick.AddListener(OnForging); }
+                else if (name == "RitualButton") { ritualButton = btn; btn.onClick.AddListener(OnRitual); }
+                else if (name == "InventoryButton") { inventoryButton = btn; btn.onClick.AddListener(OnInventory); }
+                else if (name == "LoadoutButton") { loadoutButton = btn; btn.onClick.AddListener(OnLoadout); }
+                else if (name == "AdventureButton") { adventureButton = btn; btn.onClick.AddListener(OnAdventure); }
             }
         }
 
@@ -76,34 +115,53 @@ namespace CardGame.UI
 
         public void OnAlchemy()
         {
-            if (craftPanel) { craftPanel.SetActive(true); var ctrl = craftPanel.GetComponent<CraftUIController>(); }
+            TogglePanel("CraftCanvas");
         }
 
         public void OnForging()
         {
-            if (craftPanel) craftPanel.SetActive(true);
+            TogglePanel("CraftCanvas");
         }
 
         public void OnRitual()
         {
-            if (craftPanel) craftPanel.SetActive(true);
+            TogglePanel("CraftCanvas");
         }
 
         public void OnInventory()
         {
-            if (inventoryPanel) inventoryPanel.SetActive(true);
+            TogglePanel("InventoryCanvas");
         }
 
         public void OnLoadout()
         {
-            if (loadoutPanel) loadoutPanel.SetActive(true);
+            TogglePanel("LoadoutCanvas");
+        }
+
+        /// <summary>
+        /// 打开/关闭子面板，不存在则从 Prefab 实例化
+        /// </summary>
+        private void TogglePanel(string canvasName)
+        {
+            // 先找场景中是否已有
+            var existing = GameObject.Find(canvasName);
+            if (existing != null)
+            {
+                existing.SetActive(!existing.activeSelf);
+                return;
+            }
+
+            // 从 Prefab 实例化
+            var go = BaseSceneInitializer.InstantiateCanvas(canvasName);
+            if (go != null)
+                go.SetActive(true);
         }
 
         public void OnAdventure()
         {
             this.GetSystem<ILoadoutSystem>().StartAdventure();
             var uiManager = NueUIManager.Instance;
-            if (uiManager != null)
+            if (uiManager != null && NueGames.NueDeck.Scripts.Managers.GameManager.Instance != null)
             {
                 uiManager.ChangeScene(NueGames.NueDeck.Scripts.Managers.GameManager.Instance.SceneData.mapSceneIndex);
             }
