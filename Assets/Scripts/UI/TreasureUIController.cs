@@ -14,6 +14,21 @@ namespace CardGame.UI
 
         public IArchitecture GetArchitecture() => CardGameArchitecture.Interface;
 
+        private void Awake()
+        {
+            // 自动绑定确认按钮
+            var buttons = GetComponentsInChildren<Button>(true);
+            foreach (var btn in buttons)
+            {
+                if (btn.gameObject.name.Contains("Confirm"))
+                {
+                    confirmButton = btn;
+                    btn.onClick.AddListener(OnConfirm);
+                    break;
+                }
+            }
+        }
+
         public void ShowTreasure(string desc)
         {
             if (descriptionText) descriptionText.text = desc;

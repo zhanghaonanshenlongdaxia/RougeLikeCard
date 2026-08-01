@@ -22,13 +22,24 @@ namespace CardGame.UI
         private void Awake()
         {
             _system = this.GetSystem<ICampfireSystem>();
+
+            // 运行时自动绑定按钮
+            var buttons = GetComponentsInChildren<Button>(true);
+            foreach (var btn in buttons)
+            {
+                var name = btn.gameObject.name;
+                if (name == "Button_0") { restButton = btn; btn.onClick.AddListener(OnRest); }
+                else if (name == "Button_1") { upgradeButton = btn; btn.onClick.AddListener(ShowUpgradeCards); }
+            }
+            // 查找返回按钮
+            foreach (var btn in buttons)
+            {
+                if (btn.gameObject.name.Contains("Back")) { backButton = btn; btn.onClick.AddListener(OnBack); break; }
+            }
         }
 
         private void OnEnable()
         {
-            if (restButton) restButton.onClick.AddListener(OnRest);
-            if (upgradeButton) upgradeButton.onClick.AddListener(ShowUpgradeCards);
-            if (backButton) backButton.onClick.AddListener(OnBack);
         }
 
         private void OnRest()

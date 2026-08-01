@@ -16,6 +16,41 @@ namespace CardGame.UI
 
         public IArchitecture GetArchitecture() => CardGameArchitecture.Interface;
 
+        private void Awake()
+        {
+            // 运行时自动查找引用（因为 Prefab 的 SerializeField 未赋值）
+            if (descriptionText == null)
+            {
+                var tmps = GetComponentsInChildren<TextMeshProUGUI>(true);
+                foreach (var tmp in tmps)
+                {
+                    if (tmp.gameObject.name == "Description") { descriptionText = tmp; break; }
+                }
+            }
+            if (eventImage == null)
+            {
+                var imgs = GetComponentsInChildren<Image>(true);
+                foreach (var img in imgs)
+                {
+                    if (img.gameObject.name == "EventImage") { eventImage = img; break; }
+                }
+            }
+            if (choicesRoot == null)
+            {
+                // 查找名为 Choices 的子物体
+                var choices = transform.Find("Panel/Choices");
+                if (choices == null)
+                {
+                    // 递归查找
+                    foreach (var t in GetComponentsInChildren<Transform>(true))
+                    {
+                        if (t.name == "Choices") { choices = t; break; }
+                    }
+                }
+                if (choices != null) choicesRoot = choices;
+            }
+        }
+
         public void ShowEvent(EventData eventData)
         {
             _currentEvent = eventData;

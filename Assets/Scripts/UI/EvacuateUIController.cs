@@ -23,6 +23,14 @@ namespace CardGame.UI
             _model = this.GetModel<IInventoryModel>();
             _system = this.GetSystem<IInventorySystem>();
             _evacSystem = this.GetSystem<IEvacuateSystem>();
+
+            // 自动绑定按钮
+            var buttons = GetComponentsInChildren<Button>(true);
+            foreach (var btn in buttons)
+            {
+                if (btn.gameObject.name.Contains("Evacuate")) { evacuateButton = btn; btn.onClick.AddListener(OnEvacuate); }
+                else if (btn.gameObject.name.Contains("Continue")) { continueButton = btn; btn.onClick.AddListener(OnContinue); }
+            }
         }
 
         private void OnEnable() => Refresh();

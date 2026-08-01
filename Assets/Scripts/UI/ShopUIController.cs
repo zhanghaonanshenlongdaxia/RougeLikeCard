@@ -23,6 +23,36 @@ namespace CardGame.UI
         {
             _system = this.GetSystem<IShopSystem>();
             _battleModel = this.GetModel<IBattleModel>();
+
+            // 运行时自动绑定返回按钮
+            var buttons = GetComponentsInChildren<Button>(true);
+            foreach (var btn in buttons)
+            {
+                if (btn.gameObject.name.Contains("Back"))
+                {
+                    backButton = btn;
+                    btn.onClick.AddListener(OnBackButton);
+                    break;
+                }
+            }
+
+            // 绑定移除卡牌按钮
+            foreach (var btn in buttons)
+            {
+                if (btn.gameObject.name.Contains("Remove"))
+                {
+                    removeCardButton = btn;
+                    btn.onClick.AddListener(OnRemoveCard);
+                    break;
+                }
+            }
+
+            // 查找 TextMeshPro 引用
+            var tmps = GetComponentsInChildren<TextMeshProUGUI>(true);
+            foreach (var tmp in tmps)
+            {
+                if (tmp.text != null && tmp.text.Contains("灵石")) { goldText = tmp; break; }
+            }
         }
 
         private void OnEnable()
