@@ -205,7 +205,7 @@ namespace NueGames.NueDeck.Scripts.Managers
         }
 
         /// <summary>
-        /// 打开指定名称的 UI Canvas（从 Prefab 实例化或查找已有）
+        /// 打开指定名称的 UI Canvas（查找场景中已有的或从 Prefab 实例化）
         /// </summary>
         private void OpenUI(string canvasName)
         {
@@ -219,14 +219,14 @@ namespace NueGames.NueDeck.Scripts.Managers
                 return;
             }
 
-            // 从 Prefab 加载
-            var prefab = UnityEngine.Resources.Load<GameObject>($"UI/{canvasName}");
+            // 从 Prefab 实例化
+            GameObject prefab = null;
+#if UNITY_EDITOR
+            prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
+                $"Assets/NueGames/NueDeck/Prefabs/UI/{canvasName}.prefab");
+#endif
             if (prefab == null)
-            {
-                // 尝试从项目路径加载
-                prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
-                    $"Assets/NueGames/NueDeck/Prefabs/UI/{canvasName}.prefab");
-            }
+                prefab = UnityEngine.Resources.Load<GameObject>($"UI/{canvasName}");
 
             if (prefab != null)
             {
@@ -237,7 +237,7 @@ namespace NueGames.NueDeck.Scripts.Managers
             else
             {
                 Debug.LogWarning($"[MapManager] UI prefab not found: {canvasName}");
-                BuildMap(); // 找不到就刷新地图
+                BuildMap();
             }
         }
 

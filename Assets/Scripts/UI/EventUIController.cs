@@ -67,6 +67,13 @@ namespace CardGame.UI
             if (_currentEvent == null || index >= _currentEvent.choices.Count) return;
             this.GetSystem<IEventSystem>().ExecuteChoice(_currentEvent, index);
             gameObject.SetActive(false);
+            NotifyMapRefresh();
+        }
+
+        private void NotifyMapRefresh()
+        {
+            var mapMgr = FindObjectOfType<NueGames.NueDeck.Scripts.Managers.MapManager>();
+            if (mapMgr != null) mapMgr.SendMessage("BuildMap");
         }
     }
 }

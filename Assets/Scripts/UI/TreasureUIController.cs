@@ -23,6 +23,8 @@ namespace CardGame.UI
         public void OnConfirm()
         {
             gameObject.SetActive(false);
+            var mapMgr = FindObjectOfType<NueGames.NueDeck.Scripts.Managers.MapManager>();
+            if (mapMgr != null) mapMgr.SendMessage("BuildMap");
         }
     }
 }

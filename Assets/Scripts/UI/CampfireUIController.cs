@@ -35,6 +35,7 @@ namespace CardGame.UI
         {
             _system.Rest();
             gameObject.SetActive(false);
+            NotifyMapRefresh();
         }
 
         private void ShowUpgradeCards()
@@ -76,6 +77,7 @@ namespace CardGame.UI
                 {
                     _system.UpgradeCard(captured);
                     gameObject.SetActive(false);
+                    NotifyMapRefresh();
                 });
             }
         }
@@ -83,6 +85,13 @@ namespace CardGame.UI
         public void OnBack()
         {
             gameObject.SetActive(false);
+            NotifyMapRefresh();
+        }
+
+        private void NotifyMapRefresh()
+        {
+            var mapMgr = FindObjectOfType<NueGames.NueDeck.Scripts.Managers.MapManager>();
+            if (mapMgr != null) mapMgr.SendMessage("BuildMap");
         }
 
         private void CreateText(GameObject parent, string text, float size, Color color)

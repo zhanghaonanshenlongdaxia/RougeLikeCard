@@ -126,6 +126,8 @@ namespace CardGame.UI
         public void OnBackButton()
         {
             gameObject.SetActive(false);
+            var mapMgr = FindObjectOfType<NueGames.NueDeck.Scripts.Managers.MapManager>();
+            if (mapMgr != null) mapMgr.SendMessage("BuildMap");
         }
 
         private void CreateText(GameObject parent, string text, float size, Color color)
