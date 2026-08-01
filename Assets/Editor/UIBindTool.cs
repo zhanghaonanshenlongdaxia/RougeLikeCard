@@ -144,10 +144,9 @@ namespace CardGame.Editor
 
         static UnityEngine.Object TryMatch(Transform root, string fieldName, Type fieldType)
         {
-            // 生成候选名称列表
             var candidates = GenerateCandidates(fieldName);
 
-            // 按候选名称逐个查找
+            // 第一轮：精准匹配（候选名 → 子物体名 完全匹配，忽略大小写）
             foreach (var name in candidates)
             {
                 var child = FindChildRecursive(root, name);
@@ -158,17 +157,30 @@ namespace CardGame.Editor
                 }
             }
 
-            // Prefab/Template 字段特殊处理：找容器 → 取第一个子物体
+            // 第二轮：模糊匹配（子物体名包含候选名，或候选名包含子物体名）
+            foreach (var name in candidates)
+            {
+                var child = FindChildFuzzy(root, name);
+                if (child != null)
+                {
+                    var result = ExtractComponent(child, fieldType);
+                    if (result != null)
+                    {
+                        Debug.Log($"[Bind] Fuzzy match: '{fieldName}' → '{child.name}' (contains '{name}')");
+                        return result;
+                    }
+                }
+            }
+
+            // 第三轮：Prefab/Template 字段特殊处理
             if (IsPrefabField(fieldName, fieldType))
             {
                 var containerName = StripPrefabSuffix(fieldName);
-                // 先精确找容器
                 var container = FindChildRecursive(root, containerName);
                 if (container == null)
-                {
-                    // 帕斯卡版本
                     container = FindChildRecursive(root, ToPascalCase(containerName));
-                }
+                if (container == null)
+                    container = FindChildFuzzy(root, containerName);
                 if (container != null && container.childCount > 0)
                 {
                     var firstChild = container.GetChild(0);
@@ -177,7 +189,7 @@ namespace CardGame.Editor
                 }
             }
 
-            // 按类型兜底查找
+            // 第四轮：按类型兜底
             return FindByType(root, fieldType, fieldName);
         }
 
@@ -302,6 +314,31 @@ namespace CardGame.Editor
                     return child;
                 var found = FindChildRecursive(child, name);
                 if (found != null) return found;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 模糊匹配：子物体名包含候选名，或候选名包含子物体名（忽略大小写）
+        /// 例：候选 "Description" 能匹配子物体 "EventDescription" 或 "Desc"
+        /// </summary>
+        static Transform FindChildFuzzy(Transform parent, string candidate)
+        {
+            if (string.IsNullOrEmpty(candidate)) return null;
+
+            var allChildren = parent.GetComponentsInChildren<Transform>(true);
+            foreach (var child in allChildren)
+            {
+                if (child == parent) continue;
+                var childName = child.name;
+
+                // 子物体名包含候选名
+                if (childName.IndexOf(candidate, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return child;
+
+                // 候选名包含子物体名（子物体名至少3个字符才有效）
+                if (childName.Length >= 3 && candidate.IndexOf(childName, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return child;
             }
             return null;
         }
