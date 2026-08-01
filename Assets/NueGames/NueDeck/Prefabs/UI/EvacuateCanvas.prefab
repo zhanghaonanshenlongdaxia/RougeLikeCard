@@ -522,7 +522,7 @@ GameObject:
   - component: {fileID: 8001817094843262526}
   - component: {fileID: 7618322887339210687}
   m_Layer: 0
-  m_Name: Grid
+  m_Name: InventoryGridRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -954,7 +954,7 @@ GameObject:
   - component: {fileID: 9015057035176550672}
   - component: {fileID: 8330416411317723559}
   m_Layer: 0
-  m_Name: Grid
+  m_Name: SafeBoxGridRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3970,10 +3970,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f595076b59bd8924eb2908fe23a39655, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventoryGridRoot: {fileID: 0}
-  safeBoxGridRoot: {fileID: 0}
-  evacuateButton: {fileID: 0}
-  continueButton: {fileID: 0}
+  inventoryGridRoot: {fileID: 5595287986867372735}
+  safeBoxGridRoot: {fileID: 4155477393392679950}
+  evacuateButton: {fileID: 7211801730584215137}
+  continueButton: {fileID: 7477250884243348489}
 --- !u!1 &7037833848211268312
 GameObject:
   m_ObjectHideFlags: 0

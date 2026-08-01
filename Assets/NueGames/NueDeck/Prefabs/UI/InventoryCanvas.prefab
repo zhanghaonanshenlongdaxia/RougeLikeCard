@@ -449,10 +449,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 805eb3b3287778b4db6525dc131db4d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemGridRoot: {fileID: 0}
+  itemGridRoot: {fileID: 6002832554142329184}
   itemSlotPrefab: {fileID: 0}
-  weightText: {fileID: 0}
-  backButton: {fileID: 0}
+  weightText: {fileID: 5050358667278290722}
+  backButton: {fileID: 7798782930246260031}
   tabButtons: []
 --- !u!1 &808433951170144535
 GameObject:
@@ -1543,7 +1543,7 @@ GameObject:
   - component: {fileID: 9173593833410673164}
   - component: {fileID: 5050358667278290722}
   m_Layer: 0
-  m_Name: Weight
+  m_Name: WeightText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1996,7 +1996,7 @@ GameObject:
   - component: {fileID: 6002832554142329184}
   - component: {fileID: 1421865821442688456}
   m_Layer: 0
-  m_Name: ItemGrid
+  m_Name: ItemGridRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

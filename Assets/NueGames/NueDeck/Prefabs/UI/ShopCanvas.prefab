@@ -3701,12 +3701,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c323b9f9b2a5ef445880e8ee32097cf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardRowRoot: {fileID: 0}
-  relicRowRoot: {fileID: 0}
-  potionRowRoot: {fileID: 0}
-  removeCardButton: {fileID: 0}
-  goldText: {fileID: 0}
-  backButton: {fileID: 0}
+  cardRowRoot: {fileID: 634319237414330772}
+  relicRowRoot: {fileID: 2728215720958611299}
+  potionRowRoot: {fileID: 459763680476077400}
+  removeCardButton: {fileID: 2579222200862540810}
+  goldText: {fileID: 3763161285538895936}
+  backButton: {fileID: 170567115462326535}
 --- !u!1 &4783824850826704904
 GameObject:
   m_ObjectHideFlags: 0

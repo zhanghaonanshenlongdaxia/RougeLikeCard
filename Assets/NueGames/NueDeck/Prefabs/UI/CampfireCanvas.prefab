@@ -201,11 +201,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3504ddde7fa8ed04daa9be1f83f10287, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  restButton: {fileID: 0}
-  upgradeButton: {fileID: 0}
+  restButton: {fileID: 8631491156034587962}
+  upgradeButton: {fileID: 6171935654310855539}
   upgradeCardListRoot: {fileID: 0}
   cardItemPrefab: {fileID: 0}
-  backButton: {fileID: 0}
+  backButton: {fileID: 8631491156034587962}
 --- !u!1 &531889742082128050
 GameObject:
   m_ObjectHideFlags: 0
@@ -823,7 +823,7 @@ GameObject:
   - component: {fileID: 5799783956207115438}
   - component: {fileID: 8631491156034587962}
   m_Layer: 0
-  m_Name: Button_0
+  m_Name: RestButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -965,7 +965,7 @@ GameObject:
   - component: {fileID: 8459537712955181073}
   - component: {fileID: 6171935654310855539}
   m_Layer: 0
-  m_Name: Button_1
+  m_Name: UpgradeButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

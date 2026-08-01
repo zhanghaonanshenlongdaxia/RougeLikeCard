@@ -1629,7 +1629,7 @@ GameObject:
   - component: {fileID: 6936769482844524985}
   - component: {fileID: 1531750691692591969}
   m_Layer: 0
-  m_Name: Text
+  m_Name: DetailMatsText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1785,7 +1785,7 @@ GameObject:
   - component: {fileID: 7418248472069644866}
   - component: {fileID: 8211138776342258019}
   m_Layer: 0
-  m_Name: Text
+  m_Name: DetailTitleText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3575,12 +3575,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 892d29b6d39c83043a7955b2c0e83c2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  recipeListRoot: {fileID: 0}
-  detailTitle: {fileID: 0}
-  detailMats: {fileID: 0}
-  craftButton: {fileID: 0}
+  recipeListRoot: {fileID: 6297021304749795725}
+  detailTitle: {fileID: 7418248472069644866}
+  detailMats: {fileID: 6936769482844524985}
+  craftButton: {fileID: 6882034458130281782}
   tabButtons: []
-  backButton: {fileID: 0}
+  backButton: {fileID: 8022649437533922104}
 --- !u!1 &6373925851388089442
 GameObject:
   m_ObjectHideFlags: 0
@@ -4362,7 +4362,7 @@ GameObject:
   - component: {fileID: 1768260632263961062}
   - component: {fileID: 7192891763145733316}
   m_Layer: 0
-  m_Name: Content
+  m_Name: RecipeListRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

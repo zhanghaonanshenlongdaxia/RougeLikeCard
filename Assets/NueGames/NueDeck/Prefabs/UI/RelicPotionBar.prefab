@@ -169,7 +169,7 @@ GameObject:
   - component: {fileID: 8276099182383071307}
   - component: {fileID: 6008167588264815932}
   m_Layer: 0
-  m_Name: PotionBar
+  m_Name: PotionBarRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1170,9 +1170,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd75b102919f14e4eb15c0cb64f9016a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  relicBarRoot: {fileID: 0}
-  potionBarRoot: {fileID: 0}
-  slotPrefab: {fileID: 0}
+  relicBarRoot: {fileID: 5811951221002059306}
+  potionBarRoot: {fileID: 5756244690807333913}
+  slotPrefab: {fileID: 1404834295488120775}
   maxRelicSlots: 6
   maxPotionSlots: 3
 --- !u!1 &4969380462685090345
@@ -2067,7 +2067,7 @@ GameObject:
   - component: {fileID: 6455826633700410988}
   - component: {fileID: 3844010441827967110}
   m_Layer: 0
-  m_Name: RelicBar
+  m_Name: RelicBarRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

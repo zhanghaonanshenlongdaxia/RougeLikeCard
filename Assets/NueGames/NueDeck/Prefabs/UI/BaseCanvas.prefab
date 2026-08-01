@@ -256,9 +256,6 @@ MonoBehaviour:
   inventoryButton: {fileID: 3618775601951839611}
   loadoutButton: {fileID: 3618775601951839611}
   adventureButton: {fileID: 7643724739282501413}
-  craftPanel: {fileID: 3699559645763487668}
-  inventoryPanel: {fileID: 3699559645763487668}
-  loadoutPanel: {fileID: 3699559645763487668}
   realmText: {fileID: 2043660439325063110}
   shenShiText: {fileID: 8909785692514718825}
   goldText: {fileID: 2980747949338075248}

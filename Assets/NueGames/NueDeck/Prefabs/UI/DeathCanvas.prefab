@@ -674,8 +674,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fecc9f7fc45ca444598a104cd76c5e35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lostItemsText: {fileID: 0}
-  returnButton: {fileID: 0}
+  lostItemsText: {fileID: 1858534110942540952}
+  returnButton: {fileID: 2043190263406203179}
 --- !u!1 &4900546893096929411
 GameObject:
   m_ObjectHideFlags: 0

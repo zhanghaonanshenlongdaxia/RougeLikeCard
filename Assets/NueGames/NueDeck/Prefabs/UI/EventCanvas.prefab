@@ -244,7 +244,7 @@ GameObject:
   - component: {fileID: 7100235338764225975}
   - component: {fileID: 910324106003293194}
   m_Layer: 0
-  m_Name: Choice_0
+  m_Name: ChoiceButtonPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -757,7 +757,7 @@ GameObject:
   - component: {fileID: 7730327085255409676}
   - component: {fileID: 906869650514921734}
   m_Layer: 0
-  m_Name: Choices
+  m_Name: ChoicesRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1128,7 +1128,7 @@ GameObject:
   - component: {fileID: 885305563986693928}
   - component: {fileID: 4548717870179088126}
   m_Layer: 0
-  m_Name: Description
+  m_Name: DescriptionText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

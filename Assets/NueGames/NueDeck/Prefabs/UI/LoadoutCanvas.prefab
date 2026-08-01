@@ -1046,7 +1046,7 @@ GameObject:
   - component: {fileID: 8385204432857851925}
   - component: {fileID: 5431484473889583158}
   m_Layer: 0
-  m_Name: CardPoolSection
+  m_Name: CardPoolRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1699,13 +1699,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a89bb6a0f8f4bde409a3f642803aa334, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  basicCardRoot: {fileID: 0}
-  selectedCardRoot: {fileID: 0}
-  cardPoolRoot: {fileID: 0}
+  basicCardRoot: {fileID: 1454077225328675224}
+  selectedCardRoot: {fileID: 3715765350924490116}
+  cardPoolRoot: {fileID: 3144842907858860529}
   cardItemPrefab: {fileID: 0}
-  shenShiText: {fileID: 0}
-  startButton: {fileID: 0}
-  backButton: {fileID: 0}
+  shenShiText: {fileID: 900361100257943885}
+  startButton: {fileID: 8040407273575494090}
+  backButton: {fileID: 8040407273575494090}
 --- !u!1 &8734414351948075495
 GameObject:
   m_ObjectHideFlags: 0
@@ -1719,7 +1719,7 @@ GameObject:
   - component: {fileID: 932402255669157751}
   - component: {fileID: 8040407273575494090}
   m_Layer: 0
-  m_Name: StartButton
+  m_Name: StartAdventureButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
