@@ -66,11 +66,6 @@ namespace CardGame.UI
         [SerializeField] private Button loadoutButton;
         [SerializeField] private Button adventureButton;
 
-        [Header("Panels")]
-        [SerializeField] private GameObject craftPanel;
-        [SerializeField] private GameObject inventoryPanel;
-        [SerializeField] private GameObject loadoutPanel;
-
         [Header("Status")]
         [SerializeField] private TextMeshProUGUI realmText;
         [SerializeField] private TextMeshProUGUI shenShiText;
