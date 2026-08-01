@@ -11,17 +11,42 @@ namespace CardGame.Editor
 {
     /// <summary>
     /// UI 组件智能绑定工具
-    /// 匹配规则（按优先级）：
-    /// 1. 精确匹配字段名
-    /// 2. 去掉常见后缀后匹配 (Text/Root/Prefab/Button/Field/Image/Obj)
-    /// 3. 驼峰转帕斯卡后匹配 (descriptionText → DescriptionText → Description)
-    /// 4. 按类型匹配（找第一个有该组件的子物体）
-    /// 5. prefab 字段：找容器下的第一个子物体作为模板
+    /// 
+    /// 命名约定常量：
+    /// - 子物体名应使用这些常量后缀来标识类型
+    /// - 自动绑定按字段名→候选名→子物体名匹配
+    /// 
+    /// 字段名 → 子物体名 匹配规则（按优先级）：
+    /// 1. 精确匹配
+    /// 2. 去后缀 (descriptionText → description → Description)
+    /// 3. 驼峰转帕斯卡 (backButton → BackButton → Back)
+    /// 4. 按类型查找
+    /// 5. Prefab/Template 字段 → 找容器名 → 取第一个子物体
     /// </summary>
     public class UIBindTool : EditorWindow
     {
-        // 常见后缀，匹配时自动去除
-        static readonly string[] Suffixes = { "Text", "Root", "Prefab", "Button", "Field", "Image", "Obj", "Slot", "Panel", "Area", "Go" };
+        #region 命名约定常量
+
+        /// <summary>字段名后缀 → 表示该字段是哪类组件</summary>
+        static readonly Dictionary<string, Type> SuffixToType = new Dictionary<string, Type>
+        {
+            { "Button", typeof(Button) },
+            { "Text", typeof(TextMeshProUGUI) },
+            { "Image", typeof(Image) },
+            { "Root", typeof(Transform) },
+            { "Slot", typeof(Transform) },
+            { "Panel", typeof(GameObject) },
+            { "Area", typeof(Transform) },
+            { "Field", typeof(TextMeshProUGUI) },
+        };
+
+        /// <summary>常见后缀列表（用于去后缀匹配）</summary>
+        static readonly string[] Suffixes = SuffixToType.Keys.ToArray();
+
+        /// <summary>Prefab/Template 类字段后缀</summary>
+        static readonly string[] PrefabSuffixes = { "Prefab", "Template", "ItemPrefab", "ElementPrefab" };
+
+        #endregion
 
         [MenuItem("Tools/Auto Bind UI Components")]
         static void AutoBind()
@@ -62,26 +87,24 @@ namespace CardGame.Editor
                     if (currentValue is string s && !string.IsNullOrEmpty(s))
                         continue;
 
-                    // 尝试多种方式匹配
                     var found = TryMatch(selected.transform, fieldName, fieldType);
                     if (found != null)
                     {
                         var prop = so.FindProperty(fieldName);
                         if (prop != null)
                         {
-                            // 如果是 Transform 字段但找到的是 GameObject，取 transform
                             if (fieldType == typeof(Transform))
                                 prop.objectReferenceValue = found is Transform t ? t : (found as Component)?.transform;
                             else
                                 prop.objectReferenceValue = found;
-                            Debug.Log($"[Bind] {type.Name}.{fieldName} -> {(found as Component)?.gameObject?.name ?? (found as UnityEngine.Object)?.name} ({fieldType.Name})");
+                            Debug.Log($"[Bind] ✓ {type.Name}.{fieldName} → {GetObjectName(found)} ({fieldType.Name})");
                             totalBound++;
                             dirty = true;
                         }
                     }
                     else
                     {
-                        Debug.LogWarning($"[Bind] 未匹配: {type.Name}.{fieldName} ({fieldType.Name})");
+                        Debug.LogWarning($"[Bind] ✗ {type.Name}.{fieldName} ({fieldType.Name}) - 未匹配");
                         totalSkipped++;
                     }
                 }
@@ -99,180 +122,190 @@ namespace CardGame.Editor
                 if (!string.IsNullOrEmpty(prefabPath))
                 {
                     PrefabUtility.SaveAsPrefabAsset(selected, prefabPath);
-                    Debug.Log($"[Bind] Saved prefab: {prefabPath}, bound={totalBound}, skipped={totalSkipped}");
+                    Debug.Log($"[Bind] Prefab saved: {prefabPath} | bound={totalBound} skipped={totalSkipped}");
                 }
                 else
                 {
                     EditorUtility.SetDirty(selected);
                     UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(selected.scene);
-                    Debug.Log($"[Bind] Scene dirty, bound={totalBound}, skipped={totalSkipped}");
+                    Debug.Log($"[Bind] Scene dirty | bound={totalBound} skipped={totalSkipped}");
                 }
             }
 
             EditorUtility.DisplayDialog("Auto Bind",
-                totalBound > 0
-                    ? $"成功绑定 {totalBound} 个，未匹配 {totalSkipped} 个。\n详见 Console 日志。"
-                    : "未找到需要绑定的组件。详见 Console 日志。",
+                $"绑定 {totalBound} 个，未匹配 {totalSkipped} 个。\n详见 Console 日志。",
                 "OK");
         }
 
         [MenuItem("Tools/Auto Bind UI Components", true)]
         static bool ValidateAutoBind() => Selection.activeGameObject != null;
 
-        /// <summary>
-        /// 尝试用多种规则匹配
-        /// </summary>
+        #region 匹配逻辑
+
         static UnityEngine.Object TryMatch(Transform root, string fieldName, Type fieldType)
         {
-            // 1. 生成候选名称列表
+            // 生成候选名称列表
             var candidates = GenerateCandidates(fieldName);
 
-            // 2. 按候选名称查找子物体
+            // 按候选名称逐个查找
             foreach (var name in candidates)
             {
                 var child = FindChildRecursive(root, name);
                 if (child != null)
                 {
-                    var result = ExtractComponent(child, fieldName, fieldType);
+                    var result = ExtractComponent(child, fieldType);
                     if (result != null) return result;
                 }
             }
 
-            // 3. 按类型查找（找第一个有该类型组件的非自身子物体）
-            var byType = FindByType(root, fieldType, fieldName);
-            if (byType != null) return byType;
-
-            return null;
-        }
-
-        /// <summary>
-        /// 从字段名生成候选匹配名称列表
-        /// </summary>
-        static List<string> GenerateCandidates(string fieldName)
-        {
-            var list = new List<string> { fieldName };
-
-            // 去后缀
-            foreach (var suffix in Suffixes)
+            // Prefab/Template 字段特殊处理：找容器 → 取第一个子物体
+            if (IsPrefabField(fieldName, fieldType))
             {
-                if (fieldName.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
-                {
-                    var stripped = fieldName.Substring(0, fieldName.Length - suffix.Length);
-                    list.Add(stripped);
-                    list.Add(stripped + suffix); // 也加回来以防大小写不同
-                }
-            }
-
-            // 驼峰转帕斯卡 (descriptionText → DescriptionText)
-            if (fieldName.Length > 0 && char.IsLower(fieldName[0]))
-            {
-                var pascal = char.ToUpper(fieldName[0]) + fieldName.Substring(1);
-                list.Add(pascal);
-
-                // 去后缀的帕斯卡版本
-                foreach (var suffix in Suffixes)
-                {
-                    if (pascal.EndsWith(suffix))
-                    {
-                        var stripped = pascal.Substring(0, pascal.Length - suffix.Length);
-                        list.Add(stripped);
-                    }
-                }
-            }
-
-            // 去重
-            return list.Distinct().ToList();
-        }
-
-        /// <summary>
-        /// 从找到的子物体中提取正确的组件
-        /// </summary>
-        static UnityEngine.Object ExtractComponent(Transform child, string fieldName, Type fieldType)
-        {
-            // Transform 类型 → 直接返回 transform
-            if (fieldType == typeof(Transform))
-                return child;
-
-            // GameObject 类型 → 返回 gameObject
-            if (fieldType == typeof(GameObject))
-                return child.gameObject;
-
-            // 其他组件类型 → GetComponent
-            var comp = child.GetComponent(fieldType);
-            if (comp != null) return comp;
-
-            // 尝试在子物体中找（比如 Button 可能在子物体上）
-            comp = child.GetComponentInChildren(fieldType, true);
-            return comp;
-        }
-
-        /// <summary>
-        /// 按类型查找子物体
-        /// </summary>
-        static UnityEngine.Object FindByType(Transform root, Type fieldType, string fieldName)
-        {
-            // 如果是 prefab/GameObject 字段，且字段名包含 "Prefab" 或 "Template"
-            // 尝试在父容器下找第一个子物体
-            if (fieldType == typeof(GameObject) || fieldType == typeof(Transform))
-            {
-                // 找到可能的容器（去掉 Prefab/Template 后缀后的名字）
-                var containerName = fieldName;
-                foreach (var suffix in Suffixes)
-                {
-                    if (containerName.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
-                    {
-                        containerName = containerName.Substring(0, containerName.Length - suffix.Length);
-                        break;
-                    }
-                }
-
-                // 找容器
+                var containerName = StripPrefabSuffix(fieldName);
+                // 先精确找容器
                 var container = FindChildRecursive(root, containerName);
+                if (container == null)
+                {
+                    // 帕斯卡版本
+                    container = FindChildRecursive(root, ToPascalCase(containerName));
+                }
                 if (container != null && container.childCount > 0)
                 {
                     var firstChild = container.GetChild(0);
-                    Debug.Log($"[Bind] Prefab field '{fieldName}' → first child '{firstChild.name}' of '{container.name}'");
+                    Debug.Log($"[Bind] Prefab '{fieldName}' → '{firstChild.name}' (first child of '{container.name}')");
                     return fieldType == typeof(GameObject) ? (UnityEngine.Object)firstChild.gameObject : (UnityEngine.Object)firstChild;
                 }
             }
 
-            // 按类型扫描所有子物体
+            // 按类型兜底查找
+            return FindByType(root, fieldType, fieldName);
+        }
+
+        /// <summary>
+        /// 生成候选匹配名称（按优先级排序）
+        /// </summary>
+        static List<string> GenerateCandidates(string fieldName)
+        {
+            var list = new List<string>();
+            
+            // 1. 原名
+            list.Add(fieldName);
+
+            // 2. 驼峰转帕斯卡
+            var pascal = ToPascalCase(fieldName);
+            list.Add(pascal);
+
+            // 3. 去后缀（每个后缀都试）
+            foreach (var suffix in Suffixes)
+            {
+                // 原名去后缀
+                if (fieldName.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
+                {
+                    var stripped = fieldName.Substring(0, fieldName.Length - suffix.Length);
+                    list.Add(stripped);
+                    list.Add(ToPascalCase(stripped));
+                }
+                // 帕斯卡去后缀
+                if (pascal.EndsWith(suffix))
+                {
+                    var stripped = pascal.Substring(0, pascal.Length - suffix.Length);
+                    list.Add(stripped);
+                }
+            }
+
+            return list.Distinct().ToList();
+        }
+
+        static UnityEngine.Object ExtractComponent(Transform child, Type fieldType)
+        {
+            if (fieldType == typeof(Transform)) return child;
+            if (fieldType == typeof(GameObject)) return child.gameObject;
+            
+            var comp = child.GetComponent(fieldType);
+            if (comp != null) return comp;
+            
+            // 在子物体中找
+            return child.GetComponentInChildren(fieldType, true);
+        }
+
+        static UnityEngine.Object FindByType(Transform root, Type fieldType, string fieldName)
+        {
+            // 跳过非组件类型
+            if (fieldType == typeof(string)) return null;
+
             var allChildren = root.GetComponentsInChildren<Transform>(true);
             foreach (var child in allChildren)
             {
                 if (child == root) continue;
 
-                // 跳过 Canvas/CanvasScaler/GraphicRaycaster 自身的组件
                 var comp = child.GetComponent(fieldType);
                 if (comp != null)
                 {
-                    // 不要匹配到按钮的文字标签上
+                    // 跳过按钮下的文字标签
                     if (fieldType == typeof(TextMeshProUGUI) && child.name == "Text")
                         continue;
                     return comp;
                 }
             }
-
             return null;
+        }
+
+        #endregion
+
+        #region 工具方法
+
+        static string ToPascalCase(string s)
+        {
+            if (string.IsNullOrEmpty(s)) return s;
+            if (s.Length == 1) return s.ToUpper();
+            return char.ToUpper(s[0]) + s.Substring(1);
+        }
+
+        static bool IsPrefabField(string fieldName, Type fieldType)
+        {
+            if (fieldType != typeof(GameObject) && fieldType != typeof(Transform))
+                return false;
+            foreach (var suffix in PrefabSuffixes)
+            {
+                if (fieldName.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+            return false;
+        }
+
+        static string StripPrefabSuffix(string fieldName)
+        {
+            foreach (var suffix in PrefabSuffixes)
+            {
+                if (fieldName.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
+                    return fieldName.Substring(0, fieldName.Length - suffix.Length);
+            }
+            return fieldName;
+        }
+
+        static string GetObjectName(UnityEngine.Object obj)
+        {
+            if (obj is Component c) return c.gameObject.name;
+            if (obj is GameObject g) return g.name;
+            return obj?.name ?? "null";
         }
 
         static Transform FindChildRecursive(Transform parent, string name)
         {
-            // 精确匹配
             var exact = parent.Find(name);
             if (exact != null) return exact;
 
-            // 忽略大小写递归匹配
             for (int i = 0; i < parent.childCount; i++)
             {
                 var child = parent.GetChild(i);
                 if (child.name.Equals(name, StringComparison.OrdinalIgnoreCase))
                     return child;
-
                 var found = FindChildRecursive(child, name);
                 if (found != null) return found;
             }
             return null;
         }
+
+        #endregion
     }
 }
