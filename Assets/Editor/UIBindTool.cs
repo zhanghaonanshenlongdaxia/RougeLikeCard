@@ -9,25 +9,52 @@ using TMPro;
 
 namespace CardGame.Editor
 {
+    [CustomEditor(typeof(MonoBehaviour), true), CanEditMultipleObjects]
+    public class UIBindInspector : UnityEditor.Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            DrawDefaultInspector();
+
+            // 在每个 MonoBehaviour 的 Inspector 底部加一个"清空绑定"按钮
+            if (GUILayout.Button("清空所有 SerializeField 绑定", GUILayout.Height(30)))
+            {
+                var type = target.GetType();
+                var fields = type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
+                    .Where(f => f.GetCustomAttributes(typeof(SerializeField), false).Length > 0);
+
+                var so = new SerializedObject(target);
+                bool dirty = false;
+                foreach (var field in fields)
+                {
+                    if (field.FieldType.IsSubclassOf(typeof(UnityEngine.Object)) || field.FieldType == typeof(UnityEngine.Object))
+                    {
+                        var prop = so.FindProperty(field.Name);
+                        if (prop != null && prop.objectReferenceValue != null)
+                        {
+                            prop.objectReferenceValue = null;
+                            dirty = true;
+                        }
+                    }
+                }
+                if (dirty)
+                {
+                    so.ApplyModifiedPropertiesWithoutUndo();
+                    EditorUtility.SetDirty(target);
+                    Debug.Log($"[Clear] {type.Name} - all bindings cleared");
+                }
+            }
+        }
+    }
+
     /// <summary>
-    /// UI 组件智能绑定工具
-    /// 
-    /// 命名约定常量：
-    /// - 子物体名应使用这些常量后缀来标识类型
-    /// - 自动绑定按字段名→候选名→子物体名匹配
-    /// 
-    /// 字段名 → 子物体名 匹配规则（按优先级）：
-    /// 1. 精确匹配
-    /// 2. 去后缀 (descriptionText → description → Description)
-    /// 3. 驼峰转帕斯卡 (backButton → BackButton → Back)
-    /// 4. 按类型查找
-    /// 5. Prefab/Template 字段 → 找容器名 → 取第一个子物体
+    /// UI 组件智能绑定工具 v4
+    /// - 支持覆盖已有绑定
+    /// - 按类型兜底时排除已被其他字段绑定的对象
+    /// - 模糊匹配后精确匹配
     /// </summary>
     public class UIBindTool : EditorWindow
     {
-        #region 命名约定常量
-
-        /// <summary>字段名后缀 → 表示该字段是哪类组件</summary>
         static readonly Dictionary<string, Type> SuffixToType = new Dictionary<string, Type>
         {
             { "Button", typeof(Button) },
@@ -40,13 +67,8 @@ namespace CardGame.Editor
             { "Field", typeof(TextMeshProUGUI) },
         };
 
-        /// <summary>常见后缀列表（用于去后缀匹配）</summary>
         static readonly string[] Suffixes = SuffixToType.Keys.ToArray();
-
-        /// <summary>Prefab/Template 类字段后缀</summary>
         static readonly string[] PrefabSuffixes = { "Prefab", "Template", "ItemPrefab", "ElementPrefab" };
-
-        #endregion
 
         [MenuItem("Tools/Auto Bind UI Components")]
         static void AutoBind()
@@ -61,6 +83,9 @@ namespace CardGame.Editor
             var components = selected.GetComponents<MonoBehaviour>();
             int totalBound = 0;
             int totalSkipped = 0;
+
+            // 收集所有已绑定的对象，避免按类型兜底时重复绑定
+            var usedObjects = new HashSet<UnityEngine.Object>();
 
             foreach (var comp in components)
             {
@@ -77,34 +102,29 @@ namespace CardGame.Editor
 
                 foreach (var field in fields)
                 {
-                    var fieldName = field.Name;
-                    var fieldType = field.FieldType;
+                    var ft = field.FieldType;
+                    if (!typeof(UnityEngine.Object).IsAssignableFrom(ft)) continue;
 
-                    // 已有值跳过
-                    var currentValue = field.GetValue(comp);
-                    if (currentValue is UnityEngine.Object obj && obj != null)
-                        continue;
-                    if (currentValue is string s && !string.IsNullOrEmpty(s))
-                        continue;
-
-                    var found = TryMatch(selected.transform, fieldName, fieldType);
+                    // 覆盖模式：不跳过已有值
+                    var found = TryMatch(selected.transform, field.Name, ft, usedObjects);
                     if (found != null)
                     {
-                        var prop = so.FindProperty(fieldName);
+                        var prop = so.FindProperty(field.Name);
                         if (prop != null)
                         {
-                            if (fieldType == typeof(Transform))
+                            if (ft == typeof(Transform))
                                 prop.objectReferenceValue = found is Transform t ? t : (found as Component)?.transform;
                             else
                                 prop.objectReferenceValue = found;
-                            Debug.Log($"[Bind] ✓ {type.Name}.{fieldName} → {GetObjectName(found)} ({fieldType.Name})");
+                            usedObjects.Add(found);
+                            Debug.Log($"[Bind] ✓ {type.Name}.{field.Name} → {GetObjectName(found)} ({ft.Name})");
                             totalBound++;
                             dirty = true;
                         }
                     }
                     else
                     {
-                        Debug.LogWarning($"[Bind] ✗ {type.Name}.{fieldName} ({fieldType.Name}) - 未匹配");
+                        Debug.LogWarning($"[Bind] ✗ {type.Name}.{field.Name} ({ft.Name}) - 未匹配");
                         totalSkipped++;
                     }
                 }
@@ -142,37 +162,38 @@ namespace CardGame.Editor
 
         #region 匹配逻辑
 
-        static UnityEngine.Object TryMatch(Transform root, string fieldName, Type fieldType)
+        static UnityEngine.Object TryMatch(Transform root, string fieldName, Type fieldType, HashSet<UnityEngine.Object> usedObjects)
         {
             var candidates = GenerateCandidates(fieldName);
 
-            // 第一轮：精准匹配（候选名 → 子物体名 完全匹配，忽略大小写）
+            // 第一轮：精准匹配
             foreach (var name in candidates)
             {
                 var child = FindChildRecursive(root, name);
                 if (child != null)
                 {
                     var result = ExtractComponent(child, fieldType);
-                    if (result != null) return result;
+                    if (result != null && !usedObjects.Contains(result))
+                        return result;
                 }
             }
 
-            // 第二轮：模糊匹配（子物体名包含候选名，或候选名包含子物体名）
+            // 第二轮：模糊匹配
             foreach (var name in candidates)
             {
                 var child = FindChildFuzzy(root, name);
                 if (child != null)
                 {
                     var result = ExtractComponent(child, fieldType);
-                    if (result != null)
+                    if (result != null && !usedObjects.Contains(result))
                     {
-                        Debug.Log($"[Bind] Fuzzy match: '{fieldName}' → '{child.name}' (contains '{name}')");
+                        Debug.Log($"[Bind] Fuzzy: '{fieldName}' → '{child.name}'");
                         return result;
                     }
                 }
             }
 
-            // 第三轮：Prefab/Template 字段特殊处理
+            // 第三轮：Prefab/Template 字段
             if (IsPrefabField(fieldName, fieldType))
             {
                 var containerName = StripPrefabSuffix(fieldName);
@@ -184,44 +205,55 @@ namespace CardGame.Editor
                 if (container != null && container.childCount > 0)
                 {
                     var firstChild = container.GetChild(0);
-                    Debug.Log($"[Bind] Prefab '{fieldName}' → '{firstChild.name}' (first child of '{container.name}')");
-                    return fieldType == typeof(GameObject) ? (UnityEngine.Object)firstChild.gameObject : (UnityEngine.Object)firstChild;
+                    var result = fieldType == typeof(GameObject) ? (UnityEngine.Object)firstChild.gameObject : (UnityEngine.Object)firstChild;
+                    if (!usedObjects.Contains(result))
+                    {
+                        Debug.Log($"[Bind] Prefab '{fieldName}' → '{firstChild.name}' (first child of '{container.name}')");
+                        return result;
+                    }
                 }
             }
 
-            // 第四轮：按类型兜底
-            return FindByType(root, fieldType, fieldName);
+            // 第四轮：按类型兜底（排除已绑定的对象）
+            if (fieldType == typeof(GameObject) || fieldType == typeof(Transform)) return null;
+            if (!typeof(Component).IsAssignableFrom(fieldType)) return null;
+
+            var allChildren = root.GetComponentsInChildren<Transform>(true);
+            foreach (var child in allChildren)
+            {
+                if (child == root) continue;
+                var comp = child.GetComponent(fieldType);
+                if (comp != null)
+                {
+                    if (fieldType == typeof(TextMeshProUGUI) && child.name == "Text")
+                        continue;
+                    if (!usedObjects.Contains(comp))
+                        return comp;
+                }
+            }
+            return null;
         }
 
-        /// <summary>
-        /// 生成候选匹配名称（按优先级排序）
-        /// </summary>
         static List<string> GenerateCandidates(string fieldName)
         {
-            var list = new List<string>();
-            
-            // 1. 原名
-            list.Add(fieldName);
-
-            // 2. 驼峰转帕斯卡
+            var list = new List<string> { fieldName };
             var pascal = ToPascalCase(fieldName);
             list.Add(pascal);
 
-            // 3. 去后缀（每个后缀都试）
             foreach (var suffix in Suffixes)
             {
-                // 原名去后缀
                 if (fieldName.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
                 {
                     var stripped = fieldName.Substring(0, fieldName.Length - suffix.Length);
-                    list.Add(stripped);
-                    list.Add(ToPascalCase(stripped));
+                    if (stripped.Length > 0)
+                    {
+                        list.Add(stripped);
+                        list.Add(ToPascalCase(stripped));
+                    }
                 }
-                // 帕斯卡去后缀
                 if (pascal.EndsWith(suffix))
                 {
-                    var stripped = pascal.Substring(0, pascal.Length - suffix.Length);
-                    list.Add(stripped);
+                    list.Add(pascal.Substring(0, pascal.Length - suffix.Length));
                 }
             }
 
@@ -232,39 +264,11 @@ namespace CardGame.Editor
         {
             if (fieldType == typeof(Transform)) return child;
             if (fieldType == typeof(GameObject)) return child.gameObject;
-            
+            if (!typeof(Component).IsAssignableFrom(fieldType)) return null;
             var comp = child.GetComponent(fieldType);
             if (comp != null) return comp;
-            
-            // 在子物体中找
             return child.GetComponentInChildren(fieldType, true);
         }
-
-        static UnityEngine.Object FindByType(Transform root, Type fieldType, string fieldName)
-        {
-            // 跳过非组件类型
-            if (fieldType == typeof(string)) return null;
-
-            var allChildren = root.GetComponentsInChildren<Transform>(true);
-            foreach (var child in allChildren)
-            {
-                if (child == root) continue;
-
-                var comp = child.GetComponent(fieldType);
-                if (comp != null)
-                {
-                    // 跳过按钮下的文字标签
-                    if (fieldType == typeof(TextMeshProUGUI) && child.name == "Text")
-                        continue;
-                    return comp;
-                }
-            }
-            return null;
-        }
-
-        #endregion
-
-        #region 工具方法
 
         static string ToPascalCase(string s)
         {
@@ -275,23 +279,17 @@ namespace CardGame.Editor
 
         static bool IsPrefabField(string fieldName, Type fieldType)
         {
-            if (fieldType != typeof(GameObject) && fieldType != typeof(Transform))
-                return false;
+            if (fieldType != typeof(GameObject) && fieldType != typeof(Transform)) return false;
             foreach (var suffix in PrefabSuffixes)
-            {
-                if (fieldName.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
-                    return true;
-            }
+                if (fieldName.EndsWith(suffix, StringComparison.OrdinalIgnoreCase)) return true;
             return false;
         }
 
         static string StripPrefabSuffix(string fieldName)
         {
             foreach (var suffix in PrefabSuffixes)
-            {
                 if (fieldName.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
                     return fieldName.Substring(0, fieldName.Length - suffix.Length);
-            }
             return fieldName;
         }
 
@@ -318,10 +316,6 @@ namespace CardGame.Editor
             return null;
         }
 
-        /// <summary>
-        /// 模糊匹配：子物体名包含候选名，或候选名包含子物体名（忽略大小写）
-        /// 例：候选 "Description" 能匹配子物体 "EventDescription" 或 "Desc"
-        /// </summary>
         static Transform FindChildFuzzy(Transform parent, string candidate)
         {
             if (string.IsNullOrEmpty(candidate)) return null;
@@ -332,11 +326,9 @@ namespace CardGame.Editor
                 if (child == parent) continue;
                 var childName = child.name;
 
-                // 子物体名包含候选名
                 if (childName.IndexOf(candidate, StringComparison.OrdinalIgnoreCase) >= 0)
                     return child;
 
-                // 候选名包含子物体名（子物体名至少3个字符才有效）
                 if (childName.Length >= 3 && candidate.IndexOf(childName, StringComparison.OrdinalIgnoreCase) >= 0)
                     return child;
             }
