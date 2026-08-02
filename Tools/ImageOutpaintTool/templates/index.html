@@ -308,6 +308,7 @@ body.cards-hidden .action-card { display: none !important; }
                     <input type="range" id="v-overlap" min="0" max="50" value="15">
                 </div>
                 <button class="btn" onclick="reimportCenter()">重新导入图片</button>
+                <button class="btn primary" onclick="openGenerateCenter()">生成初始图</button>
                 <button class="btn danger" onclick="clearAll()">清空缓存</button>
                 <div class="layer-group">
                     <button class="btn layer-btn active" id="layer-full" onclick="setLayer('full')">整体</button>
@@ -329,6 +330,44 @@ body.cards-hidden .action-card { display: none !important; }
                 <div class="modal-actions">
                     <button class="btn" onclick="downloadCombined()">下载 PNG</button>
                     <button class="btn" onclick="closePreview()">关闭</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Generate center modal -->
+        <div class="modal-overlay" id="generate-center-modal" onclick="hideGenerateCenter(event)">
+            <div class="modal-content" style="max-width: 480px;">
+                <h2 style="margin:0 0 12px; font-size: 18px;">生成初始图</h2>
+                <div class="field" style="margin-bottom: 10px;">
+                    <label>风格预设</label>
+                    <select id="center-style" onchange="onCenterStyleChange()" style="width:100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                        <option value="custom">✏️ 自定义</option>
+                        <option value="xianxia">仙侠宗门庭院</option>
+                        <option value="bamboo">竹林溪流小径</option>
+                        <option value="desert">沙漠古城遗迹</option>
+                        <option value="snow">雪山神殿</option>
+                        <option value="jiangnan">江南水乡</option>
+                        <option value="european">欧式城堡花园</option>
+                        <option value="cyberpunk">赛博朋克街区</option>
+                        <option value="postapoc">末日废土</option>
+                    </select>
+                </div>
+                <div class="field" style="margin-bottom: 10px;">
+                    <label>自定义描述（可选）</label>
+                    <textarea id="center-custom-prompt" rows="4" style="width:100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; resize: vertical;"></textarea>
+                </div>
+                <div class="field" style="margin-bottom: 16px;">
+                    <label>尺寸</label>
+                    <select id="center-size" style="width:100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                        <option value="1024x1024">1024 × 1024</option>
+                        <option value="1024x576">1024 × 576</option>
+                        <option value="1920x1080">1920 × 1080</option>
+                        <option value="2048x2048">2048 × 2048</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn primary" onclick="generateCenter()">生成</button>
+                    <button class="btn" onclick="closeGenerateCenter()">取消</button>
                 </div>
             </div>
         </div>
@@ -710,6 +749,95 @@ body.cards-hidden .action-card { display: none !important; }
                 log(cellName(row, col) + ' ' + LAYER_NAMES[state.layer] + ' 已上传: ' + data.size);
             } else {
                 log(cellName(row, col) + ' 上传失败: ' + (data.error || 'unknown'));
+            }
+        }
+
+        const CENTER_STYLE_PROMPTS = {
+            xianxia: "A xianxia cultivation sect courtyard, ancient stone plaza, bamboo forest, small stream, stone path, ornate pavilions, soft green and blue palette.",
+            bamboo: "A serene bamboo forest with a winding stream and stone path, lush green vegetation, peaceful atmosphere.",
+            desert: "Ancient desert city ruins, sandstone buildings, oasis palm trees, warm orange and yellow palette.",
+            snow: "A snow-capped mountain temple courtyard, frozen lake, pine trees, cool blue and white palette.",
+            jiangnan: "A Jiangnan water town with canals, stone bridges, willow trees, traditional houses, soft green and grey palette.",
+            european: "A European castle courtyard with gardens, fountains, cobblestone paths, vibrant green lawns and stone grey walls.",
+            cyberpunk: "A cyberpunk city street at night, neon lights, wet pavement, dark blue and purple palette, high-tech buildings.",
+            postapoc: "A post-apocalyptic wasteland settlement, rusted metal shacks, broken concrete, muted brown and grey palette.",
+        };
+
+        function openGenerateCenter() {
+            document.getElementById('generate-center-modal').classList.add('show');
+            onCenterStyleChange();
+        }
+
+        function closeGenerateCenter() {
+            document.getElementById('generate-center-modal').classList.remove('show');
+        }
+
+        function hideGenerateCenter(event) {
+            if (event.target.id === 'generate-center-modal') closeGenerateCenter();
+        }
+
+        function onCenterStyleChange() {
+            const style = document.getElementById('center-style').value;
+            const textarea = document.getElementById('center-custom-prompt');
+            if (style !== 'custom') {
+                textarea.placeholder = '可在此处追加描述，留空则使用默认风格';
+            } else {
+                textarea.placeholder = '输入你想要的初始图描述...';
+            }
+        }
+
+        async function generateCenter() {
+            const s = getSettings();
+            if (!s.api_key) {
+                log('错误：请先填写 API Key');
+                return;
+            }
+
+            const style = document.getElementById('center-style').value;
+            const custom = document.getElementById('center-custom-prompt').value.trim();
+            const size = document.getElementById('center-size').value;
+
+            let prompt;
+            if (style === 'custom') {
+                if (!custom) {
+                    log('错误：自定义模式下请输入描述');
+                    return;
+                }
+                prompt = custom;
+            } else {
+                prompt = CENTER_STYLE_PROMPTS[style] || '';
+                if (custom) prompt += ' ' + custom;
+            }
+
+            const [width, height] = size.split('x').map(Number);
+
+            const form = new FormData();
+            form.append('prompt', prompt);
+            form.append('api_key', s.api_key);
+            form.append('api_url', s.api_url);
+            form.append('model', s.model);
+            form.append('width', width);
+            form.append('height', height);
+
+            log('正在生成初始图...');
+            const resp = await fetch('/api/generate_center', { method: 'POST', body: form });
+            const data = await resp.json();
+            if (data.ok) {
+                state.cells = {};
+                grid.innerHTML = '';
+                state.centerSize = data.size;
+                updateGridSize();
+                createCell(0, 0);
+                const centerCell = state.cells[cellKey(0, 0)];
+                centerCell.img.style.display = 'block';
+                refreshImage(centerCell.img, '/api/image/0/0?layer=full');
+                setCellHasImage(0, 0, true);
+                updateGridLayout();
+                closeGenerateCenter();
+                log('初始图生成完成: ' + data.size);
+            } else {
+                log('初始图生成失败: ' + (data.error || 'unknown'));
+                if (data.trace) console.error(data.trace);
             }
         }
 

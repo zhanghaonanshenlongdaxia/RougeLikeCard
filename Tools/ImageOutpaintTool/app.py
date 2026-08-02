@@ -111,6 +111,33 @@ def create_outpaint_canvas(
     return canvas
 
 
+def call_doubao_text_api(
+    prompt: str,
+    api_key: str,
+    api_url: str,
+    model: str,
+    size: str,
+) -> Image.Image:
+    """Text-to-image generation (no input image)."""
+    payload = {
+        "model": model,
+        "prompt": prompt,
+        "n": 1,
+        "size": size,
+        "response_format": "b64_json",
+    }
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+
+    resp = requests.post(api_url, headers=headers, json=payload, timeout=120)
+    resp.raise_for_status()
+    result = resp.json()
+    b64_out = result["data"][0]["b64_json"]
+    return Image.open(io.BytesIO(base64.b64decode(b64_out)))
+
+
 def call_doubao_api(
     image: Image.Image,
     prompt: str,
@@ -469,6 +496,46 @@ def clear_all():
     data = get_session()
     data["cells"] = {}
     return jsonify({"ok": True})
+
+
+@app.route("/api/generate_center", methods=["POST"])
+def generate_center():
+    prompt = request.form.get("prompt", "")
+    api_key = request.form.get("api_key", "")
+    api_url = request.form.get("api_url", DEFAULT_API_URL)
+    model = request.form.get("model", DEFAULT_MODEL)
+
+    try:
+        width = int(request.form.get("width", 1024))
+        height = int(request.form.get("height", 1024))
+    except (TypeError, ValueError):
+        return jsonify({"error": "Invalid size"}), 400
+
+    if not api_key:
+        return jsonify({"error": "API key required"}), 400
+    if not prompt:
+        return jsonify({"error": "Prompt required"}), 400
+
+    # Ensure even dimensions for the API.
+    width += width % 2
+    height += height % 2
+    size_str = f"{width}x{height}"
+
+    full_prompt = (
+        f"{prompt} Top-down game map view, aerial orthographic perspective, "
+        "highly detailed, seamless tiling friendly, no watermark, no text, no UI. "
+        "Suitable as a center tile for map extension."
+    )
+
+    try:
+        result = call_doubao_text_api(full_prompt, api_key, api_url, model, size_str)
+        # Replacing the center clears any previously generated surrounding tiles
+        # to avoid size mismatches.
+        data = get_session()
+        data["cells"] = {cell_storage_key(0, 0, "full"): result}
+        return jsonify({"ok": True, "size": result.size})
+    except Exception as e:
+        return jsonify({"error": str(e), "trace": traceback.format_exc()}), 500
 
 
 @app.route("/api/upload_center", methods=["POST"])
