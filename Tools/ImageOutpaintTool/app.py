@@ -511,6 +511,126 @@ def upload_cell():
     return jsonify({"ok": True, "size": img.size, "layer": layer})
 
 
+NEIGHBOR_DIRECTIONS = [
+    ((-1, 0), "down"),   # neighbor above extends down, matches target top edge
+    ((1, 0), "up"),      # neighbor below extends up, matches target bottom edge
+    ((0, -1), "right"),  # neighbor left extends right, matches target left edge
+    ((0, 1), "left"),    # neighbor right extends left, matches target right edge
+]
+
+
+def find_all_neighbors(
+    cells: Dict[str, Image.Image], row: int, col: int, layer: str = "full"
+) -> list:
+    """Return all existing orthogonal neighbors as [(image, direction)]."""
+    refs = []
+    for (dr, dc), direction in NEIGHBOR_DIRECTIONS:
+        key = cell_storage_key(row + dr, col + dc, layer)
+        if key in cells:
+            refs.append((cells[key], direction))
+    return refs
+
+
+def create_multi_direction_canvas(
+    base_size: tuple[int, int],
+    refs: list,
+    h_overlap: float,
+    v_overlap: float,
+) -> Image.Image:
+    """
+    Create a canvas for a tile using overlap strips from all given neighbors.
+    refs: list of (neighbor_image, direction) where direction describes how the
+          neighbor extends relative to the target tile.
+    """
+    w, h = base_size
+    overlap_px_h = int(w * h_overlap)
+    overlap_px_v = int(h * v_overlap)
+    canvas = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+
+    for neighbor, direction in refs:
+        if direction == "down":  # neighbor above, paste its bottom strip to top
+            strip = neighbor.crop((0, h - overlap_px_v, w, h))
+            canvas.paste(strip, (0, 0))
+        elif direction == "up":  # neighbor below, paste its top strip to bottom
+            strip = neighbor.crop((0, 0, w, overlap_px_v))
+            canvas.paste(strip, (0, h - overlap_px_v))
+        elif direction == "right":  # neighbor left, paste its right strip to left
+            strip = neighbor.crop((w - overlap_px_h, 0, w, h))
+            canvas.paste(strip, (0, 0))
+        elif direction == "left":  # neighbor right, paste its left strip to right
+            strip = neighbor.crop((0, 0, overlap_px_h, h))
+            canvas.paste(strip, (w - overlap_px_h, 0))
+    return canvas
+
+
+def generate_multi_direction_tile(
+    base_size: tuple[int, int],
+    refs: list,
+    h_overlap: float,
+    v_overlap: float,
+    prompt: str,
+    api_key: str,
+    api_url: str,
+    model: str,
+) -> Image.Image:
+    """
+    Generate a tile that matches all provided orthogonal neighbors.
+    Works for 1-4 neighbors.
+    """
+    canvas = create_multi_direction_canvas(base_size, refs, h_overlap, v_overlap)
+    cw, ch = canvas.size
+
+    min_side = min(cw, ch)
+    if min_side < 1920:
+        scale = 1920.0 / min_side
+        cw = int(round(cw * scale))
+        ch = int(round(ch * scale))
+        cw += cw % 2
+        ch += ch % 2
+        canvas = canvas.resize((cw, ch), Image.Resampling.LANCZOS)
+        size_str = f"{cw}x{ch}"
+    else:
+        cw += cw % 2
+        ch += ch % 2
+        size_str = f"{cw}x{ch}"
+
+    directions = {d for _, d in refs}
+
+    if len(refs) == 4:
+        direction_hint = (
+            "Fill the center area while preserving and seamlessly matching "
+            "the existing top, bottom, left and right edge strips. "
+        )
+    else:
+        expand_parts = []
+        edge_parts = []
+        if "down" in directions:
+            expand_parts.append("downward")
+            edge_parts.append("top edge")
+        if "up" in directions:
+            expand_parts.append("upward")
+            edge_parts.append("bottom edge")
+        if "right" in directions:
+            expand_parts.append("to the right")
+            edge_parts.append("left edge")
+        if "left" in directions:
+            expand_parts.append("to the left")
+            edge_parts.append("right edge")
+
+        expand_text = " and ".join(expand_parts)
+        edge_text = " and ".join(edge_parts)
+        direction_hint = (
+            f"Extend the image {expand_text} while preserving and seamlessly "
+            f"matching the existing {edge_text}. "
+        )
+
+    full_prompt = direction_hint + prompt
+    result = call_doubao_api(canvas, full_prompt, api_key, api_url, model, size_str)
+    if result.size != base_size:
+        result = result.resize(base_size, Image.Resampling.LANCZOS)
+    return result
+
+
 def generate_layer_tile(
     full_img: Image.Image,
     layer: str,
@@ -599,34 +719,17 @@ def generate():
         except Exception as e:
             return jsonify({"error": str(e), "trace": traceback.format_exc()}), 500
 
-    parent_key, direction = find_parent(cells, row, col)
-    if parent_key is None or direction is None:
+    # Full layer generation: use all existing orthogonal neighbors as references.
+    refs = find_all_neighbors(cells, row, col, "full")
+    if not refs:
         return jsonify({"error": "该位置没有可用的父图，请先生成相邻边块"}), 400
 
-    parent_img = cells.get(parent_key)
-    if parent_img is None:
-        return jsonify({"error": "父图尚未生成"}), 400
-
-    # Try dual-reference corner generation when two orthogonal neighbors exist.
-    refs = get_corner_refs(cells, row, col)
-    if refs:
-        try:
-            result = generate_corner_tile(
-                center.size, refs, h_overlap, v_overlap, prompt, api_key, api_url, model
-            )
-            cells[f"{row}-{col}"] = result
-            return jsonify({"ok": True, "size": result.size, "mode": "corner"})
-        except Exception as e:
-            return jsonify({"error": str(e), "trace": traceback.format_exc()}), 500
-
-    overlap = h_overlap if direction in ("left", "right") else v_overlap
-
     try:
-        result = generate_direction_tile(
-            parent_img, direction, overlap, prompt, api_key, api_url, model
+        result = generate_multi_direction_tile(
+            center.size, refs, h_overlap, v_overlap, prompt, api_key, api_url, model
         )
-        cells[f"{row}-{col}"] = result
-        return jsonify({"ok": True, "size": result.size, "parent": parent_key})
+        cells[cell_storage_key(row, col, "full")] = result
+        return jsonify({"ok": True, "size": result.size, "neighbors": len(refs)})
     except Exception as e:
         return jsonify({"error": str(e), "trace": traceback.format_exc()}), 500
 
