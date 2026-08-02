@@ -119,6 +119,99 @@ def call_doubao_api(
     return Image.open(io.BytesIO(base64.b64decode(b64_out)))
 
 
+def create_corner_canvas(
+    base_size: tuple[int, int],
+    refs: list,
+    h_overlap: float,
+    v_overlap: float,
+) -> Image.Image:
+    """
+    Create a canvas for a corner tile that references two existing neighbors.
+
+    refs: list of (neighbor_image, edge_to_match) where edge_to_match is the
+          edge of the NEW tile that must match the neighbor ('top', 'bottom',
+          'left', 'right').
+    """
+    w, h = base_size
+    overlap_px_h = int(w * h_overlap)
+    overlap_px_v = int(h * v_overlap)
+    canvas = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+
+    for neighbor, edge in refs:
+        if edge == "top":
+            strip = neighbor.crop((0, h - overlap_px_v, w, h))
+            canvas.paste(strip, (0, 0))
+        elif edge == "bottom":
+            strip = neighbor.crop((0, 0, w, overlap_px_v))
+            canvas.paste(strip, (0, h - overlap_px_v))
+        elif edge == "left":
+            strip = neighbor.crop((w - overlap_px_h, 0, w, h))
+            canvas.paste(strip, (0, 0))
+        elif edge == "right":
+            strip = neighbor.crop((0, 0, overlap_px_h, h))
+            canvas.paste(strip, (w - overlap_px_h, 0))
+    return canvas
+
+
+def generate_corner_tile(
+    base_size: tuple[int, int],
+    refs: list,
+    h_overlap: float,
+    v_overlap: float,
+    prompt: str,
+    api_key: str,
+    api_url: str,
+    model: str,
+) -> Image.Image:
+    """
+    Generate a corner tile that matches two existing orthogonal neighbors.
+    """
+    canvas = create_corner_canvas(base_size, refs, h_overlap, v_overlap)
+    cw, ch = canvas.size
+
+    min_side = min(cw, ch)
+    if min_side < 1920:
+        scale = 1920.0 / min_side
+        cw = int(round(cw * scale))
+        ch = int(round(ch * scale))
+        cw += cw % 2
+        ch += ch % 2
+        canvas = canvas.resize((cw, ch), Image.Resampling.LANCZOS)
+        size_str = f"{cw}x{ch}"
+    else:
+        cw += cw % 2
+        ch += ch % 2
+        size_str = f"{cw}x{ch}"
+
+    edges = {edge for _, edge in refs}
+    vertical = []
+    if "top" in edges:
+        vertical.append("downward")
+    if "bottom" in edges:
+        vertical.append("upward")
+    horizontal = []
+    if "left" in edges:
+        horizontal.append("to the right")
+    if "right" in edges:
+        horizontal.append("to the left")
+    directions = vertical + horizontal
+
+    direction_hint = ""
+    if directions:
+        direction_hint = (
+            "Extend the image " + " and ".join(directions) + ". "
+            "Preserve and seamlessly match the existing "
+            + " and ".join(sorted(edges))
+            + " edge(s). "
+        )
+    full_prompt = direction_hint + prompt
+
+    result = call_doubao_api(canvas, full_prompt, api_key, api_url, model, size_str)
+    if result.size != base_size:
+        result = result.resize(base_size, Image.Resampling.LANCZOS)
+    return result
+
+
 def generate_direction_tile(
     base_img: Image.Image,
     direction: str,
@@ -181,6 +274,34 @@ def find_parent(cells: Dict[str, Image.Image], row: int, col: int):
         if key in cells:
             return (key, direction)
     return (None, None)
+
+
+def get_corner_refs(
+    cells: Dict[str, Image.Image], row: int, col: int
+) -> Optional[list]:
+    """Return two orthogonal neighbor references for a corner cell.
+
+    Each reference is (neighbor_image, edge_on_new_tile). Returns None if
+    fewer than two neighbors exist (falls back to single-direction generation).
+    """
+    if row == 0 or col == 0:
+        return None
+
+    refs = []
+    row_dir = 1 if row > 0 else -1
+    col_dir = 1 if col > 0 else -1
+
+    row_key = f"{row - row_dir}-{col}"
+    if row_key in cells:
+        edge = "top" if row > 0 else "bottom"
+        refs.append((cells[row_key], edge))
+
+    col_key = f"{row}-{col - col_dir}"
+    if col_key in cells:
+        edge = "left" if col > 0 else "right"
+        refs.append((cells[col_key], edge))
+
+    return refs if len(refs) == 2 else None
 
 
 def cell_name(row: int, col: int) -> str:
@@ -369,6 +490,18 @@ def generate():
     parent_img = cells.get(parent_key)
     if parent_img is None:
         return jsonify({"error": "父图尚未生成"}), 400
+
+    # Try dual-reference corner generation when two orthogonal neighbors exist.
+    refs = get_corner_refs(cells, row, col)
+    if refs:
+        try:
+            result = generate_corner_tile(
+                center.size, refs, h_overlap, v_overlap, prompt, api_key, api_url, model
+            )
+            cells[f"{row}-{col}"] = result
+            return jsonify({"ok": True, "size": result.size, "mode": "corner"})
+        except Exception as e:
+            return jsonify({"error": str(e), "trace": traceback.format_exc()}), 500
 
     overlap = h_overlap if direction in ("left", "right") else v_overlap
 
