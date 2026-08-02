@@ -13,6 +13,7 @@ import uuid
 from typing import Dict, Optional
 
 from flask import Flask, jsonify, request, send_file, session, render_template
+import numpy as np
 import requests
 from PIL import Image
 
@@ -53,6 +54,26 @@ def pil_to_bytes(img: Image.Image, fmt: str = "PNG") -> bytes:
 
 def load_image(file_storage) -> Image.Image:
     return Image.open(file_storage.stream).convert("RGBA")
+
+
+def remove_black_background(img: Image.Image, threshold: int = 20) -> Image.Image:
+    """Make near-black pixels transparent. Used for the object layer."""
+    rgba = img.convert("RGBA")
+    arr = np.array(rgba)
+    black_mask = (
+        (arr[:, :, 0] < threshold)
+        & (arr[:, :, 1] < threshold)
+        & (arr[:, :, 2] < threshold)
+    )
+    arr[black_mask] = [0, 0, 0, 0]
+    return Image.fromarray(arr)
+
+
+def cell_storage_key(row: int, col: int, layer: str = "full") -> str:
+    """Return the session key for a cell layer."""
+    if layer == "full" or not layer:
+        return f"{row}-{col}"
+    return f"{row}-{col}-{layer}"
 
 
 # ==================== Image generation logic ====================
@@ -382,7 +403,25 @@ def export_tiles(engine: str):
     if not cells:
         return jsonify({"error": "No tiles"}), 400
 
-    parsed = {k: parse_cell_key(k) for k in cells}
+    layer = request.args.get("layer", "full")
+    if layer not in ("full", "ground", "object"):
+        layer = "full"
+
+    if layer == "full":
+        layer_cells = {
+            k: v
+            for k, v in cells.items()
+            if "-" in k and not k.endswith(("-ground", "-object"))
+        }
+    else:
+        suffix = f"-{layer}"
+        layer_cells = {}
+        for k, v in cells.items():
+            if k.endswith(suffix):
+                base_key = k[: -len(suffix)]
+                layer_cells[base_key] = v
+
+    parsed = {k: parse_cell_key(k) for k in layer_cells}
     parsed = {k: v for k, v in parsed.items() if v is not None}
     if not parsed:
         return jsonify({"error": "No valid tiles"}), 400
@@ -395,23 +434,21 @@ def export_tiles(engine: str):
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
         for key, (r, c) in parsed.items():
             if engine == "godot":
-                # Zero-based grid coordinates (top-left becomes 0,0)
                 name = f"tile_{r - min_r}_{c - min_c}.png"
             elif engine == "unity":
-                # Traditional Cartesian coordinates: x = col, y = -row
-                # center (0,0), right (1,0), left (-1,0), up (0,1), down (0,-1)
                 x = c
                 y = -r
                 name = f"tile_{x}_{y}.png"
             else:
                 return jsonify({"error": "Unknown engine"}), 400
-            zf.writestr(name, pil_to_bytes(cells[key]))
+            zf.writestr(name, pil_to_bytes(layer_cells[key]))
     buf.seek(0)
+    layer_suffix = {"full": "", "ground": "_ground", "object": "_object"}[layer]
     return send_file(
         buf,
         mimetype="application/zip",
         as_attachment=True,
-        download_name=f"{engine}_tiles.zip",
+        download_name=f"{engine}_tiles{layer_suffix}.zip",
     )
 
 
@@ -438,11 +475,15 @@ def clear_all():
 def upload_center():
     if "image" not in request.files:
         return jsonify({"error": "No image"}), 400
+    layer = request.form.get("layer", "full")
+    if layer not in ("full", "ground", "object"):
+        layer = "full"
     data = get_session()
     img = load_image(request.files["image"])
-    # Replace center image but keep any surrounding cells that were already created.
-    data["cells"]["0-0"] = img
-    return jsonify({"ok": True, "size": img.size})
+    key = cell_storage_key(0, 0, layer)
+    data["cells"][key] = img
+    # Keep existing surrounding cells when replacing center.
+    return jsonify({"ok": True, "size": img.size, "layer": layer})
 
 
 @app.route("/api/upload_cell", methods=["POST"])
@@ -455,14 +496,62 @@ def upload_cell():
     if "image" not in request.files:
         return jsonify({"error": "No image"}), 400
 
+    layer = request.form.get("layer", "full")
+    if layer not in ("full", "ground", "object"):
+        layer = "full"
+
     data = get_session()
     cells = data["cells"]
-    center = cells.get("1-1")
+    center = cells.get("0-0")
     img = load_image(request.files["image"])
     if center is not None:
         img = img.resize(center.size, Image.Resampling.LANCZOS)
-    cells[f"{row}-{col}"] = img
-    return jsonify({"ok": True, "size": img.size})
+    key = cell_storage_key(row, col, layer)
+    cells[key] = img
+    return jsonify({"ok": True, "size": img.size, "layer": layer})
+
+
+def generate_layer_tile(
+    full_img: Image.Image,
+    layer: str,
+    prompt: str,
+    api_key: str,
+    api_url: str,
+    model: str,
+) -> Image.Image:
+    """
+    Generate a ground or object layer from an existing full tile.
+    Object layers are generated against a black background and then have
+    that background removed.
+    """
+    cw, ch = full_img.size
+    cw += cw % 2
+    ch += ch % 2
+    size_str = f"{cw}x{ch}"
+
+    if layer == "ground":
+        prefix = (
+            "Ground layer only. Keep only terrain, ground, grass, river, "
+            "stone path, floor tiles, soil. Remove all buildings, trees, rocks, "
+            "decorations, bridges, furniture and objects. "
+        )
+    elif layer == "object":
+        prefix = (
+            "Object layer only. Keep only buildings, trees, rocks, bridges, "
+            "decorations, furniture and props. Replace all ground, grass, river, "
+            "stone path, floor tiles, soil with solid black background. "
+        )
+    else:
+        prefix = ""
+
+    full_prompt = prefix + prompt
+    result = call_doubao_api(full_img, full_prompt, api_key, api_url, model, size_str)
+    if result.size != full_img.size:
+        result = result.resize(full_img.size, Image.Resampling.LANCZOS)
+
+    if layer == "object":
+        result = remove_black_background(result)
+    return result
 
 
 @app.route("/api/generate", methods=["POST"])
@@ -479,6 +568,10 @@ def generate():
     except ValueError:
         return jsonify({"error": "Invalid overlap"}), 400
 
+    layer = request.form.get("layer", "full")
+    if layer not in ("full", "ground", "object"):
+        layer = "full"
+
     prompt = request.form.get("prompt", "")
     api_key = request.form.get("api_key", "")
     api_url = request.form.get("api_url", DEFAULT_API_URL)
@@ -492,6 +585,19 @@ def generate():
     center = cells.get("0-0")
     if center is None:
         return jsonify({"error": "请先上传主图"}), 400
+
+    if layer != "full":
+        full_img = cells.get(cell_storage_key(row, col, "full"))
+        if full_img is None:
+            return jsonify({"error": "请先生成整体层，再分层"}), 400
+        try:
+            result = generate_layer_tile(
+                full_img, layer, prompt, api_key, api_url, model
+            )
+            cells[cell_storage_key(row, col, layer)] = result
+            return jsonify({"ok": True, "size": result.size, "layer": layer})
+        except Exception as e:
+            return jsonify({"error": str(e), "trace": traceback.format_exc()}), 500
 
     parent_key, direction = find_parent(cells, row, col)
     if parent_key is None or direction is None:
@@ -532,10 +638,13 @@ def clear_cell():
         col = int(request.form.get("col"))
     except (TypeError, ValueError):
         return jsonify({"error": "Invalid row/col"}), 400
+    layer = request.form.get("layer", "full")
+    if layer not in ("full", "ground", "object"):
+        layer = "full"
     data = get_session()
     cells = data["cells"]
-    key = f"{row}-{col}"
-    if key in cells and key != "1-1":
+    key = cell_storage_key(row, col, layer)
+    if key in cells and key != "0-0":
         del cells[key]
     return jsonify({"ok": True})
 
@@ -546,8 +655,11 @@ def get_image(row, col):
         r, c = int(row), int(col)
     except ValueError:
         return "", 404
+    layer = request.args.get("layer", "full")
+    if layer not in ("full", "ground", "object"):
+        layer = "full"
     data = get_session()
-    key = f"{r}-{c}"
+    key = cell_storage_key(r, c, layer)
     img = data["cells"].get(key)
     if img is None:
         return "", 404
@@ -561,8 +673,26 @@ def combined():
         v_overlap = float(request.args.get("v_overlap", 0.15))
     except ValueError:
         h_overlap = v_overlap = 0.15
+    layer = request.args.get("layer", "full")
+    if layer not in ("full", "ground", "object"):
+        layer = "full"
     data = get_session()
-    preview = stitch_preview(data["cells"], h_overlap, v_overlap)
+
+    if layer == "full":
+        target_cells = {
+            k: v
+            for k, v in data["cells"].items()
+            if "-" in k and not k.endswith(("-ground", "-object"))
+        }
+    else:
+        suffix = f"-{layer}"
+        target_cells = {}
+        for k, v in data["cells"].items():
+            if k.endswith(suffix):
+                base_key = k[: -len(suffix)]
+                target_cells[base_key] = v
+
+    preview = stitch_preview(target_cells, h_overlap, v_overlap)
     return send_file(io.BytesIO(pil_to_bytes(preview)), mimetype="image/png")
 
 

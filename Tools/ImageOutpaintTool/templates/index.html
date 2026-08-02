@@ -76,6 +76,9 @@
         .btn.danger { background: #c0392b; border-color: #c0392b; color: white; }
 .btn.danger:hover { background: #a93226; }
 body.cards-hidden .action-card { display: none !important; }
+.layer-btn.active { background: #e67e22; border-color: #e67e22; color: white; }
+.layer-btn.active:hover { background: #d35400; }
+.layer-group { display: flex; gap: 4px; }
 
 
         /* ===== Main body ===== */
@@ -306,6 +309,11 @@ body.cards-hidden .action-card { display: none !important; }
                 </div>
                 <button class="btn" onclick="reimportCenter()">重新导入图片</button>
                 <button class="btn danger" onclick="clearAll()">清空缓存</button>
+                <div class="layer-group">
+                    <button class="btn layer-btn active" id="layer-full" onclick="setLayer('full')">整体</button>
+                    <button class="btn layer-btn" id="layer-ground" onclick="setLayer('ground')">地表</button>
+                    <button class="btn layer-btn" id="layer-object" onclick="setLayer('object')">物件</button>
+                </div>
                 <button class="btn" id="hide-cards-btn" onclick="toggleCards()">隐藏卡片</button>
                 <button class="btn" onclick="showPreview()">全图预览</button>
                 <button class="btn primary" onclick="downloadCombined()">下载 PNG</button>
@@ -351,7 +359,9 @@ body.cards-hidden .action-card { display: none !important; }
                     <button class="btn primary" style="width:100%; margin-bottom:6px" onclick="showPreview()">全图预览</button>
                     <button class="btn" style="width:100%; margin-bottom:6px" onclick="downloadCombined()">下载合并 PNG</button>
                     <button class="btn" style="width:100%; margin-bottom:6px" onclick="downloadPackage('godot')">下载 Godot 包</button>
-                    <button class="btn" style="width:100%" onclick="downloadPackage('unity')">下载 Unity 包</button>
+                    <button class="btn" style="width:100%; margin-bottom:6px" onclick="downloadPackage('unity')">下载 Unity 包</button>
+                    <button class="btn" style="width:100%" onclick="downloadLayerPackage('godot')">下载当前层 Godot 包</button>
+                    <button class="btn" style="width:100%" onclick="downloadLayerPackage('unity')">下载当前层 Unity 包</button>
                 </div>
                 <div class="field">
                     <label>日志</label>
@@ -368,8 +378,11 @@ body.cards-hidden .action-card { display: none !important; }
             centerSize: null,
             cells: {},
             pendingUpload: null,
+            layer: 'full',
         };
         const grid = document.getElementById('grid');
+
+        const LAYER_NAMES = { full: '整体', ground: '地表', object: '物件' };
 
         function log(msg) {
             const el = document.getElementById('log');
@@ -386,6 +399,52 @@ body.cards-hidden .action-card { display: none !important; }
                 h_overlap: parseInt(document.getElementById('h-overlap').value) / 100,
                 v_overlap: parseInt(document.getElementById('v-overlap').value) / 100,
             };
+        }
+
+        function setLayer(layer) {
+            if (!['full', 'ground', 'object'].includes(layer)) return;
+            state.layer = layer;
+            document.querySelectorAll('.layer-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('layer-' + layer).classList.add('active');
+            refreshAllImages();
+            updateAllHints();
+            updateAllGenerateButtons();
+            log('切换到 ' + LAYER_NAMES[layer] + ' 层');
+        }
+
+        function updateAllGenerateButtons() {
+            const label = state.layer === 'full' ? 'AI 生成' : '生成' + LAYER_NAMES[state.layer];
+            document.querySelectorAll('.action-options .primary').forEach(btn => {
+                btn.textContent = label;
+            });
+        }
+
+        function refreshAllImages() {
+            Object.values(state.cells).forEach(cell => {
+                const img = cell.img;
+                if (cell.hasImage) {
+                    refreshImage(img, `/api/image/${cell.row}/${cell.col}?layer=${state.layer}`);
+                }
+            });
+        }
+
+        function updateAllHints() {
+            Object.values(state.cells).forEach(cell => {
+                const hint = document.getElementById(`hint-${cell.row}-${cell.col}`);
+                if (hint) {
+                    const name = LAYER_NAMES[state.layer];
+                    hint.textContent = cell.hasImage
+                        ? `${name}层已就绪，可处理、扩展或重新生成`
+                        : `当前：${name}层，可上传、生成或扩展`;
+                }
+            });
+        }
+
+        function layerHint(hasImage) {
+            const name = LAYER_NAMES[state.layer];
+            return hasImage
+                ? `${name}层已就绪，可处理、扩展或重新生成`
+                : `当前：${name}层，可上传、生成或扩展`;
         }
 
         function cellKey(row, col) { return `${row},${col}`; }
@@ -525,10 +584,10 @@ body.cards-hidden .action-card { display: none !important; }
                 <button class="action-btn ${btnClass(row, col)}" id="btn-${row}-${col}" onclick="onCellAction(${row}, ${col})">点击操作</button>
                 <div class="action-options" id="opts-${row}-${col}">
                     <button class="btn small" onclick="triggerUpload(${row}, ${col})">上传</button>
-                    <button class="btn small primary" onclick="generateCell(${row}, ${col})">AI 生成</button>
+                    <button class="btn small primary" onclick="generateCell(${row}, ${col})">${state.layer === 'full' ? 'AI 生成' : '生成' + LAYER_NAMES[state.layer]}</button>
                     <button class="expand-btn" onclick="expandCell(${row}, ${col})">扩展</button>
                 </div>
-                <p class="hint" id="hint-${row}-${col}">当前：整体层，可上传、生成或扩展</p>
+                <p class="hint" id="hint-${row}-${col}">${layerHint(false)}</p>
             `;
             el.appendChild(card);
 
@@ -544,7 +603,7 @@ body.cards-hidden .action-card { display: none !important; }
             if (!cell) return;
             cell.hasImage = hasImage;
             const hint = document.getElementById(`hint-${row}-${col}`);
-            hint.textContent = hasImage ? '整体层已就绪，可处理、扩展或重新生成' : '当前：整体层，可上传、生成或扩展';
+            if (hint) hint.textContent = layerHint(hasImage);
         }
 
         function onCellAction(row, col) {
@@ -595,6 +654,7 @@ body.cards-hidden .action-card { display: none !important; }
         async function uploadCenter(file) {
             const form = new FormData();
             form.append('image', file);
+            form.append('layer', state.layer);
             const resp = await fetch('/api/upload_center', { method: 'POST', body: form });
             const data = await resp.json();
             if (data.ok) {
@@ -602,12 +662,12 @@ body.cards-hidden .action-card { display: none !important; }
                 updateGridSize();
                 const centerCell = state.cells[cellKey(0, 0)];
                 centerCell.img.style.display = 'block';
-                refreshImage(centerCell.img, '/api/image/0/0');
+                refreshImage(centerCell.img, '/api/image/0/0?layer=' + state.layer);
                 setCellHasImage(0, 0, true);
                 updateGridLayout();
                 const opts = document.getElementById('opts-0-0');
                 if (opts) opts.classList.remove('show');
-                log('主图已上传: ' + data.size);
+                log('主图 ' + LAYER_NAMES[state.layer] + ' 已上传: ' + data.size);
             } else {
                 log('上传失败: ' + (data.error || 'unknown'));
             }
@@ -618,16 +678,17 @@ body.cards-hidden .action-card { display: none !important; }
             form.append('image', file);
             form.append('row', row);
             form.append('col', col);
+            form.append('layer', state.layer);
             const resp = await fetch('/api/upload_cell', { method: 'POST', body: form });
             const data = await resp.json();
             if (data.ok) {
                 const cell = state.cells[cellKey(row, col)];
                 cell.img.style.display = 'block';
-                refreshImage(cell.img, `/api/image/${row}/${col}`);
+                refreshImage(cell.img, `/api/image/${row}/${col}?layer=${state.layer}`);
                 setCellHasImage(row, col, true);
                 const opts = document.getElementById(`opts-${row}-${col}`);
                 if (opts) opts.classList.remove('show');
-                log(cellName(row, col) + ' 已上传: ' + data.size);
+                log(cellName(row, col) + ' ' + LAYER_NAMES[state.layer] + ' 已上传: ' + data.size);
             } else {
                 log(cellName(row, col) + ' 上传失败: ' + (data.error || 'unknown'));
             }
@@ -638,6 +699,7 @@ body.cards-hidden .action-card { display: none !important; }
             const form = new FormData();
             form.append('row', row);
             form.append('col', col);
+            form.append('layer', state.layer);
             form.append('h_overlap', s.h_overlap);
             form.append('v_overlap', s.v_overlap);
             form.append('prompt', s.prompt);
@@ -645,33 +707,33 @@ body.cards-hidden .action-card { display: none !important; }
             form.append('api_url', s.api_url);
             form.append('model', s.model);
 
-            log(cellName(row, col) + ' 生成中...');
+            log(cellName(row, col) + ' ' + LAYER_NAMES[state.layer] + ' 生成中...');
             const resp = await fetch('/api/generate', { method: 'POST', body: form });
             const data = await resp.json();
             if (data.ok) {
                 const cell = state.cells[cellKey(row, col)];
                 cell.img.style.display = 'block';
-                refreshImage(cell.img, `/api/image/${row}/${col}`);
+                refreshImage(cell.img, `/api/image/${row}/${col}?layer=${state.layer}`);
                 setCellHasImage(row, col, true);
                 const opts = document.getElementById(`opts-${row}-${col}`);
                 if (opts) opts.classList.remove('show');
-                log(cellName(row, col) + ' 生成完成: ' + data.size);
+                log(cellName(row, col) + ' ' + LAYER_NAMES[state.layer] + ' 生成完成: ' + data.size);
             } else {
-                log(cellName(row, col) + ' 失败: ' + (data.error || 'unknown'));
+                log(cellName(row, col) + ' ' + LAYER_NAMES[state.layer] + ' 失败: ' + (data.error || 'unknown'));
                 if (data.trace) console.error(data.trace);
             }
         }
 
         function downloadCombined() {
             const s = getSettings();
-            window.open('/api/combined?h_overlap=' + s.h_overlap + '&v_overlap=' + s.v_overlap + '&t=' + Date.now());
+            window.open('/api/combined?h_overlap=' + s.h_overlap + '&v_overlap=' + s.v_overlap + '&layer=' + state.layer + '&t=' + Date.now());
         }
 
         function showPreview() {
             const s = getSettings();
             const modal = document.getElementById('preview-modal');
             const img = document.getElementById('preview-img');
-            img.src = '/api/combined?h_overlap=' + s.h_overlap + '&v_overlap=' + s.v_overlap + '&t=' + Date.now();
+            img.src = '/api/combined?h_overlap=' + s.h_overlap + '&v_overlap=' + s.v_overlap + '&layer=' + state.layer + '&t=' + Date.now();
             modal.classList.add('show');
         }
 
@@ -684,7 +746,11 @@ body.cards-hidden .action-card { display: none !important; }
         }
 
         function downloadPackage(engine) {
-            window.open('/api/export/' + engine + '?t=' + Date.now());
+            window.open('/api/export/' + engine + '?layer=full&t=' + Date.now());
+        }
+
+        function downloadLayerPackage(engine) {
+            window.open('/api/export/' + engine + '?layer=' + state.layer + '&t=' + Date.now());
         }
 
         // File upload
