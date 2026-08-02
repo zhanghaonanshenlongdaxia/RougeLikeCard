@@ -398,8 +398,11 @@ def export_tiles(engine: str):
                 # Zero-based grid coordinates (top-left becomes 0,0)
                 name = f"tile_{r - min_r}_{c - min_c}.png"
             elif engine == "unity":
-                # Coordinates relative to center tile (0,0)
-                name = f"tile_{r}_{c}.png"
+                # Traditional Cartesian coordinates: x = col, y = -row
+                # center (0,0), right (1,0), left (-1,0), up (0,1), down (0,-1)
+                x = c
+                y = -r
+                name = f"tile_{x}_{y}.png"
             else:
                 return jsonify({"error": "Unknown engine"}), 400
             zf.writestr(name, pil_to_bytes(cells[key]))
@@ -422,6 +425,13 @@ def index():
         default_api_url=DEFAULT_API_URL,
         default_model=DEFAULT_MODEL,
     )
+
+
+@app.route("/api/clear_all", methods=["POST"])
+def clear_all():
+    data = get_session()
+    data["cells"] = {}
+    return jsonify({"ok": True})
 
 
 @app.route("/api/upload_center", methods=["POST"])

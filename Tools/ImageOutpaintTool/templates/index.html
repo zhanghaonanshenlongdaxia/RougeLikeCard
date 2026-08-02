@@ -73,7 +73,9 @@
         .btn:hover { background: #f5f5f0; }
         .btn.primary { background: #e67e22; border-color: #e67e22; color: white; }
         .btn.primary:hover { background: #d35400; }
-        .btn.small { padding: 5px 10px; font-size: 12px; }
+        .btn.danger { background: #c0392b; border-color: #c0392b; color: white; }
+.btn.danger:hover { background: #a93226; }
+
 
         /* ===== Main body ===== */
         .main-body {
@@ -302,6 +304,7 @@
                     <input type="range" id="v-overlap" min="0" max="50" value="15">
                 </div>
                 <button class="btn" onclick="reimportCenter()">重新导入图片</button>
+                <button class="btn danger" onclick="clearAll()">清空缓存</button>
                 <button class="btn" onclick="showPreview()">全图预览</button>
                 <button class="btn primary" onclick="downloadCombined()">下载 PNG</button>
                 <button class="btn" onclick="downloadPackage('godot')">Godot 包</button>
@@ -562,6 +565,22 @@
 
         function reimportCenter() {
             triggerUpload(0, 0);
+        }
+
+        async function clearAll() {
+            if (!confirm('确定清空所有图片和缓存吗？')) return;
+            const resp = await fetch('/api/clear_all', { method: 'POST' });
+            const data = await resp.json();
+            if (data.ok) {
+                state.cells = {};
+                state.centerSize = null;
+                grid.innerHTML = '';
+                updateGridSize();
+                createCell(0, 0);
+                log('已清空缓存');
+            } else {
+                log('清空失败: ' + (data.error || 'unknown'));
+            }
         }
 
         async function uploadCenter(file) {
