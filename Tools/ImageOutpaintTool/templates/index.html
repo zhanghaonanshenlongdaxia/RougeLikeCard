@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>宗门大厅地图拼接</title>
+    <style>
+        * { box-sizing: border-box; }
+        :root {
+            --main-w: 420px;
+            --main-h: 236px;
+            --overlap-h: 63px;
+            --overlap-v: 35px;
+        }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #e8e4dc;
+            color: #333;
+            overflow: hidden;
+        }
+        .app {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* ===== Top bar ===== */
+        .topbar {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding: 10px 20px;
+            background: #f0ece4;
+            border-bottom: 1px solid #d8d4cc;
+            flex-shrink: 0;
+        }
+        .back {
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .brand { display: flex; align-items: baseline; gap: 10px; }
+        .brand h1 { margin: 0; font-size: 20px; color: #2c2c2c; }
+        .brand span { font-size: 12px; color: #888; }
+        .top-controls {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .top-control { display: flex; flex-direction: column; gap: 2px; }
+        .top-control label { font-size: 11px; color: #666; }
+        .top-control select,
+        .top-control input[type="range"] { width: 110px; }
+        .overlap-val { color: #333; font-weight: 600; }
+        .btn {
+            padding: 7px 14px;
+            border: 1px solid #c8c4bc;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            background: #fff;
+            color: #444;
+            transition: all 0.15s;
+        }
+        .btn:hover { background: #f5f5f0; }
+        .btn.primary { background: #e67e22; border-color: #e67e22; color: white; }
+        .btn.primary:hover { background: #d35400; }
+        .btn.small { padding: 5px 10px; font-size: 12px; }
+
+        /* ===== Main body ===== */
+        .main-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* ===== Map stage ===== */
+        .map-stage {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: auto;
+            padding: 60px;
+            background: #e8e4dc;
+        }
+        .grid-container {
+            position: relative;
+            width: var(--main-w);
+            height: var(--main-h);
+            transition: width 0.2s, height 0.2s;
+        }
+        .tile-cell {
+            position: absolute;
+            width: var(--main-w);
+            height: var(--main-h);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .tile-cell.center-cell { z-index: 5; border: 2px dashed rgba(255,255,255,0.28); }
+        .tile-cell.edge-cell { z-index: 4; }
+        .tile-cell.corner-cell { z-index: 3; }
+
+        .tile-bg {
+            position: absolute;
+            inset: 0;
+            opacity: 0.28;
+            background-image:
+                linear-gradient(45deg, rgba(0,0,0,0.08) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.08) 75%, rgba(0,0,0,0.08)),
+                linear-gradient(45deg, rgba(0,0,0,0.08) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.08) 75%, rgba(0,0,0,0.08));
+            background-size: 16px 16px;
+            background-position: 0 0, 8px 8px;
+        }
+        .bg-center { background-color: #7f8c8d; opacity: 0.12; }
+        .bg-up { background-color: #e67e22; }
+        .bg-down { background-color: #7d8c3f; }
+        .bg-left { background-color: #9b59b6; }
+        .bg-right { background-color: #3498db; }
+        .bg-up-left { background-color: #c56c2d; }
+        .bg-up-right { background-color: #d35400; }
+        .bg-down-left { background-color: #5d6d3b; }
+        .bg-down-right { background-color: #2c82c9; }
+
+        .tile-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        /* Overlap region shade */
+        .tile-cell::after {
+            content: '';
+            position: absolute;
+            pointer-events: none;
+            z-index: 6;
+        }
+        .tile-cell.up-cell::after {
+            left: 0; right: 0; bottom: 0;
+            height: var(--overlap-v);
+            background: linear-gradient(to top, rgba(0,0,0,0.15), transparent);
+        }
+        .tile-cell.down-cell::after {
+            left: 0; right: 0; top: 0;
+            height: var(--overlap-v);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.15), transparent);
+        }
+        .tile-cell.left-cell::after {
+            top: 0; bottom: 0; right: 0;
+            width: var(--overlap-h);
+            background: linear-gradient(to left, rgba(0,0,0,0.15), transparent);
+        }
+        .tile-cell.right-cell::after {
+            top: 0; bottom: 0; left: 0;
+            width: var(--overlap-h);
+            background: linear-gradient(to right, rgba(0,0,0,0.15), transparent);
+        }
+
+        /* ===== Action cards ===== */
+        .action-card {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            background: rgba(255,255,255,0.96);
+            border-radius: 10px;
+            padding: 14px 18px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            text-align: center;
+            min-width: 120px;
+        }
+        .action-card h3 { margin: 0 0 8px; font-size: 15px; color: #333; }
+        .action-btn, .expand-btn {
+            border: none;
+            border-radius: 6px;
+            padding: 8px 0;
+            width: 100%;
+            color: white;
+            font-size: 13px;
+            cursor: pointer;
+            transition: opacity 0.15s;
+        }
+        .action-btn:hover, .expand-btn:hover { opacity: 0.9; }
+        .btn-up { background: #c0392b; }
+        .btn-down { background: #556b2f; }
+        .btn-left { background: #8e44ad; }
+        .btn-right { background: #2980b9; }
+        .btn-center { background: #1e8449; }
+        .btn-mixed { background: #7f8c8d; }
+        .expand-btn { background: #e67e22; }
+        .hint { margin: 6px 0 0; font-size: 11px; color: #666; line-height: 1.4; }
+        .action-options {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            margin-top: 6px;
+        }
+        .action-options.show { display: flex; }
+
+        /* ===== Sidebar ===== */
+        .sidebar {
+            width: 340px;
+            background: #fff;
+            border-left: 1px solid #d8d4cc;
+            padding: 18px 20px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        .sidebar h2 { margin: 0 0 14px; font-size: 18px; }
+        .field { margin-bottom: 14px; }
+        .field label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 13px; }
+        .field input[type="text"],
+        .field input[type="password"],
+        .field textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .field textarea { min-height: 80px; resize: vertical; }
+        .log {
+            background: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 10px;
+            font-size: 12px;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .hidden { display: none !important; }
+
+        /* ===== Preview modal ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-content {
+            background: #fff;
+            border-radius: 10px;
+            padding: 16px;
+            max-width: 90vw;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .modal-content img {
+            max-width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            border-radius: 6px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header class="topbar">
+            <a class="back" href="#">← 返回首页</a>
+            <div class="brand">
+                <h1>地图拼接</h1>
+                <span>右键拖动画布，滚轮缩放视图</span>
+            </div>
+            <div class="top-controls">
+                <div class="top-control">
+                    <label>扩图细分数</label>
+                    <select id="split-count">
+                        <option value="4" selected>4分扩图</option>
+                    </select>
+                </div>
+                <div class="top-control">
+                    <label>左右重叠 <span class="overlap-val" id="h-overlap-label">15%</span></label>
+                    <input type="range" id="h-overlap" min="0" max="50" value="15">
+                </div>
+                <div class="top-control">
+                    <label>上下重叠 <span class="overlap-val" id="v-overlap-label">15%</span></label>
+                    <input type="range" id="v-overlap" min="0" max="50" value="15">
+                </div>
+                <button class="btn" onclick="reimportCenter()">重新导入图片</button>
+                <button class="btn" onclick="showPreview()">全图预览</button>
+                <button class="btn primary" onclick="downloadCombined()">下载 PNG</button>
+                <button class="btn" onclick="downloadPackage('godot')">Godot 包</button>
+                <button class="btn" onclick="downloadPackage('unity')">Unity 包</button>
+            </div>
+        </header>
+
+        <!-- Preview modal -->
+        <div class="modal-overlay" id="preview-modal" onclick="hidePreview(event)">
+            <div class="modal-content">
+                <img id="preview-img" src="" alt="全图预览">
+                <div class="modal-actions">
+                    <button class="btn" onclick="downloadCombined()">下载 PNG</button>
+                    <button class="btn" onclick="closePreview()">关闭</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-body">
+            <div class="map-stage" id="map-stage">
+                <div class="grid-container" id="grid"></div>
+            </div>
+
+            <aside class="sidebar">
+                <h2>设置</h2>
+                <div class="field">
+                    <label>豆包 API Key</label>
+                    <input type="password" id="api-key" value="" placeholder="请输入豆包 API Key">
+                </div>                <div class="field">
+                    <label>API 接口地址</label>
+                    <input type="text" id="api-url" value="{{ default_api_url }}">
+                </div>
+                <div class="field">
+                    <label>模型 ID</label>
+                    <input type="text" id="model" value="{{ default_model }}">
+                </div>
+                <div class="field">
+                    <label>扩图提示词</label>
+                    <textarea id="prompt">Seamlessly extend this xianxia cultivation sect courtyard. Top-down pixel art, bamboo forest, small stream, stone path, soft green and blue palette. Keep the same art style and perspective.</textarea>
+                </div>
+                <div class="field">
+                    <button class="btn primary" style="width:100%; margin-bottom:6px" onclick="showPreview()">全图预览</button>
+                    <button class="btn" style="width:100%; margin-bottom:6px" onclick="downloadCombined()">下载合并 PNG</button>
+                    <button class="btn" style="width:100%; margin-bottom:6px" onclick="downloadPackage('godot')">下载 Godot 包</button>
+                    <button class="btn" style="width:100%" onclick="downloadPackage('unity')">下载 Unity 包</button>
+                </div>
+                <div class="field">
+                    <label>日志</label>
+                    <div class="log" id="log"></div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <input type="file" id="file-upload" class="hidden" accept="image/*">
+
+    <script>
+        const state = {
+            centerSize: null,
+            cells: {},
+            pendingUpload: null,
+        };
+        const grid = document.getElementById('grid');
+
+        function log(msg) {
+            const el = document.getElementById('log');
+            el.textContent += msg + '\n';
+            el.scrollTop = el.scrollHeight;
+        }
+
+        function getSettings() {
+            return {
+                api_key: document.getElementById('api-key').value,
+                api_url: document.getElementById('api-url').value,
+                model: document.getElementById('model').value,
+                prompt: document.getElementById('prompt').value,
+                h_overlap: parseInt(document.getElementById('h-overlap').value) / 100,
+                v_overlap: parseInt(document.getElementById('v-overlap').value) / 100,
+            };
+        }
+
+        function cellKey(row, col) { return `${row},${col}`; }
+
+        function cellName(row, col) {
+            if (row === 0 && col === 0) return '主图';
+            const parts = [];
+            if (row < 0) parts.push('上' + Math.abs(row));
+            if (row > 0) parts.push('下' + row);
+            if (col < 0) parts.push('左' + Math.abs(col));
+            if (col > 0) parts.push('右' + col);
+            return parts.join('') || '未知';
+        }
+
+        function cellClass(row, col) {
+            if (row === 0 && col === 0) return 'bg-center';
+            if (row < 0 && col === 0) return 'bg-up';
+            if (row > 0 && col === 0) return 'bg-down';
+            if (row === 0 && col < 0) return 'bg-left';
+            if (row === 0 && col > 0) return 'bg-right';
+            if (row < 0 && col < 0) return 'bg-up-left';
+            if (row < 0 && col > 0) return 'bg-up-right';
+            if (row > 0 && col < 0) return 'bg-down-left';
+            if (row > 0 && col > 0) return 'bg-down-right';
+            return 'bg-center';
+        }
+
+        function cellTypeClass(row, col) {
+            if (row === 0 && col === 0) return 'center-cell';
+            if (row === 0 || col === 0) return 'edge-cell';
+            return 'corner-cell';
+        }
+
+        function directionClass(row, col) {
+            if (row < 0) return 'up-cell';
+            if (row > 0) return 'down-cell';
+            if (col < 0) return 'left-cell';
+            if (col > 0) return 'right-cell';
+            return '';
+        }
+
+        function btnClass(row, col) {
+            if (row === 0 && col === 0) return 'btn-center';
+            if (row < 0 && col === 0) return 'btn-up';
+            if (row > 0 && col === 0) return 'btn-down';
+            if (row === 0 && col < 0) return 'btn-left';
+            if (row === 0 && col > 0) return 'btn-right';
+            return 'btn-mixed';
+        }
+
+        function refreshImage(img, src) {
+            img.src = src + '?t=' + Date.now();
+        }
+
+        function updateGridSize() {
+            if (!state.centerSize) {
+                grid.style.setProperty('--main-w', '420px');
+                grid.style.setProperty('--main-h', '236px');
+            } else {
+                const [cw, ch] = state.centerSize;
+                const MAX = 420;
+                let w, h;
+                if (cw > ch) {
+                    w = MAX;
+                    h = Math.round(MAX * ch / cw);
+                } else {
+                    h = MAX;
+                    w = Math.round(MAX * cw / ch);
+                }
+                grid.style.setProperty('--main-w', w + 'px');
+                grid.style.setProperty('--main-h', h + 'px');
+            }
+            updateOverlaps();
+        }
+
+        function updateOverlaps() {
+            const s = getSettings();
+            const w = parseFloat(getComputedStyle(grid).getPropertyValue('--main-w'));
+            const h = parseFloat(getComputedStyle(grid).getPropertyValue('--main-h'));
+            grid.style.setProperty('--overlap-h', (w * s.h_overlap) + 'px');
+            grid.style.setProperty('--overlap-v', (h * s.v_overlap) + 'px');
+        }
+
+        function updateGridLayout() {
+            const cells = Object.values(state.cells);
+            if (cells.length === 0) return;
+            let minR = Infinity, maxR = -Infinity, minC = Infinity, maxC = -Infinity;
+            cells.forEach(c => {
+                minR = Math.min(minR, c.row);
+                maxR = Math.max(maxR, c.row);
+                minC = Math.min(minC, c.col);
+                maxC = Math.max(maxC, c.col);
+            });
+
+            const w = parseFloat(getComputedStyle(grid).getPropertyValue('--main-w'));
+            const h = parseFloat(getComputedStyle(grid).getPropertyValue('--main-h'));
+            const hOv = parseFloat(getComputedStyle(grid).getPropertyValue('--overlap-h'));
+            const vOv = parseFloat(getComputedStyle(grid).getPropertyValue('--overlap-v'));
+            const stepW = w - hOv;
+            const stepH = h - vOv;
+
+            const cols = maxC - minC + 1;
+            const rows = maxR - minR + 1;
+            grid.style.width = (cols * w - (cols - 1) * hOv) + 'px';
+            grid.style.height = (rows * h - (rows - 1) * vOv) + 'px';
+
+            cells.forEach(c => {
+                c.element.style.left = ((c.col - minC) * stepW) + 'px';
+                c.element.style.top = ((c.row - minR) * stepH) + 'px';
+            });
+        }
+
+        function createCell(row, col) {
+            const key = cellKey(row, col);
+            if (state.cells[key]) return state.cells[key];
+
+            const el = document.createElement('div');
+            el.className = `tile-cell ${cellTypeClass(row, col)} ${directionClass(row, col)}`;
+            el.id = `cell-${row}-${col}`;
+
+            const bg = document.createElement('div');
+            bg.className = `tile-bg ${cellClass(row, col)}`;
+            el.appendChild(bg);
+
+            const img = document.createElement('img');
+            img.className = 'tile-img';
+            img.id = `img-${row}-${col}`;
+            img.alt = cellName(row, col);
+            el.appendChild(img);
+
+            const card = document.createElement('div');
+            card.className = 'action-card';
+            const isCenter = row === 0 && col === 0;
+            const title = cellName(row, col);
+            card.innerHTML = `
+                <h3 id="title-${row}-${col}">${title}</h3>
+                <button class="action-btn ${btnClass(row, col)}" id="btn-${row}-${col}" onclick="onCellAction(${row}, ${col})">点击操作</button>
+                <div class="action-options" id="opts-${row}-${col}">
+                    <button class="btn small" onclick="triggerUpload(${row}, ${col})">上传</button>
+                    <button class="btn small primary" onclick="generateCell(${row}, ${col})">AI 生成</button>
+                    <button class="expand-btn" onclick="expandCell(${row}, ${col})">扩展</button>
+                </div>
+                <p class="hint" id="hint-${row}-${col}">当前：整体层，可上传、生成或扩展</p>
+            `;
+            el.appendChild(card);
+
+            grid.appendChild(el);
+            state.cells[key] = { row, col, hasImage: false, element: el, img };
+            updateGridLayout();
+            return state.cells[key];
+        }
+
+        function setCellHasImage(row, col, hasImage) {
+            const key = cellKey(row, col);
+            const cell = state.cells[key];
+            if (!cell) return;
+            cell.hasImage = hasImage;
+            const hint = document.getElementById(`hint-${row}-${col}`);
+            hint.textContent = hasImage ? '整体层已就绪，可处理、扩展或重新生成' : '当前：整体层，可上传、生成或扩展';
+        }
+
+        function onCellAction(row, col) {
+            const opts = document.getElementById(`opts-${row}-${col}`);
+            opts.classList.toggle('show');
+        }
+
+        function expandCell(row, col) {
+            const opts = document.getElementById(`opts-${row}-${col}`);
+            if (opts) opts.classList.remove('show');
+            const dirs = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+            dirs.forEach(([dr, dc]) => createCell(row + dr, col + dc));
+            log('已扩展 ' + cellName(row, col) + ' 周围的空框');
+        }
+
+        function triggerUpload(row, col) {
+            state.pendingUpload = { row, col };
+            document.getElementById('file-upload').click();
+        }
+
+        function reimportCenter() {
+            triggerUpload(0, 0);
+        }
+
+        async function uploadCenter(file) {
+            const form = new FormData();
+            form.append('image', file);
+            const resp = await fetch('/api/upload_center', { method: 'POST', body: form });
+            const data = await resp.json();
+            if (data.ok) {
+                state.centerSize = data.size;
+                updateGridSize();
+                const centerCell = state.cells[cellKey(0, 0)];
+                centerCell.img.style.display = 'block';
+                refreshImage(centerCell.img, '/api/image/0/0');
+                setCellHasImage(0, 0, true);
+                updateGridLayout();
+                const opts = document.getElementById('opts-0-0');
+                if (opts) opts.classList.remove('show');
+                log('主图已上传: ' + data.size);
+            } else {
+                log('上传失败: ' + (data.error || 'unknown'));
+            }
+        }
+
+        async function uploadCell(file, row, col) {
+            const form = new FormData();
+            form.append('image', file);
+            form.append('row', row);
+            form.append('col', col);
+            const resp = await fetch('/api/upload_cell', { method: 'POST', body: form });
+            const data = await resp.json();
+            if (data.ok) {
+                const cell = state.cells[cellKey(row, col)];
+                cell.img.style.display = 'block';
+                refreshImage(cell.img, `/api/image/${row}/${col}`);
+                setCellHasImage(row, col, true);
+                const opts = document.getElementById(`opts-${row}-${col}`);
+                if (opts) opts.classList.remove('show');
+                log(cellName(row, col) + ' 已上传: ' + data.size);
+            } else {
+                log(cellName(row, col) + ' 上传失败: ' + (data.error || 'unknown'));
+            }
+        }
+
+        async function generateCell(row, col) {
+            const s = getSettings();
+            const form = new FormData();
+            form.append('row', row);
+            form.append('col', col);
+            form.append('h_overlap', s.h_overlap);
+            form.append('v_overlap', s.v_overlap);
+            form.append('prompt', s.prompt);
+            form.append('api_key', s.api_key);
+            form.append('api_url', s.api_url);
+            form.append('model', s.model);
+
+            log(cellName(row, col) + ' 生成中...');
+            const resp = await fetch('/api/generate', { method: 'POST', body: form });
+            const data = await resp.json();
+            if (data.ok) {
+                const cell = state.cells[cellKey(row, col)];
+                cell.img.style.display = 'block';
+                refreshImage(cell.img, `/api/image/${row}/${col}`);
+                setCellHasImage(row, col, true);
+                const opts = document.getElementById(`opts-${row}-${col}`);
+                if (opts) opts.classList.remove('show');
+                log(cellName(row, col) + ' 生成完成: ' + data.size);
+            } else {
+                log(cellName(row, col) + ' 失败: ' + (data.error || 'unknown'));
+                if (data.trace) console.error(data.trace);
+            }
+        }
+
+        function downloadCombined() {
+            const s = getSettings();
+            window.open('/api/combined?h_overlap=' + s.h_overlap + '&v_overlap=' + s.v_overlap + '&t=' + Date.now());
+        }
+
+        function showPreview() {
+            const s = getSettings();
+            const modal = document.getElementById('preview-modal');
+            const img = document.getElementById('preview-img');
+            img.src = '/api/combined?h_overlap=' + s.h_overlap + '&v_overlap=' + s.v_overlap + '&t=' + Date.now();
+            modal.classList.add('show');
+        }
+
+        function closePreview() {
+            document.getElementById('preview-modal').classList.remove('show');
+        }
+
+        function hidePreview(event) {
+            if (event.target.id === 'preview-modal') closePreview();
+        }
+
+        function downloadPackage(engine) {
+            window.open('/api/export/' + engine + '?t=' + Date.now());
+        }
+
+        // File upload
+        document.getElementById('file-upload').addEventListener('change', e => {
+            if (!state.pendingUpload) {
+                e.target.value = '';
+                return;
+            }
+            if (!e.target.files[0]) {
+                state.pendingUpload = null;
+                e.target.value = '';
+                return;
+            }
+            const { row, col } = state.pendingUpload;
+            if (row === 0 && col === 0) {
+                uploadCenter(e.target.files[0]);
+            } else {
+                uploadCell(e.target.files[0], row, col);
+            }
+            state.pendingUpload = null;
+            e.target.value = '';
+        });
+
+        // Close action menus when clicking outside
+        document.addEventListener('click', e => {
+            if (e.target.closest('.action-card')) return;
+            document.querySelectorAll('.action-options').forEach(el => el.classList.remove('show'));
+        });
+
+        // Overlap sliders
+        document.getElementById('h-overlap').addEventListener('input', e => {
+            document.getElementById('h-overlap-label').textContent = e.target.value + '%';
+            updateOverlaps();
+            updateGridLayout();
+        });
+        document.getElementById('v-overlap').addEventListener('input', e => {
+            document.getElementById('v-overlap-label').textContent = e.target.value + '%';
+            updateOverlaps();
+            updateGridLayout();
+        });
+
+        window.addEventListener('resize', () => { updateGridSize(); updateGridLayout(); });
+
+        // Initialize
+        updateGridSize();
+        createCell(0, 0);
+    </script>
+</body>
+</html>
