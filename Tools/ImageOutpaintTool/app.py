@@ -92,7 +92,7 @@ def create_outpaint_canvas(
     overlap_px_h = int(w * overlap)
     overlap_px_v = int(h * overlap)
 
-    canvas = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    canvas = Image.new("RGBA", (w, h), (0, 0, 0, 255))
 
     if direction == "right":
         strip = base_img.crop((w - overlap_px_h, 0, w, h))
@@ -183,7 +183,7 @@ def create_corner_canvas(
     w, h = base_size
     overlap_px_h = int(w * h_overlap)
     overlap_px_v = int(h * v_overlap)
-    canvas = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    canvas = Image.new("RGBA", (w, h), (0, 0, 0, 255))
 
     for neighbor, edge in refs:
         if edge == "top":
@@ -291,10 +291,10 @@ def generate_direction_tile(
         size_str = f"{cw}x{ch}"
 
     direction_hint = {
-        "up": "Extend the image upward. ",
-        "down": "Extend the image downward. ",
-        "left": "Extend the image to the left. ",
-        "right": "Extend the image to the right. ",
+        "up": "Extend the image upward into the black area. Preserve and match the existing bottom edge strip exactly. ",
+        "down": "Extend the image downward into the black area. Preserve and match the existing top edge strip exactly. ",
+        "left": "Extend the image to the left into the black area. Preserve and match the existing right edge strip exactly. ",
+        "right": "Extend the image to the right into the black area. Preserve and match the existing left edge strip exactly. ",
     }.get(direction, "")
     full_prompt = direction_hint + prompt
 
@@ -615,7 +615,7 @@ def create_multi_direction_canvas(
     w, h = base_size
     overlap_px_h = int(w * h_overlap)
     overlap_px_v = int(h * v_overlap)
-    canvas = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    canvas = Image.new("RGBA", (w, h), (0, 0, 0, 255))
 
     for neighbor, direction in refs:
         if direction == "down":  # neighbor above, paste its bottom strip to top
@@ -668,30 +668,32 @@ def generate_multi_direction_tile(
 
     if len(refs) == 4:
         direction_hint = (
-            "Fill the center area while preserving and seamlessly matching "
-            "the existing top, bottom, left and right edge strips. "
+            "Fill the black center area while preserving and seamlessly matching "
+            "the existing top, bottom, left and right edge strips exactly. "
+            "Do not change the edge strips. "
         )
     else:
         expand_parts = []
         edge_parts = []
         if "down" in directions:
             expand_parts.append("downward")
-            edge_parts.append("top edge")
+            edge_parts.append("top edge strip")
         if "up" in directions:
             expand_parts.append("upward")
-            edge_parts.append("bottom edge")
+            edge_parts.append("bottom edge strip")
         if "right" in directions:
             expand_parts.append("to the right")
-            edge_parts.append("left edge")
+            edge_parts.append("left edge strip")
         if "left" in directions:
             expand_parts.append("to the left")
-            edge_parts.append("right edge")
+            edge_parts.append("right edge strip")
 
         expand_text = " and ".join(expand_parts)
         edge_text = " and ".join(edge_parts)
         direction_hint = (
-            f"Extend the image {expand_text} while preserving and seamlessly "
-            f"matching the existing {edge_text}. "
+            f"Extend the image {expand_text} into the black area while preserving "
+            f"and seamlessly matching the existing {edge_text} exactly. "
+            "Do not change the edge strips. "
         )
 
     full_prompt = direction_hint + prompt
