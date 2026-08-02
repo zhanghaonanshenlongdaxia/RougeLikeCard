@@ -75,6 +75,7 @@
         .btn.primary:hover { background: #d35400; }
         .btn.danger { background: #c0392b; border-color: #c0392b; color: white; }
 .btn.danger:hover { background: #a93226; }
+body.cards-hidden .action-card { display: none !important; }
 
 
         /* ===== Main body ===== */
@@ -305,6 +306,7 @@
                 </div>
                 <button class="btn" onclick="reimportCenter()">重新导入图片</button>
                 <button class="btn danger" onclick="clearAll()">清空缓存</button>
+                <button class="btn" id="hide-cards-btn" onclick="toggleCards()">隐藏卡片</button>
                 <button class="btn" onclick="showPreview()">全图预览</button>
                 <button class="btn primary" onclick="downloadCombined()">下载 PNG</button>
                 <button class="btn" onclick="downloadPackage('godot')">Godot 包</button>
@@ -581,6 +583,13 @@
             } else {
                 log('清空失败: ' + (data.error || 'unknown'));
             }
+        }
+
+        function toggleCards() {
+            const body = document.body;
+            const btn = document.getElementById('hide-cards-btn');
+            const hidden = body.classList.toggle('cards-hidden');
+            btn.textContent = hidden ? '显示卡片' : '隐藏卡片';
         }
 
         async function uploadCenter(file) {
