@@ -522,9 +522,12 @@ def generate_center():
     size_str = f"{width}x{height}"
 
     full_prompt = (
-        f"{prompt} Top-down game map view, aerial orthographic perspective, "
-        "highly detailed, seamless tiling friendly, no watermark, no text, no UI. "
-        "Suitable as a center tile for map extension."
+        f"{prompt} "
+        "Top-down pixel art tile-based game map. "
+        "Orthographic bird's eye view, grid-aligned, clean readable tiles, "
+        "consistent art style, vibrant but coherent palette. "
+        "Suitable as a center tile for seamless map extension. "
+        "No watermark, no text, no UI, no perspective distortion."
     )
 
     try:

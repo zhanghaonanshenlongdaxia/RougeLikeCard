@@ -344,12 +344,12 @@ body.cards-hidden .action-card { display: none !important; }
                         <option value="custom">✏️ 自定义</option>
                         <option value="xianxia">仙侠宗门庭院</option>
                         <option value="bamboo">竹林溪流小径</option>
+                        <option value="grassland">草原平原</option>
                         <option value="desert">沙漠古城遗迹</option>
                         <option value="snow">雪山神殿</option>
                         <option value="jiangnan">江南水乡</option>
-                        <option value="european">欧式城堡花园</option>
-                        <option value="cyberpunk">赛博朋克街区</option>
-                        <option value="postapoc">末日废土</option>
+                        <option value="european">欧式村庄广场</option>
+                        <option value="dungeon">地下城地牢</option>
                     </select>
                 </div>
                 <div class="field" style="margin-bottom: 10px;">
@@ -753,14 +753,14 @@ body.cards-hidden .action-card { display: none !important; }
         }
 
         const CENTER_STYLE_PROMPTS = {
-            xianxia: "A xianxia cultivation sect courtyard, ancient stone plaza, bamboo forest, small stream, stone path, ornate pavilions, soft green and blue palette.",
-            bamboo: "A serene bamboo forest with a winding stream and stone path, lush green vegetation, peaceful atmosphere.",
-            desert: "Ancient desert city ruins, sandstone buildings, oasis palm trees, warm orange and yellow palette.",
-            snow: "A snow-capped mountain temple courtyard, frozen lake, pine trees, cool blue and white palette.",
-            jiangnan: "A Jiangnan water town with canals, stone bridges, willow trees, traditional houses, soft green and grey palette.",
-            european: "A European castle courtyard with gardens, fountains, cobblestone paths, vibrant green lawns and stone grey walls.",
-            cyberpunk: "A cyberpunk city street at night, neon lights, wet pavement, dark blue and purple palette, high-tech buildings.",
-            postapoc: "A post-apocalyptic wasteland settlement, rusted metal shacks, broken concrete, muted brown and grey palette.",
+            xianxia: "Xianxia cultivation sect courtyard tileset: bamboo groves, stone plaza tiles, small stream, wooden bridge, ancient gate, grass and pebble ground tiles.",
+            bamboo: "Bamboo forest clearing tileset: dense bamboo clusters, winding dirt path, small pond, mossy stones, forest grass tiles.",
+            desert: "Desert oasis ruins tileset: sandstone tiles, palm trees, dry riverbed, ancient pillars, sand dunes, cracked ground.",
+            snow: "Snow mountain temple tileset: snow-covered stone tiles, frozen pond, pine trees, icy paths, mountain rocks.",
+            jiangnan: "Jiangnan water town tileset: canal water tiles, stone bridges, cobblestone paths, willow trees, traditional house roofs.",
+            european: "European village tileset: cobblestone plaza, fountain, flower beds, wooden fences, cottage roofs, garden paths.",
+            dungeon: "Dungeon tileset: stone brick floors, prison bars, torches, broken pillars, dark corridors, mossy stones.",
+            grassland: "Grassland plains tileset: green grass tiles, dirt paths, small hills, wildflowers, bushes, rocks.",
         };
 
         function openGenerateCenter() {
