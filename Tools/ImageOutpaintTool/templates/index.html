@@ -401,6 +401,25 @@ body.cards-hidden .action-card { display: none !important; }
             };
         }
 
+        function loadCachedSettings() {
+            const key = localStorage.getItem('stitcher_api_key');
+            const url = localStorage.getItem('stitcher_api_url');
+            const model = localStorage.getItem('stitcher_model');
+            const prompt = localStorage.getItem('stitcher_prompt');
+
+            if (key !== null) document.getElementById('api-key').value = key;
+            if (url !== null) document.getElementById('api-url').value = url;
+            if (model !== null) document.getElementById('model').value = model;
+            if (prompt !== null) document.getElementById('prompt').value = prompt;
+        }
+
+        function saveCachedSettings() {
+            localStorage.setItem('stitcher_api_key', document.getElementById('api-key').value);
+            localStorage.setItem('stitcher_api_url', document.getElementById('api-url').value);
+            localStorage.setItem('stitcher_model', document.getElementById('model').value);
+            localStorage.setItem('stitcher_prompt', document.getElementById('prompt').value);
+        }
+
         function setLayer(layer) {
             if (!['full', 'ground', 'object'].includes(layer)) return;
             state.layer = layer;
@@ -794,7 +813,13 @@ body.cards-hidden .action-card { display: none !important; }
 
         window.addEventListener('resize', () => { updateGridSize(); updateGridLayout(); });
 
+        // Cache settings on change
+        ['api-key', 'api-url', 'model', 'prompt'].forEach(id => {
+            document.getElementById(id).addEventListener('change', saveCachedSettings);
+        });
+
         // Initialize
+        loadCachedSettings();
         updateGridSize();
         createCell(0, 0);
     </script>
