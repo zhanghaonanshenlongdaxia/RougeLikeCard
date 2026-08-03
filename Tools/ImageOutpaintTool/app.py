@@ -16,7 +16,7 @@ from typing import Dict, Optional
 from flask import Flask, jsonify, request, send_file, session, render_template
 import numpy as np
 import requests
-from PIL import Image
+from PIL import Image, ImageFilter
 
 
 app = Flask(__name__)
@@ -707,6 +707,22 @@ def create_multi_direction_canvas(
     return canvas
 
 
+def blurred_ref_background(refs: list, size: tuple[int, int]) -> Image.Image:
+    """Average of heavily blurred neighbor images, used to fill the empty
+    canvas area. The model sees a complete image with matching colors and
+    soft structure instead of transparency, which makes it preserve the
+    pasted edge strips much more reliably."""
+    w, h = size
+    acc = np.zeros((h, w, 3), dtype=np.float32)
+    radius = max(8, min(w, h) // 8)
+    for neighbor, _ in refs:
+        img = neighbor.convert("RGB").resize(size)
+        img = img.filter(ImageFilter.GaussianBlur(radius))
+        acc += np.array(img, dtype=np.float32)
+    acc /= len(refs)
+    return Image.fromarray(acc.astype(np.uint8), "RGB").convert("RGBA")
+
+
 def generate_multi_direction_tile(
     base_size: tuple[int, int],
     refs: list,
@@ -722,6 +738,10 @@ def generate_multi_direction_tile(
     Works for 1-4 neighbors.
     """
     canvas = create_multi_direction_canvas(base_size, refs, h_overlap, v_overlap)
+    # Fill transparent areas with blurred neighbor content, keeping the
+    # exact edge strips on top.
+    background = blurred_ref_background(refs, base_size)
+    canvas = Image.alpha_composite(background, canvas)
     cw, ch = canvas.size
 
     min_side = min(cw, ch)
@@ -742,8 +762,10 @@ def generate_multi_direction_tile(
 
     if len(refs) == 4:
         direction_hint = (
-            "Fill the center area while preserving and seamlessly matching "
-            "the existing top, bottom, left and right edge strips. "
+            "The sharp strips along the top, bottom, left and right edges are "
+            "reference content copied from the adjacent map tiles. Keep those "
+            "edge strips exactly unchanged and fill the soft blurred center "
+            "area so it continues them seamlessly. "
         )
     else:
         expand_parts = []
@@ -764,8 +786,9 @@ def generate_multi_direction_tile(
         expand_text = " and ".join(expand_parts)
         edge_text = " and ".join(edge_parts)
         direction_hint = (
-            f"Extend the image {expand_text} while preserving and seamlessly "
-            f"matching the existing {edge_text}. "
+            f"The sharp strip along the {edge_text} is reference content "
+            f"copied from the adjacent map tile. Keep it exactly unchanged "
+            f"and extend the image {expand_text} so it continues seamlessly. "
         )
 
     full_prompt = direction_hint + prompt

@@ -91,15 +91,16 @@ body.cards-hidden .action-card { display: none !important; }
         /* ===== Map stage ===== */
         .map-stage {
             flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: auto;
-            padding: 60px;
+            position: relative;
+            overflow: hidden;
             background: #e8e4dc;
         }
+        .map-stage.panning { cursor: grabbing; }
         .grid-container {
-            position: relative;
+            position: absolute;
+            left: 0;
+            top: 0;
+            transform-origin: 0 0;
             width: var(--main-w);
             height: var(--main-h);
             transition: width 0.2s, height 0.2s;
@@ -463,6 +464,57 @@ body.cards-hidden .action-card { display: none !important; }
             layer: 'full',
         };
         const grid = document.getElementById('grid');
+        const stage = document.getElementById('map-stage');
+
+        // ===== 视图缩放 / 平移 =====
+        const view = { x: 60, y: 60, scale: 1 };
+
+        function applyView() {
+            grid.style.transform = `translate(${view.x}px, ${view.y}px) scale(${view.scale})`;
+        }
+
+        function centerView() {
+            const gw = grid.offsetWidth * view.scale;
+            const gh = grid.offsetHeight * view.scale;
+            view.x = Math.max(20, (stage.clientWidth - gw) / 2);
+            view.y = Math.max(20, (stage.clientHeight - gh) / 2);
+            applyView();
+        }
+
+        stage.addEventListener('wheel', e => {
+            e.preventDefault();
+            const rect = stage.getBoundingClientRect();
+            const mx = e.clientX - rect.left;
+            const my = e.clientY - rect.top;
+            const old = view.scale;
+            const ns = Math.min(5, Math.max(0.1, old * Math.exp(-e.deltaY * 0.0012)));
+            // 以鼠标位置为中心缩放
+            view.x = mx - (mx - view.x) * (ns / old);
+            view.y = my - (my - view.y) * (ns / old);
+            view.scale = ns;
+            applyView();
+        }, { passive: false });
+
+        let panStart = null;
+        stage.addEventListener('mousedown', e => {
+            if (e.button !== 2) return;
+            panStart = { mx: e.clientX, my: e.clientY, x: view.x, y: view.y };
+            stage.classList.add('panning');
+            e.preventDefault();
+        });
+        window.addEventListener('mousemove', e => {
+            if (!panStart) return;
+            view.x = panStart.x + (e.clientX - panStart.mx);
+            view.y = panStart.y + (e.clientY - panStart.my);
+            applyView();
+        });
+        window.addEventListener('mouseup', e => {
+            if (e.button === 2 && panStart) {
+                panStart = null;
+                stage.classList.remove('panning');
+            }
+        });
+        stage.addEventListener('contextmenu', e => e.preventDefault());
 
         const LAYER_NAMES = { full: '整体', ground: '地表', object: '物件' };
 
@@ -941,6 +993,7 @@ body.cards-hidden .action-card { display: none !important; }
                     refreshImage(centerCell.img, '/api/image/0/0?layer=full');
                     setCellHasImage(0, 0, true);
                     updateGridLayout();
+                    centerView();
                     log('初始图生成完成: ' + data.size);
                 } else {
                     log('初始图生成失败: ' + (data.error || 'unknown'));
@@ -976,7 +1029,8 @@ body.cards-hidden .action-card { display: none !important; }
                 setCellHasImage(row, col, true);
                 const opts = document.getElementById(`opts-${row}-${col}`);
                 if (opts) opts.classList.remove('show');
-                log(cellName(row, col) + ' ' + LAYER_NAMES[state.layer] + ' 生成完成: ' + data.size);
+                const refInfo = data.neighbors ? `（参考了 ${data.neighbors} 张相邻图）` : '';
+                log(cellName(row, col) + ' ' + LAYER_NAMES[state.layer] + ' 生成完成: ' + data.size + refInfo);
             } else {
                 log(cellName(row, col) + ' ' + LAYER_NAMES[state.layer] + ' 失败: ' + (data.error || 'unknown'));
                 if (data.trace) console.error(data.trace);
@@ -1108,6 +1162,9 @@ body.cards-hidden .action-card { display: none !important; }
         loadCachedSettings();
         updateGridSize();
         createCell(0, 0);
+        updateGridLayout();
+        centerView();
+        window.addEventListener('resize', applyView);
     </script>
 </body>
 </html>
