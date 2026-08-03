@@ -518,8 +518,8 @@ def generate_center():
     model = request.form.get("model", DEFAULT_MODEL)
 
     try:
-        width = int(request.form.get("width", 1024))
-        height = int(request.form.get("height", 1024))
+        width = int(request.form.get("width", 2848))
+        height = int(request.form.get("height", 1600))
     except (TypeError, ValueError):
         return jsonify({"error": "Invalid size"}), 400
 
@@ -527,6 +527,18 @@ def generate_center():
         return jsonify({"error": "API key required"}), 400
     if not prompt:
         return jsonify({"error": "Prompt required"}), 400
+
+    # Doubao Seedream size limits: total pixels in [1280x720, 4096x4096],
+    # aspect ratio within [1/16, 16]. seedream-5.0-lite needs >= 2560x1440.
+    if not (256 <= width <= 4096 and 256 <= height <= 4096):
+        return jsonify({"error": f"尺寸单边需在 256~4096 之间，当前 {width}x{height}"}), 400
+    pixels = width * height
+    if pixels < 1280 * 720:
+        return jsonify({"error": f"总像素 {pixels} 低于下限 1280x720（5.0-lite 需 ≥ 2560x1440）"}), 400
+    if pixels > 4096 * 4096:
+        return jsonify({"error": f"总像素 {pixels} 超过上限 4096x4096"}), 400
+    if max(width, height) / min(width, height) > 16:
+        return jsonify({"error": "宽高比不能超过 16:1"}), 400
 
     # Ensure even dimensions for the API.
     width += width % 2

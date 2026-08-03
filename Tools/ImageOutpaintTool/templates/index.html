@@ -357,14 +357,38 @@ body.cards-hidden .action-card { display: none !important; }
                     <label>自定义描述（可选）</label>
                     <textarea id="center-custom-prompt" rows="4" style="width:100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; resize: vertical;"></textarea>
                 </div>
-                <div class="field" style="margin-bottom: 16px;">
-                    <label>尺寸</label>
-                    <select id="center-size" style="width:100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-                        <option value="1024x1024">1024 × 1024</option>
-                        <option value="1024x576">1024 × 576</option>
-                        <option value="1920x1080">1920 × 1080</option>
-                        <option value="2048x2048">2048 × 2048</option>
+                <div class="field" style="margin-bottom: 10px;">
+                    <label>宽高比</label>
+                    <select id="center-ratio" onchange="onCenterSizePresetChange()" style="width:100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                        <option value="16:9">16:9 横屏</option>
+                        <option value="9:16">9:16 竖屏</option>
+                        <option value="1:1">1:1 方形</option>
+                        <option value="4:3">4:3 横屏</option>
+                        <option value="3:4">3:4 竖屏</option>
+                        <option value="3:2">3:2 横屏</option>
+                        <option value="2:3">2:3 竖屏</option>
+                        <option value="21:9">21:9 超宽</option>
+                        <option value="custom">✏️ 自定义尺寸</option>
                     </select>
+                </div>
+                <div class="field" id="center-tier-field" style="margin-bottom: 16px;">
+                    <label>分辨率</label>
+                    <select id="center-tier" onchange="onCenterSizePresetChange()" style="width:100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                        <option value="2K">2K（推荐）</option>
+                        <option value="4K">4K</option>
+                    </select>
+                    <div id="center-size-preview" style="font-size: 12px; color: #888; margin-top: 4px;"></div>
+                </div>
+                <div class="field" id="center-custom-size-field" style="display: none; margin-bottom: 16px;">
+                    <label>自定义尺寸（宽 × 高）</label>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <input id="center-width" type="number" value="2848" min="256" max="4096" step="2" style="width: 110px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                        <span>×</span>
+                        <input id="center-height" type="number" value="1600" min="256" max="4096" step="2" style="width: 110px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                    <div style="font-size: 12px; color: #888; margin-top: 4px;">
+                        单边 ≤ 4096，总像素需在 1280×720 ~ 4096×4096 之间；seedream-5.0-lite 要求总像素 ≥ 2560×1440
+                    </div>
                 </div>
                 <div class="modal-actions">
                     <button class="btn primary" onclick="generateCenter()">生成</button>
@@ -768,6 +792,7 @@ body.cards-hidden .action-card { display: none !important; }
         function openGenerateCenter() {
             document.getElementById('generate-center-modal').classList.add('show');
             onCenterStyleChange();
+            onCenterSizePresetChange();
         }
 
         function closeGenerateCenter() {
@@ -776,6 +801,49 @@ body.cards-hidden .action-card { display: none !important; }
 
         function hideGenerateCenter(event) {
             if (event.target.id === 'generate-center-modal') closeGenerateCenter();
+        }
+
+        const CENTER_SIZE_TABLE = {
+            '16:9': { '2K': [2848, 1600], '4K': [4096, 2304] },
+            '9:16': { '2K': [1600, 2848], '4K': [2304, 4096] },
+            '1:1':  { '2K': [2048, 2048], '4K': [4096, 4096] },
+            '4:3':  { '2K': [2304, 1728], '4K': [4096, 3072] },
+            '3:4':  { '2K': [1728, 2304], '4K': [3072, 4096] },
+            '3:2':  { '2K': [2496, 1664], '4K': [4096, 2730] },
+            '2:3':  { '2K': [1664, 2496], '4K': [2730, 4096] },
+            '21:9': { '2K': [3024, 1296], '4K': [4096, 1754] },
+        };
+
+        function onCenterSizePresetChange() {
+            const ratio = document.getElementById('center-ratio').value;
+            const custom = ratio === 'custom';
+            document.getElementById('center-tier-field').style.display = custom ? 'none' : '';
+            document.getElementById('center-custom-size-field').style.display = custom ? '' : 'none';
+            if (!custom) {
+                const tier = document.getElementById('center-tier').value;
+                const [w, h] = CENTER_SIZE_TABLE[ratio][tier];
+                document.getElementById('center-size-preview').textContent = `实际尺寸：${w} × ${h}`;
+            }
+        }
+
+        function getCenterSize() {
+            const ratio = document.getElementById('center-ratio').value;
+            if (ratio !== 'custom') {
+                const tier = document.getElementById('center-tier').value;
+                return CENTER_SIZE_TABLE[ratio][tier];
+            }
+            let w = parseInt(document.getElementById('center-width').value, 10);
+            let h = parseInt(document.getElementById('center-height').value, 10);
+            if (!w || !h || w < 256 || h < 256 || w > 4096 || h > 4096) {
+                log('错误：自定义尺寸单边需在 256 ~ 4096 之间');
+                return null;
+            }
+            const px = w * h;
+            if (px < 1280 * 720 || px > 4096 * 4096) {
+                log('错误：总像素需在 1280×720 ~ 4096×4096 之间（5.0-lite 需 ≥ 2560×1440）');
+                return null;
+            }
+            return [w, h];
         }
 
         function onCenterStyleChange() {
@@ -797,7 +865,8 @@ body.cards-hidden .action-card { display: none !important; }
 
             const style = document.getElementById('center-style').value;
             const custom = document.getElementById('center-custom-prompt').value.trim();
-            const size = document.getElementById('center-size').value;
+            const size = getCenterSize();
+            if (!size) return;
 
             let prompt;
             if (style === 'custom') {
@@ -811,7 +880,7 @@ body.cards-hidden .action-card { display: none !important; }
                 if (custom) prompt += ' ' + custom;
             }
 
-            const [width, height] = size.split('x').map(Number);
+            const [width, height] = size;
 
             const form = new FormData();
             form.append('prompt', prompt);
