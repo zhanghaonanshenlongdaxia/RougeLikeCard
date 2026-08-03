@@ -423,6 +423,21 @@ body.cards-hidden .action-card { display: none !important; }
             <aside class="sidebar">
                 <h2>设置</h2>
                 <div class="field">
+                    <label>生成模式</label>
+                    <div style="display:flex; gap:8px;">
+                        <label style="display:flex; align-items:center; gap:4px; cursor:pointer;">
+                            <input type="radio" name="gen-mode" value="custom" checked onchange="onModeChange()"> 自定义API
+                        </label>
+                        <label style="display:flex; align-items:center; gap:4px; cursor:pointer;">
+                            <input type="radio" name="gen-mode" value="local" onchange="onModeChange()"> Unity本地生成
+                        </label>
+                    </div>
+                    <div id="local-hint" style="font-size:11px; color:#2c3e50; margin-top:4px; display:none;">
+                        本地生成模式：点击生成后请在Codely中运行处理
+                    </div>
+                </div>
+                <div id="api-fields">
+                <div class="field">
                     <label>豆包 API Key</label>
                     <input type="password" id="api-key" value="" placeholder="请输入豆包 API Key">
                 </div>                <div class="field">
@@ -433,6 +448,7 @@ body.cards-hidden .action-card { display: none !important; }
                     <label>模型 ID</label>
                     <input type="text" id="model" value="{{ default_model }}">
                 </div>
+                </div>
                 <div class="field">
                     <label>扩图提示词
                         <span id="prompt-reset" title="恢复默认提示词" style="float:right; font-size:12px; color:#e67e22; cursor:pointer; font-weight:normal;">恢复默认</span>
@@ -440,6 +456,7 @@ body.cards-hidden .action-card { display: none !important; }
                     <textarea id="prompt">Seamlessly extend this top-down tile-based game map. Continue the exact same art style, color palette, terrain types and object types shown in the reference edges. Do not introduce new biomes, new themes or unrelated elements.</textarea>
                 </div>
                 <div class="field">
+                    <button class="btn" style="width:100%; margin-bottom:6px" onclick="generateLayerAll()">整图生成当前分层（地表/物件）</button>
                     <button class="btn primary" style="width:100%; margin-bottom:6px" onclick="showPreview()">全图预览</button>
                     <button class="btn" style="width:100%; margin-bottom:6px" onclick="downloadCombined()">下载合并 PNG</button>
                     <button class="btn" style="width:100%; margin-bottom:6px" onclick="downloadPackage('godot')">下载 Godot 包</button>
@@ -536,7 +553,14 @@ body.cards-hidden .action-card { display: none !important; }
                 prompt: document.getElementById('prompt').value,
                 h_overlap: parseInt(document.getElementById('h-overlap').value) / 100,
                 v_overlap: parseInt(document.getElementById('v-overlap').value) / 100,
+                mode: document.querySelector('input[name="gen-mode"]:checked').value,
             };
+        }
+
+        function onModeChange() {
+            const mode = document.querySelector('input[name="gen-mode"]:checked').value;
+            document.getElementById('api-fields').style.display = mode === 'local' ? 'none' : '';
+            document.getElementById('local-hint').style.display = mode === 'local' ? '' : 'none';
         }
 
         const DEFAULT_OUTPAINT_PROMPT = "Seamlessly extend this top-down tile-based game map. Continue the exact same art style, color palette, terrain types and object types shown in the reference edges. Do not introduce new biomes, new themes or unrelated elements.";
@@ -584,6 +608,42 @@ body.cards-hidden .action-card { display: none !important; }
             document.querySelectorAll('.action-options .primary').forEach(btn => {
                 btn.textContent = label;
             });
+        }
+
+        async function generateLayerAll() {
+            if (state.layer === 'full') {
+                log('请先切换到 地表 或 物件 层，再整图生成分层');
+                return;
+            }
+            const s = getSettings();
+            if (!s.api_key) {
+                log('错误：请先填写 API Key');
+                return;
+            }
+            const form = new FormData();
+            form.append('layer', state.layer);
+            form.append('prompt', s.prompt);
+            form.append('api_key', s.api_key);
+            form.append('api_url', s.api_url);
+            form.append('model', s.model);
+            form.append('h_overlap', s.h_overlap);
+            form.append('v_overlap', s.v_overlap);
+
+            log('正在整图生成' + LAYER_NAMES[state.layer] + '层（整个拼接图一次生成，再切回各块）...');
+            try {
+                const resp = await fetch('/api/generate_layer_all', { method: 'POST', body: form });
+                const data = await resp.json();
+                if (data.ok) {
+                    refreshAllImages();
+                    updateAllHints();
+                    log('整图' + LAYER_NAMES[state.layer] + '层生成完成，已切分 ' + data.count + ' 块');
+                } else {
+                    log('整图分层失败: ' + (data.error || 'unknown'));
+                    if (data.trace) console.error(data.trace);
+                }
+            } catch (err) {
+                log('整图分层失败: ' + err.message);
+            }
         }
 
         function refreshAllImages() {
@@ -984,6 +1044,7 @@ body.cards-hidden .action-card { display: none !important; }
             form.append('api_key', s.api_key);
             form.append('api_url', s.api_url);
             form.append('model', s.model);
+            form.append('mode', s.mode);
             form.append('width', width);
             form.append('height', height);
 
@@ -996,7 +1057,10 @@ body.cards-hidden .action-card { display: none !important; }
             try {
                 const resp = await fetch('/api/generate_center', { method: 'POST', body: form });
                 const data = await resp.json();
-                if (data.ok) {
+                if (data.pending) {
+                    log('初始图已加入本地生成队列，等待Codely处理...');
+                    pollLocalCenter(data.job_id, data.size);
+                } else if (data.ok) {
                     state.cells = {};
                     grid.innerHTML = '';
                     state.centerSize = data.size;
@@ -1020,6 +1084,37 @@ body.cards-hidden .action-card { display: none !important; }
             }
         }
 
+        function pollLocalCenter(jobId, size) {
+            const check = async () => {
+                try {
+                    const resp = await fetch(`/api/local_check/${jobId}`);
+                    const data = await resp.json();
+                    if (data.status === 'completed') {
+                        state.cells = {};
+                        grid.innerHTML = '';
+                        state.centerSize = size;
+                        updateGridSize();
+                        createCell(0, 0);
+                        const centerCell = state.cells[cellKey(0, 0)];
+                        centerCell.img.style.display = 'block';
+                        refreshImage(centerCell.img, '/api/image/0/0?layer=full');
+                        setCellHasImage(0, 0, true);
+                        updateGridLayout();
+                        centerView();
+                        log('初始图本地生成完成: ' + size);
+                    } else if (data.status === 'failed') {
+                        log('初始图本地生成失败: ' + (data.error || 'unknown'));
+                    } else {
+                        setTimeout(check, 2000);
+                    }
+                } catch (e) {
+                    log('轮询出错: ' + e.message);
+                    setTimeout(check, 5000);
+                }
+            };
+            setTimeout(check, 2000);
+        }
+
         async function generateCell(row, col) {
             const s = getSettings();
             const form = new FormData();
@@ -1032,11 +1127,15 @@ body.cards-hidden .action-card { display: none !important; }
             form.append('api_key', s.api_key);
             form.append('api_url', s.api_url);
             form.append('model', s.model);
+            form.append('mode', s.mode);
 
             log(cellName(row, col) + ' ' + LAYER_NAMES[state.layer] + ' 生成中...');
             const resp = await fetch('/api/generate', { method: 'POST', body: form });
             const data = await resp.json();
-            if (data.ok) {
+            if (data.pending) {
+                log(cellName(row, col) + ' 已加入本地生成队列，等待Codely处理...');
+                pollLocalJob(data.job_id, row, col, state.layer);
+            } else if (data.ok) {
                 const cell = state.cells[cellKey(row, col)];
                 cell.img.style.display = 'block';
                 refreshImage(cell.img, `/api/image/${row}/${col}?layer=${state.layer}`);
@@ -1049,6 +1148,34 @@ body.cards-hidden .action-card { display: none !important; }
                 log(cellName(row, col) + ' ' + LAYER_NAMES[state.layer] + ' 失败: ' + (data.error || 'unknown'));
                 if (data.trace) console.error(data.trace);
             }
+        }
+
+        function pollLocalJob(jobId, row, col, layer) {
+            const check = async () => {
+                try {
+                    const resp = await fetch(`/api/local_check/${jobId}`);
+                    const data = await resp.json();
+                    if (data.status === 'completed') {
+                        const cell = state.cells[cellKey(row, col)];
+                        if (cell) {
+                            cell.img.style.display = 'block';
+                            refreshImage(cell.img, `/api/image/${row}/${col}?layer=${layer}`);
+                            setCellHasImage(row, col, true);
+                        }
+                        const opts = document.getElementById(`opts-${row}-${col}`);
+                        if (opts) opts.classList.remove('show');
+                        log(cellName(row, col) + ' ' + LAYER_NAMES[layer] + ' 本地生成完成');
+                    } else if (data.status === 'failed') {
+                        log(cellName(row, col) + ' 本地生成失败: ' + (data.error || 'unknown'));
+                    } else {
+                        setTimeout(check, 2000);
+                    }
+                } catch (e) {
+                    log('轮询出错: ' + e.message);
+                    setTimeout(check, 5000);
+                }
+            };
+            setTimeout(check, 2000);
         }
 
         function downloadCombined() {

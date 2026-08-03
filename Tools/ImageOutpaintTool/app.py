@@ -9,8 +9,10 @@ import base64
 import io
 import os
 import re
+import time
 import traceback
 import uuid
+import threading
 from typing import Dict, Optional
 
 from flask import Flask, jsonify, request, send_file, session, render_template
@@ -33,6 +35,12 @@ def disable_caching(response):
 
 # In-memory session storage: sid -> {"cells": {"r-c": Image.Image}}
 SESSIONS: Dict[str, Dict[str, Dict[str, Image.Image]]] = {}
+
+# Global local generation queue (not session-based)
+LOCAL_QUEUE: list[dict] = []
+local_lock = threading.Lock()
+CANVAS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "temp_canvases")
+os.makedirs(CANVAS_DIR, exist_ok=True)
 
 DEFAULT_API_URL = "https://ark.cn-beijing.volces.com/api/v3/images/generations"
 DEFAULT_MODEL = "doubao-seedream-4-0-250828"
@@ -381,12 +389,14 @@ def cell_name(row: int, col: int) -> str:
     return "".join(parts) or f"{row}-{col}"
 
 
-def stitch_preview(
+def stitch_with_positions(
     cells: Dict[str, Image.Image], h_overlap: float, v_overlap: float
-) -> Image.Image:
+):
+    """Stitch cells into one image. Returns (image, positions, tile_size)
+    where positions maps cell key -> (x, y) top-left inside the image."""
     center = cells.get("0-0")
     if center is None:
-        return Image.new("RGBA", (512, 512), (40, 40, 40, 255))
+        return None, {}, (0, 0)
 
     cw, ch = center.size
     h_step = cw - int(cw * h_overlap)
@@ -410,7 +420,7 @@ def stitch_preview(
         positions[key] = (dx, dy)
 
     if not positions:
-        return Image.new("RGBA", (cw, ch), (30, 30, 30, 255))
+        return None, {}, (cw, ch)
 
     min_x = min(dx for dx, dy in positions.values())
     min_y = min(dy for dx, dy in positions.values())
@@ -421,9 +431,24 @@ def stitch_preview(
     total_h = max_y - min_y
     preview = Image.new("RGBA", (total_w, total_h), (30, 30, 30, 255))
 
+    placed = {}
     for key, (dx, dy) in positions.items():
-        preview.paste(cells[key], (dx - min_x, dy - min_y))
+        x, y = dx - min_x, dy - min_y
+        preview.paste(cells[key], (x, y))
+        placed[key] = (x, y)
 
+    return preview, placed, (cw, ch)
+
+
+def stitch_preview(
+    cells: Dict[str, Image.Image], h_overlap: float, v_overlap: float
+) -> Image.Image:
+    preview, _, _ = stitch_with_positions(cells, h_overlap, v_overlap)
+    if preview is None:
+        center = cells.get("0-0")
+        if center is None:
+            return Image.new("RGBA", (512, 512), (40, 40, 40, 255))
+        return Image.new("RGBA", center.size, (30, 30, 30, 255))
     return preview
 
 
@@ -518,6 +543,7 @@ def generate_center():
     api_key = request.form.get("api_key", "")
     api_url = request.form.get("api_url", DEFAULT_API_URL)
     model = request.form.get("model", DEFAULT_MODEL)
+    mode = request.form.get("mode", "custom")
 
     try:
         width = int(request.form.get("width", 2848))
@@ -525,7 +551,7 @@ def generate_center():
     except (TypeError, ValueError):
         return jsonify({"error": "Invalid size"}), 400
 
-    if not api_key:
+    if mode != "local" and not api_key:
         return jsonify({"error": "API key required"}), 400
     if not prompt:
         return jsonify({"error": "Prompt required"}), 400
@@ -559,7 +585,25 @@ def generate_center():
     )
 
     try:
-        result = call_doubao_text_api(full_prompt, api_key, api_url, model, size_str)
+        if mode == "local":
+            job_id = str(uuid.uuid4())
+            with local_lock:
+                LOCAL_QUEUE.append({
+                    "id": job_id,
+                    "sid": session.get("sid"),
+                    "row": 0, "col": 0,
+                    "layer": "full",
+                    "status": "queued",
+                    "prompt": full_prompt,
+                    "canvas_path": "",
+                    "is_text_only": True,
+                    "base_size": [width, height],
+                    "is_center": True,
+                    "created_at": time.time(),
+                })
+            return jsonify({"ok": True, "pending": True, "job_id": job_id, "size": [width, height]})
+        else:
+            result = call_doubao_text_api(full_prompt, api_key, api_url, model, size_str)
         # Replacing the center clears any previously generated surrounding tiles
         # to avoid size mismatches.
         data = get_session()
@@ -837,6 +881,27 @@ def generate_multi_direction_tile(
     return result
 
 
+# Doubao Seedream size limits: total pixels in [1280x720, 4096x4096],
+# each side <= 4096. seedream-5.0-lite requires >= 2560x1440 total pixels.
+MIN_API_PIXELS = 2560 * 1440
+MAX_API_PIXELS = 4096 * 4096
+MAX_API_SIDE = 4096
+
+
+def fit_api_size(w: int, h: int) -> tuple[int, int]:
+    """Scale (w, h) into the API's accepted range, preserving aspect ratio."""
+    scale = 1.0
+    if w * h < MIN_API_PIXELS:
+        scale = (MIN_API_PIXELS / (w * h)) ** 0.5
+    scale = min(scale, MAX_API_SIDE / w, MAX_API_SIDE / h)
+    if w * h * scale * scale > MAX_API_PIXELS:
+        scale = (MAX_API_PIXELS / (w * h)) ** 0.5
+    sw, sh = int(round(w * scale)), int(round(h * scale))
+    sw += sw % 2
+    sh += sh % 2
+    return sw, sh
+
+
 def generate_layer_tile(
     full_img: Image.Image,
     layer: str,
@@ -851,9 +916,12 @@ def generate_layer_tile(
     that background removed.
     """
     cw, ch = full_img.size
-    cw += cw % 2
-    ch += ch % 2
-    size_str = f"{cw}x{ch}"
+    sw, sh = fit_api_size(cw, ch)
+    send_img = (
+        full_img if (sw, sh) == (cw, ch)
+        else full_img.resize((sw, sh), Image.Resampling.LANCZOS)
+    )
+    size_str = f"{sw}x{sh}"
 
     if layer == "ground":
         prefix = (
@@ -871,7 +939,7 @@ def generate_layer_tile(
         prefix = ""
 
     full_prompt = prefix + prompt
-    result = call_doubao_api(full_img, full_prompt, api_key, api_url, model, size_str)
+    result = call_doubao_api(send_img, full_prompt, api_key, api_url, model, size_str)
     if result.size != full_img.size:
         result = result.resize(full_img.size, Image.Resampling.LANCZOS)
 
@@ -902,8 +970,9 @@ def generate():
     api_key = request.form.get("api_key", "")
     api_url = request.form.get("api_url", DEFAULT_API_URL)
     model = request.form.get("model", DEFAULT_MODEL)
+    mode = request.form.get("mode", "custom")
 
-    if not api_key:
+    if mode != "local" and not api_key:
         return jsonify({"error": "API key required"}), 400
 
     data = get_session()
@@ -917,9 +986,36 @@ def generate():
         if full_img is None:
             return jsonify({"error": "请先生成整体层，再分层"}), 400
         try:
-            result = generate_layer_tile(
-                full_img, layer, prompt, api_key, api_url, model
-            )
+            if mode == "local":
+                job_id = str(uuid.uuid4())
+                canvas_path = os.path.join(CANVAS_DIR, f"{job_id}_canvas.png")
+                full_img.save(canvas_path, format="PNG")
+                layer_prompt = ""
+                if layer == "ground":
+                    layer_prompt = "Ground layer only. Keep only terrain, ground, grass, river, stone path, floor tiles, soil. Remove all buildings, trees, rocks, decorations, bridges, furniture and objects. "
+                elif layer == "object":
+                    layer_prompt = "Object layer only. Keep only buildings, trees, rocks, bridges, decorations, furniture and props. Replace all ground, grass, river, stone path, floor tiles, soil with solid black background. "
+                with local_lock:
+                    LOCAL_QUEUE.append({
+                        "id": job_id,
+                        "sid": session.get("sid"),
+                        "row": row, "col": col,
+                        "layer": layer,
+                        "status": "queued",
+                        "prompt": layer_prompt + prompt,
+                        "canvas_path": canvas_path,
+                        "is_text_only": False,
+                        "base_size": list(full_img.size),
+                        "h_overlap": h_overlap,
+                        "v_overlap": v_overlap,
+                        "is_layer": True,
+                        "created_at": time.time(),
+                    })
+                return jsonify({"ok": True, "pending": True, "job_id": job_id, "size": list(full_img.size), "layer": layer})
+            else:
+                result = generate_layer_tile(
+                    full_img, layer, prompt, api_key, api_url, model
+                )
             cells[cell_storage_key(row, col, layer)] = result
             return jsonify({"ok": True, "size": result.size, "layer": layer})
         except Exception as e:
@@ -931,13 +1027,152 @@ def generate():
         return jsonify({"error": "该位置没有可用的父图，请先生成相邻边块"}), 400
 
     try:
-        result = generate_multi_direction_tile(
-            center.size, refs, h_overlap, v_overlap, prompt, api_key, api_url, model
-        )
+        if mode == "local":
+            strips_canvas = create_multi_direction_canvas(
+                center.size, refs, h_overlap, v_overlap
+            )
+            cw, ch = strips_canvas.size
+            min_side = min(cw, ch)
+            if min_side < 1920:
+                scale = 1920.0 / min_side
+                cw = int(round(cw * scale))
+                ch = int(round(ch * scale))
+                cw += cw % 2
+                ch += ch % 2
+                strips_canvas = strips_canvas.resize((cw, ch), Image.Resampling.LANCZOS)
+
+            directions = {d for _, d in refs}
+            expand_parts = []
+            edge_parts = []
+            if "down" in directions:
+                expand_parts.append("downward")
+                edge_parts.append("top edge")
+            if "up" in directions:
+                expand_parts.append("upward")
+                edge_parts.append("bottom edge")
+            if "right" in directions:
+                expand_parts.append("to the right")
+                edge_parts.append("left edge")
+            if "left" in directions:
+                expand_parts.append("to the left")
+                edge_parts.append("right edge")
+            edge_text = " and ".join(edge_parts)
+            expand_text = " and ".join(expand_parts)
+
+            if len(refs) == 4:
+                direction_hint = (
+                    "The sharp strips along the top, bottom, left and right edges are "
+                    "reference content copied from the adjacent map tiles. Keep those "
+                    "edge strips exactly unchanged. Fill the empty transparent area "
+                    "in the middle with brand new, sharp, fully detailed map content "
+                    "that continues the edge strips seamlessly. Invent new varied "
+                    "terrain and objects; do not copy, clone or repeat content from "
+                    "the edge strips. "
+                )
+            else:
+                direction_hint = (
+                    f"The sharp strip along the {edge_text} is reference content "
+                    f"copied from the adjacent map tile. Keep it exactly unchanged. "
+                    f"Fill the empty transparent area with brand new, sharp, fully "
+                    f"detailed map content, extending the scene {expand_text} "
+                    f"seamlessly. Invent new varied terrain and objects; do not "
+                    f"copy, clone or repeat content from the edge strip. "
+                )
+
+            full_prompt = direction_hint + prompt
+
+            job_id = str(uuid.uuid4())
+            canvas_path = os.path.join(CANVAS_DIR, f"{job_id}_canvas.png")
+            strips_canvas.save(canvas_path, format="PNG")
+
+            with local_lock:
+                LOCAL_QUEUE.append({
+                    "id": job_id,
+                    "sid": session.get("sid"),
+                    "row": row, "col": col,
+                    "layer": "full",
+                    "status": "queued",
+                    "prompt": full_prompt,
+                    "canvas_path": canvas_path,
+                    "is_text_only": False,
+                    "base_size": list(center.size),
+                    "h_overlap": h_overlap,
+                    "v_overlap": v_overlap,
+                    "is_layer": False,
+                    "created_at": time.time(),
+                })
+            return jsonify({"ok": True, "pending": True, "job_id": job_id, "size": list(center.size), "neighbors": len(refs)})
+        else:
+            result = generate_multi_direction_tile(
+                center.size, refs, h_overlap, v_overlap, prompt, api_key, api_url, model
+            )
         cells[cell_storage_key(row, col, "full")] = result
         return jsonify({"ok": True, "size": result.size, "neighbors": len(refs)})
     except Exception as e:
         return jsonify({"error": str(e), "trace": traceback.format_exc()}), 500
+
+
+@app.route("/api/generate_layer_all", methods=["POST"])
+def generate_layer_all():
+    """Generate the ground/object layer for the WHOLE stitched map at once,
+    then slice the result back into per-cell layer images. Keeps the layer
+    globally consistent (style, lighting, object distribution)."""
+    layer = request.form.get("layer", "ground")
+    if layer not in ("ground", "object"):
+        return jsonify({"error": "整图分层仅支持 地表/物件 层"}), 400
+    try:
+        h_overlap = float(request.form.get("h_overlap", 0.15))
+        v_overlap = float(request.form.get("v_overlap", 0.15))
+    except ValueError:
+        return jsonify({"error": "Invalid overlap"}), 400
+
+    prompt = request.form.get("prompt", "")
+    api_key = request.form.get("api_key", "")
+    api_url = request.form.get("api_url", DEFAULT_API_URL)
+    model = request.form.get("model", DEFAULT_MODEL)
+    if not api_key:
+        return jsonify({"error": "API key required"}), 400
+
+    data = get_session()
+    cells = data["cells"]
+    full_cells = {
+        k: v
+        for k, v in cells.items()
+        if "-" in k and not k.endswith(("-ground", "-object"))
+    }
+    if full_cells.get("0-0") is None:
+        return jsonify({"error": "请先上传主图"}), 400
+
+    stitched, positions, tile_size = stitch_with_positions(
+        full_cells, h_overlap, v_overlap
+    )
+    if stitched is None:
+        return jsonify({"error": "没有可拼接的整体层图块"}), 400
+
+    w, h = stitched.size
+    sw, sh = fit_api_size(w, h)
+    send_img = (
+        stitched if (sw, sh) == (w, h)
+        else stitched.resize((sw, sh), Image.Resampling.LANCZOS)
+    )
+
+    try:
+        layer_big = generate_layer_tile(
+            send_img, layer, prompt, api_key, api_url, model
+        )
+    except Exception as e:
+        return jsonify({"error": str(e), "trace": traceback.format_exc()}), 500
+
+    if layer_big.size != (w, h):
+        layer_big = layer_big.resize((w, h), Image.Resampling.LANCZOS)
+
+    cw, ch = tile_size
+    count = 0
+    for key, (x, y) in positions.items():
+        cells[f"{key}-{layer}"] = layer_big.crop((x, y, x + cw, y + ch))
+        count += 1
+
+    return jsonify({"ok": True, "count": count, "size": [w, h]})
 
 
 @app.route("/api/clear_cell", methods=["POST"])
@@ -1005,5 +1240,147 @@ def combined():
     return send_file(io.BytesIO(pil_to_bytes(preview)), mimetype="image/png")
 
 
+# ==================== Local AI generation (Codely bridge) ====================
+
+
+@app.route("/api/local_next")
+def local_next():
+    """Codely calls this to get the next pending job."""
+    with local_lock:
+        for job in LOCAL_QUEUE:
+            if job["status"] == "queued":
+                job["status"] = "in_progress"
+                job["started_at"] = time.time()
+                return jsonify({
+                    "job_id": job["id"],
+                    "canvas_url": f"/api/local_canvas/{job['id']}" if job.get("canvas_path") else None,
+                    "prompt": job["prompt"],
+                    "cell_name": cell_name(job["row"], job["col"]),
+                    "is_text_only": job.get("is_text_only", False),
+                    "base_size": job.get("base_size"),
+                })
+    return jsonify({"ok": False, "message": "No pending jobs"})
+
+
+@app.route("/api/local_canvas/<job_id>")
+def local_canvas_serve(job_id):
+    """Codely downloads the canvas image from here."""
+    with local_lock:
+        job = next((j for j in LOCAL_QUEUE if j["id"] == job_id), None)
+    if not job or not job.get("canvas_path"):
+        return "", 404
+    return send_file(job["canvas_path"], mimetype="image/png")
+
+
+@app.route("/api/local_complete", methods=["POST"])
+def local_complete():
+    """Codely uploads the generated image here. Stores result into the
+    browser's session so it shows up correctly."""
+    job_id = request.form.get("job_id", "")
+    if "image" not in request.files:
+        return jsonify({"error": "No image"}), 400
+    with local_lock:
+        job = next((j for j in LOCAL_QUEUE if j["id"] == job_id), None)
+        if not job:
+            return jsonify({"error": "Job not found"}), 404
+
+    result_img = Image.open(request.files["image"].stream).convert("RGBA")
+
+    # Look up the browser session that created this job
+    sid = job.get("sid")
+    sess = SESSIONS.get(sid) if sid else None
+    if sess is None:
+        with local_lock:
+            job["status"] = "failed"
+            job["error"] = "Session not found"
+        return jsonify({"error": "Session not found"}), 500
+
+    cells = sess["cells"]
+    base_size = tuple(job.get("base_size", result_img.size))
+
+    if result_img.size != base_size:
+        result_img = result_img.resize(base_size, Image.Resampling.LANCZOS)
+
+    # Apply edge strips for full-layer tiles (not center, not layer separation)
+    if not job.get("is_center") and not job.get("is_layer") and not job.get("is_text_only"):
+        refs = find_all_neighbors(cells, job["row"], job["col"], "full")
+        if refs:
+            strips = create_multi_direction_canvas(
+                base_size, refs, job["h_overlap"], job["v_overlap"]
+            )
+            result_img = apply_edge_strips(
+                result_img, strips, base_size, refs,
+                job["h_overlap"], job["v_overlap"]
+            )
+
+    # Handle object layer black background removal
+    if job.get("is_layer") and job.get("layer") == "object":
+        result_img = remove_black_background(result_img)
+
+    # Store into the browser's session
+    layer = job.get("layer", "full")
+    key = cell_storage_key(job["row"], job["col"], layer)
+    cells[key] = result_img
+
+    with local_lock:
+        job["status"] = "completed"
+        job["completed_at"] = time.time()
+
+    # Clean up canvas temp file
+    cp = job.get("canvas_path")
+    if cp:
+        try:
+            os.remove(cp)
+        except OSError:
+            pass
+
+    return jsonify({"ok": True, "row": job["row"], "col": job["col"], "layer": layer, "size": list(result_img.size)})
+
+
+@app.route("/api/local_fail", methods=["POST"])
+def local_fail():
+    """Codely reports a failed job."""
+    job_id = request.form.get("job_id", "")
+    reason = request.form.get("reason", "unknown")
+    with local_lock:
+        job = next((j for j in LOCAL_QUEUE if j["id"] == job_id), None)
+        if not job:
+            return jsonify({"error": "Job not found"}), 404
+        job["status"] = "failed"
+        job["error"] = reason
+    return jsonify({"ok": True})
+
+
+@app.route("/api/local_check/<job_id>")
+def local_check(job_id):
+    """Browser polls this to check if a local generation job is done."""
+    with local_lock:
+        job = next((j for j in LOCAL_QUEUE if j["id"] == job_id), None)
+        if not job:
+            return jsonify({"status": "not_found"})
+        return jsonify({
+            "status": job["status"],
+            "row": job["row"],
+            "col": job["col"],
+            "layer": job.get("layer", "full"),
+            "cell_name": cell_name(job["row"], job["col"]),
+            "error": job.get("error"),
+        })
+
+
+@app.route("/api/local_status")
+def local_status():
+    """Check progress of all local generation jobs."""
+    with local_lock:
+        summary = {
+            "total": len(LOCAL_QUEUE),
+            "queued": sum(1 for j in LOCAL_QUEUE if j["status"] == "queued"),
+            "in_progress": sum(1 for j in LOCAL_QUEUE if j["status"] == "in_progress"),
+            "completed": sum(1 for j in LOCAL_QUEUE if j["status"] == "completed"),
+            "failed": sum(1 for j in LOCAL_QUEUE if j["status"] == "failed"),
+        }
+    return jsonify(summary)
+
+
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=7860, debug=False)
+    app.run(host="127.0.0.1", port=7860, debug=False, threaded=True)
