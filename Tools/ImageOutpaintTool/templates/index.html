@@ -291,7 +291,7 @@ body.cards-hidden .action-card { display: none !important; }
             <a class="back" href="#">← 返回首页</a>
             <div class="brand">
                 <h1>地图拼接</h1>
-                <span>右键拖动画布，滚轮缩放视图</span>
+                <span>左键拖动画布，滚轮缩放视图</span>
             </div>
             <div class="top-controls">
                 <div class="top-control">
@@ -497,7 +497,9 @@ body.cards-hidden .action-card { display: none !important; }
 
         let panStart = null;
         stage.addEventListener('mousedown', e => {
-            if (e.button !== 2) return;
+            if (e.button !== 0) return;
+            // 点在卡片/按钮等交互元素上不触发拖动
+            if (e.target.closest('.action-card, button, a, input, select, textarea')) return;
             panStart = { mx: e.clientX, my: e.clientY, x: view.x, y: view.y };
             stage.classList.add('panning');
             e.preventDefault();
@@ -509,7 +511,7 @@ body.cards-hidden .action-card { display: none !important; }
             applyView();
         });
         window.addEventListener('mouseup', e => {
-            if (e.button === 2 && panStart) {
+            if (e.button === 0 && panStart) {
                 panStart = null;
                 stage.classList.remove('panning');
             }
