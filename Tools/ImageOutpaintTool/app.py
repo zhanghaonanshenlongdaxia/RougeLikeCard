@@ -137,6 +137,7 @@ def call_doubao_text_api(
         "n": 1,
         "size": size,
         "response_format": "b64_json",
+        "watermark": False,
     }
     headers = {
         "Authorization": f"Bearer {api_key}",
@@ -166,6 +167,7 @@ def call_doubao_api(
         "n": 1,
         "size": size,
         "response_format": "b64_json",
+        "watermark": False,
     }
     headers = {
         "Authorization": f"Bearer {api_key}",
@@ -764,8 +766,10 @@ def generate_multi_direction_tile(
         direction_hint = (
             "The sharp strips along the top, bottom, left and right edges are "
             "reference content copied from the adjacent map tiles. Keep those "
-            "edge strips exactly unchanged and fill the soft blurred center "
-            "area so it continues them seamlessly. "
+            "edge strips exactly unchanged. The soft blurred area in the "
+            "middle is only a rough color placeholder: repaint it completely "
+            "in sharp, clean, fully detailed map content that continues the "
+            "edge strips seamlessly. Do not leave any blurriness anywhere. "
         )
     else:
         expand_parts = []
@@ -787,8 +791,11 @@ def generate_multi_direction_tile(
         edge_text = " and ".join(edge_parts)
         direction_hint = (
             f"The sharp strip along the {edge_text} is reference content "
-            f"copied from the adjacent map tile. Keep it exactly unchanged "
-            f"and extend the image {expand_text} so it continues seamlessly. "
+            f"copied from the adjacent map tile. Keep it exactly unchanged. "
+            f"The soft blurred area is only a rough color placeholder: repaint "
+            f"it completely in sharp, clean, fully detailed map content, "
+            f"extending the scene {expand_text} seamlessly. Do not leave any "
+            f"blurriness anywhere. "
         )
 
     full_prompt = direction_hint + prompt
