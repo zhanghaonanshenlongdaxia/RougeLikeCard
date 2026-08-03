@@ -709,25 +709,6 @@ def create_multi_direction_canvas(
     return canvas
 
 
-def solid_placeholder_background(canvas: Image.Image) -> Image.Image:
-    """Fill the transparent (uncovered) canvas areas with the average color
-    of the pasted reference strips. A flat color gives the model a palette
-    hint without any structure it could copy: it must invent new content
-    there, while the sharp strips stay untouched on top."""
-    arr = np.array(canvas)
-    mask = arr[:, :, 3] > 0
-    if mask.any():
-        mean = arr[:, :, :3][mask].mean(axis=0).astype(np.uint8)
-    else:
-        mean = np.array([128, 128, 128], dtype=np.uint8)
-    bg = np.zeros_like(arr)
-    bg[:, :, :3] = mean
-    bg[:, :, 3] = 255
-    out = Image.fromarray(bg, "RGBA")
-    out.paste(canvas, (0, 0), canvas)
-    return out
-
-
 def apply_edge_strips(
     result: Image.Image,
     strips_canvas: Image.Image,
@@ -785,9 +766,10 @@ def generate_multi_direction_tile(
     strips_canvas = create_multi_direction_canvas(
         base_size, refs, h_overlap, v_overlap
     )
-    # Fill uncovered areas with a flat average color (no structure to copy),
-    # keeping the exact edge strips on top.
-    canvas = solid_placeholder_background(strips_canvas)
+    # Transparent canvas: the model reliably fills empty areas with new
+    # content (flat or blurred fills get preserved/copied by this model).
+    # Seam alignment is handled afterwards by apply_edge_strips.
+    canvas = strips_canvas
     cw, ch = canvas.size
 
     min_side = min(cw, ch)
@@ -810,11 +792,11 @@ def generate_multi_direction_tile(
         direction_hint = (
             "The sharp strips along the top, bottom, left and right edges are "
             "reference content copied from the adjacent map tiles. Keep those "
-            "edge strips exactly unchanged. The flat solid-color area in the "
-            "middle is only an empty placeholder: paint it with brand new, "
-            "sharp, fully detailed map content that continues the edge "
-            "strips seamlessly. Invent new varied terrain and objects; do "
-            "not copy, clone or repeat content from the edge strips. "
+            "edge strips exactly unchanged. Fill the empty transparent area "
+            "in the middle with brand new, sharp, fully detailed map content "
+            "that continues the edge strips seamlessly. Invent new varied "
+            "terrain and objects; do not copy, clone or repeat content from "
+            "the edge strips. "
         )
     else:
         expand_parts = []
@@ -837,11 +819,10 @@ def generate_multi_direction_tile(
         direction_hint = (
             f"The sharp strip along the {edge_text} is reference content "
             f"copied from the adjacent map tile. Keep it exactly unchanged. "
-            f"The flat solid-color area is only an empty placeholder: paint "
-            f"it with brand new, sharp, fully detailed map content, extending "
-            f"the scene {expand_text} seamlessly. Invent new varied terrain "
-            f"and objects; do not copy, clone or repeat content from the "
-            f"edge strip. "
+            f"Fill the empty transparent area with brand new, sharp, fully "
+            f"detailed map content, extending the scene {expand_text} "
+            f"seamlessly. Invent new varied terrain and objects; do not "
+            f"copy, clone or repeat content from the edge strip. "
         )
 
     full_prompt = direction_hint + prompt
