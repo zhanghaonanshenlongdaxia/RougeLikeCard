@@ -728,6 +728,46 @@ def solid_placeholder_background(canvas: Image.Image) -> Image.Image:
     return out
 
 
+def apply_edge_strips(
+    result: Image.Image,
+    strips_canvas: Image.Image,
+    base_size: tuple[int, int],
+    refs: list,
+    h_overlap: float,
+    v_overlap: float,
+) -> Image.Image:
+    """Force the generated tile's overlap regions to match the neighbor
+    strips pixel-exactly at the outer edge, feathering inward to the
+    generated content. The model redraws strips with small offsets; this
+    pass guarantees seamless joints when tiles are stitched."""
+    w, h = base_size
+    overlap_px_h = int(w * h_overlap)
+    overlap_px_v = int(h * v_overlap)
+
+    res = np.array(result.convert("RGBA")).astype(np.float32)
+    strips = np.array(strips_canvas).astype(np.float32)
+
+    mask = np.zeros((h, w), dtype=np.float32)
+    directions = {d for _, d in refs}
+    if "right" in directions:  # strip at left edge
+        grad = 1.0 - np.arange(overlap_px_h, dtype=np.float32) / overlap_px_h
+        mask[:, :overlap_px_h] = np.maximum(mask[:, :overlap_px_h], grad[None, :])
+    if "left" in directions:  # strip at right edge
+        grad = 1.0 - np.arange(overlap_px_h, dtype=np.float32) / overlap_px_h
+        mask[:, w - overlap_px_h:] = np.maximum(mask[:, w - overlap_px_h:], grad[None, ::-1])
+    if "down" in directions:  # strip at top edge
+        grad = 1.0 - np.arange(overlap_px_v, dtype=np.float32) / overlap_px_v
+        mask[:overlap_px_v, :] = np.maximum(mask[:overlap_px_v, :], grad[:, None])
+    if "up" in directions:  # strip at bottom edge
+        grad = 1.0 - np.arange(overlap_px_v, dtype=np.float32) / overlap_px_v
+        mask[h - overlap_px_v:, :] = np.maximum(mask[h - overlap_px_v:, :], grad[::-1, None])
+
+    strip_alpha = (strips[:, :, 3] > 0).astype(np.float32)
+    m = (mask * strip_alpha)[..., None]
+    out = res * (1.0 - m) + strips * m
+    return Image.fromarray(out.astype(np.uint8), "RGBA")
+
+
 def generate_multi_direction_tile(
     base_size: tuple[int, int],
     refs: list,
@@ -742,10 +782,12 @@ def generate_multi_direction_tile(
     Generate a tile that matches all provided orthogonal neighbors.
     Works for 1-4 neighbors.
     """
-    canvas = create_multi_direction_canvas(base_size, refs, h_overlap, v_overlap)
+    strips_canvas = create_multi_direction_canvas(
+        base_size, refs, h_overlap, v_overlap
+    )
     # Fill uncovered areas with a flat average color (no structure to copy),
     # keeping the exact edge strips on top.
-    canvas = solid_placeholder_background(canvas)
+    canvas = solid_placeholder_background(strips_canvas)
     cw, ch = canvas.size
 
     min_side = min(cw, ch)
@@ -806,6 +848,11 @@ def generate_multi_direction_tile(
     result = call_doubao_api(canvas, full_prompt, api_key, api_url, model, size_str)
     if result.size != base_size:
         result = result.resize(base_size, Image.Resampling.LANCZOS)
+    # Pin the overlap regions to the original neighbor strips (feathered)
+    # so stitched seams line up pixel-perfectly.
+    result = apply_edge_strips(
+        result, strips_canvas, base_size, refs, h_overlap, v_overlap
+    )
     return result
 
 
