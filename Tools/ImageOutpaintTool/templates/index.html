@@ -309,6 +309,7 @@ body.cards-hidden .action-card { display: none !important; }
                 </div>
                 <button class="btn" onclick="reimportCenter()">重新导入图片</button>
                 <button class="btn primary" onclick="openGenerateCenter()">生成初始图</button>
+                <button class="btn" onclick="triggerImportTiles()">导入图片包</button>
                 <button class="btn danger" onclick="clearAll()">清空缓存</button>
                 <div class="layer-group">
                     <button class="btn layer-btn active" id="layer-full" onclick="setLayer('full')">整体</button>
@@ -411,6 +412,7 @@ body.cards-hidden .action-card { display: none !important; }
     </div>
 
     <input type="file" id="file-upload" class="hidden" accept="image/*">
+    <input type="file" id="import-upload" class="hidden" accept="image/png" multiple webkitdirectory>
 
     <script>
         const state = {
@@ -944,6 +946,52 @@ body.cards-hidden .action-card { display: none !important; }
         // Cache settings on change
         ['api-key', 'api-url', 'model', 'prompt'].forEach(id => {
             document.getElementById(id).addEventListener('change', saveCachedSettings);
+        });
+
+        function triggerImportTiles() {
+            document.getElementById('import-upload').click();
+        }
+
+        async function importTiles(files) {
+            if (!files.length) return;
+            const form = new FormData();
+            form.append('layer', state.layer);
+            files.forEach(f => form.append('files', f));
+
+            log('正在导入图片包...');
+            const resp = await fetch('/api/import_tiles', { method: 'POST', body: form });
+            const data = await resp.json();
+            if (data.ok) {
+                state.cells = {};
+                grid.innerHTML = '';
+                state.centerSize = data.size;
+                updateGridSize();
+
+                // Create all placed cells
+                data.placed.forEach(p => {
+                    createCell(p.row, p.col);
+                    const cell = state.cells[cellKey(p.row, p.col)];
+                    cell.img.style.display = 'block';
+                    refreshImage(cell.img, `/api/image/${p.row}/${p.col}?layer=${state.layer}`);
+                    setCellHasImage(p.row, p.col, true);
+                });
+
+                // Ensure center exists
+                if (!state.cells[cellKey(0, 0)]) {
+                    createCell(0, 0);
+                }
+
+                updateGridLayout();
+                log('导入完成: ' + data.placed.length + ' 张图片');
+            } else {
+                log('导入失败: ' + (data.error || 'unknown'));
+            }
+        }
+
+        // Import upload handler
+        document.getElementById('import-upload').addEventListener('change', e => {
+            importTiles(Array.from(e.target.files));
+            e.target.value = '';
         });
 
         // Initialize

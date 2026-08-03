@@ -583,6 +583,53 @@ def upload_cell():
     return jsonify({"ok": True, "size": img.size, "layer": layer})
 
 
+@app.route("/api/import_tiles", methods=["POST"])
+def import_tiles():
+    """Batch import tiles from uploaded files.
+
+    Expects filenames like tile_x_y.png where x=col, y=-row (Unity style).
+    Creates all necessary cells in the session.
+    """
+    layer = request.form.get("layer", "full")
+    if layer not in ("full", "ground", "object"):
+        layer = "full"
+
+    files = request.files.getlist("files")
+    if not files:
+        return jsonify({"error": "No files"}), 400
+
+    data = get_session()
+    cells = data["cells"]
+    center = cells.get("0-0")
+    center_size = center.size if center is not None else None
+
+    placed = []
+    for file in files:
+        filename = file.filename
+        m = re.match(r"tile_(-?\d+)_(-?\d+)\.png$", filename, re.IGNORECASE)
+        if not m:
+            continue
+        x = int(m.group(1))
+        y = int(m.group(2))
+        row = -y
+        col = x
+
+        img = load_image(file)
+        if center_size is None:
+            center_size = img.size
+        elif img.size != center_size:
+            img = img.resize(center_size, Image.Resampling.LANCZOS)
+
+        key = cell_storage_key(row, col, layer)
+        cells[key] = img
+        placed.append({"row": row, "col": col, "filename": filename})
+
+    if not placed:
+        return jsonify({"error": "No valid tile_x_y.png files found"}), 400
+
+    return jsonify({"ok": True, "placed": placed, "size": center_size})
+
+
 NEIGHBOR_DIRECTIONS = [
     ((-1, 0), "down"),   # neighbor above extends down, matches target top edge
     ((1, 0), "up"),      # neighbor below extends up, matches target bottom edge
