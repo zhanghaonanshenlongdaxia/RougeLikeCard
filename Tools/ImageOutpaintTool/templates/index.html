@@ -340,17 +340,34 @@ body.cards-hidden .action-card { display: none !important; }
             <div class="modal-content" style="max-width: 480px;">
                 <h2 style="margin:0 0 12px; font-size: 18px;">生成初始图</h2>
                 <div class="field" style="margin-bottom: 10px;">
-                    <label>风格预设</label>
+                    <label>画面风格</label>
                     <select id="center-style" onchange="onCenterStyleChange()" style="width:100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                        <option value="pixel_fine">精细像素</option>
+                        <option value="pixel_coarse">粗糙像素（复古16-bit）</option>
+                        <option value="ink">水墨</option>
+                        <option value="shanshui">山水画 / 国画</option>
+                        <option value="ghibli">吉卜力手绘</option>
+                        <option value="realistic">半写实手绘</option>
+                        <option value="cartoon">卡通 Q 版</option>
+                        <option value="dark">暗黑奇幻</option>
                         <option value="custom">✏️ 自定义</option>
-                        <option value="xianxia">仙侠宗门庭院</option>
-                        <option value="bamboo">竹林溪流小径</option>
-                        <option value="grassland">草原平原</option>
-                        <option value="desert">沙漠古城遗迹</option>
-                        <option value="snow">雪山神殿</option>
+                    </select>
+                </div>
+                <div class="field" style="margin-bottom: 10px;">
+                    <label>题材类型</label>
+                    <select id="center-theme" onchange="onCenterStyleChange()" style="width:100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                        <option value="xianxia">修仙宗门</option>
                         <option value="jiangnan">江南水乡</option>
-                        <option value="european">欧式村庄广场</option>
+                        <option value="bamboo">竹林溪流</option>
+                        <option value="medieval">中世纪村庄</option>
+                        <option value="european">欧式广场</option>
+                        <option value="cyberpunk">赛博朋克街区</option>
+                        <option value="wasteland">末日废土</option>
+                        <option value="grassland">草原平原</option>
+                        <option value="desert">沙漠遗迹</option>
+                        <option value="snow">雪山神殿</option>
                         <option value="dungeon">地下城地牢</option>
+                        <option value="custom">✏️ 自定义</option>
                     </select>
                 </div>
                 <div class="field" style="margin-bottom: 10px;">
@@ -391,7 +408,7 @@ body.cards-hidden .action-card { display: none !important; }
                     </div>
                 </div>
                 <div class="modal-actions">
-                    <button class="btn primary" onclick="generateCenter()">生成</button>
+                    <button class="btn primary" id="center-generate-btn" onclick="generateCenter()">生成</button>
                     <button class="btn" onclick="closeGenerateCenter()">取消</button>
                 </div>
             </div>
@@ -778,15 +795,29 @@ body.cards-hidden .action-card { display: none !important; }
             }
         }
 
-        const CENTER_STYLE_PROMPTS = {
+        const ART_STYLE_PROMPTS = {
+            pixel_fine: "Fine detailed pixel art style, crisp clean pixels, rich intricate detail, 32-bit quality.",
+            pixel_coarse: "Retro chunky pixel art style, large visible pixels, limited color palette, 16-bit JRPG feel.",
+            ink: "Traditional Chinese ink wash painting style, sumi-e brush strokes, elegant monochrome with light color accents.",
+            shanshui: "Chinese shanshui landscape painting style, traditional guohua aesthetics, misty poetic atmosphere.",
+            ghibli: "Studio Ghibli inspired hand-painted style, soft watercolor textures, warm whimsical tones.",
+            realistic: "Semi-realistic hand-painted game art style, detailed natural textures, soft realistic lighting.",
+            cartoon: "Cute cartoon chibi style, bright saturated colors, soft rounded shapes.",
+            dark: "Dark fantasy gothic style, moody atmosphere, desaturated palette, dramatic lighting.",
+        };
+
+        const CENTER_THEME_PROMPTS = {
             xianxia: "Xianxia cultivation sect courtyard tileset: bamboo groves, stone plaza tiles, small stream, wooden bridge, ancient gate, grass and pebble ground tiles.",
+            jiangnan: "Jiangnan water town tileset: canal water tiles, stone bridges, cobblestone paths, willow trees, traditional house roofs.",
             bamboo: "Bamboo forest clearing tileset: dense bamboo clusters, winding dirt path, small pond, mossy stones, forest grass tiles.",
+            medieval: "Medieval fantasy village tileset: cobblestone plaza, timber-framed houses, market stalls, banners, stone walls, torches.",
+            european: "European village tileset: cobblestone plaza, fountain, flower beds, wooden fences, cottage roofs, garden paths.",
+            cyberpunk: "Cyberpunk city district tileset: neon signs, holographic billboards, wet asphalt streets, pipes, vending machines, cables, glowing storefronts.",
+            wasteland: "Post-apocalyptic wasteland tileset: cracked dry ground, ruined vehicles, scrap metal, barbed wire, dust, bones, makeshift shelters.",
+            grassland: "Grassland plains tileset: green grass tiles, dirt paths, small hills, wildflowers, bushes, rocks.",
             desert: "Desert oasis ruins tileset: sandstone tiles, palm trees, dry riverbed, ancient pillars, sand dunes, cracked ground.",
             snow: "Snow mountain temple tileset: snow-covered stone tiles, frozen pond, pine trees, icy paths, mountain rocks.",
-            jiangnan: "Jiangnan water town tileset: canal water tiles, stone bridges, cobblestone paths, willow trees, traditional house roofs.",
-            european: "European village tileset: cobblestone plaza, fountain, flower beds, wooden fences, cottage roofs, garden paths.",
             dungeon: "Dungeon tileset: stone brick floors, prison bars, torches, broken pillars, dark corridors, mossy stones.",
-            grassland: "Grassland plains tileset: green grass tiles, dirt paths, small hills, wildflowers, bushes, rocks.",
         };
 
         function openGenerateCenter() {
@@ -848,11 +879,12 @@ body.cards-hidden .action-card { display: none !important; }
 
         function onCenterStyleChange() {
             const style = document.getElementById('center-style').value;
+            const theme = document.getElementById('center-theme').value;
             const textarea = document.getElementById('center-custom-prompt');
-            if (style !== 'custom') {
-                textarea.placeholder = '可在此处追加描述，留空则使用默认风格';
+            if (style === 'custom' && theme === 'custom') {
+                textarea.placeholder = '输入你想要的初始图描述（必填）...';
             } else {
-                textarea.placeholder = '输入你想要的初始图描述...';
+                textarea.placeholder = '可在此处追加描述，留空则使用所选风格+题材';
             }
         }
 
@@ -864,21 +896,20 @@ body.cards-hidden .action-card { display: none !important; }
             }
 
             const style = document.getElementById('center-style').value;
+            const theme = document.getElementById('center-theme').value;
             const custom = document.getElementById('center-custom-prompt').value.trim();
             const size = getCenterSize();
             if (!size) return;
 
-            let prompt;
-            if (style === 'custom') {
-                if (!custom) {
-                    log('错误：自定义模式下请输入描述');
-                    return;
-                }
-                prompt = custom;
-            } else {
-                prompt = CENTER_STYLE_PROMPTS[style] || '';
-                if (custom) prompt += ' ' + custom;
+            const parts = [];
+            if (style !== 'custom' && ART_STYLE_PROMPTS[style]) parts.push(ART_STYLE_PROMPTS[style]);
+            if (theme !== 'custom' && CENTER_THEME_PROMPTS[theme]) parts.push(CENTER_THEME_PROMPTS[theme]);
+            if (custom) parts.push(custom);
+            if (parts.length === 0) {
+                log('错误：自定义模式下请输入描述');
+                return;
             }
+            const prompt = parts.join(' ');
 
             const [width, height] = size;
 
@@ -890,25 +921,35 @@ body.cards-hidden .action-card { display: none !important; }
             form.append('width', width);
             form.append('height', height);
 
+            // 点击后立即关闭弹窗并禁用按钮，防止重复提交
+            const btn = document.getElementById('center-generate-btn');
+            btn.disabled = true;
+            closeGenerateCenter();
+
             log('正在生成初始图...');
-            const resp = await fetch('/api/generate_center', { method: 'POST', body: form });
-            const data = await resp.json();
-            if (data.ok) {
-                state.cells = {};
-                grid.innerHTML = '';
-                state.centerSize = data.size;
-                updateGridSize();
-                createCell(0, 0);
-                const centerCell = state.cells[cellKey(0, 0)];
-                centerCell.img.style.display = 'block';
-                refreshImage(centerCell.img, '/api/image/0/0?layer=full');
-                setCellHasImage(0, 0, true);
-                updateGridLayout();
-                closeGenerateCenter();
-                log('初始图生成完成: ' + data.size);
-            } else {
-                log('初始图生成失败: ' + (data.error || 'unknown'));
-                if (data.trace) console.error(data.trace);
+            try {
+                const resp = await fetch('/api/generate_center', { method: 'POST', body: form });
+                const data = await resp.json();
+                if (data.ok) {
+                    state.cells = {};
+                    grid.innerHTML = '';
+                    state.centerSize = data.size;
+                    updateGridSize();
+                    createCell(0, 0);
+                    const centerCell = state.cells[cellKey(0, 0)];
+                    centerCell.img.style.display = 'block';
+                    refreshImage(centerCell.img, '/api/image/0/0?layer=full');
+                    setCellHasImage(0, 0, true);
+                    updateGridLayout();
+                    log('初始图生成完成: ' + data.size);
+                } else {
+                    log('初始图生成失败: ' + (data.error || 'unknown'));
+                    if (data.trace) console.error(data.trace);
+                }
+            } catch (err) {
+                log('初始图生成失败: ' + err.message);
+            } finally {
+                btn.disabled = false;
             }
         }
 

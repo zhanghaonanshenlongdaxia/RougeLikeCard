@@ -547,7 +547,7 @@ def generate_center():
 
     full_prompt = (
         f"{prompt} "
-        "Top-down pixel art tile-based game map tile. "
+        "Top-down tile-based game map tile. "
         "Fill the entire image edge to edge with playable map content. "
         "Orthographic bird's eye view, grid-aligned, clean readable tiles, "
         "consistent art style, vibrant but coherent palette. "
