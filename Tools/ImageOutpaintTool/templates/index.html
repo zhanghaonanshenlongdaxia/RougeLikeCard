@@ -434,8 +434,10 @@ body.cards-hidden .action-card { display: none !important; }
                     <input type="text" id="model" value="{{ default_model }}">
                 </div>
                 <div class="field">
-                    <label>扩图提示词</label>
-                    <textarea id="prompt">Seamlessly extend this xianxia cultivation sect courtyard. Top-down pixel art, bamboo forest, small stream, stone path, soft green and blue palette. Keep the same art style and perspective.</textarea>
+                    <label>扩图提示词
+                        <span id="prompt-reset" title="恢复默认提示词" style="float:right; font-size:12px; color:#e67e22; cursor:pointer; font-weight:normal;">恢复默认</span>
+                    </label>
+                    <textarea id="prompt">Seamlessly extend this top-down tile-based game map. Continue the exact same art style, color palette, terrain types and object types shown in the reference edges. Do not introduce new biomes, new themes or unrelated elements.</textarea>
                 </div>
                 <div class="field">
                     <button class="btn primary" style="width:100%; margin-bottom:6px" onclick="showPreview()">全图预览</button>
@@ -537,15 +539,25 @@ body.cards-hidden .action-card { display: none !important; }
             };
         }
 
+        const DEFAULT_OUTPAINT_PROMPT = "Seamlessly extend this top-down tile-based game map. Continue the exact same art style, color palette, terrain types and object types shown in the reference edges. Do not introduce new biomes, new themes or unrelated elements.";
+        // 旧版默认提示词写死了上一张地图的元素（竹林、石板路等），缓存里若还是它就丢弃
+        const LEGACY_DEFAULT_PROMPTS = [
+            "Seamlessly extend this xianxia cultivation sect courtyard. Top-down pixel art, bamboo forest, small stream, stone path, soft green and blue palette. Keep the same art style and perspective.",
+        ];
+
         function loadCachedSettings() {
             const key = localStorage.getItem('stitcher_api_key');
             const url = localStorage.getItem('stitcher_api_url');
             const model = localStorage.getItem('stitcher_model');
-            const prompt = localStorage.getItem('stitcher_prompt');
+            let prompt = localStorage.getItem('stitcher_prompt');
 
             if (key !== null) document.getElementById('api-key').value = key;
             if (url !== null) document.getElementById('api-url').value = url;
             if (model !== null) document.getElementById('model').value = model;
+            if (prompt !== null && LEGACY_DEFAULT_PROMPTS.includes(prompt.trim())) {
+                localStorage.removeItem('stitcher_prompt');
+                prompt = null;
+            }
             if (prompt !== null) document.getElementById('prompt').value = prompt;
         }
 
@@ -1112,6 +1124,12 @@ body.cards-hidden .action-card { display: none !important; }
         // Cache settings on change
         ['api-key', 'api-url', 'model', 'prompt'].forEach(id => {
             document.getElementById(id).addEventListener('change', saveCachedSettings);
+        });
+
+        document.getElementById('prompt-reset').addEventListener('click', () => {
+            document.getElementById('prompt').value = DEFAULT_OUTPAINT_PROMPT;
+            saveCachedSettings();
+            log('扩图提示词已恢复默认');
         });
 
         function triggerImportTiles() {
