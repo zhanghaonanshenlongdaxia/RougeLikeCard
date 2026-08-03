@@ -34,8 +34,8 @@ def disable_caching(response):
 # In-memory session storage: sid -> {"cells": {"r-c": Image.Image}}
 SESSIONS: Dict[str, Dict[str, Dict[str, Image.Image]]] = {}
 
-DEFAULT_API_URL = "https://ark.cn-beijing.volces.com/api/plan/v3/images/generations"
-DEFAULT_MODEL = "doubao-seedream-5.0-lite"
+DEFAULT_API_URL = "https://ark.cn-beijing.volces.com/api/v3/images/generations"
+DEFAULT_MODEL = "doubao-seedream-4-0-250828"
 
 
 def get_session() -> Dict[str, Dict[str, Image.Image]]:
@@ -112,6 +112,17 @@ def create_outpaint_canvas(
     return canvas
 
 
+def raise_with_body(resp: requests.Response) -> None:
+    """Like resp.raise_for_status() but includes Doubao's error message body."""
+    try:
+        resp.raise_for_status()
+    except requests.HTTPError:
+        detail = resp.text[:800] if resp.text else "(empty body)"
+        raise requests.HTTPError(
+            f"{resp.status_code} from image API: {detail}", response=resp
+        )
+
+
 def call_doubao_text_api(
     prompt: str,
     api_key: str,
@@ -133,7 +144,7 @@ def call_doubao_text_api(
     }
 
     resp = requests.post(api_url, headers=headers, json=payload, timeout=120)
-    resp.raise_for_status()
+    raise_with_body(resp)
     result = resp.json()
     b64_out = result["data"][0]["b64_json"]
     return Image.open(io.BytesIO(base64.b64decode(b64_out)))
@@ -162,7 +173,7 @@ def call_doubao_api(
     }
 
     resp = requests.post(api_url, headers=headers, json=payload, timeout=120)
-    resp.raise_for_status()
+    raise_with_body(resp)
     result = resp.json()
     b64_out = result["data"][0]["b64_json"]
     return Image.open(io.BytesIO(base64.b64decode(b64_out)))
