@@ -7,6 +7,7 @@ Run with:
 
 import base64
 import io
+import os
 import re
 import traceback
 import uuid
@@ -605,7 +606,8 @@ def import_tiles():
 
     placed = []
     for file in files:
-        filename = file.filename
+        # webkitdirectory uploads send relative paths like "folder/tile_0_0.png"
+        filename = os.path.basename(file.filename or "")
         m = re.match(r"tile_(-?\d+)_(-?\d+)\.png$", filename, re.IGNORECASE)
         if not m:
             continue
