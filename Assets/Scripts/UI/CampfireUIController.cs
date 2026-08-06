@@ -5,6 +5,7 @@ using QFramework;
 using System.Collections.Generic;
 using NueGames.NueDeck.Scripts.Data.Collection;
 using Alchemy.Inspector;
+using CardGame.Audio;
 
 namespace CardGame.UI
 {
@@ -32,11 +33,38 @@ namespace CardGame.UI
                 if (name == "Button_0") { restButton = btn; btn.onClick.AddListener(OnRest); }
                 else if (name == "Button_1") { upgradeButton = btn; btn.onClick.AddListener(ShowUpgradeCards); }
             }
-            // 查找返回按钮
+            // 查找或创建返回按钮
+            backButton = null;
             foreach (var btn in buttons)
             {
-                if (btn.gameObject.name.Contains("Back")) { backButton = btn; btn.onClick.AddListener(OnBack); break; }
+                if (btn.gameObject.name.Contains("Back") || btn.gameObject.name.Contains("Close")) { backButton = btn; break; }
             }
+            if (backButton == null)
+            {
+                var go = new GameObject("CloseButton");
+                var panel = transform.GetChild(0);
+                go.transform.SetParent(panel);
+                var rt = go.AddComponent<RectTransform>();
+                rt.anchorMin = new Vector2(1, 1); rt.anchorMax = new Vector2(1, 1);
+                rt.pivot = new Vector2(1, 1);
+                rt.anchoredPosition = new Vector2(-10, -10);
+                rt.sizeDelta = new Vector2(80, 40);
+                go.AddComponent<Image>().color = new Color(0.6f, 0.15f, 0.15f, 1);
+                var txtObj = new GameObject("Text");
+                txtObj.transform.SetParent(go.transform);
+                var txtRt = txtObj.AddComponent<RectTransform>();
+                txtRt.anchorMin = Vector2.zero; txtRt.anchorMax = Vector2.one;
+                txtRt.offsetMin = Vector2.zero; txtRt.offsetMax = Vector2.zero;
+                var tmp = txtObj.AddComponent<TextMeshProUGUI>();
+                tmp.text = "离开";
+                tmp.alignment = TextAlignmentOptions.Center;
+                tmp.fontSize = 18; tmp.color = Color.white;
+                var libSans = UnityEngine.Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
+                if (libSans) tmp.font = libSans;
+                backButton = go.AddComponent<Button>();
+            }
+            backButton.onClick.RemoveAllListeners();
+            backButton.onClick.AddListener(() => { if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick); OnBack(); });
         }
 
         private void OnEnable()
@@ -45,6 +73,7 @@ namespace CardGame.UI
 
         private void OnRest()
         {
+            if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
             _system.Rest();
             gameObject.SetActive(false);
             NotifyMapRefresh();
@@ -52,6 +81,7 @@ namespace CardGame.UI
 
         private void ShowUpgradeCards()
         {
+            if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
             if (upgradeCardListRoot == null) { gameObject.SetActive(false); return; }
 
             for (int i = upgradeCardListRoot.childCount - 1; i >= 0; i--)

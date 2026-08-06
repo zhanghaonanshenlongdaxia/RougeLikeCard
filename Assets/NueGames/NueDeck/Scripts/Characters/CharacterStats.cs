@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CardGame.Audio;
 using NueGames.NueDeck.Scripts.Enums;
 using UnityEngine;
 
@@ -34,6 +35,9 @@ namespace NueGames.NueDeck.Scripts.Characters
         public int CurrentHealth { get; set; }
         public bool IsStunned { get;  set; }
         public bool IsDeath { get; private set; }
+       
+        /// <summary>反伤来源：受到伤害时记录攻击者，用于Thorn反弹</summary>
+        public CharacterStats LastAttacker { get; set; }
        
         public Action OnDeath;
         public Action<int, int> OnHealthChanged;
@@ -83,6 +87,9 @@ namespace NueGames.NueDeck.Scripts.Characters
 
             // 易伤：受到的伤害增加50%，回合结束递减
             StatusDict[StatusType.Vulnerable].DecreaseOverTurn = true;
+
+            // 反伤：受击时反弹伤害，永久状态（Power类型）
+            StatusDict[StatusType.Thorn].IsPermanent = true;
             
         }
         #endregion
@@ -122,7 +129,7 @@ namespace NueGames.NueDeck.Scripts.Characters
             OnHealthChanged?.Invoke(CurrentHealth,MaxHealth);
         }
         
-        public void Damage(int value, bool canPierceArmor = false)
+        public void Damage(int value, bool canPierceArmor = false, CharacterStats attacker = null)
         {
             if (IsDeath) return;
             OnTakeDamageAction?.Invoke();
@@ -149,11 +156,27 @@ namespace NueGames.NueDeck.Scripts.Characters
             
             CurrentHealth -= remainingDamage;
             
+            // 受击音效
+            if (remainingDamage > 0 && GameAudioManager.Instance != null)
+                GameAudioManager.Instance.PlaySFX(SFXType.TakeDamage);
+            
+            // 反伤(Thorn)：如果受到实际伤害且有攻击者，反弹Thorn值的伤害给攻击者
+            if (remainingDamage > 0 && attacker != null && StatusDict[StatusType.Thorn].IsActive)
+            {
+                var thornValue = StatusDict[StatusType.Thorn].StatusValue;
+                if (thornValue > 0)
+                {
+                    attacker.Damage(thornValue, true);
+                }
+            }
+            
             if (CurrentHealth <= 0)
             {
                 CurrentHealth = 0;
                 OnDeath?.Invoke();
                 IsDeath = true;
+                if (GameAudioManager.Instance != null)
+                    GameAudioManager.Instance.PlaySFX(SFXType.Death);
             }
             OnHealthChanged?.Invoke(CurrentHealth,MaxHealth);
         }

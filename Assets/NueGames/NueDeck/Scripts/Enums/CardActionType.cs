@@ -14,6 +14,8 @@
         Exhaust,
         ApplyWeak,
         ApplyFrail,
-        ApplyVulnerable
+        ApplyVulnerable,
+        IncreaseDexterity,
+        Thorn
     }
 }

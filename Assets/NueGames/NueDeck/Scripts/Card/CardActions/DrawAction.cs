@@ -1,4 +1,5 @@
-﻿using NueGames.NueDeck.Scripts.Enums;
+﻿using CardGame.Audio;
+using NueGames.NueDeck.Scripts.Enums;
 using NueGames.NueDeck.Scripts.Managers;
 using UnityEngine;
 
@@ -19,6 +20,9 @@ namespace NueGames.NueDeck.Scripts.Card.CardActions
 
             if (AudioManager != null) 
                 AudioManager.PlayOneShot(actionParameters.CardData.AudioType);
+
+            if (GameAudioManager.Instance != null)
+                GameAudioManager.Instance.PlaySFX(SFXType.DrawCard);
         }
     }
 }

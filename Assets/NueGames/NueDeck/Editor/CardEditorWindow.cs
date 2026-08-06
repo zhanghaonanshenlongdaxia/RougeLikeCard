@@ -180,6 +180,7 @@ namespace NueGames.NueDeck.Editor
             if (!SelectedCardData)
             {
                 EditorGUILayout.LabelField("Select card");
+                EditorGUILayout.EndVertical();
                 return;
             }
             GUILayout.Space(10);
@@ -251,12 +252,9 @@ namespace NueGames.NueDeck.Editor
         private Vector2 _generalSettingsScrollPos;
         private void ChangeGeneralSettings()
         {
-            _isGeneralSettingsFolded =EditorGUILayout.BeginFoldoutHeaderGroup(_isGeneralSettingsFolded, "General Settings");
-            if (!_isGeneralSettingsFolded)
+            _isGeneralSettingsFolded = EditorGUILayout.BeginFoldoutHeaderGroup(_isGeneralSettingsFolded, "General Settings");
+            if (_isGeneralSettingsFolded)
             {
-                EditorGUILayout.EndFoldoutHeaderGroup();
-                return;
-            }
             ChangeId();
             ChangeCardName();
             _generalSettingsScrollPos = EditorGUILayout.BeginScrollView(_generalSettingsScrollPos,GUILayout.ExpandWidth(true));
@@ -272,6 +270,7 @@ namespace NueGames.NueDeck.Editor
             ChangeCardSprite();
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndScrollView();
+            }
             EditorGUILayout.EndFoldoutHeaderGroup();
         }
         
@@ -460,12 +459,8 @@ namespace NueGames.NueDeck.Editor
         private void ChangeSpecialKeywords()
         {
             _isSpecialKeywordsFolded =EditorGUILayout.BeginFoldoutHeaderGroup(_isSpecialKeywordsFolded, "Special Keywords");
-            if (!_isSpecialKeywordsFolded)
+            if (_isSpecialKeywordsFolded)
             {
-                EditorGUILayout.EndFoldoutHeaderGroup();
-                return;
-            }
-           
             EditorGUILayout.BeginVertical("box");
             _specialKeywordScrool = EditorGUILayout.BeginScrollView(_specialKeywordScrool);
             EditorGUILayout.BeginHorizontal();
@@ -492,6 +487,7 @@ namespace NueGames.NueDeck.Editor
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndScrollView();
             EditorGUILayout.EndVertical();
+            }
             EditorGUILayout.EndFoldoutHeaderGroup();
         }
         private void ChangeAudioActionType()

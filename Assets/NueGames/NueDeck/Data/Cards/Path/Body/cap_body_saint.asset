@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6903f06e96c43789549f142f8956d64, type: 3}
+  m_Name: cap_body_saint
+  m_EditorClassIdentifier: 
+  id: cap_body_saint
+  cardName: "\u8089\u8EAB\u6210\u5723"
+  manaCost: 4
+  cardSprite: {fileID: 0}
+  rarity: 3
+  usableWithoutTarget: 1
+  exhaustAfterPlay: 1
+  isPowerCard: 0
+  cardActionDataList:
+  - cardActionType: 2
+    actionTargetType: 1
+    actionValue: 30
+    actionDelay: 0.1
+    hitCount: 1
+  - cardActionType: 14
+    actionTargetType: 1
+    actionValue: 5
+    actionDelay: 0.1
+    hitCount: 1
+  - cardActionType: 13
+    actionTargetType: 1
+    actionValue: 3
+    actionDelay: 0.1
+    hitCount: 1
+  cardDescriptionDataList:
+  - descriptionText: "25 \u683C\u6321+20 \u4E0A\u9650+\u53CD\u4F245+3 \u654F\u6377"
+    enableOverrideColor: 0
+    overrideColor: {r: 0, g: 0, b: 0, a: 1}
+    useModifier: 0
+    modifiedActionValueIndex: 0
+    modiferStats: 0
+    usePrefixOnModifiedValue: 0
+    modifiedValuePrefix: '*'
+    overrideColorOnValueScaled: 0
+  - descriptionText: "\n\u8089\u8EAB\u6210\u5723\uFF0C\u4F53\u4FEE\u81F3\u9AD8\u5883\u754C\u3002\u4EE5\u8EAB\u8EAF\u8BC1\u9053\uFF0C\u7B4B\u9AA8\u5982\u91D1\u521A\u4E0D\u574F\uFF0C\u53CD\u9707\u4E07\u7269\u3002\u4FEE\u70BC\u8005\u5DF2\u8131\u51E1\u80CE\uFF0C\u8089\u8EAB\u5373\u662F\u795E\u901A\uFF0C\u4E3E\u624B\u6295\u8DB3\u95F4\u4E07\u90AA\u4E0D\u4FB5\u3002\u4F20\u8BF4\u5927\u6210\u8005\u53EF\u8089\u8EAB\u6A2A\u6E21\u865A\u7A7A\uFF0C\u4E0D\u60E7\u4EFB\u4F55\u653B\u51FB\u3002"
+    enableOverrideColor: 0
+    overrideColor: {r: 0, g: 0, b: 0, a: 1}
+    useModifier: 0
+    modifiedActionValueIndex: 0
+    modiferStats: 0
+    usePrefixOnModifiedValue: 0
+    modifiedValuePrefix: '*'
+    overrideColorOnValueScaled: 0
+  specialKeywordsList: 
+  audioType: 0
+  upgradedCardName: 
+  upgradedManaCost: -1
+  upgradedCardActionDataList: []
+  pathType: 2
+  buildTag: 3
+  unlockChapter: 5
+  powerTier: 1
+  replacesCardId: 

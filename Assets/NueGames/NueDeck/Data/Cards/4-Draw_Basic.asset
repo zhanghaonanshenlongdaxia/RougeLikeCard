@@ -36,8 +36,31 @@ MonoBehaviour:
     usePrefixOnModifiedValue: 0
     modifiedValuePrefix: '*'
     overrideColorOnValueScaled: 0
+  - descriptionText: "\n\u51DD\u795E\u9759\u6C14\uFF0C\u4ECE\u7075\u8BC6\u4E2D\u6C72\u53D6\u66F4\u591A\u6218\u6597\u6CD5\u95E8\u3002"
+    enableOverrideColor: 0
+    overrideColor: {r: 0, g: 0, b: 0, a: 1}
+    useModifier: 0
+    modifiedActionValueIndex: 0
+    modiferStats: 0
+    usePrefixOnModifiedValue: 0
+    modifiedValuePrefix: '*'
+    overrideColorOnValueScaled: 0
+  - descriptionText: "\n\u51DD\u795E\u9759\u6C14\uFF0C\u4ECE\u7075\u8BC6\u4E2D\u6C72\u53D6\u66F4\u591A\u6218\u6597\u6CD5\u95E8\u3002"
+    enableOverrideColor: 0
+    overrideColor: {r: 0, g: 0, b: 0, a: 1}
+    useModifier: 0
+    modifiedActionValueIndex: 0
+    modiferStats: 0
+    usePrefixOnModifiedValue: 0
+    modifiedValuePrefix: '*'
+    overrideColorOnValueScaled: 0
   specialKeywordsList: 
   audioType: 4
   upgradedCardName: 
   upgradedManaCost: -1
   upgradedCardActionDataList: []
+  pathType: 0
+  buildTag: 0
+  unlockChapter: 0
+  powerTier: 0
+  replacesCardId: 

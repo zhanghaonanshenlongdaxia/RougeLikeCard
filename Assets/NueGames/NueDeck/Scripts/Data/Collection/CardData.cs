@@ -40,6 +40,18 @@ namespace NueGames.NueDeck.Scripts.Data.Collection
         [Tooltip("升级后替换的效果列表，留空则使用原效果")]
         [SerializeField] private List<CardActionData> upgradedCardActionDataList;
 
+        [Header("Path & Build")]
+        [Tooltip("道：None/Sword(剑道)/Body(体道)/Spirit(灵道)")]
+        [SerializeField] private PathType pathType = PathType.None;
+        [Tooltip("Build方向：MultiHit/Burst/Thorn/Sustain/Debuff/ManaBurst")]
+        [SerializeField] private BuildTag buildTag = BuildTag.None;
+        [Tooltip("解锁章节，0=初始可用，1+=需剧情解锁")]
+        [SerializeField] private int unlockChapter;
+        [Tooltip("0=前期基础，1=后期(1:1.1加成)")]
+        [SerializeField] private int powerTier;
+        [Tooltip("被此卡替换的卡牌Id(升级/进阶关系，奖励池互斥)")]
+        [SerializeField] private string replacesCardId;
+
         #region Cache
         public string Id => id;
         public bool UsableWithoutTarget => usableWithoutTarget;
@@ -55,6 +67,12 @@ namespace NueGames.NueDeck.Scripts.Data.Collection
 
         public bool ExhaustAfterPlay => exhaustAfterPlay;
         public bool IsPowerCard => isPowerCard;
+
+        public PathType PathType => pathType;
+        public BuildTag BuildTag => buildTag;
+        public int UnlockChapter => unlockChapter;
+        public int PowerTier => powerTier;
+        public string ReplacesCardId => replacesCardId;
 
         /// <summary>卡牌是否已升级</summary>
         public bool IsUpgraded { get; private set; }
@@ -116,6 +134,11 @@ namespace NueGames.NueDeck.Scripts.Data.Collection
         public void EditSpecialKeywordsList(List<SpecialKeywords> newSpecialKeywordsList) =>
             specialKeywordsList = newSpecialKeywordsList;
         public void EditAudioType(AudioActionType newAudioActionType) => audioType = newAudioActionType;
+        public void EditPathType(PathType newPathType) => pathType = newPathType;
+        public void EditBuildTag(BuildTag newBuildTag) => buildTag = newBuildTag;
+        public void EditUnlockChapter(int newChapter) => unlockChapter = newChapter;
+        public void EditPowerTier(int newTier) => powerTier = newTier;
+        public void EditReplacesCardId(string newId) => replacesCardId = newId;
 #endif
 
         #endregion

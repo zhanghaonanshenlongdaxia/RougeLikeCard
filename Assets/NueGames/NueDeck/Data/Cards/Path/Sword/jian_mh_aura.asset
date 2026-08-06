@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6903f06e96c43789549f142f8956d64, type: 3}
+  m_Name: jian_mh_aura
+  m_EditorClassIdentifier: 
+  id: jian_mh_aura
+  cardName: "\u5251\u6C14\u7EB5\u6A2A"
+  manaCost: 2
+  cardSprite: {fileID: 0}
+  rarity: 2
+  usableWithoutTarget: 0
+  exhaustAfterPlay: 0
+  isPowerCard: 0
+  cardActionDataList:
+  - cardActionType: 0
+    actionTargetType: 2
+    actionValue: 4
+    actionDelay: 0.1
+    hitCount: 2
+  cardDescriptionDataList:
+  - descriptionText: "\u5BF9\u6240\u6709\u654C\u4EBA 2 \u6B21\u4F24\u5BB3\u6BCF\u6B21
+      4 \u70B9"
+    enableOverrideColor: 0
+    overrideColor: {r: 0, g: 0, b: 0, a: 1}
+    useModifier: 0
+    modifiedActionValueIndex: 0
+    modiferStats: 0
+    usePrefixOnModifiedValue: 0
+    modifiedValuePrefix: '*'
+    overrideColorOnValueScaled: 0
+  - descriptionText: "\n\u5251\u6C14\u7EB5\u6A2A\uFF0C\u5C06\u5251\u610F\u5316\u4E3A\u6C14\u6D6A\u6A2A\u626B\u516B\u65B9\uFF0C\u7FA4\u654C\u7686\u4F24\u3002"
+    enableOverrideColor: 0
+    overrideColor: {r: 0, g: 0, b: 0, a: 1}
+    useModifier: 0
+    modifiedActionValueIndex: 0
+    modiferStats: 0
+    usePrefixOnModifiedValue: 0
+    modifiedValuePrefix: '*'
+    overrideColorOnValueScaled: 0
+  specialKeywordsList: 
+  audioType: 0
+  upgradedCardName: 
+  upgradedManaCost: -1
+  upgradedCardActionDataList: []
+  pathType: 1
+  buildTag: 1
+  unlockChapter: 3
+  powerTier: 1
+  replacesCardId: 

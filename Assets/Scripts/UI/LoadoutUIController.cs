@@ -135,23 +135,10 @@ namespace CardGame.UI
 
         private int GetCardShenShi(string cardId)
         {
-            return cardId switch
-            {
-                "1_attack_basic" => 0,
-                "3_block_basic" => 0,
-                "2_attack_fast" => 2,
-                "4_draw_basic" => 1,
-                "5_heal_basic" => 1,
-                "6_power_maxhealth" => 2,
-                "7_power_strength" => 2,
-                "8_skill_earnMana" => 2,
-                "9_attack_lifeSteal" => 3,
-                "card_weak" => 1,
-                "card_vulnerable" => 1,
-                "card_frail" => 1,
-                "card_weak_strike" => 2,
-                _ => 1
-            };
+            var card = FindCard(cardId);
+            if (card == null) return 1;
+            // 凡品=1, 灵品=2, 玄品=3, 仙品=4, 后期+1
+            return (int)card.Rarity + 1 + card.PowerTier;
         }
 
         private CardData FindCard(string cardId)

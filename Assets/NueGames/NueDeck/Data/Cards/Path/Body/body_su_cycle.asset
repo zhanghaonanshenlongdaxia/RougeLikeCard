@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6903f06e96c43789549f142f8956d64, type: 3}
+  m_Name: body_su_cycle
+  m_EditorClassIdentifier: 
+  id: body_su_cycle
+  cardName: "\u751F\u751F\u4E0D\u606F"
+  manaCost: 2
+  cardSprite: {fileID: 0}
+  rarity: 2
+  usableWithoutTarget: 1
+  exhaustAfterPlay: 1
+  isPowerCard: 0
+  cardActionDataList:
+  - cardActionType: 2
+    actionTargetType: 1
+    actionValue: 12
+    actionDelay: 0.1
+    hitCount: 1
+  - cardActionType: 1
+    actionTargetType: 1
+    actionValue: 6
+    actionDelay: 0.1
+    hitCount: 1
+  cardDescriptionDataList:
+  - descriptionText: "+10 \u4E0A\u9650\u5E76\u6062\u590D 5"
+    enableOverrideColor: 0
+    overrideColor: {r: 0, g: 0, b: 0, a: 1}
+    useModifier: 0
+    modifiedActionValueIndex: 0
+    modiferStats: 0
+    usePrefixOnModifiedValue: 0
+    modifiedValuePrefix: '*'
+    overrideColorOnValueScaled: 0
+  - descriptionText: "\n\u751F\u751F\u4E0D\u606F\uFF0C\u53D6\u751F\u751F\u4E0D\u606F\u4E4B\u610F\u3002\u7075\u529B\u5FAA\u73AF\u5F80\u590D\uFF0C\u4F24\u52BF\u4E0D\u65AD\u6062\u590D\u3002"
+    enableOverrideColor: 0
+    overrideColor: {r: 0, g: 0, b: 0, a: 1}
+    useModifier: 0
+    modifiedActionValueIndex: 0
+    modiferStats: 0
+    usePrefixOnModifiedValue: 0
+    modifiedValuePrefix: '*'
+    overrideColorOnValueScaled: 0
+  specialKeywordsList: 
+  audioType: 0
+  upgradedCardName: 
+  upgradedManaCost: -1
+  upgradedCardActionDataList: []
+  pathType: 2
+  buildTag: 4
+  unlockChapter: 2
+  powerTier: 0
+  replacesCardId: 

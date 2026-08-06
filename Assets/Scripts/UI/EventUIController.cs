@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using QFramework;
 using Alchemy.Inspector;
+using CardGame.Audio;
 
 namespace CardGame.UI
 {
@@ -12,6 +13,7 @@ namespace CardGame.UI
         [SerializeField] private TextMeshProUGUI descriptionText;
         [SerializeField] private Transform choicesRoot;
         [SerializeField] private GameObject choiceButtonPrefab;
+        [SerializeField] private Button closeButton;
 
         private EventData _currentEvent;
 
@@ -50,6 +52,47 @@ namespace CardGame.UI
                 }
                 if (choices != null) choicesRoot = choices;
             }
+
+            // Auto-find or create close button
+            if (closeButton == null)
+            {
+                var closeGo = transform.Find("Panel/CloseButton");
+                if (closeGo == null)
+                    closeGo = transform.Find("CloseButton");
+                if (closeGo != null) closeButton = closeGo.GetComponent<Button>();
+            }
+            if (closeButton == null)
+            {
+                var go = new GameObject("CloseButton");
+                var panel = transform.GetChild(0);
+                go.transform.SetParent(panel);
+                var rt = go.AddComponent<RectTransform>();
+                rt.anchorMin = new Vector2(1, 1); rt.anchorMax = new Vector2(1, 1);
+                rt.pivot = new Vector2(1, 1);
+                rt.anchoredPosition = new Vector2(-10, -10);
+                rt.sizeDelta = new Vector2(80, 40);
+                go.AddComponent<Image>().color = new Color(0.6f, 0.15f, 0.15f, 1);
+                var txtObj = new GameObject("Text");
+                txtObj.transform.SetParent(go.transform);
+                var txtRt = txtObj.AddComponent<RectTransform>();
+                txtRt.anchorMin = Vector2.zero; txtRt.anchorMax = Vector2.one;
+                txtRt.offsetMin = Vector2.zero; txtRt.offsetMax = Vector2.zero;
+                var tmp = txtObj.AddComponent<TextMeshProUGUI>();
+                tmp.text = "离开";
+                tmp.alignment = TextAlignmentOptions.Center;
+                tmp.fontSize = 18; tmp.color = Color.white;
+                var libSans = UnityEngine.Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
+                if (libSans) tmp.font = libSans;
+                closeButton = go.AddComponent<Button>();
+            }
+            closeButton.onClick.RemoveAllListeners();
+            closeButton.onClick.AddListener(() => { if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick); CloseEvent(); });
+        }
+
+        public void CloseEvent()
+        {
+            gameObject.SetActive(false);
+            NotifyMapRefresh();
         }
 
         public void ShowEvent(EventData eventData)
@@ -72,7 +115,7 @@ namespace CardGame.UI
                 var btn = go.GetComponentInChildren<Button>();
                 if (btn == null) btn = go.AddComponent<Button>();
                 var index = i;
-                btn.onClick.AddListener(() => OnChoiceSelected(index));
+                btn.onClick.AddListener(() => { if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick); OnChoiceSelected(index); });
             }
 
             gameObject.SetActive(true);

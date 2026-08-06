@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6903f06e96c43789549f142f8956d64, type: 3}
+  m_Name: spr_mn_bolt
+  m_EditorClassIdentifier: 
+  id: spr_mn_bolt
+  cardName: "\u5929\u96F7\u7834"
+  manaCost: 2
+  cardSprite: {fileID: 0}
+  rarity: 2
+  usableWithoutTarget: 1
+  exhaustAfterPlay: 0
+  isPowerCard: 0
+  cardActionDataList:
+  - cardActionType: 0
+    actionTargetType: 0
+    actionValue: 20
+    actionDelay: 0.1
+    hitCount: 1
+  - cardActionType: 6
+    actionTargetType: 1
+    actionValue: 1
+    actionDelay: 0.1
+    hitCount: 1
+  cardDescriptionDataList:
+  - descriptionText: "20 \u4F24\u5BB3+1 \u7075\u529B"
+    enableOverrideColor: 0
+    overrideColor: {r: 0, g: 0, b: 0, a: 1}
+    useModifier: 0
+    modifiedActionValueIndex: 0
+    modiferStats: 0
+    usePrefixOnModifiedValue: 0
+    modifiedValuePrefix: '*'
+    overrideColorOnValueScaled: 0
+  - descriptionText: "\n\u5929\u96F7\u7834\uFF0C\u4EE5\u7CBE\u7EAF\u7075\u529B\u5F15\u52A8\u5929\u96F7\uFF0C\u4E00\u51FB\u4E4B\u5A01\u53EF\u788E\u5C71\u77F3\u3002"
+    enableOverrideColor: 0
+    overrideColor: {r: 0, g: 0, b: 0, a: 1}
+    useModifier: 0
+    modifiedActionValueIndex: 0
+    modiferStats: 0
+    usePrefixOnModifiedValue: 0
+    modifiedValuePrefix: '*'
+    overrideColorOnValueScaled: 0
+  specialKeywordsList: 
+  audioType: 0
+  upgradedCardName: 
+  upgradedManaCost: -1
+  upgradedCardActionDataList: []
+  pathType: 3
+  buildTag: 6
+  unlockChapter: 3
+  powerTier: 1
+  replacesCardId: 

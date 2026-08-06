@@ -240,6 +240,64 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!1 &1297948033
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1297948035}
+  - component: {fileID: 1297948034}
+  m_Layer: 0
+  m_Name: GameAudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1297948034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1297948033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 436d7c10c2b20c0448f19da417788725, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bgmSource: {fileID: 0}
+  sfxSource: {fileID: 0}
+  battleBGM: {fileID: 8300000, guid: 8d90e91fcca67694883bef85f07000e5, type: 3}
+  baseBGM: {fileID: 8300000, guid: f790fcf2efad8534f98ac6f4f41eb9e2, type: 3}
+  mapBGM: {fileID: 8300000, guid: cc91c951339cdfb41a8e8c5694b1593a, type: 3}
+  menuBGM: {fileID: 8300000, guid: 18c3f91be49a32c4aac9e7382dbc70f3, type: 3}
+  uiClickSFX: {fileID: 8300000, guid: 44f57ff48b8355142b9d5780c81b2bef, type: 3}
+  swordSlashSFX: {fileID: 8300000, guid: b710b10da6b3137488aacb1ef045c365, type: 3}
+  takeDamageSFX: {fileID: 8300000, guid: e012d97529ad37540a5a2cbee31a5b14, type: 3}
+  shieldBlockSFX: {fileID: 8300000, guid: af81b5b549b8f614e89800547a2ffae5, type: 3}
+  drawCardSFX: {fileID: 8300000, guid: 90253fe4d3cf7f642a2a541e3c0e2404, type: 3}
+  deathSFX: {fileID: 8300000, guid: 58cd2980e4bc0c24693b48606ad82fb7, type: 3}
+  bgmVolume: 0.5
+  sfxVolume: 0.8
+--- !u!4 &1297948035
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1297948033}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1484881981
 GameObject:
   m_ObjectHideFlags: 0
@@ -252,6 +310,7 @@ GameObject:
   - component: {fileID: 1484881984}
   - component: {fileID: 1484881983}
   - component: {fileID: 1484881982}
+  - component: {fileID: 1484881986}
   m_Layer: 0
   m_Name: MainCamera
   m_TagString: MainCamera
@@ -377,6 +436,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1484881986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1484881981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6089ad2e0be31f41b4063260329636a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneBGM: 0
 --- !u!1001 &2456383432979762582
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -590,3 +662,4 @@ SceneRoots:
   - {fileID: 648253373}
   - {fileID: 1484881985}
   - {fileID: 2456383432979762582}
+  - {fileID: 1297948035}

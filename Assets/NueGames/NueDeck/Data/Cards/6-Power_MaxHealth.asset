@@ -18,16 +18,34 @@ MonoBehaviour:
   cardSprite: {fileID: 21300000, guid: f699460fbf1b2404bb6c2e727663fc86, type: 3}
   rarity: 0
   usableWithoutTarget: 1
-  exhaustAfterPlay: 0
+  exhaustAfterPlay: 1
   isPowerCard: 0
   cardActionDataList:
-  - cardActionType: 4
+  - cardActionType: 1
     actionTargetType: 1
-    actionValue: 5
-    actionDelay: 0
+    actionValue: 10
+    actionDelay: 0.1
     hitCount: 1
   cardDescriptionDataList:
   - descriptionText: "\u589E\u52A0 10 \u70B9\u6700\u5927\u751F\u547D\u503C"
+    enableOverrideColor: 0
+    overrideColor: {r: 0, g: 0, b: 0, a: 1}
+    useModifier: 0
+    modifiedActionValueIndex: 0
+    modiferStats: 0
+    usePrefixOnModifiedValue: 0
+    modifiedValuePrefix: '*'
+    overrideColorOnValueScaled: 0
+  - descriptionText: "\n\u70BC\u4F53\u4FEE\u58EB\u7684\u5165\u95E8\u529F\u6CD5\uFF0C\u77ED\u65F6\u95F4\u5185\u5927\u5E45\u6062\u590D\u6C14\u8840\u3002"
+    enableOverrideColor: 0
+    overrideColor: {r: 0, g: 0, b: 0, a: 1}
+    useModifier: 0
+    modifiedActionValueIndex: 0
+    modiferStats: 0
+    usePrefixOnModifiedValue: 0
+    modifiedValuePrefix: '*'
+    overrideColorOnValueScaled: 0
+  - descriptionText: "\n\u70BC\u4F53\u4FEE\u58EB\u7684\u5165\u95E8\u529F\u6CD5\uFF0C\u77ED\u65F6\u95F4\u5185\u5927\u5E45\u6062\u590D\u6C14\u8840\u3002"
     enableOverrideColor: 0
     overrideColor: {r: 0, g: 0, b: 0, a: 1}
     useModifier: 0
@@ -41,3 +59,8 @@ MonoBehaviour:
   upgradedCardName: 
   upgradedManaCost: -1
   upgradedCardActionDataList: []
+  pathType: 0
+  buildTag: 0
+  unlockChapter: 0
+  powerTier: 0
+  replacesCardId: 

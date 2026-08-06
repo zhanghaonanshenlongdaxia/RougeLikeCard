@@ -98,15 +98,19 @@ namespace CardGame.UI
 
         private void UpdateStatus()
         {
-            var battleModel = this.GetModel<IBattleModel>();
-            var loadoutModel = this.GetModel<ILoadoutModel>();
-            var gm = NueGames.NueDeck.Scripts.Managers.GameManager.Instance;
+            try
+            {
+                var battleModel = this.GetModel<IBattleModel>();
+                var loadoutModel = this.GetModel<ILoadoutModel>();
+                var gm = NueGames.NueDeck.Scripts.Managers.GameManager.Instance;
 
-            if (realmText) realmText.text = "境界: 练气期";
-            if (shenShiText) shenShiText.text = $"神识: {loadoutModel.CurrentShenShi.Value}/{loadoutModel.MaxShenShi.Value}";
-            if (goldText) goldText.text = $"灵石: {battleModel.CurrentGold.Value}";
-            if (hpText && gm != null && gm.PersistentGameplayData.AllyList.Count > 0)
-                hpText.text = $"HP: {gm.PersistentGameplayData.AllyList[0].CharacterStats.CurrentHealth}/{gm.PersistentGameplayData.AllyList[0].CharacterStats.MaxHealth}";
+                if (realmText) realmText.text = "境界: 练气期";
+                if (loadoutModel != null && shenShiText) shenShiText.text = $"神识: {loadoutModel.CurrentShenShi.Value}/{loadoutModel.MaxShenShi.Value}";
+                if (battleModel != null && goldText) goldText.text = $"灵石: {battleModel.CurrentGold.Value}";
+                if (hpText && gm != null && gm.PersistentGameplayData != null && gm.PersistentGameplayData.AllyList != null && gm.PersistentGameplayData.AllyList.Count > 0)
+                    hpText.text = $"HP: {gm.PersistentGameplayData.AllyList[0].CharacterStats.CurrentHealth}/{gm.PersistentGameplayData.AllyList[0].CharacterStats.MaxHealth}";
+            }
+            catch { /* QFramework not initialized yet */ }
         }
 
         public void OnAlchemy()

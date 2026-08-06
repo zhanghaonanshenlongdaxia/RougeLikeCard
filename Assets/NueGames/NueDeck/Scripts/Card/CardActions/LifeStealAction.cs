@@ -1,4 +1,5 @@
-﻿using NueGames.NueDeck.Scripts.Enums;
+﻿using CardGame.Audio;
+using NueGames.NueDeck.Scripts.Enums;
 using NueGames.NueDeck.Scripts.Managers;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace NueGames.NueDeck.Scripts.Card.CardActions
             var value = Mathf.RoundToInt(actionParameters.Value +
                                          actionParameters.SelfCharacter.CharacterStats.StatusDict[StatusType.Strength]
                                              .StatusValue);
-            actionParameters.TargetCharacter.CharacterStats.Damage(value);
+            actionParameters.TargetCharacter.CharacterStats.Damage(value, false, actionParameters.SelfCharacter.CharacterStats);
             actionParameters.SelfCharacter.CharacterStats.Heal(value);
             
             if (FxManager != null)
@@ -26,6 +27,9 @@ namespace NueGames.NueDeck.Scripts.Card.CardActions
            
             if (AudioManager != null) 
                 AudioManager.PlayOneShot(actionParameters.CardData.AudioType);
+
+            if (GameAudioManager.Instance != null)
+                GameAudioManager.Instance.PlaySFX(SFXType.SwordSlash);
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using CardGame.Audio;
 using NueGames.NueDeck.Scripts.Managers;
 using NueGames.NueDeck.ThirdParty.NueTooltip.Core;
 using UnityEngine;
@@ -32,6 +33,7 @@ namespace NueGames.NueDeck.Scripts.Utils
             switch (type)
             {
                 case SceneType.MainMenu:
+                    PlaySceneBGM(SceneBGM.Menu);
                     UIManager.ChangeScene(GameManager.SceneData.mainMenuSceneIndex);
                     UIManager.SetCanvas(UIManager.CombatCanvas,false,true);
                     UIManager.SetCanvas(UIManager.InformationCanvas,false,true);
@@ -41,22 +43,23 @@ namespace NueGames.NueDeck.Scripts.Utils
                     GameManager.SetInitalHand();
                     break;
                 case SceneType.Base:
+                    PlaySceneBGM(SceneBGM.Base);
                     // 基地场景索引 = mapSceneIndex - 1 (Base is before Map in build settings)
                     UIManager.ChangeScene(GameManager.SceneData.mapSceneIndex - 1);
                     break;
                 case SceneType.Map:
+                    PlaySceneBGM(SceneBGM.Map);
                     UIManager.ChangeScene(GameManager.SceneData.mapSceneIndex);
                     UIManager.SetCanvas(UIManager.CombatCanvas,false,true);
                     UIManager.SetCanvas(UIManager.InformationCanvas,true,false);
                     UIManager.SetCanvas(UIManager.RewardCanvas,false,true);
-                   
                     break;
                 case SceneType.Combat:
+                    PlaySceneBGM(SceneBGM.Battle);
                     UIManager.ChangeScene(GameManager.SceneData.combatSceneIndex);
                     UIManager.SetCanvas(UIManager.CombatCanvas,false,true);
                     UIManager.SetCanvas(UIManager.InformationCanvas,true,false);
                     UIManager.SetCanvas(UIManager.RewardCanvas,false,true);
-                    
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
@@ -93,6 +96,13 @@ namespace NueGames.NueDeck.Scripts.Utils
         {
             GameManager.OnExitApp();
             Application.Quit();
+        }
+
+        private void PlaySceneBGM(SceneBGM bgm)
+        {
+            Debug.Log($"[Audio] PlaySceneBGM({bgm}) called, Instance={(GameAudioManager.Instance != null ? "exists" : "NULL")}");
+            if (GameAudioManager.Instance != null)
+                GameAudioManager.Instance.PlayBGM(bgm);
         }
     }
 }

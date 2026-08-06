@@ -19,7 +19,7 @@ namespace NueGames.NueDeck.Scripts.EnemyBehaviour.EnemyActions
             if (actionParameters.SelfCharacter.CharacterStats.StatusDict[StatusType.Weak].IsActive)
                 value = Mathf.RoundToInt(value * 0.75f);
 
-            actionParameters.TargetCharacter.CharacterStats.Damage(value);
+            actionParameters.TargetCharacter.CharacterStats.Damage(value, false, actionParameters.SelfCharacter.CharacterStats);
             if (FxManager != null)
             {
                 FxManager.PlayFx(actionParameters.TargetCharacter.transform,FxType.Attack);

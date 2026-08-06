@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6903f06e96c43789549f142f8956d64, type: 3}
+  m_Name: spr_db_vein
+  m_EditorClassIdentifier: 
+  id: spr_db_vein
+  cardName: "\u7EDD\u8109"
+  manaCost: 3
+  cardSprite: {fileID: 0}
+  rarity: 3
+  usableWithoutTarget: 1
+  exhaustAfterPlay: 1
+  isPowerCard: 0
+  cardActionDataList:
+  - cardActionType: 12
+    actionTargetType: 2
+    actionValue: 3
+    actionDelay: 0.1
+    hitCount: 1
+  - cardActionType: 10
+    actionTargetType: 2
+    actionValue: 2
+    actionDelay: 0.1
+    hitCount: 1
+  - cardActionType: 0
+    actionTargetType: 2
+    actionValue: 12
+    actionDelay: 0.1
+    hitCount: 1
+  cardDescriptionDataList:
+  - descriptionText: "\u5168\u4F53 3 \u6613\u4F24+2 \u865A\u5F31+12 \u4F24\u5BB3"
+    enableOverrideColor: 0
+    overrideColor: {r: 0, g: 0, b: 0, a: 1}
+    useModifier: 0
+    modifiedActionValueIndex: 0
+    modiferStats: 0
+    usePrefixOnModifiedValue: 0
+    modifiedValuePrefix: '*'
+    overrideColorOnValueScaled: 0
+  - descriptionText: "\n\u7EDD\u8109\uFF0C\u7075\u9053\u81F3\u9AD8\u7981\u672F\u3002\u5C01\u9501\u654C\u65B9\u7ECF\u8109\u7075\u8109\uFF0C\u4EE4\u5176\u653B\u9632\u5D29\u6E83\uFF0C\u518D\u4EE5\u7075\u529B\u4E00\u51FB\u6BC1\u706D\u3002\u6B64\u672F\u65BD\u6CD5\u8005\u4EA6\u9700\u4ED8\u51FA\u6781\u5927\u4EE3\u4EF7\u3002"
+    enableOverrideColor: 0
+    overrideColor: {r: 0, g: 0, b: 0, a: 1}
+    useModifier: 0
+    modifiedActionValueIndex: 0
+    modiferStats: 0
+    usePrefixOnModifiedValue: 0
+    modifiedValuePrefix: '*'
+    overrideColorOnValueScaled: 0
+  specialKeywordsList: 
+  audioType: 0
+  upgradedCardName: 
+  upgradedManaCost: -1
+  upgradedCardActionDataList: []
+  pathType: 3
+  buildTag: 5
+  unlockChapter: 4
+  powerTier: 1
+  replacesCardId: 
