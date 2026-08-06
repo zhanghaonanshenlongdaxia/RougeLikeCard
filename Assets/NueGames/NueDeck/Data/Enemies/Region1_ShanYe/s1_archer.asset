@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2612027158f847538279f7d8f10dff91, type: 3}
+  m_Name: s1_archer
+  m_EditorClassIdentifier: 
+  characterID: s1_archer
+  characterName: "\u5F13\u624B"
+  characterDescription: 
+  maxHealth: 30
+  enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
+  followAbilityPattern: 1
+  enemyAbilityList:
+  - name: "\u7834\u7532\u7BAD"
+    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 6
+      minActionValue: 2
+      maxActionValue: 2
+  - name: "\u7A7F\u4E91\u7BAD"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 8
+      maxActionValue: 8
+  enemyTier: 0
+  regionId: 0
+  enemyDescription: "\u5C71\u4E2D\u730E\u6237\u51FA\u8EAB\u7684\u5F13\u624B\uFF0C\u64C5\u957F\u8FDC\u7A0B\u5C04\u51FB\u3002\u7BAD\u77E2\u5E26\u7834\u7532\u4E4B\u529B\u3002"
+  enemyPortrait: {fileID: 0}
+  encounterDialogue: "\u7AD9\u4F4F\uFF01\u8BA9\u6211\u770B\u770B\u4F60\u7684\u7834\u7EFD\u5728\u54EA\u91CC\u2026\u2026"
+  victoryDialogue: "\u5F13\u7BAD\u624B\uFF0C\u8FD1\u8EAB\u4FBF\u65E0\u7528\u3002"
+  phaseList: []

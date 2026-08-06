@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2612027158f847538279f7d8f10dff91, type: 3}
+  m_Name: s1_mojiang
+  m_EditorClassIdentifier: 
+  characterID: s1_mojiang
+  characterName: "\u9B54\u5C06"
+  characterDescription: 
+  maxHealth: 150
+  enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
+  followAbilityPattern: 1
+  enemyAbilityList:
+  - name: "\u9B54\u65A9"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 12
+      maxActionValue: 12
+  - name: "\u9B54\u94E0"
+    intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 3
+      minActionValue: 10
+      maxActionValue: 10
+  - name: "\u53CC\u9B54\u65A9"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 8
+      maxActionValue: 8
+    - actionType: 0
+      minActionValue: 8
+      maxActionValue: 8
+  enemyTier: 1
+  regionId: 0
+  enemyDescription: "\u5929\u9B54\u88C2\u9699\u6E17\u51FA\u7684\u9B54\u5C06\u6B8B\u5F71\u3002\u653B\u9632\u5747\u8861\uFF0C\u8840\u91CF\u516D\u6210\u540E\u9B54\u5316\uFF0C\u653B\u51FB\u529B\u66B4\u589E\u3002"
+  enemyPortrait: {fileID: 0}
+  encounterDialogue: "\uFF08\u9B54\u5C06\u7684\u5F71\u5B50\u4ECE\u5730\u9762\u5347\u8D77\uFF0C\u9B54\u6C14\u6ED4\u5929\uFF09\n\u533A\u533A\u877C\u8681\u2026\u2026\n\u4E5F\u6562\u963B\u6321\u672C\u5C06\u7684\u53BB\u8DEF\uFF1F"
+  victoryDialogue: "\u9B54\u2026\u2026\u6C14\u6563\u4E86\u2026\u2026\n\u770B\u6765\u2026\u2026\u8FD9\u5177\u6B8B\u8EAF\u2026\u2026\u4E5F\u5230\u5934\u4E86\u2026\u2026\n\uFF08\u9B54\u5C06\u5316\u4E3A\u9ED1\u70DF\u6D88\u6563\uFF09"
+  phaseList: []

@@ -54,6 +54,7 @@ namespace NueGames.NueDeck.Scripts.Managers
         }
         public void PlayFx(Transform targetTransform, FxType targetFx)
         {
+            if (FXDict == null || !FXDict.ContainsKey(targetFx) || FXDict[targetFx] == null) return;
             Instantiate(FXDict[targetFx], targetTransform);
         }
         #endregion

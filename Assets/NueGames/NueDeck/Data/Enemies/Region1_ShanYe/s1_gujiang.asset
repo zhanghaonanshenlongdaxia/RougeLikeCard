@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2612027158f847538279f7d8f10dff91, type: 3}
+  m_Name: s1_gujiang
+  m_EditorClassIdentifier: 
+  characterID: s1_gujiang
+  characterName: "\u9B3C\u5C06"
+  characterDescription: 
+  maxHealth: 120
+  enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
+  followAbilityPattern: 1
+  enemyAbilityList:
+  - name: "\u9B3C\u67AA"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 12
+      maxActionValue: 12
+  - name: "\u51A5\u6C14\u62A4\u4F53"
+    intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 3
+      minActionValue: 10
+      maxActionValue: 10
+  - name: "\u51A5\u6C14\u4FB5\u8680"
+    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 4
+      minActionValue: 3
+      maxActionValue: 3
+  enemyTier: 1
+  regionId: 0
+  enemyDescription: "\u6B7B\u4E0D\u7791\u76EE\u7684\u9B3C\u5C06\uFF0C\u4EE5\u6267\u5FF5\u5316\u5F62\u3002\u751F\u524D\u5584\u7528\u957F\u67AA\uFF0C\u6B7B\u540E\u67AA\u6CD5\u66F4\u80DC\u3002\u8840\u91CF\u516D\u6210\u540E\u4F7F\u51FA\u6B7B\u4EA1\u8FDE\u51FB\u3002"
+  enemyPortrait: {fileID: 0}
+  encounterDialogue: "\uFF08\u9B3C\u5C06\u6267\u67AA\u800C\u7ACB\uFF0C\u9634\u98CE\u9635\u9635\uFF09\n\u543E\u2026\u2026\u751F\u524D\u672A\u4E86\u4E4B\u613F\u2026\u2026\n\u6321\u543E\u8005\u2026\u2026\u6B7B\uFF01"
+  victoryDialogue: "\u6267\u5FF5\u2026\u2026\u6563\u4E86\u2026\u2026\n\u543E\u2026\u2026\u7EC8\u4E8E\u2026\u2026\u53EF\u4EE5\u5B89\u606F\u4E86\u2026\u2026\n\uFF08\u9B3C\u5C06\u5316\u4E3A\u5149\u70B9\u98DE\u6563\uFF09"
+  phaseList: []

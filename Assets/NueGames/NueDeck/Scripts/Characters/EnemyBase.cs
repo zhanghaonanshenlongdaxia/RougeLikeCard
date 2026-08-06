@@ -18,9 +18,14 @@ namespace NueGames.NueDeck.Scripts.Characters
         [SerializeField] protected SoundProfileData deathSoundProfileData;
         protected EnemyAbilityData NextAbility;
         
+        // Multi-phase support
+        private int _currentPhaseIndex = -1; // -1 = no phases or not yet triggered
+        private bool _phaseChangedThisTurn;
+        
         public EnemyCharacterData EnemyCharacterData => enemyCharacterData;
         public EnemyCanvas EnemyCanvas => enemyCanvas;
         public SoundProfileData DeathSoundProfileData => deathSoundProfileData;
+        public int CurrentPhaseIndex => _currentPhaseIndex;
 
         #region Setup
         public override void BuildCharacter()
@@ -32,12 +37,18 @@ namespace NueGames.NueDeck.Scripts.Characters
             CharacterStats.SetCurrentHealth(CharacterStats.CurrentHealth);
             CombatManager.OnAllyTurnStarted += ShowNextAbility;
             CombatManager.OnEnemyTurnStarted += CharacterStats.TriggerAllStatus;
+            
+            // Subscribe to health changes for phase switching
+            if (EnemyCharacterData.HasPhases)
+                CharacterStats.OnHealthChanged += OnHealthChanged;
         }
         protected override void OnDeath()
         {
             base.OnDeath();
             CombatManager.OnAllyTurnStarted -= ShowNextAbility;
             CombatManager.OnEnemyTurnStarted -= CharacterStats.TriggerAllStatus;
+            if (EnemyCharacterData.HasPhases)
+                CharacterStats.OnHealthChanged -= OnHealthChanged;
            
             CombatManager.OnEnemyDeath(this);
             AudioManager.PlayOneShot(DeathSoundProfileData.GetRandomClip());
@@ -50,7 +61,9 @@ namespace NueGames.NueDeck.Scripts.Characters
         private int _usedAbilityCount;
         private void ShowNextAbility()
         {
-            NextAbility = EnemyCharacterData.GetAbility(_usedAbilityCount);
+            // Get active ability list based on current phase
+            var abilityList = GetActiveAbilityList();
+            NextAbility = GetAbilityFromList(abilityList, _usedAbilityCount);
             EnemyCanvas.IntentImage.sprite = NextAbility.Intention.IntentionSprite;
             
             if (NextAbility.HideActionValue)
@@ -65,6 +78,52 @@ namespace NueGames.NueDeck.Scripts.Characters
 
             _usedAbilityCount++;
             EnemyCanvas.IntentImage.gameObject.SetActive(true);
+            _phaseChangedThisTurn = false;
+        }
+        
+        private System.Collections.Generic.List<EnemyAbilityData> GetActiveAbilityList()
+        {
+            if (!EnemyCharacterData.HasPhases)
+                return EnemyCharacterData.EnemyAbilityList;
+            return EnemyCharacterData.GetActiveAbilityList((float)CharacterStats.CurrentHealth / CharacterStats.MaxHealth);
+        }
+        
+        private EnemyAbilityData GetAbilityFromList(System.Collections.Generic.List<EnemyAbilityData> list, int usedCount)
+        {
+            if (EnemyCharacterData.FollowAbilityPatternCheck())
+            {
+                var index = usedCount % list.Count;
+                return list[index];
+            }
+            return list.RandomItem();
+        }
+        
+        private void OnHealthChanged(int currentHealth, int maxHealth)
+        {
+            if (!EnemyCharacterData.HasPhases) return;
+            float ratio = (float)currentHealth / maxHealth;
+            
+            // Check if we should advance to a new phase
+            var phases = EnemyCharacterData.PhaseList;
+            int newPhaseIndex = -1;
+            for (int i = phases.Count - 1; i >= 0; i--)
+            {
+                if (ratio <= phases[i].HealthThreshold)
+                {
+                    newPhaseIndex = i;
+                    break;
+                }
+            }
+            
+            if (newPhaseIndex > _currentPhaseIndex)
+            {
+                _currentPhaseIndex = newPhaseIndex;
+                _usedAbilityCount = 0; // Reset pattern counter for new phase
+                _phaseChangedThisTurn = true;
+                var phaseName = phases[newPhaseIndex].PhaseEnterName;
+                if (!string.IsNullOrEmpty(phaseName))
+                    Debug.Log($"[{EnemyCharacterData.name}] 进入阶段: {phaseName}");
+            }
         }
         #endregion
         

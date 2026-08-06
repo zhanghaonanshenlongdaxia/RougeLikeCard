@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2612027158f847538279f7d8f10dff91, type: 3}
+  m_Name: s1_rogue
+  m_EditorClassIdentifier: 
+  characterID: s1_rogue
+  characterName: "\u9006\u4FEE\u8005"
+  characterDescription: 
+  maxHealth: 36
+  enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
+  followAbilityPattern: 0
+  enemyAbilityList:
+  - name: "\u75AF\u9B54\u65A9"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 5
+      maxActionValue: 5
+    - actionType: 0
+      minActionValue: 5
+      maxActionValue: 5
+  - name: "\u5168\u529B\u4E00\u51FB"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 9
+      maxActionValue: 9
+  enemyTier: 0
+  regionId: 0
+  enemyDescription: "\u9006\u7EC3\u529F\u6CD5\u8D70\u706B\u5165\u9B54\u7684\u4FEE\u58EB\uFF0C\u5FC3\u667A\u5DF2\u4E71\uFF0C\u89C1\u4EBA\u4FBF\u780D\u3002\u8089\u8EAB\u88AB\u9B54\u6C14\u4FB5\u8680\uFF0C\u529B\u5927\u65E0\u7A77\u3002"
+  enemyPortrait: {fileID: 0}
+  encounterDialogue: "\u529F\u6CD5\u2026\u2026\u6211\u7684\u529F\u6CD5\u2026\u2026\u90FD\u7ED9\u6211\u2026\u2026"
+  victoryDialogue: "\u9006\u7EC3\u529F\u6CD5\uFF0C\u5BB3\u4EBA\u5BB3\u5DF1\uFF0C\u4ECA\u65E5\u4FBF\u4E3A\u4F60\u8D85\u5EA6\u3002"
+  phaseList: []

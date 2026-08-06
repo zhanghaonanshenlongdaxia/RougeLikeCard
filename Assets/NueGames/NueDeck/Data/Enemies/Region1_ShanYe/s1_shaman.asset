@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2612027158f847538279f7d8f10dff91, type: 3}
+  m_Name: s1_shaman
+  m_EditorClassIdentifier: 
+  characterID: s1_shaman
+  characterName: "\u5DEB\u795D"
+  characterDescription: 
+  maxHealth: 40
+  enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
+  followAbilityPattern: 1
+  enemyAbilityList:
+  - name: "\u865A\u5F31\u5492"
+    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 4
+      minActionValue: 2
+      maxActionValue: 2
+  - name: "\u7834\u7EFD\u5492"
+    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 6
+      minActionValue: 2
+      maxActionValue: 2
+  - name: "\u788E\u7532\u5492"
+    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 5
+      minActionValue: 2
+      maxActionValue: 2
+  - name: "\u56DE\u9B42"
+    intention: {fileID: 11400000, guid: d8b91adf93b4e21419f64f9a68fc3c70, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 1
+      minActionValue: 3
+      maxActionValue: 3
+  enemyTier: 0
+  regionId: 0
+  enemyDescription: "\u90E8\u843D\u7684\u5DEB\u795D\uFF0C\u7CBE\u901A\u8BC5\u5492\u4E4B\u672F\u3002\u672C\u8EAB\u4E0D\u64C5\u957F\u653B\u51FB\uFF0C\u4F46\u5404\u79CDdebuff\u4EE4\u4EBA\u82E6\u4E0D\u582A\u8A00\u3002"
+  enemyPortrait: {fileID: 0}
+  encounterDialogue: "\u5929\u5730\u7384\u9EC4\uFF0C\u4E07\u5492\u5F52\u5B97\u2026\u2026\uFF08\u5DEB\u795D\u5FF5\u5FF5\u6709\u8BCD\uFF09"
+  victoryDialogue: "\u88C5\u795E\u5F04\u9B3C\uFF01"
+  phaseList: []

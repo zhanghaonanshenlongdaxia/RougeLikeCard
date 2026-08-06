@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using CardGame;
+using CardGame.UI;
 using NueGames.NueDeck.Scripts.Characters;
 using NueGames.NueDeck.Scripts.Characters.Enemies;
+using NueGames.NueDeck.Scripts.Data.Characters;
 using NueGames.NueDeck.Scripts.Data.Containers;
 using NueGames.NueDeck.Scripts.Enums;
 using NueGames.NueDeck.Scripts.Utils.Background;
@@ -101,6 +104,55 @@ namespace NueGames.NueDeck.Scripts.Managers
             this.GetSystem<IRelicSystem>().TriggerRelics(RelicTriggerType.OnCombatStart,
                 new RelicTriggerContext(player: CurrentMainAlly, enemies: CurrentEnemiesList));
 
+            // 图鉴解锁 + 战前对话
+            StartCoroutine(StartCombatWithDialogue());
+        }
+
+        private IEnumerator StartCombatWithDialogue()
+        {
+            // 图鉴解锁所有遭遇敌人
+            try
+            {
+                var codex = this.GetSystem<IEnemyCodexSystem>();
+                foreach (var enemy in CurrentEnemiesList)
+                {
+                    if (enemy.EnemyCharacterData != null)
+                        codex.OnEncounter((string)typeof(EnemyCharacterData)
+                            .BaseType.GetField("characterID", BindingFlags.NonPublic | BindingFlags.Instance)
+                            .GetValue(enemy.EnemyCharacterData));
+                }
+            }
+            catch { /* QFramework not ready */ }
+
+            // 显示战前对话（取第一个有对话的敌人）
+            string dialogue = null;
+            string enemyName = null;
+            foreach (var enemy in CurrentEnemiesList)
+            {
+                if (enemy.EnemyCharacterData != null && !string.IsNullOrEmpty(enemy.EnemyCharacterData.EncounterDialogue))
+                {
+                    dialogue = enemy.EnemyCharacterData.EncounterDialogue;
+                    enemyName = (string)typeof(EnemyCharacterData)
+                        .BaseType.GetField("characterName", BindingFlags.NonPublic | BindingFlags.Instance)
+                        .GetValue(enemy.EnemyCharacterData);
+                    break;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(dialogue))
+            {
+                // 创建对话面板
+                var panelObj = new GameObject("EncounterDialoguePanel");
+                var panel = panelObj.AddComponent<EncounterDialoguePanel>();
+                bool dialogueComplete = false;
+                panel.Init(enemyName, dialogue, "开战", () => { dialogueComplete = true; });
+
+                // 等待玩家点击继续
+                while (!dialogueComplete)
+                    yield return null;
+            }
+
+            // 开始战斗
             CurrentCombatStateType = CombatStateType.AllyTurn;
         }
         
@@ -247,6 +299,10 @@ namespace NueGames.NueDeck.Scripts.Managers
             for (var i = 0; i < enemyList.Count; i++)
             {
                 var clone = Instantiate(enemyList[i].EnemyPrefab, EnemyPosList.Count >= i ? EnemyPosList[i] : EnemyPosList[0]);
+                // Override enemyCharacterData with the correct SO from encounter list
+                var dataField = typeof(EnemyBase).GetField("enemyCharacterData", 
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (dataField != null) dataField.SetValue(clone, enemyList[i]);
                 clone.BuildCharacter();
                 CurrentEnemiesList.Add(clone);
             }
@@ -318,7 +374,44 @@ namespace NueGames.NueDeck.Scripts.Managers
             }
             
             this.GetSystem<ICardSystem>().ClearPiles();
-            
+
+            // 显示战胜对话
+            StartCoroutine(ShowVictoryDialogueThenReward());
+        }
+
+        private IEnumerator ShowVictoryDialogueThenReward()
+        {
+            // 查找有战胜对话的敌人（已死亡的敌人数据仍保留在CurrentEncounter中）
+            string dialogue = null;
+            string enemyName = null;
+            if (CurrentEncounter != null)
+            {
+                foreach (var enemyData in CurrentEncounter.EnemyList)
+                {
+                    if (enemyData != null && !string.IsNullOrEmpty(enemyData.VictoryDialogue))
+                    {
+                        dialogue = enemyData.VictoryDialogue;
+                        enemyName = (string)typeof(EnemyCharacterData)
+                            .BaseType.GetField("characterName", BindingFlags.NonPublic | BindingFlags.Instance)
+                            .GetValue(enemyData);
+                        break;
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(dialogue))
+            {
+                var panelObj = new GameObject("VictoryDialoguePanel");
+                var panel = panelObj.AddComponent<EncounterDialoguePanel>();
+                bool dialogueComplete = false;
+                panel.Init(enemyName, dialogue, "继续", () => { dialogueComplete = true; });
+
+                while (!dialogueComplete)
+                    yield return null;
+            }
+
+            // 继续原有的胜利流程
+            CurrentMainAlly.CharacterStats.ClearAllStatus();
            
             if (GameManager.PersistentGameplayData.IsFinalEncounter)
             {
@@ -326,7 +419,6 @@ namespace NueGames.NueDeck.Scripts.Managers
             }
             else
             {
-                CurrentMainAlly.CharacterStats.ClearAllStatus();
                 GameManager.PersistentGameplayData.CurrentEncounterId++;
                 UIManager.CombatCanvas.gameObject.SetActive(false);
                 UIManager.RewardCanvas.gameObject.SetActive(true);
@@ -334,7 +426,6 @@ namespace NueGames.NueDeck.Scripts.Managers
                 UIManager.RewardCanvas.BuildReward(RewardType.Gold);
                 UIManager.RewardCanvas.BuildReward(RewardType.Card);
             }
-           
         }
         #endregion
         

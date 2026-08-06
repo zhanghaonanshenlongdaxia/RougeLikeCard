@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2612027158f847538279f7d8f10dff91, type: 3}
+  m_Name: s1_snake
+  m_EditorClassIdentifier: 
+  characterID: s1_snake
+  characterName: "\u78A7\u78F7\u86C7\u5996"
+  characterDescription: 
+  maxHealth: 35
+  enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
+  followAbilityPattern: 0
+  enemyAbilityList:
+  - name: "\u6BD2\u7259"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 2
+      minActionValue: 3
+      maxActionValue: 3
+  - name: "\u5410\u4FE1"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 5
+      maxActionValue: 5
+  enemyTier: 0
+  regionId: 0
+  enemyDescription: "\u5728\u7075\u77FF\u6BD2\u6C14\u4E2D\u4FEE\u70BC\u767E\u5E74\u7684\u86C7\u5996\uFF0C\u9CDE\u7247\u6CDB\u7740\u78A7\u7EFF\u78F7\u5149\u3002\u6BD2\u7259\u85CF\u6709\u5267\u6BD2\uFF0C\u54AC\u4E2D\u5373\u8150\u3002"
+  enemyPortrait: {fileID: 0}
+  encounterDialogue: "\u5636\u2014\u2014\uFF08\u86C7\u77B3\u51B0\u51B7\uFF0C\u7F13\u7F13\u7F20\u5411\u4F60\uFF09"
+  victoryDialogue: "\u6BD2\u86C7\u4F5C\u795F\uFF0C\u7559\u4F60\u4E0D\u5F97\uFF01"
+  phaseList: []
