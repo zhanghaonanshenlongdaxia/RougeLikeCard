@@ -54,6 +54,7 @@ namespace CardGame.UI
             {
                 if (tmp.text != null && tmp.text.Contains("灵石")) { goldText = tmp; break; }
             }
+            UIHelper.EnsureCloseButton(this, OnBackButton);
         }
 
         private void OnEnable()

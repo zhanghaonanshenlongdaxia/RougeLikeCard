@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2612027158f847538279f7d8f10dff91, type: 3}
+  m_Name: s4_meimo
+  m_EditorClassIdentifier: 
+  characterID: s4_meimo
+  characterName: "\u9B45\u9B54"
+  characterDescription: 
+  maxHealth: 44
+  enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
+  followAbilityPattern: 1
+  enemyAbilityList:
+  - name: "\u9B45\u60D1"
+    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 4
+      minActionValue: 3
+      maxActionValue: 3
+  - name: "\u56DE\u6C14"
+    intention: {fileID: 11400000, guid: d8b91adf93b4e21419f64f9a68fc3c70, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 1
+      minActionValue: 6
+      maxActionValue: 6
+  - name: "\u7834\u7EFD"
+    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 6
+      minActionValue: 3
+      maxActionValue: 3
+  - name: "\u722A\u51FB"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 8
+      maxActionValue: 8
+  enemyTier: 0
+  regionId: 3
+  enemyDescription: "\u4EE5\u9B45\u60D1\u4E3A\u751F\u7684\u9B54\u5973\u3002debuff\u914D\u5408\u56DE\u8840\u3002"
+  enemyPortrait: {fileID: 0}
+  encounterDialogue: "\u563B\u563B\u2026\u2026\u770B\u6211\u597D\u770B\u5417\uFF1F\n\u2026\u2026\u90A3\u5C31\u591A\u966A\u966A\u6211\u2026\u2026"
+  victoryDialogue: "\u9B45\u672F\u2026\u2026\u7834\u4E86\u2026\u2026"
+  phaseList: []

@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2612027158f847538279f7d8f10dff91, type: 3}
+  m_Name: s2_revenant
+  m_EditorClassIdentifier: 
+  characterID: s2_revenant
+  characterName: "\u5F52\u9B42"
+  characterDescription: 
+  maxHealth: 52
+  enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
+  followAbilityPattern: 1
+  enemyAbilityList:
+  - name: "\u51A5\u51FB"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 6
+      maxActionValue: 6
+  - name: "\u51A5\u6C14\u56DE\u6D41"
+    intention: {fileID: 11400000, guid: d8b91adf93b4e21419f64f9a68fc3c70, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 1
+      minActionValue: 5
+      maxActionValue: 5
+  - name: "\u51A5\u76FE"
+    intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 3
+      minActionValue: 8
+      maxActionValue: 8
+  - name: "\u51A5\u51FB"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 6
+      maxActionValue: 6
+  enemyTier: 0
+  regionId: 1
+  enemyDescription: "\u4E0D\u7518\u6B7B\u53BB\u7684\u4EA1\u9B42\u91CD\u8FD4\u4EBA\u95F4\u3002\u653B\u9632\u517C\u5907\uFF0C\u8FD8\u4F1A\u81EA\u6108\u3002"
+  enemyPortrait: {fileID: 0}
+  encounterDialogue: "\u6211\u2026\u2026\u4E0D\u7518\u2026\u2026\uFF08\u5F52\u9B42\u6267\u5FF5\u5316\u4E3A\u5B9E\u4F53\uFF09"
+  victoryDialogue: "\u6267\u5FF5\u592A\u6DF1\uFF0C\u9001\u4F60\u8D85\u5EA6\u3002"
+  phaseList: []

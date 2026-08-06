@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2612027158f847538279f7d8f10dff91, type: 3}
+  m_Name: s2_mingjang
+  m_EditorClassIdentifier: 
+  characterID: s2_mingjang
+  characterName: "\u51A5\u5C06"
+  characterDescription: 
+  maxHealth: 135
+  enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
+  followAbilityPattern: 1
+  enemyAbilityList:
+  - name: "\u51A5\u65A9"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 12
+      maxActionValue: 12
+  - name: "\u9634\u6C14"
+    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 4
+      minActionValue: 3
+      maxActionValue: 3
+    - actionType: 6
+      minActionValue: 2
+      maxActionValue: 2
+  - name: "\u51A5\u65A9"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 12
+      maxActionValue: 12
+  enemyTier: 1
+  regionId: 1
+  enemyDescription: "\u5E7D\u51A5\u754C\u7684\u5C06\u519B\u3002\u653Bdebuff\u4EA4\u66FF\uFF0C\u8840\u91CF\u8FC7\u534A\u540E\u6B7B\u9635\u7206\u53D1\u3002"
+  enemyPortrait: {fileID: 0}
+  encounterDialogue: "\u672C\u5C06\u5949\u51A5\u738B\u4E4B\u547D\u9547\u5B88\u6B64\u5730\u2026\u2026\n\u6D3B\u4EBA\uFF0C\u6B62\u6B65\uFF01\n\u5426\u5219\u2026\u2026\u683C\u6740\u52FF\u8BBA\uFF01"
+  victoryDialogue: "\u51A5\u5C06\u2026\u2026\u5012\u4E0B\u4E86\u2026\u2026\n\u597D\u2026\u2026\u597D\u5F3A\u7684\u2026\u2026\u6D3B\u4EBA\u2026\u2026\n\uFF08\u51A5\u5C06\u5316\u4E3A\u51A5\u96FE\uFF09"
+  phaseList: []

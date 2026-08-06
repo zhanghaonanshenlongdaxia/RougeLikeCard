@@ -87,7 +87,32 @@ namespace CardGame.UI
                 else if (name == "RitualButton") { ritualButton = btn; btn.onClick.AddListener(OnRitual); }
                 else if (name == "InventoryButton") { inventoryButton = btn; btn.onClick.AddListener(OnInventory); }
                 else if (name == "LoadoutButton") { loadoutButton = btn; btn.onClick.AddListener(OnLoadout); }
+                else if (name == "CodexButton") { btn.onClick.AddListener(OnCodex); }
                 else if (name == "AdventureButton") { adventureButton = btn; btn.onClick.AddListener(OnAdventure); }
+            }
+
+            // Create CodexButton if not found
+            if (GetComponentsInChildren<Button>(true).Length <= 6)
+            {
+                var codexBtnObj = new GameObject("CodexButton");
+                codexBtnObj.transform.SetParent(transform, false);
+                var rt = codexBtnObj.AddComponent<RectTransform>();
+                rt.anchorMin = new Vector2(0.35f, 0.03f); rt.anchorMax = new Vector2(0.5f, 0.12f);
+                rt.offsetMin = Vector2.zero; rt.offsetMax = Vector2.zero;
+                var img = codexBtnObj.AddComponent<Image>(); img.color = new Color(0.15f, 0.3f, 0.5f, 1f);
+                var txtObj = new GameObject("Text");
+                txtObj.transform.SetParent(codexBtnObj.transform, false);
+                var txtRt = txtObj.AddComponent<RectTransform>();
+                txtRt.anchorMin = Vector2.zero; txtRt.anchorMax = Vector2.one;
+                txtRt.offsetMin = Vector2.zero; txtRt.offsetMax = Vector2.zero;
+                var tmp = txtObj.AddComponent<TextMeshProUGUI>();
+                tmp.text = "图鉴"; tmp.fontSize = 20; tmp.color = Color.white;
+                tmp.alignment = TextAlignmentOptions.Center;
+                var libSans = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
+                if (libSans) tmp.font = libSans;
+                var codexBtn = codexBtnObj.AddComponent<Button>();
+                codexBtn.onClick.AddListener(OnCodex);
+                Debug.Log("[BaseUI] CodexButton created at runtime");
             }
         }
 
@@ -138,8 +163,18 @@ namespace CardGame.UI
             TogglePanel("LoadoutCanvas");
         }
 
+        public void OnCodex()
+        {
+            // EnemyCodexCanvas is runtime-created, skip prefab lookup
+            var existing = GameObject.Find("EnemyCodexCanvas");
+            if (existing != null) { existing.SetActive(!existing.activeSelf); return; }
+            var codexObj = new GameObject("EnemyCodexCanvas");
+            codexObj.AddComponent<EnemyCodexUIController>();
+            codexObj.SetActive(true);
+        }
+
         /// <summary>
-        /// 打开/关闭子面板，不存在则从 Prefab 实例化
+        /// 打开/关闭子面板，不存在则从 Prefab 实例化或动态创建
         /// </summary>
         private void TogglePanel(string canvasName)
         {
@@ -154,7 +189,18 @@ namespace CardGame.UI
             // 从 Prefab 实例化
             var go = BaseSceneInitializer.InstantiateCanvas(canvasName);
             if (go != null)
+            {
                 go.SetActive(true);
+                return;
+            }
+
+            // 动态创建（用于没有预制体的面板）
+            if (canvasName == "EnemyCodexCanvas")
+            {
+                var codexObj = new GameObject("EnemyCodexCanvas");
+                codexObj.AddComponent<EnemyCodexUIController>();
+                codexObj.SetActive(true);
+            }
         }
 
         public void OnAdventure()

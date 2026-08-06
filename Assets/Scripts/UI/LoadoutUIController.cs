@@ -29,6 +29,7 @@ namespace CardGame.UI
         {
             _model = this.GetModel<ILoadoutModel>();
             _system = this.GetSystem<ILoadoutSystem>();
+            UIHelper.EnsureCloseButton(this, OnBackButton);
         }
 
         private void OnEnable()

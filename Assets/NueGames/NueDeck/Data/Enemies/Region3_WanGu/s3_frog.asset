@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2612027158f847538279f7d8f10dff91, type: 3}
+  m_Name: s3_frog
+  m_EditorClassIdentifier: 
+  characterID: s3_frog
+  characterName: "\u86CA\u86D9"
+  characterDescription: 
+  maxHealth: 42
+  enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
+  followAbilityPattern: 1
+  enemyAbilityList:
+  - name: "\u6BD2\u6DB2"
+    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 2
+      minActionValue: 3
+      maxActionValue: 3
+  - name: "\u865A\u5F31"
+    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 4
+      minActionValue: 1
+      maxActionValue: 1
+  - name: "\u6BD2\u6DB2"
+    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 2
+      minActionValue: 3
+      maxActionValue: 3
+  - name: "\u7834\u7EFD"
+    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 6
+      minActionValue: 1
+      maxActionValue: 1
+  enemyTier: 0
+  regionId: 2
+  enemyDescription: "\u86CA\u5E08\u57F9\u80B2\u7684\u86D9\u3002\u6BD2\u4E0Edebuff\u4EA4\u66FF\u3002"
+  enemyPortrait: {fileID: 0}
+  encounterDialogue: "\u5471\u2026\u2026\uFF08\u86CA\u86D9\u9F13\u8D77\u9E23\u56CA\uFF09"
+  victoryDialogue: "\u86D9\uFF1F\u8E29\u6B7B\uFF01"
+  phaseList: []

@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2612027158f847538279f7d8f10dff91, type: 3}
+  m_Name: s2_wraith
+  m_EditorClassIdentifier: 
+  characterID: s2_wraith
+  characterName: "\u4EA1\u7075"
+  characterDescription: 
+  maxHealth: 45
+  enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
+  followAbilityPattern: 1
+  enemyAbilityList:
+  - name: "\u51A5\u5203"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 7
+      maxActionValue: 7
+  - name: "\u51A5\u6BD2"
+    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 2
+      minActionValue: 3
+      maxActionValue: 3
+  - name: "\u51A5\u5203"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 7
+      maxActionValue: 7
+  enemyTier: 0
+  regionId: 1
+  enemyDescription: "\u5E7D\u51A5\u754C\u7684\u4EA1\u7075\u6218\u58EB\uFF0C\u653B\u51FB\u9644\u5E26\u6BD2\u6C14\u3002"
+  enemyPortrait: {fileID: 0}
+  encounterDialogue: "\u55EC\u2026\u2026\uFF08\u4EA1\u7075\u4E3E\u8D77\u5E7D\u51A5\u4E4B\u5203\uFF09"
+  victoryDialogue: "\u4EA1\u7075\uFF0C\u56DE\u5F52\u51A5\u754C\uFF01"
+  phaseList: []

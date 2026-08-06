@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2612027158f847538279f7d8f10dff91, type: 3}
+  m_Name: s3_guasnake
+  m_EditorClassIdentifier: 
+  characterID: s3_guasnake
+  characterName: "\u86CA\u86C7"
+  characterDescription: 
+  maxHealth: 46
+  enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
+  followAbilityPattern: 1
+  enemyAbilityList:
+  - name: "\u86CA\u6BD2"
+    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 2
+      minActionValue: 4
+      maxActionValue: 4
+    - actionType: 6
+      minActionValue: 1
+      maxActionValue: 1
+  - name: "\u6BD2\u7259"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 7
+      maxActionValue: 7
+  - name: "\u86CA\u6BD2"
+    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 2
+      minActionValue: 4
+      maxActionValue: 4
+  enemyTier: 0
+  regionId: 2
+  enemyDescription: "\u86CA\u5E08\u57F9\u80B2\u7684\u6BD2\u86C7\u3002\u6BD2\u4E0E\u6613\u4F24\u4EA4\u66FF\u3002"
+  enemyPortrait: {fileID: 0}
+  encounterDialogue: "\u5636\u2026\u2026\uFF08\u86CA\u86C7\u5410\u7740\u4FE1\u5B50\uFF09"
+  victoryDialogue: "\u86CA\u86C7\uFF1F\u65A9\uFF01"
+  phaseList: []

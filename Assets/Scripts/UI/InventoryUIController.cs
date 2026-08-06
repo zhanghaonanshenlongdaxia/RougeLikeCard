@@ -26,6 +26,7 @@ namespace CardGame.UI
         {
             _model = this.GetModel<IInventoryModel>();
             _system = this.GetSystem<IInventorySystem>();
+            UIHelper.EnsureCloseButton(this, OnBackButton);
         }
 
         private void OnEnable()

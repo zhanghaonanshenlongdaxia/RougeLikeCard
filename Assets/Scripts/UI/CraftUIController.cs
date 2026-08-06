@@ -26,6 +26,7 @@ namespace CardGame.UI
         private void Awake()
         {
             _system = this.GetSystem<ICraftSystem>();
+            UIHelper.EnsureCloseButton(this, OnBackButton);
         }
 
         private void OnEnable()
