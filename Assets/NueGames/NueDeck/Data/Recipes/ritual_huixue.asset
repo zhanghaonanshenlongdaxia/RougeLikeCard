@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 060456e2f21146740bd5f5f3d8d3fdbb, type: 3}
+  m_Name: ritual_huixue
+  m_EditorClassIdentifier: 
+  recipeId: ritual_huixue
+  name: "\u56DE\u8840\u7389\u7B3A"
+  description: "\u4EE5\u6563\u9B42\u77F3\u4E0E\u7075\u6CC9\u6C34\u732E\u796D\u7684\u56DE\u8840\u7389\u7B3A\u3002"
+  recipeType: 2
+  outputType: 2
+  outputItemId: potion_heal
+  outputCount: 1
+  ingredients:
+  - materialId: soul_san
+    count: 2
+  - materialId: water_quan
+    count: 1
+  - materialId: frag_lingwen
+    count: 1
+  successRate: 0.9
+  unlockByDefault: 1

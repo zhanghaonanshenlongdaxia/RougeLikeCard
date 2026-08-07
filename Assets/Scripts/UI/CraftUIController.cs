@@ -64,7 +64,7 @@ namespace CardGame.UI
 
                 var matsStr = "";
                 foreach (var ing in recipe.ingredients)
-                    matsStr += $"{ing.materialId}脳{ing.count} ";
+                    matsStr += $"{ing.materialId}x{ing.count} ";
                 CreateText(go, matsStr, 14, new Color(0.7f, 0.7f, 0.7f));
 
                 var btn = go.AddComponent<Button>();
@@ -76,7 +76,7 @@ namespace CardGame.UI
         private void SelectRecipe(RecipeData recipe)
         {
             _selectedRecipe = recipe;
-            if (detailTitle) detailTitle.text = $"浜у嚭: {recipe.outputItemId}    鎴愬姛鐜? {recipe.successRate * 100:F0}%";
+            if (detailTitle) detailTitle.text = $"产出: {recipe.outputItemId}  成功率: {recipe.successRate * 100:F0}%";
 
             var matsStr = "";
             var invSys = this.GetSystem<IInventorySystem>();

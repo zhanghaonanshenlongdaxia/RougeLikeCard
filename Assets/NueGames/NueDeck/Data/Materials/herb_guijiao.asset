@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab029cd18e56ce43856e99494bf8415, type: 3}
+  m_Name: herb_guijiao
+  m_EditorClassIdentifier: 
+  materialId: herb_guijiao
+  name: "\u9B3C\u4EA4\u82B1"
+  description: "\u5E7D\u51A5\u754C\u82B1\uFF0C\u82B1\u74E3\u7070\u767D\u5982\u9AA8\u3002\u80FD\u6C9F\u901A\u9634\u9633\uFF0C\u796D\u7940\u7528\u82B1\u3002"
+  icon: {fileID: 0}
+  materialType: 0
+  rarity: 1
+  regionId: 1
+  weight: 1
+  stackable: 1
+  maxStack: 99

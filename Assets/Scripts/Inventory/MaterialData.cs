@@ -23,7 +23,10 @@ namespace CardGame
         DemonCore,     // 妖丹
         SoulStone,     // 魂石
         SpiritWater,   // 灵水
-        Fragment       // 残片
+        Fragment,      // 残片
+        SpiritWood,    // 灵木
+        BeastBone,     // 灵兽骨
+        HeavenlyTreasure // 天材地宝
     }
 
     /// <summary>
@@ -41,6 +44,8 @@ namespace CardGame
         [Header("分类")]
         public MaterialType materialType;
         public MaterialRarity rarity;
+        [Tooltip("产出区域：0=山野荒原 1=幽冥秘境 2=万蛊沼泽 3=天魔裂隙 -1=通用")]
+        public int regionId = -1;
 
         [Header("属性")]
         [Tooltip("单个占用的负重")]

@@ -13,9 +13,25 @@ namespace CardGame
         protected IPotionSystem PotionSystem => this.GetSystem<IPotionSystem>();
 
         private List<RecipeData> _allRecipes;
+        private HashSet<string> _unlockedRecipeIds = new HashSet<string>();
 
         protected override void OnInit()
         {
+        }
+
+        public void UnlockRecipe(string recipeId)
+        {
+            if (_unlockedRecipeIds.Add(recipeId))
+                Debug.Log($"[CraftSystem] 解锁配方: {recipeId}");
+        }
+
+        public bool IsRecipeUnlocked(string recipeId)
+        {
+            // 默认解锁的配方直接返回true
+            LoadRecipes();
+            var recipe = _allRecipes.FirstOrDefault(r => r.recipeId == recipeId);
+            if (recipe != null && recipe.unlockByDefault) return true;
+            return _unlockedRecipeIds.Contains(recipeId);
         }
 
         private void LoadRecipes()
@@ -35,7 +51,7 @@ namespace CardGame
         public List<RecipeData> GetAvailableRecipes(RecipeType type)
         {
             LoadRecipes();
-            return _allRecipes.Where(r => r.recipeType == type).ToList();
+            return _allRecipes.Where(r => r.recipeType == type && (r.unlockByDefault || _unlockedRecipeIds.Contains(r.recipeId))).ToList();
         }
 
         public bool CanCraft(RecipeData recipe)

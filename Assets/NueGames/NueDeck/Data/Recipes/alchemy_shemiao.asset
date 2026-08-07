@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 060456e2f21146740bd5f5f3d8d3fdbb, type: 3}
+  m_Name: alchemy_shemiao
+  m_EditorClassIdentifier: 
+  recipeId: alchemy_shemiao
+  name: "\u86C7\u82D7\u4E39\u65B9"
+  description: "\u4EE5\u86C7\u82D7\u8349\u4E0E\u86CA\u57DF\u539F\u6DB2\u70BC\u5236\u7684\u86C7\u82D7\u4E39\u65B9\u3002"
+  recipeType: 0
+  outputType: 0
+  outputItemId: spr_db_bone
+  outputCount: 1
+  ingredients:
+  - materialId: herb_shemiao
+    count: 2
+  - materialId: water_guyu
+    count: 1
+  successRate: 0.6
+  unlockByDefault: 0

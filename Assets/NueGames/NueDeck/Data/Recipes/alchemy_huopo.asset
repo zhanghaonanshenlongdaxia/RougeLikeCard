@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 060456e2f21146740bd5f5f3d8d3fdbb, type: 3}
+  m_Name: alchemy_huopo
+  m_EditorClassIdentifier: 
+  recipeId: alchemy_huopo
+  name: "\u706B\u9B44\u4E39\u65B9"
+  description: "\u4EE5\u706B\u9B44\u7130\u4E39\u4E0E\u8D64\u7130\u94DC\u70BC\u5236\u7684\u708E\u9B54\u4E4B\u529B\u4E39\u65B9\u3002"
+  recipeType: 0
+  outputType: 0
+  outputItemId: jian_br_charge
+  outputCount: 1
+  ingredients:
+  - materialId: core_huopolie
+    count: 1
+  - materialId: ore_chiyan
+    count: 1
+  - materialId: water_yanquan
+    count: 1
+  successRate: 0.5
+  unlockByDefault: 0

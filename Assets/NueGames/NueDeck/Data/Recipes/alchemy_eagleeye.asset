@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 060456e2f21146740bd5f5f3d8d3fdbb, type: 3}
+  m_Name: alchemy_eagleeye
+  m_EditorClassIdentifier: 
+  recipeId: alchemy_eagleeye
+  name: "\u9E70\u773C\u4E39\u65B9"
+  description: "\u4EE5\u9E70\u5996\u773C\u4E39\u4E0E\u5929\u9999\u679C\u70BC\u5236\u7684\u9E70\u773C\u4E39\u65B9\u3002"
+  recipeType: 0
+  outputType: 0
+  outputItemId: jian_mh_aura
+  outputCount: 1
+  ingredients:
+  - materialId: core_eagleeye
+    count: 1
+  - materialId: herb_tianxiang
+    count: 1
+  - materialId: water_lu
+    count: 1
+  successRate: 0.5
+  unlockByDefault: 0

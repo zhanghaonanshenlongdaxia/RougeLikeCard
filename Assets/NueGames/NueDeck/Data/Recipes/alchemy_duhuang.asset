@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 060456e2f21146740bd5f5f3d8d3fdbb, type: 3}
+  m_Name: alchemy_duhuang
+  m_EditorClassIdentifier: 
+  recipeId: alchemy_duhuang
+  name: "\u6BD2\u7687\u4E39\u65B9"
+  description: "\u4EE5\u6BD2\u7687\u6BD2\u4E39\u4E0E\u86CA\u57DF\u539F\u6DB2\u70BC\u5236\u7684\u6BD2\u7687\u4E39\u65B9\u3002"
+  recipeType: 0
+  outputType: 0
+  outputItemId: spr_db_swarm
+  outputCount: 1
+  ingredients:
+  - materialId: core_duhuang
+    count: 1
+  - materialId: water_guyu
+    count: 1
+  - materialId: herb_shemiao
+    count: 2
+  successRate: 0.35
+  unlockByDefault: 0

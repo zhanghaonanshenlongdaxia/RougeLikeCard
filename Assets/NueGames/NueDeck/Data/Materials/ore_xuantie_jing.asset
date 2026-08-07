@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab029cd18e56ce43856e99494bf8415, type: 3}
+  m_Name: ore_xuantie_jing
+  m_EditorClassIdentifier: 
+  materialId: ore_xuantie_jing
+  name: "\u7384\u94C1\u7CBE"
+  description: "\u7384\u94C1\u77FF\u63D0\u70BC\u540E\u7684\u7CBE\u534E\uFF0C\u5BC6\u5EA6\u6781\u9AD8\u3002\u953B\u9020\u91CD\u5175\u5668\u9996\u9009\u3002"
+  icon: {fileID: 0}
+  materialType: 1
+  rarity: 1
+  regionId: 0
+  weight: 1
+  stackable: 1
+  maxStack: 99

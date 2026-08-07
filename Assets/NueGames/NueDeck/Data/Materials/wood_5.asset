@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab029cd18e56ce43856e99494bf8415, type: 3}
+  m_Name: wood_5
+  m_EditorClassIdentifier: 
+  materialId: wood_5
+  name: "\u51E4\u6816\u68A7\u6850"
+  description: "\u4F20\u8BF4\u51E4\u51F0\u66FE\u6816\u843D\u6B64\u68A7\u6850\uFF0C\u6811\u5E72\u7559\u6709\u51E4\u7FBD\u7EB9\u8DEF\u3002\u8574\u542B\u5FAE\u5F31\u51E4\u8840\u4E4B\u529B\uFF0C\u6781\u4E3A\u96BE\u5F97\u3002"
+  icon: {fileID: 0}
+  materialType: 6
+  rarity: 0
+  regionId: 1
+  weight: 1
+  stackable: 1
+  maxStack: 99

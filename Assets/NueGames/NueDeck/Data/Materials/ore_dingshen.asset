@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab029cd18e56ce43856e99494bf8415, type: 3}
+  m_Name: ore_dingshen
+  m_EditorClassIdentifier: 
+  materialId: ore_dingshen
+  name: "\u5B9A\u795E\u7389"
+  description: "\u80FD\u8BA9\u6301\u6709\u8005\u5FC3\u795E\u5B89\u5B81\u7684\u7389\u77F3\u3002\u9632\u6B62\u8D70\u706B\u5165\u9B54\u3002"
+  icon: {fileID: 0}
+  materialType: 1
+  rarity: 1
+  regionId: -1
+  weight: 1
+  stackable: 1
+  maxStack: 99

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab029cd18e56ce43856e99494bf8415, type: 3}
+  m_Name: herb_heishouwu
+  m_EditorClassIdentifier: 
+  materialId: herb_heishouwu
+  name: "\u767E\u5E74\u4F55\u9996\u4E4C"
+  description: "\u5728\u7075\u8109\u6ECB\u517B\u4E0B\u751F\u957F\u767E\u5E74\u7684\u4F55\u9996\u4E4C\uFF0C\u6839\u830E\u5448\u4EBA\u5F62\u3002\u670D\u7528\u540E\u53EF\u56FA\u672C\u57F9\u5143\u3002"
+  icon: {fileID: 0}
+  materialType: 0
+  rarity: 0
+  regionId: 0
+  weight: 1
+  stackable: 1
+  maxStack: 99

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab029cd18e56ce43856e99494bf8415, type: 3}
+  m_Name: soul_ju
+  m_EditorClassIdentifier: 
+  materialId: soul_ju
+  name: "\u805A\u9B42\u7389"
+  description: "\u4E73\u767D\u8272\u7684\u9B42\u7389\uFF0C\u89E6\u4E4B\u6E29\u6DA6\u3002\u805A\u62E2\u6E38\u79BB\u9B42\u9B44\uFF0C\u70BC\u5236\u9B42\u7C7B\u6CD5\u5668\u7684\u6838\u5FC3\u3002"
+  icon: {fileID: 0}
+  materialType: 3
+  rarity: 1
+  regionId: 1
+  weight: 1
+  stackable: 1
+  maxStack: 99

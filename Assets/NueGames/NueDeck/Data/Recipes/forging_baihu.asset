@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 060456e2f21146740bd5f5f3d8d3fdbb, type: 3}
+  m_Name: forging_baihu
+  m_EditorClassIdentifier: 
+  recipeId: forging_baihu
+  name: "\u767D\u864E\u5668\u56FE"
+  description: "\u4EE5\u767D\u864E\u9AA8\u4E0E\u9633\u7CBE\u77F3\u953B\u9020\u7684\u767D\u864E\u5668\u56FE\u3002"
+  recipeType: 1
+  outputType: 1
+  outputItemId: relic_gold_armor
+  outputCount: 1
+  ingredients:
+  - materialId: bone_14
+    count: 1
+  - materialId: ore_yangjing
+    count: 1
+  - materialId: ore_xuantie
+    count: 2
+  successRate: 0.35
+  unlockByDefault: 0

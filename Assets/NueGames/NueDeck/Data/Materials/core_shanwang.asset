@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab029cd18e56ce43856e99494bf8415, type: 3}
+  m_Name: core_shanwang
+  m_EditorClassIdentifier: 
+  materialId: core_shanwang
+  name: "\u5C71\u9B48\u738B\u4E39"
+  description: "\u5C71\u9B48\u738B\u7684\u5996\u4E39\uFF0C\u7D2B\u7EA2\u4EA4\u7EC7\u3002\u53F7\u4EE4\u7FA4\u517D\u4E4B\u529B\u3002"
+  icon: {fileID: 0}
+  materialType: 2
+  rarity: 2
+  regionId: 0
+  weight: 1
+  stackable: 1
+  maxStack: 99

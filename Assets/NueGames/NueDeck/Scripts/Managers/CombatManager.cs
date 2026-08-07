@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using CardGame;
 using CardGame.UI;
@@ -425,6 +426,83 @@ namespace NueGames.NueDeck.Scripts.Managers
                 UIManager.RewardCanvas.PrepareCanvas();
                 UIManager.RewardCanvas.BuildReward(RewardType.Gold);
                 UIManager.RewardCanvas.BuildReward(RewardType.Card);
+
+                // 战斗胜利后掉落材料+配方
+                DropLoot();
+            }
+        }
+
+        /// <summary>
+        /// 战斗胜利后根据敌人品阶掉落材料+配方
+        /// </summary>
+        private void DropLoot()
+        {
+            try
+            {
+                var craftSystem = this.GetSystem<ICraftSystem>();
+                var inventorySystem = this.GetSystem<IInventorySystem>();
+                if (craftSystem == null || inventorySystem == null) return;
+
+                // 加载所有材料SO
+                var matGuids = UnityEditor.AssetDatabase.FindAssets("t:MaterialData", new[]{"Assets/NueGames/NueDeck/Data/Materials"});
+                var allMaterials = new System.Collections.Generic.List<MaterialData>();
+                foreach (var g in matGuids)
+                {
+                    var p = UnityEditor.AssetDatabase.GUIDToAssetPath(g);
+                    var m = UnityEditor.AssetDatabase.LoadAssetAtPath<MaterialData>(p);
+                    if (m != null) allMaterials.Add(m);
+                }
+
+                // 加载所有配方SO
+                var recipeGuids = UnityEditor.AssetDatabase.FindAssets("t:RecipeData", new[]{"Assets/NueGames/NueDeck/Data/Recipes"});
+                var allRecipes = new System.Collections.Generic.List<RecipeData>();
+                foreach (var g in recipeGuids)
+                {
+                    var p = UnityEditor.AssetDatabase.GUIDToAssetPath(g);
+                    var r = UnityEditor.AssetDatabase.LoadAssetAtPath<RecipeData>(p);
+                    if (r != null && !r.unlockByDefault && !craftSystem.IsRecipeUnlocked(r.recipeId))
+                        allRecipes.Add(r);
+                }
+
+                // 根据敌人品阶决定掉落
+                bool hasElite = false;
+                bool hasBoss = false;
+                int regionId = 0;
+                foreach (var enemy in CurrentEnemiesList)
+                {
+                    if (enemy == null || enemy.EnemyCharacterData == null) continue;
+                    if (enemy.EnemyCharacterData.EnemyTier == EnemyTier.Elite) hasElite = true;
+                    if (enemy.EnemyCharacterData.EnemyTier == EnemyTier.Boss) hasBoss = true;
+                    regionId = enemy.EnemyCharacterData.RegionId;
+                }
+
+                // 材料掉落
+                int matCount = hasBoss ? 3 : hasElite ? 2 : 1;
+                var targetRarity = hasBoss ? MaterialRarity.XuanPin : hasElite ? MaterialRarity.LingPin : MaterialRarity.FanPin;
+                var candidateMats = allMaterials.Where(m => m.rarity == targetRarity && (m.regionId == regionId || m.regionId == -1)).ToList();
+                
+                for (int i = 0; i < matCount && candidateMats.Count > 0; i++)
+                {
+                    var mat = candidateMats[UnityEngine.Random.Range(0, candidateMats.Count)];
+                    inventorySystem.AddItem(mat, 1);
+                    Debug.Log($"[掉落] 材料: {mat.name} ×1");
+                }
+
+                // 配方掉落：精英50%概率，Boss必掉
+                if (allRecipes.Count > 0)
+                {
+                    bool dropRecipe = hasBoss || (hasElite && UnityEngine.Random.value < 0.5f);
+                    if (dropRecipe)
+                    {
+                        var recipe = allRecipes[UnityEngine.Random.Range(0, allRecipes.Count)];
+                        craftSystem.UnlockRecipe(recipe.recipeId);
+                        Debug.Log($"[掉落] 配方: {recipe.name} 已解锁!");
+                    }
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"[掉落] 异常: {e.Message}");
             }
         }
         #endregion

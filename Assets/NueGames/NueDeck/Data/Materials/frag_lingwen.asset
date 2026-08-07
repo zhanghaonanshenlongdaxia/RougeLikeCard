@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab029cd18e56ce43856e99494bf8415, type: 3}
+  m_Name: frag_lingwen
+  m_EditorClassIdentifier: 
+  materialId: frag_lingwen
+  name: "\u7075\u7EB9\u6B8B\u7247"
+  description: "\u523B\u6709\u8FDC\u53E4\u7075\u7EB9\u7684\u788E\u7247\u3002\u6536\u96C6\u8DB3\u591F\u6570\u91CF\u53EF\u62FC\u51D1\u51FA\u5B8C\u6574\u7075\u7EB9\u9635\u6CD5\u3002"
+  icon: {fileID: 0}
+  materialType: 5
+  rarity: 0
+  regionId: -1
+  weight: 1
+  stackable: 1
+  maxStack: 99

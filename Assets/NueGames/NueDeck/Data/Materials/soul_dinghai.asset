@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab029cd18e56ce43856e99494bf8415, type: 3}
+  m_Name: soul_dinghai
+  m_EditorClassIdentifier: 
+  materialId: soul_dinghai
+  name: "\u5B9A\u6D77\u9B42\u73E0"
+  description: "\u80FD\u5B9A\u4F4F\u6C34\u6D41\u7684\u9B42\u73E0\u3002\u4F20\u8BF4\u9F99\u738B\u4E09\u592A\u5B50\u7684\u9057\u7269\u3002"
+  icon: {fileID: 0}
+  materialType: 3
+  rarity: 2
+  regionId: -1
+  weight: 1
+  stackable: 1
+  maxStack: 99

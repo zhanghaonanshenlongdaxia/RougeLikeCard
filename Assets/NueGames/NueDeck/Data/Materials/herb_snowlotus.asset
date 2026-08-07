@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab029cd18e56ce43856e99494bf8415, type: 3}
+  m_Name: herb_snowlotus
+  m_EditorClassIdentifier: 
+  materialId: herb_snowlotus
+  name: "\u5343\u5E74\u96EA\u83B2"
+  description: "\u7EFD\u653E\u5728\u4E07\u5E74\u51B0\u5CF0\u4E4B\u5DC5\u7684\u96EA\u83B2\uFF0C\u82B1\u74E3\u6676\u83B9\u5982\u7389\u3002\u5438\u6536\u5343\u5E74\u5BD2\u6C14\uFF0C\u662F\u70BC\u5236\u51B0\u7CFB\u4E39\u836F\u7684\u6838\u5FC3\u6750\u6599\u3002"
+  icon: {fileID: 0}
+  materialType: 0
+  rarity: 1
+  regionId: 0
+  weight: 1
+  stackable: 1
+  maxStack: 99

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab029cd18e56ce43856e99494bf8415, type: 3}
+  m_Name: bone_39
+  m_EditorClassIdentifier: 
+  materialId: bone_39
+  name: "\u6DF7\u6C8C\u9057\u9AA8"
+  description: "\u6DF7\u6C8C\u65F6\u4EE3\u7684\u9057\u9AA8\uFF0C\u5185\u90E8\u6DF7\u6C8C\u4E4B\u6C14\u6D41\u8F6C\u3002\u4E00\u5207\u6CD5\u5219\u7684\u8D77\u6E90\uFF0C\u81F3\u9AD8\u6750\u6599\u3002"
+  icon: {fileID: 0}
+  materialType: 7
+  rarity: 3
+  regionId: -1
+  weight: 2
+  stackable: 1
+  maxStack: 99

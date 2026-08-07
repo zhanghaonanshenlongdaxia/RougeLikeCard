@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 060456e2f21146740bd5f5f3d8d3fdbb, type: 3}
+  m_Name: alchemy_zhishe
+  m_EditorClassIdentifier: 
+  recipeId: alchemy_zhishe
+  name: "\u6B62\u8840\u4E39\u65B9"
+  description: "\u4EE5\u51E4\u5C3E\u8568\u4E0E\u7D2B\u82CF\u53F6\u70BC\u5236\u7684\u6B62\u8840\u4E39\u65B9\u3002"
+  recipeType: 0
+  outputType: 0
+  outputItemId: 5_heal_basic
+  outputCount: 1
+  ingredients:
+  - materialId: herb_fern
+    count: 2
+  - materialId: herb_zisu
+    count: 1
+  - materialId: water_quan
+    count: 1
+  successRate: 0.9
+  unlockByDefault: 1

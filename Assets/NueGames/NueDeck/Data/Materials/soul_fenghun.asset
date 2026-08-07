@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab029cd18e56ce43856e99494bf8415, type: 3}
+  m_Name: soul_fenghun
+  m_EditorClassIdentifier: 
+  materialId: soul_fenghun
+  name: "\u51E4\u9B42\u7389"
+  description: "\u51E4\u51F0\u6D85\u69C3\u65F6\u7684\u9B42\u529B\u51DD\u7ED3\u3002\u7EA2\u5982\u70C8\u706B\uFF0C\u4E0D\u6B7B\u4E0D\u706D\u3002"
+  icon: {fileID: 0}
+  materialType: 3
+  rarity: 3
+  regionId: -1
+  weight: 1
+  stackable: 1
+  maxStack: 99
