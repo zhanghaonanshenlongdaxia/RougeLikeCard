@@ -140,27 +140,44 @@ namespace CardGame.UI
 
         public void OnAlchemy()
         {
-            TogglePanel("CraftCanvas");
+            OpenCraftPanel();
         }
 
         public void OnForging()
         {
-            TogglePanel("CraftCanvas");
+            OpenCraftPanel();
         }
 
         public void OnRitual()
         {
-            TogglePanel("CraftCanvas");
+            OpenCraftPanel();
+        }
+
+        private void OpenCraftPanel()
+        {
+            var existing = GameObject.Find("CraftCanvas");
+            if (existing != null) { existing.SetActive(!existing.activeSelf); return; }
+            var go = new GameObject("CraftCanvas");
+            go.AddComponent<CraftUIController>();
+            go.SetActive(true);
         }
 
         public void OnInventory()
         {
-            TogglePanel("InventoryCanvas");
+            var existing = GameObject.Find("InventoryCanvas");
+            if (existing != null) { existing.SetActive(!existing.activeSelf); return; }
+            var go = new GameObject("InventoryCanvas");
+            go.AddComponent<InventoryUIController>();
+            go.SetActive(true);
         }
 
         public void OnLoadout()
         {
-            TogglePanel("LoadoutCanvas");
+            var existing = GameObject.Find("LoadoutCanvas");
+            if (existing != null) { existing.SetActive(!existing.activeSelf); return; }
+            var go = new GameObject("LoadoutCanvas");
+            go.AddComponent<LoadoutUIController>();
+            go.SetActive(true);
         }
 
         public void OnCodex()
