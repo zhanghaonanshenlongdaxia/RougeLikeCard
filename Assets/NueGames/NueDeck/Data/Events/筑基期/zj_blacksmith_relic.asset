@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: zj_blacksmith_relic
+  m_EditorClassIdentifier: 
+  eventId: zj_blacksmith_relic
+  name: "\u94F8\u5251\u5E08\u9057\u613F"
+  description: "\u4F60\u8D70\u8FDB\u4E86\u4E00\u95F4\u8352\u5E9F\u7684\u94F8\u5251\u574A\uFF0C\u574A\u4E2D\u6709\u4E00\u67C4\u672A\u5B8C\u6210\u7684\u53E4\u5251\uFF0C\u65C1\u8FB9\u6563\u843D\u7740\u94F8\u5251\u7B14\u8BB0\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 1
+  choices:
+  - choiceText: "\u53D6\u8D70\u53E4\u5251"
+    effectType: 30
+    effectValue: 1
+    cardId: 
+  - choiceText: "\u7814\u8BFB\u94F8\u5251\u7B14\u8BB0"
+    effectType: 36
+    effectValue: 1
+    cardId: 
+  - choiceText: "\u53D8\u5356\u94F8\u9020\u6750\u6599"
+    effectType: 6
+    effectValue: 50
+    cardId: 

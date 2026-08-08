@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: zj_lost_merchant
+  m_EditorClassIdentifier: 
+  eventId: zj_lost_merchant
+  name: "\u8FF7\u8DEF\u5546\u4EBA"
+  description: "\u4E00\u4F4D\u5546\u4EBA\u5728\u5C71\u8DEF\u4E0A\u8FF7\u4E86\u8DEF\uFF0C\u4ED6\u80CC\u7740\u4E00\u5305\u8D27\u7269\uFF0C\u795E\u8272\u614C\u5F20\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 1
+  choices:
+  - choiceText: "\u4E70\u4E0B\u4ED6\u7684\u8D27\u7269"
+    effectType: 42
+    effectValue: 1
+    cardId: 
+  - choiceText: "\u6253\u52AB\u4ED6"
+    effectType: 6
+    effectValue: 60
+    cardId: 
+  - choiceText: "\u7ED9\u4ED6\u6307\u8DEF"
+    effectType: 6
+    effectValue: 20
+    cardId: 

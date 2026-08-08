@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: yy_spirit_king
+  m_EditorClassIdentifier: 
+  eventId: yy_spirit_king
+  name: "\u7075\u517D\u4E4B\u738B"
+  description: "\u4E00\u5934\u56DB\u9636\u7075\u517D\u738B\u62E6\u4F4F\u4F60\u7684\u53BB\u8DEF\uFF0C\u5B83\u6C14\u606F\u6DF1\u4E0D\u53EF\u6D4B\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 3
+  choices:
+  - choiceText: "\u4E0E\u4E4B\u4EA4\u6218"
+    effectType: 2
+    effectValue: 20
+    cardId: 
+  - choiceText: "\u4EE5\u7075\u77F3\u793A\u597D"
+    effectType: 7
+    effectValue: 70
+    cardId: 
+  - choiceText: "\u83B7\u8D60\u4E00\u5F20\u7075\u54C1\u5361"
+    effectType: 35
+    effectValue: 2
+    cardId: 

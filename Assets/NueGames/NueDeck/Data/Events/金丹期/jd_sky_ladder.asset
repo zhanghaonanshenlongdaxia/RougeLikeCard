@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: jd_sky_ladder
+  m_EditorClassIdentifier: 
+  eventId: jd_sky_ladder
+  name: "\u901A\u5929\u68AF"
+  description: "\u4E00\u9053\u77F3\u68AF\u4ECE\u5730\u9762\u76F4\u5165\u4E91\u9704\uFF0C\u68AF\u4E0A\u7075\u6C14\u6D53\u90C1\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 2
+  choices:
+  - choiceText: "\u6500\u767B\u77F3\u68AF"
+    effectType: 2
+    effectValue: 10
+    cardId: 
+  - choiceText: "\u6253\u5750\u4FEE\u70BC"
+    effectType: 0
+    effectValue: 20
+    cardId: 
+  - choiceText: "\u79BB\u5F00"
+    effectType: 55
+    effectValue: 0
+    cardId: 

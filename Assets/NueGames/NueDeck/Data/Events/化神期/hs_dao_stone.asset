@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: hs_dao_stone
+  m_EditorClassIdentifier: 
+  eventId: hs_dao_stone
+  name: "\u5927\u9053\u77F3\u7891"
+  description: "\u4E00\u5757\u523B\u6EE1\u5927\u9053\u7B26\u6587\u7684\u77F3\u7891\uFF0C\u7891\u4E0A\u6BCF\u9053\u7B26\u6587\u90FD\u8574\u542B\u4E00\u6761\u5927\u9053\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 4
+  choices:
+  - choiceText: "\u53C2\u609F\u5927\u9053"
+    effectType: 3
+    effectValue: 15
+    cardId: 
+  - choiceText: "\u89E6\u6478\u77F3\u7891"
+    effectType: 21
+    effectValue: 6
+    cardId: 
+  - choiceText: "\u79BB\u5F00"
+    effectType: 55
+    effectValue: 0
+    cardId: 

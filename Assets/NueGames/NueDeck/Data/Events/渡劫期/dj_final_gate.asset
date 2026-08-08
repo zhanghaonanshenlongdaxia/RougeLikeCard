@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: dj_final_gate
+  m_EditorClassIdentifier: 
+  eventId: dj_final_gate
+  name: "\u98DE\u5347\u4E4B\u95E8"
+  description: "\u6700\u7EC8\u7684\u98DE\u5347\u4E4B\u95E8\u51FA\u73B0\u4E86\uFF0C\u95E8\u540E\u662F\u6C38\u6052\u7684\u4ED9\u754C\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 5
+  choices:
+  - choiceText: "\u8E0F\u5165\u98DE\u5347\u4E4B\u95E8"
+    effectType: 3
+    effectValue: 30
+    cardId: 
+  - choiceText: "\u5728\u95E8\u524D\u6700\u7EC8\u4FEE\u70BC"
+    effectType: 1
+    effectValue: 0
+    cardId: 
+  - choiceText: "\u6682\u4E0D\u98DE\u5347"
+    effectType: 55
+    effectValue: 0
+    cardId: 

@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: hs_demon_emperor
+  m_EditorClassIdentifier: 
+  eventId: hs_demon_emperor
+  name: "\u9B54\u5E1D\u964D\u4E34"
+  description: "\u4E00\u4F4D\u9B54\u5E1D\u5206\u8EAB\u964D\u4E34\uFF0C\u5468\u56F4\u7A7A\u95F4\u88AB\u9B54\u6C14\u538B\u584C\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 4
+  choices:
+  - choiceText: "\u4E0E\u9B54\u5E1D\u4EA4\u6218"
+    effectType: 2
+    effectValue: 28
+    cardId: 
+  - choiceText: "\u4EE5\u5DE8\u91CF\u7075\u77F3\u6362\u547D"
+    effectType: 7
+    effectValue: 180
+    cardId: 
+  - choiceText: "\u65BD\u5C55\u9041\u672F\u9003\u79BB"
+    effectType: 55
+    effectValue: 0
+    cardId: 

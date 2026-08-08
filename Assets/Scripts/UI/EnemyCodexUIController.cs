@@ -55,7 +55,7 @@ namespace CardGame.UI
             SetStretch(bg.rectTransform);
 
             // Main panel
-            var panel = CreateImage("Panel", transform, new Color(0.08f, 0.1f, 0.15f, 1f));
+            var panel = CreateImage("Panel", transform, new Color(0.08f, 0.1f, 0.15f, 0.95f));
             panel.rectTransform.anchorMin = new Vector2(0.05f, 0.05f);
             panel.rectTransform.anchorMax = new Vector2(0.95f, 0.95f);
             panel.rectTransform.offsetMin = Vector2.zero;
@@ -108,8 +108,9 @@ namespace CardGame.UI
             viewportRt.anchorMin = Vector2.zero; viewportRt.anchorMax = Vector2.one;
             viewportRt.offsetMin = Vector2.zero; viewportRt.offsetMax = Vector2.zero;
             viewportRt.pivot = new Vector2(0, 1);
-            var viewportImg = viewportObj.AddComponent<Image>(); viewportImg.color = new Color(0, 0, 0, 0.01f);
-            _scrollRect.viewport = viewportImg.rectTransform;
+            var viewportImg = viewportObj.AddComponent<Image>(); viewportImg.color = new Color(0.05f, 0.08f, 0.12f, 1f);
+            viewportObj.AddComponent<UnityEngine.UI.Mask>();
+            _scrollRect.viewport = viewportRt;
 
             var contentObj = new GameObject("Content");
             contentObj.transform.SetParent(viewportObj.transform, false);

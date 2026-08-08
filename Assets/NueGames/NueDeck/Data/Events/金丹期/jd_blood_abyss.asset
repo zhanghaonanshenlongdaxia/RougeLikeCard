@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: jd_blood_abyss
+  m_EditorClassIdentifier: 
+  eventId: jd_blood_abyss
+  name: "\u8840\u796D\u6DF1\u6E0A"
+  description: "\u811A\u4E0B\u7684\u5730\u9762\u88C2\u5F00\uFF0C\u9732\u51FA\u4E00\u4E2A\u6DF1\u4E0D\u89C1\u5E95\u7684\u6DF1\u6E0A\uFF0C\u5176\u4E2D\u9690\u7EA6\u53EF\u89C1\u5B9D\u5149\u95EA\u70C1\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 2
+  choices:
+  - choiceText: "\u4EE5\u7CBE\u8840\u796D\u6E0A\u6C42\u529B"
+    effectType: 4
+    effectValue: 4
+    cardId: 
+  - choiceText: "\u6F5C\u5165\u6DF1\u6E0A\u5BFB\u5B9D"
+    effectType: 2
+    effectValue: 12
+    cardId: 
+  - choiceText: "\u79BB\u5F00\u6DF1\u6E0A"
+    effectType: 55
+    effectValue: 0
+    cardId: 

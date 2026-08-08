@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: yy_dragon_transformation
+  m_EditorClassIdentifier: 
+  eventId: yy_dragon_transformation
+  name: "\u5316\u9F99\u6C60"
+  description: "\u4E00\u5904\u5316\u9F99\u6C60\uFF0C\u6C60\u6C34\u542B\u6709\u9F99\u65CF\u8840\u8109\u4E4B\u529B\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 3
+  choices:
+  - choiceText: "\u5165\u6C60\u5316\u9F99"
+    effectType: 3
+    effectValue: 10
+    cardId: 
+  - choiceText: "\u6536\u96C6\u6C60\u6C34"
+    effectType: 42
+    effectValue: 1
+    cardId: 
+  - choiceText: "\u6CD5\u529B\u7A81\u7834\uFF08\u6C38\u4E45+1\u6CD5\u529B\u4E0A\u9650\uFF09"
+    effectType: 19
+    effectValue: 1
+    cardId: 

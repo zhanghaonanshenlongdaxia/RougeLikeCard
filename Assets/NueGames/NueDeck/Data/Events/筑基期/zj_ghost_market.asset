@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: zj_ghost_market
+  m_EditorClassIdentifier: 
+  eventId: zj_ghost_market
+  name: "\u9B3C\u5E02\u5165\u53E3"
+  description: "\u591C\u665A\uFF0C\u4E00\u5904\u9B3C\u5E02\u5165\u53E3\u51FA\u73B0\u5728\u4F60\u9762\u524D\uFF0C\u9B3C\u706B\u5E7D\u5E7D\uFF0C\u4EBA\u5F71\u7EF0\u7EF0\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 1
+  choices:
+  - choiceText: "\u8FDB\u5165\u9B3C\u5E02"
+    effectType: 7
+    effectValue: 30
+    cardId: 
+  - choiceText: "\u5728\u5916\u89C2\u671B"
+    effectType: 6
+    effectValue: 35
+    cardId: 
+  - choiceText: "\u79BB\u5F00"
+    effectType: 55
+    effectValue: 0
+    cardId: 

@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: yy_battle_spirit
+  m_EditorClassIdentifier: 
+  eventId: yy_battle_spirit
+  name: "\u6218\u9B42\u8BD5\u70BC"
+  description: "\u4E00\u4F4D\u8FDC\u53E4\u6218\u9B42\u62E6\u4F4F\u4F60\uFF0C\u8981\u6C42\u4E0E\u4F60\u6BD4\u8BD5\u6B66\u9053\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 3
+  choices:
+  - choiceText: "\u5E94\u6218"
+    effectType: 2
+    effectValue: 16
+    cardId: 
+  - choiceText: "\u8BF7\u6559\u6B66\u9053"
+    effectType: 21
+    effectValue: 4
+    cardId: 
+  - choiceText: "\u83B7\u8D60\u4E00\u4EFD\u4E39\u65B9"
+    effectType: 10
+    effectValue: 1
+    cardId: 

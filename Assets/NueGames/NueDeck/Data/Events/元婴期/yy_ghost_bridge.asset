@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: yy_ghost_bridge
+  m_EditorClassIdentifier: 
+  eventId: yy_ghost_bridge
+  name: "\u9EC4\u6CC9\u6E21\u53E3"
+  description: "\u4F60\u6765\u5230\u4E00\u5904\u9EC4\u6CC9\u6E21\u53E3\uFF0C\u6446\u6E21\u7684\u9B3C\u5DEE\u5411\u4F60\u62DB\u624B\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 3
+  choices:
+  - choiceText: "\u4E0A\u8239\u6E21\u6CB3"
+    effectType: 2
+    effectValue: 18
+    cardId: 
+  - choiceText: "\u7ED9\u9B3C\u5DEE\u7075\u77F3"
+    effectType: 7
+    effectValue: 70
+    cardId: 
+  - choiceText: "\u65BD\u6BD2\uFF08\u4E0B\u573A\u654C\u4EBA\u865A\u5F312\u5C42\uFF09"
+    effectType: 23
+    effectValue: 2
+    cardId: 

@@ -40,21 +40,12 @@ namespace CardGame.UI
             {
                 canvas = gameObject.AddComponent<Canvas>();
                 canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-                canvas.sortingOrder = 40;
+                canvas.sortingOrder = 60;
                 var scaler = gameObject.AddComponent<CanvasScaler>();
                 scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
                 scaler.referenceResolution = new Vector2(1920, 1080);
                 gameObject.AddComponent<GraphicRaycaster>();
             }
-
-            // 全屏遮罩背景
-            var bgObj = new GameObject("Background");
-            bgObj.transform.SetParent(transform, false);
-            var bgRt = bgObj.AddComponent<RectTransform>();
-            bgRt.anchorMin = Vector2.zero; bgRt.anchorMax = Vector2.one;
-            bgRt.offsetMin = Vector2.zero; bgRt.offsetMax = Vector2.zero;
-            bgObj.AddComponent<Image>().color = new Color(0, 0, 0, 0.95f);
-
             Transform panel = transform.Find("Panel");
             if (panel == null)
             {
@@ -63,7 +54,7 @@ namespace CardGame.UI
                 var panelRt = panelObj.AddComponent<RectTransform>();
                 panelRt.anchorMin = new Vector2(0.05f, 0.05f); panelRt.anchorMax = new Vector2(0.95f, 0.95f);
                 panelRt.offsetMin = Vector2.zero; panelRt.offsetMax = Vector2.zero;
-                panelObj.AddComponent<Image>().color = new Color(0.08f, 0.1f, 0.15f, 1f);
+                panelObj.AddComponent<Image>().color = new Color(0.08f, 0.1f, 0.15f, 0.95f);
                 panel = panelObj.transform;
             }
 

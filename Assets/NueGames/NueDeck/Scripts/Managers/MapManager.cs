@@ -216,6 +216,13 @@ namespace NueGames.NueDeck.Scripts.Managers
             if (existing != null)
             {
                 existing.SetActive(true);
+                // 宝箱需要初始化奖励
+                if (canvasName == "TreasureCanvas")
+                {
+                    var ctrl = existing.GetComponent<CardGame.UI.TreasureUIController>();
+                    if (ctrl != null)
+                        ctrl.ShowTreasure("你发现了一个古老的宝箱，里面藏着……");
+                }
                 return;
             }
 
@@ -233,6 +240,13 @@ namespace NueGames.NueDeck.Scripts.Managers
                 var instance = Instantiate(prefab);
                 instance.name = canvasName;
                 Debug.Log($"[MapManager] Instantiated {canvasName}");
+                // 宝箱需要初始化奖励
+                if (canvasName == "TreasureCanvas")
+                {
+                    var ctrl = instance.GetComponent<CardGame.UI.TreasureUIController>();
+                    if (ctrl != null)
+                        ctrl.ShowTreasure("你发现了一个古老的宝箱，里面藏着……");
+                }
             }
             else
             {

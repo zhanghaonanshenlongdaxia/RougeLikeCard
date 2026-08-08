@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: yy_evil_soul
+  m_EditorClassIdentifier: 
+  eventId: yy_evil_soul
+  name: "\u90AA\u9B42\u5165\u4FB5"
+  description: "\u4E00\u9053\u90AA\u9B42\u4FB5\u5165\u4F60\u7684\u8BC6\u6D77\uFF0C\u8BD5\u56FE\u593A\u53D6\u4F60\u7684\u8EAB\u4F53\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 3
+  choices:
+  - choiceText: "\u4EE5\u795E\u8BC6\u9A71\u9010"
+    effectType: 2
+    effectValue: 14
+    cardId: 
+  - choiceText: "\u4EE5\u7075\u77F3\u5F3A\u5316\u8BC6\u6D77"
+    effectType: 7
+    effectValue: 80
+    cardId: 
+  - choiceText: "\u6CD5\u529B\u53D7\u635F\uFF08\u6C38\u4E45-1\u6CD5\u529B\u4E0A\u9650\uFF09"
+    effectType: 20
+    effectValue: 1
+    cardId: 

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: lq_slot
+  m_EditorClassIdentifier: 
+  eventId: lq_slot
+  name: "\u7075\u77F3\u673A"
+  description: "\u574A\u5E02\u89D2\u843D\u6446\u7740\u4E00\u53F0\u7075\u77F3\u673A\uFF0C\u6295\u7075\u77F3\u6447\u5956\uFF0C\u5956\u54C1\u5404\u5F02\uFF01\n\u6D88\u8017:
+    15\u7075\u77F3"
+  eventImage: {fileID: 0}
+  requiredRealm: 0
+  choices:
+  - choiceText: "\u6447\u4E00\u6B21\u7075\u77F3\u673A"
+    effectType: 45
+    effectValue: 15
+    cardId: 
+  - choiceText: "\u4E0D\u73A9"
+    effectType: 55
+    effectValue: 0
+    cardId: 

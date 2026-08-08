@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: lq_flood_villager
+  m_EditorClassIdentifier: 
+  eventId: lq_flood_villager
+  name: "\u6C34\u707E\u96BE\u6C11"
+  description: "\u6751\u5E84\u906D\u9047\u7075\u6C14\u6D2A\u6C34\uFF0C\u4E00\u4F4D\u6751\u6C11\u5411\u4F60\u6C42\u52A9\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 0
+  choices:
+  - choiceText: "\u5E2E\u5FD9\u6551\u707E"
+    effectType: 0
+    effectValue: 5
+    cardId: 
+  - choiceText: "\u8D81\u4E71\u641C\u522E"
+    effectType: 6
+    effectValue: 25
+    cardId: 
+  - choiceText: "\u7ED5\u9053\u800C\u884C"
+    effectType: 55
+    effectValue: 0
+    cardId: 

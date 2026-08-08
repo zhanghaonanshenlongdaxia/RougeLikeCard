@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: jd_demon_seal
+  m_EditorClassIdentifier: 
+  eventId: jd_demon_seal
+  name: "\u9B54\u5C01\u53E4\u4E95"
+  description: "\u4E00\u53E3\u53E4\u4E95\u88AB\u5C01\u5370\u9635\u6CD5\u8986\u76D6\uFF0C\u4E95\u4E2D\u4F20\u6765\u4F4E\u6C89\u7684\u9B54\u543C\u58F0\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 2
+  choices:
+  - choiceText: "\u52A0\u56FA\u5C01\u5370"
+    effectType: 3
+    effectValue: 6
+    cardId: 
+  - choiceText: "\u89E3\u5F00\u5C01\u5370\u53D6\u9B54\u5B9D"
+    effectType: 2
+    effectValue: 15
+    cardId: 
+  - choiceText: "\u79BB\u5F00"
+    effectType: 55
+    effectValue: 0
+    cardId: 

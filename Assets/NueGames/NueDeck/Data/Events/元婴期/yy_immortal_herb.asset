@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: yy_immortal_herb
+  m_EditorClassIdentifier: 
+  eventId: yy_immortal_herb
+  name: "\u4ED9\u836F\u56ED"
+  description: "\u4F60\u53D1\u73B0\u4E00\u7247\u4ED9\u836F\u56ED\uFF0C\u56ED\u4E2D\u7075\u836F\u6563\u53D1\u4ED9\u6C14\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 3
+  choices:
+  - choiceText: "\u91C7\u6458\u4ED9\u836F"
+    effectType: 8
+    effectValue: 3
+    cardId: 
+  - choiceText: "\u5728\u56ED\u4E2D\u4FEE\u70BC"
+    effectType: 3
+    effectValue: 7
+    cardId: 
+  - choiceText: "\u7834\u9632\uFF08\u4E0B\u573A\u654C\u4EBA\u6613\u4F242\u5C42\uFF09"
+    effectType: 25
+    effectValue: 2
+    cardId: 

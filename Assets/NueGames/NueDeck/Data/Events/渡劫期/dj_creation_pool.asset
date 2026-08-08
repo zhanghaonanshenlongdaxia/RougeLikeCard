@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: dj_creation_pool
+  m_EditorClassIdentifier: 
+  eventId: dj_creation_pool
+  name: "\u9020\u5316\u4E4B\u6C60"
+  description: "\u4E00\u5904\u9020\u5316\u4E4B\u6C60\uFF0C\u6C60\u4E2D\u6DB2\u4F53\u8574\u542B\u5929\u5730\u9020\u5316\u4E4B\u529B\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 5
+  choices:
+  - choiceText: "\u5165\u6C60\u6C90\u6D74"
+    effectType: 3
+    effectValue: 20
+    cardId: 
+  - choiceText: "\u6536\u96C6\u6C60\u6C34"
+    effectType: 42
+    effectValue: 1
+    cardId: 
+  - choiceText: "\u79BB\u5F00"
+    effectType: 55
+    effectValue: 0
+    cardId: 

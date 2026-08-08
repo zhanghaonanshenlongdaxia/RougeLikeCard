@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: dj_heavenly_court
+  m_EditorClassIdentifier: 
+  eventId: dj_heavenly_court
+  name: "\u5929\u5EAD"
+  description: "\u5929\u5EAD\u51FA\u73B0\u5728\u4F60\u9762\u524D\uFF0C\u4ED9\u5175\u4ED9\u5C06\u5728\u5929\u95E8\u5916\u5DE1\u903B\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 5
+  choices:
+  - choiceText: "\u95EF\u5165\u5929\u5EAD"
+    effectType: 2
+    effectValue: 35
+    cardId: 
+  - choiceText: "\u5728\u5EAD\u5916\u4FEE\u70BC"
+    effectType: 3
+    effectValue: 18
+    cardId: 
+  - choiceText: "\u79BB\u5F00"
+    effectType: 55
+    effectValue: 0
+    cardId: 

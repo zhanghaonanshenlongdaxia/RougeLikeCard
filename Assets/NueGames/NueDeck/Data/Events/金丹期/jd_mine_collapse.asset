@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: jd_mine_collapse
+  m_EditorClassIdentifier: 
+  eventId: jd_mine_collapse
+  name: "\u77FF\u8109\u584C\u9677"
+  description: "\u4F60\u6B63\u5728\u901A\u8FC7\u4E00\u5904\u7075\u77F3\u77FF\u8109\u65F6\uFF0C\u77FF\u9053\u7A81\u7136\u584C\u9677\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 2
+  choices:
+  - choiceText: "\u5F3A\u884C\u7A81\u7834"
+    effectType: 2
+    effectValue: 12
+    cardId: 
+  - choiceText: "\u7B49\u5F85\u6551\u63F4"
+    effectType: 0
+    effectValue: 10
+    cardId: 
+  - choiceText: "\u4EE5\u7075\u77F3\u5F00\u8DEF"
+    effectType: 7
+    effectValue: 50
+    cardId: 

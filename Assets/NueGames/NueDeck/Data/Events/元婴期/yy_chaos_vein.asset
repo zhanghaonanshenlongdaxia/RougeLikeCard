@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: yy_chaos_vein
+  m_EditorClassIdentifier: 
+  eventId: yy_chaos_vein
+  name: "\u6DF7\u6C8C\u7075\u8109"
+  description: "\u4E00\u6761\u6DF7\u6C8C\u7075\u8109\u5728\u5730\u4E0B\u6D8C\u52A8\uFF0C\u7075\u8109\u4E2D\u7075\u6C14\u5448\u6DF7\u6C8C\u8272\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 3
+  choices:
+  - choiceText: "\u5438\u6536\u6DF7\u6C8C\u7075\u6C14"
+    effectType: 2
+    effectValue: 15
+    cardId: 
+  - choiceText: "\u91C7\u96C6\u6DF7\u6C8C\u7075\u77F3"
+    effectType: 6
+    effectValue: 120
+    cardId: 
+  - choiceText: "\u82B1\u7075\u77F3\u7597\u4F24\uFF0825\u7075\u77F3\u56DE5HP\uFF09"
+    effectType: 13
+    effectValue: 25
+    cardId: 

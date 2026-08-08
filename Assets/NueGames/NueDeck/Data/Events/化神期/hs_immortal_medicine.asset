@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: hs_immortal_medicine
+  m_EditorClassIdentifier: 
+  eventId: hs_immortal_medicine
+  name: "\u4ED9\u836F\u79D8\u5883"
+  description: "\u4E00\u7247\u4ED9\u836F\u79D8\u5883\uFF0C\u836F\u56ED\u4E2D\u751F\u957F\u7740\u5404\u79CD\u4ED9\u54C1\u7075\u836F\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 4
+  choices:
+  - choiceText: "\u91C7\u6458\u4ED9\u836F"
+    effectType: 8
+    effectValue: 3
+    cardId: 
+  - choiceText: "\u5728\u4ED9\u836F\u56ED\u4FEE\u70BC"
+    effectType: 3
+    effectValue: 12
+    cardId: 
+  - choiceText: "\u79BB\u5F00"
+    effectType: 55
+    effectValue: 0
+    cardId: 

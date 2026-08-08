@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: jd_spirit_ring
+  m_EditorClassIdentifier: 
+  eventId: jd_spirit_ring
+  name: "\u7075\u6212\u7A7A\u95F4"
+  description: "\u4F60\u6361\u5230\u4E00\u679A\u7075\u6212\uFF0C\u6212\u9762\u95EA\u70C1\u5FAE\u5149\uFF0C\u5185\u542B\u4E00\u4E2A\u5C0F\u578B\u50A8\u7269\u7A7A\u95F4\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 2
+  choices:
+  - choiceText: "\u6253\u5F00\u7A7A\u95F4"
+    effectType: 6
+    effectValue: 70
+    cardId: 
+  - choiceText: "\u62B9\u53BB\u5370\u8BB0\u636E\u4E3A\u5DF1\u6709"
+    effectType: 40
+    effectValue: 1
+    cardId: 
+  - choiceText: "\u4E22\u5F03"
+    effectType: 55
+    effectValue: 0
+    cardId: 

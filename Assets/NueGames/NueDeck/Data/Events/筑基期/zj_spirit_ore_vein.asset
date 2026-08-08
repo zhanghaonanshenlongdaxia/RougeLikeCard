@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: zj_spirit_ore_vein
+  m_EditorClassIdentifier: 
+  eventId: zj_spirit_ore_vein
+  name: "\u7075\u77F3\u77FF\u8109"
+  description: "\u4F60\u53D1\u73B0\u4E86\u4E00\u5904\u88F8\u9732\u7684\u7075\u77F3\u77FF\u8109\uFF0C\u77FF\u8109\u4E2D\u7075\u77F3\u95EA\u70C1\u7740\u8BF1\u4EBA\u7684\u5149\u8292\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 1
+  choices:
+  - choiceText: "\u5C0F\u5FC3\u5F00\u91C7"
+    effectType: 6
+    effectValue: 60
+    cardId: 
+  - choiceText: "\u75AF\u72C2\u6316\u6398"
+    effectType: 2
+    effectValue: 8
+    cardId: 
+  - choiceText: "\u4E0D\u505A\u505C\u7559"
+    effectType: 55
+    effectValue: 0
+    cardId: 

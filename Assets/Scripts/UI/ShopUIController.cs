@@ -38,20 +38,18 @@ namespace CardGame.UI
             {
                 canvas = gameObject.AddComponent<Canvas>();
                 canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-                canvas.sortingOrder = 40;
+                canvas.sortingOrder = 60;
                 var scaler = gameObject.AddComponent<CanvasScaler>();
                 scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
                 scaler.referenceResolution = new Vector2(1920, 1080);
                 gameObject.AddComponent<GraphicRaycaster>();
             }
-
-            // 全屏遮罩背景
-            var bgObj = new GameObject("Background");
-            bgObj.transform.SetParent(transform, false);
-            var bgRt = bgObj.AddComponent<RectTransform>();
-            bgRt.anchorMin = Vector2.zero; bgRt.anchorMax = Vector2.one;
-            bgRt.offsetMin = Vector2.zero; bgRt.offsetMax = Vector2.zero;
-            bgObj.AddComponent<Image>().color = new Color(0, 0, 0, 0.95f);
+            else if (canvas.sortingOrder < 60)
+            {
+                canvas.sortingOrder = 60;
+                if (GetComponent<GraphicRaycaster>() == null)
+                    gameObject.AddComponent<GraphicRaycaster>();
+            }
 
             Transform panel = transform.Find("Panel");
             if (panel == null)
@@ -61,8 +59,21 @@ namespace CardGame.UI
                 var panelRt = panelObj.AddComponent<RectTransform>();
                 panelRt.anchorMin = new Vector2(0.05f, 0.05f); panelRt.anchorMax = new Vector2(0.95f, 0.95f);
                 panelRt.offsetMin = Vector2.zero; panelRt.offsetMax = Vector2.zero;
-                panelObj.AddComponent<Image>().color = new Color(0.08f, 0.1f, 0.15f, 1f);
+                panelObj.AddComponent<Image>().color = new Color(0.08f, 0.1f, 0.15f, 0.95f);
                 panel = panelObj.transform;
+            }
+            else
+            {
+                // 清理 prefab 预烘焙的静态子物体，避免未绑定的按钮拦截点击
+                for (int i = panel.childCount - 1; i >= 0; i--)
+                    DestroyImmediate(panel.GetChild(i).gameObject);
+                // 移除可能存在的布局组件，因为子物体使用锚点定位
+                var vlg = panel.GetComponent<VerticalLayoutGroup>();
+                if (vlg != null) DestroyImmediate(vlg);
+                var csf = panel.GetComponent<ContentSizeFitter>();
+                if (csf != null) DestroyImmediate(csf);
+                var panelImg = panel.GetComponent<Image>();
+                if (panelImg == null) panel.gameObject.AddComponent<Image>().color = new Color(0.08f, 0.1f, 0.15f, 0.95f);
             }
 
             // 标题+灵石
@@ -123,7 +134,8 @@ namespace CardGame.UI
 
             var sLayout = section.AddComponent<VerticalLayoutGroup>();
             sLayout.spacing = 3; sLayout.padding = new RectOffset(5, 5, 5, 5);
-            sLayout.childControlWidth = true; sLayout.childForceExpandHeight = false;
+            sLayout.childControlWidth = true; sLayout.childControlHeight = true;
+            sLayout.childForceExpandHeight = false;
 
             // 标题
             var tObj = new GameObject("SectionTitle");
@@ -140,14 +152,17 @@ namespace CardGame.UI
             var scroll = scrollObj.AddComponent<ScrollRect>();
             scroll.horizontal = true; scroll.vertical = false;
             var scRt = scrollObj.GetComponent<RectTransform>();
+            var scLe = scrollObj.AddComponent<LayoutElement>();
+            scLe.preferredHeight = 60;
+            scLe.flexibleHeight = 1;
 
             var vp = new GameObject("Viewport");
             vp.transform.SetParent(scrollObj.transform, false);
             var vpRt = vp.AddComponent<RectTransform>();
             vpRt.anchorMin = Vector2.zero; vpRt.anchorMax = Vector2.one;
             vpRt.offsetMin = Vector2.zero; vpRt.offsetMax = Vector2.zero;
-            vp.AddComponent<Image>().color = new Color(0, 0, 0, 0.01f);
-                vp.AddComponent<RectMask2D>();
+            var vpImg = vp.AddComponent<Image>(); vpImg.color = new Color(0.05f, 0.08f, 0.12f, 1f);
+            vp.AddComponent<UnityEngine.UI.Mask>();
             scroll.viewport = vpRt;
 
             var content = new GameObject("Content");
@@ -219,9 +234,25 @@ namespace CardGame.UI
                 btn.onClick.AddListener(() =>
                 {
                     if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
-                    if (type == "card") _system.BuyCard(index);
-                    else if (type == "relic") _system.BuyRelic(index);
-                    else if (type == "potion") _system.BuyPotion(index);
+                    bool success = false;
+                    string itemName = name;
+                    if (type == "card") success = _system.BuyCard(index);
+                    else if (type == "relic") success = _system.BuyRelic(index);
+                    else if (type == "potion")
+                    {
+                        success = _system.BuyPotion(index);
+                        if (!success && _battleModel.CurrentGold.Value >= CurrentShopPrice(type, index))
+                            FloatingTip.ShowWarning("药水槽已满!");
+                        else if (!success)
+                            FloatingTip.ShowInsufficientGold();
+                        else
+                            FloatingTip.ShowPurchaseSuccess(itemName);
+                        RefreshShop();
+                        return;
+                    }
+                    
+                    if (success) FloatingTip.ShowPurchaseSuccess(itemName);
+                    else FloatingTip.ShowInsufficientGold();
                     RefreshShop();
                 });
             }
@@ -260,7 +291,14 @@ namespace CardGame.UI
             if (gm.PersistentGameplayData.CurrentCardsList.Count > 2)
             {
                 var card = gm.PersistentGameplayData.CurrentCardsList[2];
-                _system.RemoveCard(card);
+                if (_system.RemoveCard(card))
+                    FloatingTip.ShowSuccess($"移除卡牌: {card.CardName}");
+                else
+                    FloatingTip.ShowInsufficientGold();
+            }
+            else
+            {
+                FloatingTip.ShowWarning("卡牌不足3张!");
             }
             RefreshShop();
         }
@@ -268,6 +306,23 @@ namespace CardGame.UI
         public void OnBackButton()
         {
             gameObject.SetActive(false);
+            NotifyMapRefresh();
+        }
+
+        private int CurrentShopPrice(string type, int index)
+        {
+            var shop = _system.CurrentShop;
+            if (shop == null) return int.MaxValue;
+            if (type == "card" && index < shop.cardPrices.Count) return shop.cardPrices[index];
+            if (type == "relic" && index < shop.relicPrices.Count) return shop.relicPrices[index];
+            if (type == "potion" && index < shop.potionPrices.Count) return shop.potionPrices[index];
+            return int.MaxValue;
+        }
+
+        private void NotifyMapRefresh()
+        {
+            var mapMgr = FindObjectOfType<NueGames.NueDeck.Scripts.Managers.MapManager>();
+            if (mapMgr != null) mapMgr.SendMessage("BuildMap");
         }
 
         private void CreateText(GameObject parent, string text, float size, Color color)

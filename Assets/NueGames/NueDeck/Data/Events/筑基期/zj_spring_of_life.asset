@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: zj_spring_of_life
+  m_EditorClassIdentifier: 
+  eventId: zj_spring_of_life
+  name: "\u751F\u547D\u4E4B\u6CC9"
+  description: "\u4E00\u80A1\u4ECE\u5730\u5E95\u6D8C\u51FA\u7684\u6CC9\u6C34\u6563\u53D1\u7740\u6D53\u90C1\u7684\u751F\u547D\u7075\u6C14\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 1
+  choices:
+  - choiceText: "\u996E\u7528\u6CC9\u6C34"
+    effectType: 3
+    effectValue: 4
+    cardId: 
+  - choiceText: "\u6536\u96C6\u6CC9\u6C34"
+    effectType: 42
+    effectValue: 1
+    cardId: 
+  - choiceText: "\u5728\u65C1\u4FEE\u70BC"
+    effectType: 0
+    effectValue: 15
+    cardId: 

@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: zj_fortune_teller
+  m_EditorClassIdentifier: 
+  eventId: zj_fortune_teller
+  name: "\u5360\u535C\u5E08"
+  description: "\u8DEF\u8FB9\u5750\u7740\u4E00\u4F4D\u8499\u9762\u5360\u535C\u5E08\uFF0C\u8EAB\u65C1\u6D6E\u7740\u4E00\u9762\u94DC\u955C\uFF0C\u5979\u8BF4\u53EF\u4EE5\u4E3A\u4F60\u5360\u535C\u524D\u7A0B\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 1
+  choices:
+  - choiceText: "\u5360\u535C\u8D22\u8FD0"
+    effectType: 6
+    effectValue: 45
+    cardId: 
+  - choiceText: "\u5360\u535C\u6218\u529B"
+    effectType: 21
+    effectValue: 2
+    cardId: 
+  - choiceText: "\u4E0D\u4FE1\u9B3C\u795E"
+    effectType: 55
+    effectValue: 0
+    cardId: 

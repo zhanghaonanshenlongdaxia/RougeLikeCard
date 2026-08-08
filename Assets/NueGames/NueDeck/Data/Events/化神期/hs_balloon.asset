@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: hs_balloon
+  m_EditorClassIdentifier: 
+  eventId: hs_balloon
+  name: "\u4ED9\u754C\u7075\u6C14\u7403"
+  description: "\u4ED9\u754C\u7075\u6C14\u7403\u644A\uFF0C\u5C04\u4E2D\u4E0D\u540C\u6C14\u7403\u53EF\u5F97\u4ED9\u54C1\u5956\u52B1\uFF01\n\u6D88\u8017:
+    120\u7075\u77F3"
+  eventImage: {fileID: 0}
+  requiredRealm: 4
+  choices:
+  - choiceText: "\u5C04\u51FB\u4ED9\u754C\u7075\u6C14\u7403"
+    effectType: 33
+    effectValue: 120
+    cardId: 
+  - choiceText: "\u4E0D\u73A9"
+    effectType: 34
+    effectValue: 0
+    cardId: 

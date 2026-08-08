@@ -118,9 +118,7 @@ namespace NueGames.NueDeck.Scripts.Managers
                 foreach (var enemy in CurrentEnemiesList)
                 {
                     if (enemy.EnemyCharacterData != null)
-                        codex.OnEncounter((string)typeof(EnemyCharacterData)
-                            .BaseType.GetField("characterID", BindingFlags.NonPublic | BindingFlags.Instance)
-                            .GetValue(enemy.EnemyCharacterData));
+                        codex.OnEncounter(enemy.EnemyCharacterData.CharacterID);
                 }
             }
             catch { /* QFramework not ready */ }
@@ -133,9 +131,7 @@ namespace NueGames.NueDeck.Scripts.Managers
                 if (enemy.EnemyCharacterData != null && !string.IsNullOrEmpty(enemy.EnemyCharacterData.EncounterDialogue))
                 {
                     dialogue = enemy.EnemyCharacterData.EncounterDialogue;
-                    enemyName = (string)typeof(EnemyCharacterData)
-                        .BaseType.GetField("characterName", BindingFlags.NonPublic | BindingFlags.Instance)
-                        .GetValue(enemy.EnemyCharacterData);
+                    enemyName = enemy.EnemyCharacterData.CharacterName;
                     break;
                 }
             }
@@ -392,9 +388,7 @@ namespace NueGames.NueDeck.Scripts.Managers
                     if (enemyData != null && !string.IsNullOrEmpty(enemyData.VictoryDialogue))
                     {
                         dialogue = enemyData.VictoryDialogue;
-                        enemyName = (string)typeof(EnemyCharacterData)
-                            .BaseType.GetField("characterName", BindingFlags.NonPublic | BindingFlags.Instance)
-                            .GetValue(enemyData);
+                        enemyName = enemyData.CharacterName;
                         break;
                     }
                 }

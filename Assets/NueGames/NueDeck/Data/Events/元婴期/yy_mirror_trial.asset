@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: yy_mirror_trial
+  m_EditorClassIdentifier: 
+  eventId: yy_mirror_trial
+  name: "\u955C\u4E2D\u5E7B\u6211"
+  description: "\u53E4\u955C\u4E2D\u8D70\u51FA\u4E00\u4E2A\u548C\u4F60\u4E00\u6A21\u4E00\u6837\u7684\u5E7B\u5F71\uFF0C\u624B\u6301\u76F8\u540C\u529F\u6CD5\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 3
+  choices:
+  - choiceText: "\u4E0E\u5E7B\u6211\u4EA4\u6218"
+    effectType: 2
+    effectValue: 15
+    cardId: 
+  - choiceText: "\u4E0E\u5E7B\u6211\u548C\u89E3"
+    effectType: 3
+    effectValue: 6
+    cardId: 
+  - choiceText: "\u7075\u76FE\u62A4\u4F53\uFF08\u4E0B\u573A\u5F00\u5C4010\u683C\u6321\uFF09"
+    effectType: 27
+    effectValue: 10
+    cardId: 

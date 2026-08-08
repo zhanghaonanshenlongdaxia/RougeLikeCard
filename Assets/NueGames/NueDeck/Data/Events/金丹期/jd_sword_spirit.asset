@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: jd_sword_spirit
+  m_EditorClassIdentifier: 
+  eventId: jd_sword_spirit
+  name: "\u5251\u7075\u8BA4\u4E3B"
+  description: "\u4E00\u67C4\u53E4\u5251\u60AC\u6D6E\u7A7A\u4E2D\uFF0C\u5251\u7075\u73B0\u5F62\uFF0C\u95EE\u4F60\u662F\u5426\u613F\u610F\u6210\u4E3A\u5B83\u7684\u4E3B\u4EBA\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 2
+  choices:
+  - choiceText: "\u63A5\u53D7\u53E4\u5251"
+    effectType: 30
+    effectValue: 1
+    cardId: 
+  - choiceText: "\u7D22\u53D6\u5251\u7075\u4E4B\u529B"
+    effectType: 21
+    effectValue: 3
+    cardId: 
+  - choiceText: "\u5A49\u62D2\u79BB\u53BB"
+    effectType: 55
+    effectValue: 0
+    cardId: 

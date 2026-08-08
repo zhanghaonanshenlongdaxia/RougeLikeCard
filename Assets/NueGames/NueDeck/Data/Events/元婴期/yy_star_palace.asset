@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: yy_star_palace
+  m_EditorClassIdentifier: 
+  eventId: yy_star_palace
+  name: "\u661F\u5BAB\u9057\u8FF9"
+  description: "\u4E00\u5EA7\u6F02\u6D6E\u5728\u661F\u7A7A\u4E2D\u7684\u5BAB\u6BBF\u9057\u8FF9\uFF0C\u5BAB\u95E8\u5927\u5F00\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 3
+  choices:
+  - choiceText: "\u8FDB\u5165\u661F\u5BAB"
+    effectType: 2
+    effectValue: 15
+    cardId: 
+  - choiceText: "\u4EE5\u7075\u77F3\u5F00\u8DEF"
+    effectType: 7
+    effectValue: 100
+    cardId: 
+  - choiceText: "\u4EE5\u5361\u6362\u6750"
+    effectType: 39
+    effectValue: 1
+    cardId: 

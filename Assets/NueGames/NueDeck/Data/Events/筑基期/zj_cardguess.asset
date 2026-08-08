@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: zj_cardguess
+  m_EditorClassIdentifier: 
+  eventId: zj_cardguess
+  name: "\u731C\u724C\u5927\u5C0F"
+  description: "\u644A\u4E3B\u7FFB\u51FA\u4E00\u5F20\u724C\u8BA9\u4F60\u731C\u5927\u5C0F\uFF0C\u8FDE\u7EED\u731C\u5BF9\u5956\u52B1\u7FFB\u500D\uFF01\n\u6D88\u8017:
+    30\u7075\u77F3"
+  eventImage: {fileID: 0}
+  requiredRealm: 1
+  choices:
+  - choiceText: "\u5F00\u59CB\u731C\u724C"
+    effectType: 53
+    effectValue: 30
+    cardId: 
+  - choiceText: "\u4E0D\u73A9"
+    effectType: 55
+    effectValue: 0
+    cardId: 

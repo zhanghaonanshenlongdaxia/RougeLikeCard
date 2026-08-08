@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: zj_formation_chance
+  m_EditorClassIdentifier: 
+  eventId: zj_formation_chance
+  name: "\u673A\u7F18\u9635\u6CD5"
+  description: "\u5730\u9762\u4E0A\u6D6E\u73B0\u51FA\u4E00\u5EA7\u5149\u9635\uFF0C\u9635\u4E2D\u7075\u6C14\u6D53\u90C1\uFF0C\u4F3C\u4E4E\u6697\u85CF\u673A\u7F18\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 1
+  choices:
+  - choiceText: "\u8E0F\u5165\u9635\u4E2D"
+    effectType: 40
+    effectValue: 1
+    cardId: 
+  - choiceText: "\u53C2\u609F\u9635\u6CD5"
+    effectType: 30
+    effectValue: 1
+    cardId: 
+  - choiceText: "\u7ED5\u9053\u800C\u884C"
+    effectType: 55
+    effectValue: 0
+    cardId: 

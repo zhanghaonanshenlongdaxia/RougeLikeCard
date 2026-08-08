@@ -17,6 +17,14 @@ namespace CardGame
         public int CurrentEncounterId { get; set; } = 0;
         public bool IsFinalEncounter { get; set; } = false;
         public int MaxCardOnHand { get; set; } = 10;
+        public int PendingStrengthBonus { get; set; } = 0;
+        public int PendingDexterityBonus { get; set; } = 0;
+        public int PendingEnemyWeak { get; set; } = 0;
+        public int PendingEnemyFrail { get; set; } = 0;
+        public int PendingEnemyVulnerable { get; set; } = 0;
+        public int PendingThorn { get; set; } = 0;
+        public int PendingBlockStart { get; set; } = 0;
+        public int PendingEnemyHpReduce { get; set; } = 0;
 
         protected override void OnInit()
         {

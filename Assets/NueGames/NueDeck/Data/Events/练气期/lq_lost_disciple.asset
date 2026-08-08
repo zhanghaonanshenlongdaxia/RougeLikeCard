@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: lq_lost_disciple
+  m_EditorClassIdentifier: 
+  eventId: lq_lost_disciple
+  name: "\u8FF7\u8DEF\u5F1F\u5B50"
+  description: "\u4E00\u4E2A\u5B97\u95E8\u5F1F\u5B50\u5728\u5C71\u8DEF\u4E0A\u8FF7\u4E86\u8DEF\uFF0C\u795E\u60C5\u7126\u6025\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 0
+  choices:
+  - choiceText: "\u7ED9\u4ED6\u6307\u8DEF"
+    effectType: 6
+    effectValue: 15
+    cardId: 
+  - choiceText: "\u62A2\u4ED6\u7075\u77F3"
+    effectType: 6
+    effectValue: 30
+    cardId: 
+  - choiceText: "\u4E0D\u642D\u7406"
+    effectType: 55
+    effectValue: 0
+    cardId: 

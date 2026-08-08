@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: dj_realm_dissolve
+  m_EditorClassIdentifier: 
+  eventId: dj_realm_dissolve
+  name: "\u754C\u9762\u5D29\u584C"
+  description: "\u6574\u4E2A\u754C\u9762\u5F00\u59CB\u5D29\u584C\uFF0C\u865A\u7A7A\u88C2\u7F1D\u904D\u5E03\u56DB\u65B9\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 5
+  choices:
+  - choiceText: "\u7A33\u4F4F\u754C\u9762"
+    effectType: 3
+    effectValue: 20
+    cardId: 
+  - choiceText: "\u91C7\u96C6\u5D29\u584C\u7075\u6C14"
+    effectType: 2
+    effectValue: 30
+    cardId: 
+  - choiceText: "\u9003\u79BB\u754C\u9762"
+    effectType: 55
+    effectValue: 0
+    cardId: 

@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: jd_phantom_market
+  m_EditorClassIdentifier: 
+  eventId: jd_phantom_market
+  name: "\u5E7B\u5F71\u574A\u5E02"
+  description: "\u4E00\u5EA7\u574A\u5E02\u51ED\u7A7A\u51FA\u73B0\uFF0C\u574A\u5E02\u4E2D\u7684\u5546\u4EBA\u90FD\u9762\u5E26\u5FAE\u7B11\uFF0C\u5374\u65E0\u5F71\u65E0\u5F62\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 2
+  choices:
+  - choiceText: "\u8D2D\u4E70\u5546\u54C1"
+    effectType: 7
+    effectValue: 50
+    cardId: 
+  - choiceText: "\u8BC6\u7834\u5E7B\u5F71"
+    effectType: 6
+    effectValue: 60
+    cardId: 
+  - choiceText: "\u79BB\u5F00"
+    effectType: 55
+    effectValue: 0
+    cardId: 

@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: jd_beast_king_trial
+  m_EditorClassIdentifier: 
+  eventId: jd_beast_king_trial
+  name: "\u517D\u738B\u8003\u9A8C"
+  description: "\u4E00\u5934\u7075\u517D\u738B\u62E6\u4F4F\u4F60\uFF0C\u5B83\u4E0D\u5F00\u53E3\uFF0C\u53EA\u662F\u7528\u773C\u795E\u793A\u610F\u4F60\u8DDF\u968F\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 2
+  choices:
+  - choiceText: "\u8DDF\u968F"
+    effectType: 3
+    effectValue: 6
+    cardId: 
+  - choiceText: "\u53CD\u6297"
+    effectType: 2
+    effectValue: 14
+    cardId: 
+  - choiceText: "\u79BB\u5F00"
+    effectType: 55
+    effectValue: 0
+    cardId: 

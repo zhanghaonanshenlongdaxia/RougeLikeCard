@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: zj_dragon_vein
+  m_EditorClassIdentifier: 
+  eventId: zj_dragon_vein
+  name: "\u9F99\u8109\u6B8B\u606F"
+  description: "\u4F60\u611F\u5E94\u5230\u811A\u4E0B\u6709\u9F99\u8109\u6B8B\u606F\uFF0C\u7075\u6C14\u5728\u6B64\u6C47\u805A\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 1
+  choices:
+  - choiceText: "\u5438\u6536\u9F99\u8109\u7075\u6C14"
+    effectType: 3
+    effectValue: 5
+    cardId: 
+  - choiceText: "\u6316\u6398\u9F99\u8109\u7075\u77F3"
+    effectType: 6
+    effectValue: 50
+    cardId: 
+  - choiceText: "\u65E0\u798F\u6D88\u53D7"
+    effectType: 55
+    effectValue: 0
+    cardId: 

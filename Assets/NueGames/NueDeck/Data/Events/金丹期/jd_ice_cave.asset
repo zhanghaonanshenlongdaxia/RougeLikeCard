@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: jd_ice_cave
+  m_EditorClassIdentifier: 
+  eventId: jd_ice_cave
+  name: "\u51B0\u7A9F\u79D8\u85CF"
+  description: "\u4F60\u8FDB\u5165\u4E00\u5EA7\u51B0\u7A9F\uFF0C\u51B0\u58C1\u4E2D\u51BB\u7ED3\u7740\u5404\u79CD\u7075\u6750\u548C\u5B9D\u7269\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 2
+  choices:
+  - choiceText: "\u51FF\u51B0\u53D6\u5B9D"
+    effectType: 2
+    effectValue: 8
+    cardId: 
+  - choiceText: "\u4EE5\u706B\u7CFB\u529F\u6CD5\u878D\u5316"
+    effectType: 7
+    effectValue: 35
+    cardId: 
+  - choiceText: "\u79BB\u5F00"
+    effectType: 55
+    effectValue: 0
+    cardId: 

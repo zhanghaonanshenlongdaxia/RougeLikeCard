@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: zj_ancient_scroll
+  m_EditorClassIdentifier: 
+  eventId: zj_ancient_scroll
+  name: "\u53E4\u7C4D\u6B8B\u9875"
+  description: "\u4F60\u6361\u5230\u51E0\u9875\u6CDB\u9EC4\u7684\u53E4\u7C4D\u6B8B\u9875\uFF0C\u4E0A\u9762\u8BB0\u8F7D\u7740\u67D0\u79CD\u529F\u6CD5\u7684\u7247\u6BB5\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 1
+  choices:
+  - choiceText: "\u7814\u8BFB\u6B8B\u9875"
+    effectType: 36
+    effectValue: 1
+    cardId: 
+  - choiceText: "\u5356\u7ED9\u574A\u5E02"
+    effectType: 6
+    effectValue: 40
+    cardId: 
+  - choiceText: "\u968F\u624B\u4E22\u5F03"
+    effectType: 55
+    effectValue: 0
+    cardId: 

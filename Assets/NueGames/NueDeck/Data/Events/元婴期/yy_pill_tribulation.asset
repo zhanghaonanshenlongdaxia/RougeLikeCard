@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: yy_pill_tribulation
+  m_EditorClassIdentifier: 
+  eventId: yy_pill_tribulation
+  name: "\u4E39\u52AB"
+  description: "\u4E00\u9897\u4E39\u836F\u6B63\u5728\u6E21\u52AB\uFF0C\u4E39\u52AB\u4E4B\u529B\u8FDC\u8D85\u5BFB\u5E38\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 3
+  choices:
+  - choiceText: "\u62A2\u593A\u6E21\u52AB\u4E39"
+    effectType: 2
+    effectValue: 20
+    cardId: 
+  - choiceText: "\u534F\u52A9\u6E21\u52AB"
+    effectType: 42
+    effectValue: 1
+    cardId: 
+  - choiceText: "\u6697\u7B97\uFF08\u4E0B\u573A\u654C\u4EBAHP-20%\uFF09"
+    effectType: 28
+    effectValue: 20
+    cardId: 

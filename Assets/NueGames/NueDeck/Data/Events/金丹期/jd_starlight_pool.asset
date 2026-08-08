@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: jd_starlight_pool
+  m_EditorClassIdentifier: 
+  eventId: jd_starlight_pool
+  name: "\u661F\u8F89\u7075\u6C60"
+  description: "\u591C\u665A\uFF0C\u4E00\u5904\u7075\u6C60\u6620\u7167\u661F\u7A7A\uFF0C\u6C60\u6C34\u542B\u6709\u661F\u8FB0\u4E4B\u529B\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 2
+  choices:
+  - choiceText: "\u5165\u6C60\u6C90\u6D74"
+    effectType: 3
+    effectValue: 5
+    cardId: 
+  - choiceText: "\u6536\u96C6\u661F\u8F89\u6C34"
+    effectType: 42
+    effectValue: 1
+    cardId: 
+  - choiceText: "\u6B23\u8D4F"
+    effectType: 0
+    effectValue: 18
+    cardId: 

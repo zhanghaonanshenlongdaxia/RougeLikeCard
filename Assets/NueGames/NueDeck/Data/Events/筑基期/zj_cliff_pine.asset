@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: zj_cliff_pine
+  m_EditorClassIdentifier: 
+  eventId: zj_cliff_pine
+  name: "\u60AC\u5D16\u53E4\u677E"
+  description: "\u60AC\u5D16\u8FB9\u4E00\u68F5\u53E4\u677E\u76D8\u6839\u9519\u8282\uFF0C\u6811\u5E72\u4E0A\u523B\u7740\u51E0\u4E2A\u53E4\u6734\u6587\u5B57\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 1
+  choices:
+  - choiceText: "\u53C2\u609F\u53E4\u5B57"
+    effectType: 36
+    effectValue: 1
+    cardId: 
+  - choiceText: "\u6458\u677E\u5B50"
+    effectType: 0
+    effectValue: 12
+    cardId: 
+  - choiceText: "\u79BB\u5F00"
+    effectType: 55
+    effectValue: 0
+    cardId: 

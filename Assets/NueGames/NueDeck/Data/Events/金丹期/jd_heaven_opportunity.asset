@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: jd_heaven_opportunity
+  m_EditorClassIdentifier: 
+  eventId: jd_heaven_opportunity
+  name: "\u5929\u964D\u5947\u9047"
+  description: "\u524D\u65B9\u7A7A\u4E2D\u5FFD\u7136\u88C2\u5F00\u4E00\u9053\u7F1D\u9699\uFF0C\u4E00\u80A1\u5947\u5F02\u7684\u7075\u6C14\u6D8C\u51FA\uFF0C\u4F3C\u4E4E\u662F\u5929\u964D\u5947\u9047\uFF01"
+  eventImage: {fileID: 0}
+  requiredRealm: 2
+  choices:
+  - choiceText: "\u62A2\u593A\u673A\u7F18"
+    effectType: 6
+    effectValue: 100
+    cardId: 
+  - choiceText: "\u4E0E\u4EBA\u5206\u4EAB"
+    effectType: 40
+    effectValue: 1
+    cardId: 
+  - choiceText: "\u72B9\u8C6B\u4E0D\u51B3"
+    effectType: 55
+    effectValue: 0
+    cardId: 

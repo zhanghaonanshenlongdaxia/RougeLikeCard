@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: yy_dark_phoenix
+  m_EditorClassIdentifier: 
+  eventId: yy_dark_phoenix
+  name: "\u6697\u51F0\u964D\u4E16"
+  description: "\u6697\u51F0\u4ECE\u865A\u7A7A\u4E2D\u964D\u4E34\uFF0C\u5468\u56F4\u4E00\u5207\u9677\u5165\u9ED1\u6697\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 3
+  choices:
+  - choiceText: "\u5BF9\u6297\u6697\u51F0"
+    effectType: 2
+    effectValue: 18
+    cardId: 
+  - choiceText: "\u4EE5\u7075\u77F3\u4E70\u547D"
+    effectType: 7
+    effectValue: 100
+    cardId: 
+  - choiceText: "\u795E\u8BC6\u63D0\u5347\uFF08+2\u4E0A\u9650\uFF09"
+    effectType: 15
+    effectValue: 2
+    cardId: 

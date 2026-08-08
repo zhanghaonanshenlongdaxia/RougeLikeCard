@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: dj_reincarnation_wheel
+  m_EditorClassIdentifier: 
+  eventId: dj_reincarnation_wheel
+  name: "\u8F6E\u56DE\u5929\u8F6E"
+  description: "\u5DE8\u5927\u7684\u8F6E\u56DE\u5929\u8F6E\u60AC\u6D6E\u5728\u7A7A\u4E2D\uFF0C\u8F6E\u4E0A\u6620\u7167\u516D\u9053\u8F6E\u56DE\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 5
+  choices:
+  - choiceText: "\u53C2\u609F\u516D\u9053\u8F6E\u56DE"
+    effectType: 3
+    effectValue: 22
+    cardId: 
+  - choiceText: "\u8DF3\u5165\u8F6E\u56DE"
+    effectType: 2
+    effectValue: 35
+    cardId: 
+  - choiceText: "\u79BB\u5F00"
+    effectType: 55
+    effectValue: 0
+    cardId: 

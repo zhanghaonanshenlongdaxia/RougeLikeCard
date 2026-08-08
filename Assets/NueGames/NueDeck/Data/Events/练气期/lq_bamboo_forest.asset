@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e253b4b0135e89b4da69f985be7693fd, type: 3}
+  m_Name: lq_bamboo_forest
+  m_EditorClassIdentifier: 
+  eventId: lq_bamboo_forest
+  name: "\u7AF9\u6797\u8FF7\u9014"
+  description: "\u4F60\u8D70\u8FDB\u4E00\u7247\u8302\u5BC6\u7684\u7AF9\u6797\uFF0C\u56DB\u5468\u666F\u8C61\u76F8\u4F3C\uFF0C\u8FA8\u4E0D\u6E05\u65B9\u5411\u3002"
+  eventImage: {fileID: 0}
+  requiredRealm: 0
+  choices:
+  - choiceText: "\u9759\u5FC3\u611F\u77E5\u7075\u6C14"
+    effectType: 0
+    effectValue: 8
+    cardId: 
+  - choiceText: "\u4EE5\u7075\u77F3\u7834\u9635"
+    effectType: 7
+    effectValue: 15
+    cardId: 
+  - choiceText: "\u5F3A\u884C\u51B2\u51FA"
+    effectType: 2
+    effectValue: 5
+    cardId: 

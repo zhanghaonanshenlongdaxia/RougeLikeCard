@@ -27,7 +27,7 @@ namespace CardGame.UI
                 var tmps = GetComponentsInChildren<TextMeshProUGUI>(true);
                 foreach (var tmp in tmps)
                 {
-                    if (tmp.gameObject.name == "Description") { descriptionText = tmp; break; }
+                    if (tmp.gameObject.name.Contains("Description")) { descriptionText = tmp; break; }
                 }
             }
             if (eventImage == null)
@@ -40,14 +40,15 @@ namespace CardGame.UI
             }
             if (choicesRoot == null)
             {
-                // 查找名为 Choices 的子物体
+                // 查找名为 Choices 或 ChoicesRoot 的子物体
                 var choices = transform.Find("Panel/Choices");
+                if (choices == null) choices = transform.Find("Panel/ChoicesRoot");
                 if (choices == null)
                 {
-                    // 递归查找
+                    // 递归查找（包含式匹配）
                     foreach (var t in GetComponentsInChildren<Transform>(true))
                     {
-                        if (t.name == "Choices") { choices = t; break; }
+                        if (t.name.Contains("Choices")) { choices = t; break; }
                     }
                 }
                 if (choices != null) choicesRoot = choices;
@@ -102,6 +103,11 @@ namespace CardGame.UI
             if (eventImage && eventData.eventImage) eventImage.sprite = eventData.eventImage;
 
             if (choicesRoot == null) return;
+
+            // 把 choiceButtonPrefab 移出 choicesRoot，避免被清理时一起销毁
+            if (choiceButtonPrefab != null && choiceButtonPrefab.transform.parent == choicesRoot)
+                choiceButtonPrefab.transform.SetParent(transform, false);
+
             for (int i = choicesRoot.childCount - 1; i >= 0; i--)
                 Destroy(choicesRoot.GetChild(i).gameObject);
 
@@ -144,9 +150,34 @@ namespace CardGame.UI
         private void OnChoiceSelected(int index)
         {
             if (_currentEvent == null || index >= _currentEvent.choices.Count) return;
+
+            var choice = _currentEvent.choices[index];
+            // 小游戏类型弹出独立面板
+            if (IsMiniGame(choice.effectType))
+            {
+                var panelObj = new GameObject("MiniGamePanel");
+                var panel = panelObj.AddComponent<MiniGamePanel>();
+                panel.Init(choice.effectType, choice.effectValue, _currentEvent, index);
+                return; // 不关闭事件面板，等小游戏结束后再处理
+            }
+
             this.GetSystem<IEventSystem>().ExecuteChoice(_currentEvent, index);
             gameObject.SetActive(false);
             NotifyMapRefresh();
+        }
+
+        private bool IsMiniGame(EventEffectType type)
+        {
+            return type == EventEffectType.MiniSlot ||
+                   type == EventEffectType.MiniDice ||
+                   type == EventEffectType.MiniPinball ||
+                   type == EventEffectType.MiniRingToss ||
+                   type == EventEffectType.MiniBalloon ||
+                   type == EventEffectType.MiniLottery ||
+                   type == EventEffectType.MiniWheel ||
+                   type == EventEffectType.MiniCoinFlip ||
+                   type == EventEffectType.MiniCardGuess ||
+                   type == EventEffectType.MiniTreasureHunt;
         }
 
         private void NotifyMapRefresh()
