@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ed539b5623e2fa0439afdc6a4138506f, type: 3}
-  m_Name: GoldArmor
+  m_Name: "\u91D1\u7532\u62A4\u8EAB"
   m_EditorClassIdentifier: 
   relicId: relic_gold_armor
   name: Gold Armor
@@ -20,3 +20,4 @@ MonoBehaviour:
   effectValue: 10
   oneTimeUse: 0
   rarity: 0
+  unlockChapter: 0

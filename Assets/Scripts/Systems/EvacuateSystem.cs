@@ -28,6 +28,10 @@ namespace CardGame
                 InventorySystem.TransferToSafeBox(slot.item.ItemId, slot.count);
             }
             Debug.Log("[Evacuate] 御剑归去! 物品已转入乾坤袋");
+
+            // 触发Meta进度+故事线解锁
+            this.GetSystem<IMetaSystem>().OnAdventureComplete();
+            this.GetSystem<IStorySystem>().OnEvacuateComplete();
         }
 
         public void ContinueAdventure()

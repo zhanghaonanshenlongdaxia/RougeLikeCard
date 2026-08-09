@@ -49,4 +49,28 @@ MonoBehaviour:
   enemyPortrait: {fileID: 0}
   encounterDialogue: "\u5636\u2026\u2026\uFF08\u6BD2\u874E\u738B\u7AD6\u8D77\u5DE8\u5927\u6BD2\u5C3E\uFF09\n\u5C3E\u9488\u4E4B\u4E0B\u2026\u2026\u65E0\u4EBA\u5E78\u514D\uFF01"
   victoryDialogue: "\u6BD2\u5C3E\u2026\u2026\u65AD\u4E86\u2026\u2026\n\uFF08\u6BD2\u874E\u738B\u5012\u5730\uFF09"
-  phaseList: []
+  phaseList:
+  - healthThreshold: 0.5
+    phaseEnterName: "\u72C2\u66B4"
+    phaseAbilityList:
+    - name: Attack_12_18
+      intention: {fileID: 0}
+      hideActionValue: 0
+      actionList:
+      - actionType: 0
+        minActionValue: 12
+        maxActionValue: 18
+    - name: Attack_8_12
+      intention: {fileID: 0}
+      hideActionValue: 0
+      actionList:
+      - actionType: 0
+        minActionValue: 8
+        maxActionValue: 12
+    - name: ApplyWeak_2_2
+      intention: {fileID: 0}
+      hideActionValue: 0
+      actionList:
+      - actionType: 4
+        minActionValue: 2
+        maxActionValue: 2

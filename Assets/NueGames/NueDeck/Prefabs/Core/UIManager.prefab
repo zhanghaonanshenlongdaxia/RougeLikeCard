@@ -122,7 +122,7 @@ MonoBehaviour:
   combatCanvas: {fileID: 8225928748238834599}
   informationCanvas: {fileID: 1919341458375492727}
   rewardCanvas: {fileID: 8619156041678795019}
-  inventoryCanvas: {fileID: 7361912765242820111}
+  inventoryCanvas: {fileID: 0}
   fader: {fileID: 3268525075004148596}
   fadeSpeed: 1
 --- !u!1 &3373431715130768076
@@ -825,17 +825,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8045865856747332893, guid: 266a4aa1df17dff44ab9c52b6bc694ab, type: 3}
   m_PrefabInstance: {fileID: 4358264989741909555}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7361912765242820111 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6508104215148150844, guid: 266a4aa1df17dff44ab9c52b6bc694ab, type: 3}
-  m_PrefabInstance: {fileID: 4358264989741909555}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68d02565079cba14a8c85dcf14fc1891, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &4721098600261453242
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -105,8 +105,83 @@ namespace NueGames.NueDeck.Scripts.Managers
             this.GetSystem<IRelicSystem>().TriggerRelics(RelicTriggerType.OnCombatStart,
                 new RelicTriggerContext(player: CurrentMainAlly, enemies: CurrentEnemiesList));
 
+            // 应用事件预存的状态加成
+            ApplyPendingBuffs();
+
             // 图鉴解锁 + 战前对话
             StartCoroutine(StartCombatWithDialogue());
+        }
+
+        /// <summary>
+        /// 应用事件预存的Pending状态（来自事件/篝火等非战斗场景），应用后清零
+        /// </summary>
+        private void ApplyPendingBuffs()
+        {
+            var bm = this.GetModel<IBattleModel>();
+            if (bm == null) return;
+
+            var player = CurrentMainAlly;
+            if (player != null && player.CharacterStats != null)
+            {
+                if (bm.PendingStrengthBonus > 0)
+                {
+                    player.CharacterStats.ApplyStatus(NueGames.NueDeck.Scripts.Enums.StatusType.Strength, bm.PendingStrengthBonus);
+                    Debug.Log($"[Combat] Applied PendingStrength: +{bm.PendingStrengthBonus}");
+                }
+                if (bm.PendingDexterityBonus > 0)
+                {
+                    player.CharacterStats.ApplyStatus(NueGames.NueDeck.Scripts.Enums.StatusType.Dexterity, bm.PendingDexterityBonus);
+                    Debug.Log($"[Combat] Applied PendingDexterity: +{bm.PendingDexterityBonus}");
+                }
+                if (bm.PendingThorn > 0)
+                {
+                    player.CharacterStats.ApplyStatus(NueGames.NueDeck.Scripts.Enums.StatusType.Thorn, bm.PendingThorn);
+                    Debug.Log($"[Combat] Applied PendingThorn: +{bm.PendingThorn}");
+                }
+                if (bm.PendingBlockStart > 0)
+                {
+                    player.CharacterStats.ApplyStatus(NueGames.NueDeck.Scripts.Enums.StatusType.Block, bm.PendingBlockStart);
+                    Debug.Log($"[Combat] Applied PendingBlockStart: +{bm.PendingBlockStart}");
+                }
+            }
+
+            // 给敌人施加减益
+            foreach (var enemy in CurrentEnemiesList)
+            {
+                if (enemy == null || enemy.CharacterStats == null) continue;
+
+                if (bm.PendingEnemyWeak > 0)
+                {
+                    enemy.CharacterStats.ApplyStatus(NueGames.NueDeck.Scripts.Enums.StatusType.Weak, bm.PendingEnemyWeak);
+                    Debug.Log($"[Combat] Applied PendingEnemyWeak: +{bm.PendingEnemyWeak} to {enemy.EnemyCharacterData?.CharacterName}");
+                }
+                if (bm.PendingEnemyFrail > 0)
+                {
+                    enemy.CharacterStats.ApplyStatus(NueGames.NueDeck.Scripts.Enums.StatusType.Frail, bm.PendingEnemyFrail);
+                    Debug.Log($"[Combat] Applied PendingEnemyFrail: +{bm.PendingEnemyFrail}");
+                }
+                if (bm.PendingEnemyVulnerable > 0)
+                {
+                    enemy.CharacterStats.ApplyStatus(NueGames.NueDeck.Scripts.Enums.StatusType.Vulnerable, bm.PendingEnemyVulnerable);
+                    Debug.Log($"[Combat] Applied PendingEnemyVulnerable: +{bm.PendingEnemyVulnerable}");
+                }
+                if (bm.PendingEnemyHpReduce > 0)
+                {
+                    var reduceAmount = Mathf.RoundToInt(enemy.CharacterStats.MaxHealth * bm.PendingEnemyHpReduce / 100f);
+                    enemy.CharacterStats.Damage(reduceAmount);
+                    Debug.Log($"[Combat] Applied PendingEnemyHpReduce: -{reduceAmount}HP ({bm.PendingEnemyHpReduce}%) to {enemy.EnemyCharacterData?.CharacterName}");
+                }
+            }
+
+            // 清零所有Pending
+            bm.PendingStrengthBonus = 0;
+            bm.PendingDexterityBonus = 0;
+            bm.PendingEnemyWeak = 0;
+            bm.PendingEnemyFrail = 0;
+            bm.PendingEnemyVulnerable = 0;
+            bm.PendingThorn = 0;
+            bm.PendingBlockStart = 0;
+            bm.PendingEnemyHpReduce = 0;
         }
 
         private IEnumerator StartCombatWithDialogue()
@@ -301,6 +376,10 @@ namespace NueGames.NueDeck.Scripts.Managers
                     System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 if (dataField != null) dataField.SetValue(clone, enemyList[i]);
                 clone.BuildCharacter();
+                
+                // 应用难度倍率
+                ApplyDifficultyMultiplier(clone);
+                
                 CurrentEnemiesList.Add(clone);
             }
         }
@@ -378,6 +457,10 @@ namespace NueGames.NueDeck.Scripts.Managers
 
         private IEnumerator ShowVictoryDialogueThenReward()
         {
+            // 销毁可能残留的战前对话面板，避免遮挡胜利面板
+            var encounterPanel = GameObject.Find("EncounterDialoguePanel");
+            if (encounterPanel != null) Destroy(encounterPanel);
+
             // 查找有战胜对话的敌人（已死亡的敌人数据仍保留在CurrentEncounter中）
             string dialogue = null;
             string enemyName = null;
@@ -423,6 +506,53 @@ namespace NueGames.NueDeck.Scripts.Managers
 
                 // 战斗胜利后掉落材料+配方
                 DropLoot();
+
+                // 自动存档
+                CardGame.SaveSystem.Save();
+            }
+        }
+
+        /// <summary>
+        /// <summary>
+        /// 获取当前选中的难度配置
+        /// </summary>
+        private AdventureDifficulty GetCurrentDifficulty()
+        {
+            try
+            {
+                var advModel = this.GetModel<IAdventureModel>();
+                if (string.IsNullOrEmpty(advModel.SelectedMapId)) return null;
+#if UNITY_EDITOR
+                var config = UnityEditor.AssetDatabase.LoadAssetAtPath<AdventureMapConfig>(
+                    "Assets/NueGames/NueDeck/Data/AdventureMaps/AdventureMapConfig.asset");
+#else
+                var config = Resources.Load<AdventureMapConfig>("AdventureMapConfig");
+#endif
+                if (config == null) return null;
+                var mapData = config.GetMap(advModel.SelectedMapId);
+                if (mapData == null) return null;
+                return mapData.difficulties.Find(d => d.difficultyType == advModel.SelectedDifficulty);
+            }
+            catch { return null; }
+        }
+
+        /// <summary>
+        /// 应用难度倍率到敌人
+        /// </summary>
+        private void ApplyDifficultyMultiplier(EnemyBase enemy)
+        {
+            var diff = GetCurrentDifficulty();
+            if (diff == null) return;
+
+            if (enemy.CharacterStats != null)
+            {
+                // HP倍率
+                int baseMaxHp = enemy.CharacterStats.MaxHealth;
+                int newMaxHp = Mathf.RoundToInt(baseMaxHp * diff.enemyHpMultiplier);
+                enemy.CharacterStats.IncreaseMaxHealth(newMaxHp - baseMaxHp);
+                enemy.CharacterStats.Damage(0); // 触发更新
+                
+                Debug.Log($"[Difficulty] {enemy.EnemyCharacterData?.CharacterName}: HP {baseMaxHp}→{newMaxHp} (×{diff.enemyHpMultiplier})");
             }
         }
 
@@ -437,26 +567,14 @@ namespace NueGames.NueDeck.Scripts.Managers
                 var inventorySystem = this.GetSystem<IInventorySystem>();
                 if (craftSystem == null || inventorySystem == null) return;
 
-                // 加载所有材料SO
-                var matGuids = UnityEditor.AssetDatabase.FindAssets("t:MaterialData", new[]{"Assets/NueGames/NueDeck/Data/Materials"});
-                var allMaterials = new System.Collections.Generic.List<MaterialData>();
-                foreach (var g in matGuids)
-                {
-                    var p = UnityEditor.AssetDatabase.GUIDToAssetPath(g);
-                    var m = UnityEditor.AssetDatabase.LoadAssetAtPath<MaterialData>(p);
-                    if (m != null) allMaterials.Add(m);
-                }
+                // 获取难度倍率
+                var diff = GetCurrentDifficulty();
+                float lootMult = diff?.lootMultiplier ?? 1f;
+                int rarityBonus = diff?.lootRarityBonus ?? 0;
+                int goldMult = diff?.goldRewardMultiplier ?? 1;
 
-                // 加载所有配方SO
-                var recipeGuids = UnityEditor.AssetDatabase.FindAssets("t:RecipeData", new[]{"Assets/NueGames/NueDeck/Data/Recipes"});
-                var allRecipes = new System.Collections.Generic.List<RecipeData>();
-                foreach (var g in recipeGuids)
-                {
-                    var p = UnityEditor.AssetDatabase.GUIDToAssetPath(g);
-                    var r = UnityEditor.AssetDatabase.LoadAssetAtPath<RecipeData>(p);
-                    if (r != null && !r.unlockByDefault && !craftSystem.IsRecipeUnlocked(r.recipeId))
-                        allRecipes.Add(r);
-                }
+                var allMaterials = CardGame.ResourceCache.GetMaterials();
+                var allRecipes = CardGame.ResourceCache.GetRecipes().FindAll(r => !r.unlockByDefault && !craftSystem.IsRecipeUnlocked(r.recipeId));
 
                 // 根据敌人品阶决定掉落
                 bool hasElite = false;
@@ -470,28 +588,56 @@ namespace NueGames.NueDeck.Scripts.Managers
                     regionId = enemy.EnemyCharacterData.RegionId;
                 }
 
-                // 材料掉落
-                int matCount = hasBoss ? 3 : hasElite ? 2 : 1;
-                var targetRarity = hasBoss ? MaterialRarity.XuanPin : hasElite ? MaterialRarity.LingPin : MaterialRarity.FanPin;
+                // 材料掉落 — 应用难度倍率
+                int baseMatCount = hasBoss ? 3 : hasElite ? 2 : 1;
+                int matCount = Mathf.RoundToInt(baseMatCount * lootMult);
+                
+                // 品阶提升
+                var baseRarity = hasBoss ? MaterialRarity.XuanPin : hasElite ? MaterialRarity.LingPin : MaterialRarity.FanPin;
+                var targetRarity = baseRarity;
+                for (int i = 0; i < rarityBonus; i++)
+                {
+                    if (targetRarity == MaterialRarity.FanPin) targetRarity = MaterialRarity.LingPin;
+                    else if (targetRarity == MaterialRarity.LingPin) targetRarity = MaterialRarity.XuanPin;
+                    else if (targetRarity == MaterialRarity.XuanPin) targetRarity = MaterialRarity.XianPin;
+                }
+                
                 var candidateMats = allMaterials.Where(m => m.rarity == targetRarity && (m.regionId == regionId || m.regionId == -1)).ToList();
+                if (candidateMats.Count == 0) // 没找到指定品阶，降级
+                    candidateMats = allMaterials.Where(m => m.regionId == regionId || m.regionId == -1).ToList();
                 
                 for (int i = 0; i < matCount && candidateMats.Count > 0; i++)
                 {
                     var mat = candidateMats[UnityEngine.Random.Range(0, candidateMats.Count)];
                     inventorySystem.AddItem(mat, 1);
-                    Debug.Log($"[掉落] 材料: {mat.name} ×1");
+                    Debug.Log($"[掉落] 材料: {mat.name} ×1 (品阶:{targetRarity}, 难度倍率:×{lootMult})");
                 }
 
-                // 配方掉落：精英50%概率，Boss必掉
+                // 配方掉落：精英50%概率，Boss必掉 — 高难度增加概率
                 if (allRecipes.Count > 0)
                 {
-                    bool dropRecipe = hasBoss || (hasElite && UnityEngine.Random.value < 0.5f);
+                    float recipeChance = hasBoss ? 1f : (hasElite ? 0.5f : 0f);
+                    // 高难度增加配方掉率
+                    if (diff != null && diff.difficultyType >= DifficultyType.Hard)
+                        recipeChance = Mathf.Min(1f, recipeChance + 0.2f);
+                    
+                    bool dropRecipe = UnityEngine.Random.value < recipeChance;
                     if (dropRecipe)
                     {
                         var recipe = allRecipes[UnityEngine.Random.Range(0, allRecipes.Count)];
                         craftSystem.UnlockRecipe(recipe.recipeId);
                         Debug.Log($"[掉落] 配方: {recipe.name} 已解锁!");
                     }
+                }
+
+                // 金币奖励倍率应用到BattleModel
+                if (diff != null && goldMult > 1)
+                {
+                    var battleModel = this.GetModel<IBattleModel>();
+                    int bonusGold = (10 + (hasBoss ? 50 : hasElite ? 30 : 0)) * (goldMult - 1);
+                    battleModel.CurrentGold.Value += bonusGold;
+                    GameManager.PersistentGameplayData.CurrentGold = battleModel.CurrentGold.Value;
+                    Debug.Log($"[掉落] 难度金币奖励: +{bonusGold} (×{goldMult})");
                 }
             }
             catch (System.Exception e)

@@ -135,26 +135,14 @@ namespace CardGame
                 // ── 道具 ──
                 case EventEffectType.GainRelic:
                     {
-                        var relicDir = "Assets/NueGames/NueDeck/Data/Relics";
-                        var relicGuids = UnityEditor.AssetDatabase.FindAssets("t:RelicData", new[] { relicDir });
-                        if (relicGuids.Length > 0)
-                        {
-                            var path = UnityEditor.AssetDatabase.GUIDToAssetPath(relicGuids[Random.Range(0, relicGuids.Length)]);
-                            var relic = UnityEditor.AssetDatabase.LoadAssetAtPath<RelicData>(path);
-                            if (relic != null) RelicSystem.AddRelic(relic);
-                        }
+                        var relic = ResourceCache.GetRandomRelic();
+                        if (relic != null) RelicSystem.AddRelic(relic);
                     }
                     break;
                 case EventEffectType.GainPotion:
                     {
-                        var potionDir = "Assets/NueGames/NueDeck/Data/Potions";
-                        var potionGuids = UnityEditor.AssetDatabase.FindAssets("t:PotionData", new[] { potionDir });
-                        if (potionGuids.Length > 0)
-                        {
-                            var path = UnityEditor.AssetDatabase.GUIDToAssetPath(potionGuids[Random.Range(0, potionGuids.Length)]);
-                            var potion = UnityEditor.AssetDatabase.LoadAssetAtPath<PotionData>(path);
-                            if (potion != null) PotionSystem.ObtainPotion(potion);
-                        }
+                        var potion = ResourceCache.GetRandomPotion();
+                        if (potion != null) PotionSystem.ObtainPotion(potion);
                     }
                     break;
 
@@ -646,18 +634,12 @@ namespace CardGame
         // ========== 小游戏工具方法 ==========
         RelicData LoadRandomRelic()
         {
-            var guids = UnityEditor.AssetDatabase.FindAssets("t:RelicData", new[] { "Assets/NueGames/NueDeck/Data/Relics" });
-            if (guids.Length == 0) return null;
-            var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[Random.Range(0, guids.Length)]);
-            return UnityEditor.AssetDatabase.LoadAssetAtPath<RelicData>(path);
+            return ResourceCache.GetRandomRelic();
         }
 
         PotionData LoadRandomPotion()
         {
-            var guids = UnityEditor.AssetDatabase.FindAssets("t:PotionData", new[] { "Assets/NueGames/NueDeck/Data/Potions" });
-            if (guids.Length == 0) return null;
-            var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[Random.Range(0, guids.Length)]);
-            return UnityEditor.AssetDatabase.LoadAssetAtPath<PotionData>(path);
+            return ResourceCache.GetRandomPotion();
         }
 
         NueGames.NueDeck.Scripts.Data.Collection.CardData LoadRandomCard(NueGames.NueDeck.Scripts.Data.Settings.PersistentGameplayData pd)
@@ -730,33 +712,12 @@ namespace CardGame
         /// </summary>
         private void GrantRandomMaterial(int rarityIndex)
         {
-            var matDir = "Assets/NueGames/NueDeck/Data/Materials";
-            var guids = UnityEditor.AssetDatabase.FindAssets("t:MaterialData", new[] { matDir });
-            if (guids.Length == 0) return;
-
             var matRarities = new[] { "FanPin", "LingPin", "XuanPin", "XianPin" };
             var targetRarity = rarityIndex >= 0 && rarityIndex < matRarities.Length
                 ? matRarities[rarityIndex]
                 : matRarities[0];
 
-            var validPaths = new List<string>();
-            foreach (var g in guids)
-            {
-                var path = UnityEditor.AssetDatabase.GUIDToAssetPath(g);
-                var mat = UnityEditor.AssetDatabase.LoadAssetAtPath<MaterialData>(path);
-                if (mat != null && mat.rarity.ToString() == targetRarity)
-                    validPaths.Add(path);
-            }
-            if (validPaths.Count == 0)
-            {
-                // 没有指定品阶的，取任意
-                foreach (var g in guids)
-                    validPaths.Add(UnityEditor.AssetDatabase.GUIDToAssetPath(g));
-            }
-            if (validPaths.Count == 0) return;
-
-            var picked = UnityEditor.AssetDatabase.LoadAssetAtPath<MaterialData>(
-                validPaths[Random.Range(0, validPaths.Count)]);
+            var picked = ResourceCache.GetRandomMaterialByRarity(targetRarity);
             if (picked != null)
             {
                 InventorySystem.AddItem(picked, 1);
@@ -769,39 +730,21 @@ namespace CardGame
         /// </summary>
         private void GrantRandomRecipe()
         {
-            var recipeDir = "Assets/NueGames/NueDeck/Data/Recipes";
-            var guids = UnityEditor.AssetDatabase.FindAssets("t:RecipeData", new[] { recipeDir });
-            if (guids.Length == 0) return;
-
-            var locked = new List<RecipeData>();
-            foreach (var g in guids)
+            var picked = ResourceCache.GetRandomLockedRecipe(CraftSystem.IsRecipeUnlocked);
+            if (picked != null)
             {
-                var path = UnityEditor.AssetDatabase.GUIDToAssetPath(g);
-                var recipe = UnityEditor.AssetDatabase.LoadAssetAtPath<RecipeData>(path);
-                if (recipe != null && !recipe.unlockByDefault && !CraftSystem.IsRecipeUnlocked(recipe.recipeId))
-                    locked.Add(recipe);
+                CraftSystem.UnlockRecipe(picked.recipeId);
+                Debug.Log($"[Event] 解锁配方: {picked.name}");
             }
-            if (locked.Count == 0) return;
-
-            var picked = locked[Random.Range(0, locked.Count)];
-            CraftSystem.UnlockRecipe(picked.recipeId);
-            Debug.Log($"[Event] 解锁配方: {picked.name}");
         }
 
         void LoadEventPool()
         {
             if (_eventPool != null) return;
-            _eventPool = new List<EventData>();
-            var guids = UnityEditor.AssetDatabase.FindAssets("t:EventData", new[] { "Assets/NueGames/NueDeck/Data/Events" });
-            foreach (var guid in guids)
-            {
-                var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
-                var evt = UnityEditor.AssetDatabase.LoadAssetAtPath<EventData>(path);
-                if (evt != null) _eventPool.Add(evt);
-            }
-            Debug.Log($"[EventSystem] Loaded {_eventPool.Count} events from Events folder");
+            _eventPool = ResourceCache.GetEvents();
+            Debug.Log($"[EventSystem] Loaded {_eventPool.Count} events from cache");
             if (_eventPool.Count == 0)
-                Debug.LogWarning("[EventSystem] No events found in Assets/NueGames/NueDeck/Data/Events");
+                Debug.LogWarning("[EventSystem] No events found");
         }
     }
 }

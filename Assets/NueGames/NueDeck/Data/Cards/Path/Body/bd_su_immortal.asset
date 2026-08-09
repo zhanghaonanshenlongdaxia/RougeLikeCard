@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6903f06e96c43789549f142f8956d64, type: 3}
+  m_Name: bd_su_immortal
+  m_EditorClassIdentifier: 
+  id: bd_su_immortal
+  cardName: "\u4E0D\u706D\u4F53"
+  manaCost: 3
+  cardSprite: {fileID: 0}
+  rarity: 2
+  usableWithoutTarget: 1
+  exhaustAfterPlay: 0
+  isPowerCard: 0
+  cardActionDataList:
+  - cardActionType: 1
+    actionTargetType: 1
+    actionValue: 25
+    actionDelay: 0
+    hitCount: 1
+  cardDescriptionDataList:
+  - descriptionText: "\u56DE\u590D25\u70B9\u751F\u547D\uFF0C\u83B7\u5F9710\u70B9\u683C\u6321"
+    enableOverrideColor: 0
+    overrideColor: {r: 0, g: 0, b: 0, a: 1}
+    useModifier: 0
+    modifiedActionValueIndex: 0
+    modiferStats: 0
+    usePrefixOnModifiedValue: 0
+    modifiedValuePrefix: '*'
+    overrideColorOnValueScaled: 0
+  specialKeywordsList: 
+  audioType: 0
+  upgradedCardName: "\u4E0D\u706D\u4F53+"
+  upgradedManaCost: 2
+  upgradedCardActionDataList:
+  - cardActionType: 1
+    actionTargetType: 1
+    actionValue: 35
+    actionDelay: 0
+    hitCount: 1
+  pathType: 2
+  buildTag: 4
+  unlockChapter: 0
+  powerTier: 1
+  replacesCardId: 

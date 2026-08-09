@@ -37,15 +37,8 @@ namespace CardGame
         private void LoadRecipes()
         {
             if (_allRecipes != null) return;
-            _allRecipes = new List<RecipeData>();
-            var guids = UnityEditor.AssetDatabase.FindAssets("t:RecipeData", new[] { "Assets/NueGames/NueDeck/Data/Recipes" });
-            foreach (var guid in guids)
-            {
-                var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
-                var recipe = UnityEditor.AssetDatabase.LoadAssetAtPath<RecipeData>(path);
-                if (recipe != null) _allRecipes.Add(recipe);
-            }
-            Debug.Log($"[CraftSystem] Loaded {_allRecipes.Count} recipes");
+            _allRecipes = ResourceCache.GetRecipes();
+            Debug.Log($"[CraftSystem] Loaded {_allRecipes.Count} recipes from cache");
         }
 
         public List<RecipeData> GetAvailableRecipes(RecipeType type)
@@ -111,46 +104,34 @@ namespace CardGame
                     break;
 
                 case RecipeOutputType.Relic:
-                    var relicGuids = UnityEditor.AssetDatabase.FindAssets("t:RelicData", new[] { "Assets/NueGames/NueDeck/Data/Relics" });
-                    foreach (var guid in relicGuids)
                     {
-                        var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
-                        var relic = UnityEditor.AssetDatabase.LoadAssetAtPath<RelicData>(path);
-                        if (relic != null && relic.relicId == recipe.outputItemId)
+                        var relic = ResourceCache.GetRelics().Find(r => r.relicId == recipe.outputItemId);
+                        if (relic != null)
                         {
                             RelicSystem.AddRelic(relic);
                             Debug.Log($"[Craft] 获得法宝: {relic.name}");
-                            break;
                         }
                     }
                     break;
 
                 case RecipeOutputType.Potion:
-                    var potionGuids = UnityEditor.AssetDatabase.FindAssets("t:PotionData", new[] { "Assets/NueGames/NueDeck/Data/Potions" });
-                    foreach (var guid in potionGuids)
                     {
-                        var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
-                        var potion = UnityEditor.AssetDatabase.LoadAssetAtPath<PotionData>(path);
-                        if (potion != null && potion.potionId == recipe.outputItemId)
+                        var potion = ResourceCache.GetPotions().Find(p => p.potionId == recipe.outputItemId);
+                        if (potion != null)
                         {
                             PotionSystem.ObtainPotion(potion);
                             Debug.Log($"[Craft] 获得丹药: {potion.name}");
-                            break;
                         }
                     }
                     break;
 
                 case RecipeOutputType.Material:
-                    var matGuids = UnityEditor.AssetDatabase.FindAssets("t:MaterialData", new[] { "Assets/NueGames/NueDeck/Data/Materials" });
-                    foreach (var guid in matGuids)
                     {
-                        var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
-                        var mat = UnityEditor.AssetDatabase.LoadAssetAtPath<MaterialData>(path);
-                        if (mat != null && mat.materialId == recipe.outputItemId)
+                        var mat = ResourceCache.GetMaterials().Find(m => m.materialId == recipe.outputItemId);
+                        if (mat != null)
                         {
                             InventorySystem.AddItem(mat, recipe.outputCount);
                             Debug.Log($"[Craft] 获得材料: {mat.name} ×{recipe.outputCount}");
-                            break;
                         }
                     }
                     break;

@@ -52,7 +52,36 @@ namespace NueGames.NueDeck.Scripts.Managers
                 // 检查是否是完全新地图（起点未访问且没有已生成节点）
                 if (mapModel.CurrentMap == null)
                 {
-                    mapModel.CurrentMap = MapGenerator.GenerateMap(8, 3);
+                    // 从AdventureModel读取选中的难度参数
+                    int floors = 8;
+                    int columns = 3;
+                    try
+                    {
+                        var advModel = this.GetModel<CardGame.IAdventureModel>();
+                        var advConfig = UnityEditor.AssetDatabase.LoadAssetAtPath<CardGame.AdventureMapConfig>(
+                            "Assets/NueGames/NueDeck/Data/AdventureMaps/AdventureMapConfig.asset");
+#if UNITY_EDITOR
+                        advConfig = UnityEditor.AssetDatabase.LoadAssetAtPath<CardGame.AdventureMapConfig>(
+                            "Assets/NueGames/NueDeck/Data/AdventureMaps/AdventureMapConfig.asset");
+#endif
+                        if (advConfig != null && !string.IsNullOrEmpty(advModel.SelectedMapId))
+                        {
+                            var mapData = advConfig.GetMap(advModel.SelectedMapId);
+                            if (mapData != null)
+                            {
+                                var diff = mapData.difficulties.Find(d => d.difficultyType == advModel.SelectedDifficulty);
+                                if (diff != null)
+                                {
+                                    floors = diff.mapFloors;
+                                    columns = diff.mapColumns;
+                                    Debug.Log($"[MapManager] Using difficulty config: {mapData.mapName} {diff.difficultyName} → {floors}floors {columns}cols");
+                                }
+                            }
+                        }
+                    }
+                    catch { /* QFramework not ready, use defaults */ }
+
+                    mapModel.CurrentMap = MapGenerator.GenerateMap(floors, columns);
                     Debug.Log($"[MapManager] Generated new map: {mapModel.CurrentMap.nodes.Count} nodes");
                 }
             }

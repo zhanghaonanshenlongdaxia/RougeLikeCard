@@ -35,13 +35,12 @@ namespace CardGame
             }
 
             // 2个遗物（随机选）
-            var relicDir = "Assets/NueGames/NueDeck/Data/Relics";
-            var relicGuids = UnityEditor.AssetDatabase.FindAssets("t:RelicData", new[] { relicDir });
-            for (int i = 0; i < 2 && i < relicGuids.Length; i++)
+            var allRelics = ResourceCache.GetRelics();
+            var availableRelics = allRelics.FindAll(r => !RelicModel.OwnedRelics.Exists(own => own.relicId == r.relicId));
+            for (int i = 0; i < 2 && availableRelics.Count > 0; i++)
             {
-                var path = UnityEditor.AssetDatabase.GUIDToAssetPath(relicGuids[Random.Range(0, relicGuids.Length)]);
-                var relic = UnityEditor.AssetDatabase.LoadAssetAtPath<RelicData>(path);
-                if (relic != null && !RelicModel.OwnedRelics.Exists(r => r.relicId == relic.relicId))
+                var relic = availableRelics[Random.Range(0, availableRelics.Count)];
+                if (relic != null)
                 {
                     CurrentShop.relicSlots.Add(relic);
                     CurrentShop.relicPrices.Add(Random.Range(150, 250));
@@ -49,11 +48,10 @@ namespace CardGame
             }
 
             // 2个药水
-            var potionGuids = UnityEditor.AssetDatabase.FindAssets("t:PotionData", new[] { "Assets/NueGames/NueDeck/Data/Potions" });
-            for (int i = 0; i < 2 && i < potionGuids.Length; i++)
+            var allPotions = ResourceCache.GetPotions();
+            for (int i = 0; i < 2 && allPotions.Count > 0; i++)
             {
-                var path = UnityEditor.AssetDatabase.GUIDToAssetPath(potionGuids[Random.Range(0, potionGuids.Length)]);
-                var potion = UnityEditor.AssetDatabase.LoadAssetAtPath<PotionData>(path);
+                var potion = allPotions[Random.Range(0, allPotions.Count)];
                 if (potion != null)
                 {
                     CurrentShop.potionSlots.Add(potion);

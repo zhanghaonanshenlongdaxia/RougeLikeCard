@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using NueGames.NueDeck.Scripts.Data.Containers;
+using NueGames.NueDeck.Scripts.Enums;
 using NueGames.NueDeck.ThirdParty.NueTooltip.CursorSystem;
 using UnityEngine;
 
@@ -15,14 +16,14 @@ namespace NueGames.NueDeck.ThirdParty.NueTooltip.Core
         [SerializeField] private CursorController cursorController;
         [SerializeField] private TooltipText tooltipTextPrefab;
         [SerializeField] private CanvasGroup canvasGroup;
-        [SerializeField] private SpecialKeywordData specialKeywordData;
+        [SerializeField] private BuffDatabase buffDatabase;
         
         [Header("Settings")]
         [SerializeField] private AnimationCurve fadeCurve;
         [SerializeField] private float showDelayTime = 0.5f;
         [SerializeField] private bool canChangeCursor;
 
-        public SpecialKeywordData SpecialKeywordData => specialKeywordData;
+        public BuffDatabase BuffDatabase => buffDatabase;
      
         private List<TooltipText> _tooltipTextList = new List<TooltipText>();
         private TooltipController TooltipController => tooltipController;

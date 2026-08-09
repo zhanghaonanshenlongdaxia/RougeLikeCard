@@ -1,4 +1,4 @@
-﻿using CardGame;
+using CardGame;
 using NueGames.NueDeck.Scripts.Managers;
 using QFramework;
 using TMPro;
@@ -32,7 +32,7 @@ namespace NueGames.NueDeck.Scripts.UI
         
         #region Public Methods
         public void SetRoomText(int roomNumber,bool useStage = false, int stageNumber = -1) => 
-            RoomTextField.text = useStage ? $"Room {stageNumber}/{roomNumber}" : $"Room {roomNumber}";
+            RoomTextField.text = useStage ? $"第{stageNumber}层" : $"第{roomNumber}层";
 
         public void SetGoldText(int value)
         {

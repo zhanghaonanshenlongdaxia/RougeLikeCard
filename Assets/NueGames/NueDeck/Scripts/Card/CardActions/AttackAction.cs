@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using CardGame.Audio;
+using NueGames.NueDeck.Scripts.Characters;
 using NueGames.NueDeck.Scripts.Enums;
 using NueGames.NueDeck.Scripts.Managers;
 using UnityEngine;
@@ -18,9 +19,10 @@ namespace NueGames.NueDeck.Scripts.Card.CardActions
             
             var baseValue = actionParameters.Value + selfCharacter.CharacterStats.StatusDict[StatusType.Strength].StatusValue; 
 
-            // 虚弱：攻击造成的伤害减少25%
-            if (selfCharacter.CharacterStats.StatusDict[StatusType.Weak].IsActive)
-                baseValue = Mathf.RoundToInt(baseValue * 0.75f);
+            // 虚弱：攻击造成的伤害倍率从BuffDatabase读取
+            var damageMult = CharacterStats.GetDamageDealtMult(selfCharacter.CharacterStats);
+            if (!Mathf.Approximately(damageMult, 1f))
+                baseValue = Mathf.RoundToInt(baseValue * damageMult);
 
             // 多段攻击：每次打击独立计算伤害
             var hitCount = actionParameters.HitCount > 0 ? actionParameters.HitCount : 1;

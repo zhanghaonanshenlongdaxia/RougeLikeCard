@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 416498ea9ab3a7740a817f9d03d2a255, type: 3}
+  m_Name: potion_maxhp_s
+  m_EditorClassIdentifier: 
+  potionId: potion_maxhp_s
+  name: "\u57F9\u5143\u4E39"
+  description: "\u6C38\u4E45\u589E\u52A05\u70B9\u6700\u5927\u751F\u547D"
+  potionIcon: {fileID: 0}
+  effectValue: 5
+  rarity: 1
+  targetType: 0
+  unlockChapter: 1

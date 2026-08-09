@@ -1,4 +1,5 @@
 ﻿using CardGame.Audio;
+using NueGames.NueDeck.Scripts.Characters;
 using NueGames.NueDeck.Scripts.Enums;
 using NueGames.NueDeck.Scripts.Managers;
 using UnityEngine;
@@ -19,9 +20,10 @@ namespace NueGames.NueDeck.Scripts.Card.CardActions
             var blockValue = Mathf.RoundToInt(actionParameters.Value + actionParameters.SelfCharacter.CharacterStats
                     .StatusDict[StatusType.Dexterity].StatusValue);
 
-            // 脆弱：获得的格挡减少25%
-            if (actionParameters.SelfCharacter.CharacterStats.StatusDict[StatusType.Frail].IsActive)
-                blockValue = Mathf.RoundToInt(blockValue * 0.75f);
+            // 脆弱：获得的格挡倍率从BuffDatabase读取
+            var blockMult = CharacterStats.GetBlockMult(actionParameters.SelfCharacter.CharacterStats);
+            if (!Mathf.Approximately(blockMult, 1f))
+                blockValue = Mathf.RoundToInt(blockValue * blockMult);
 
             newTarget.CharacterStats.ApplyStatus(StatusType.Block, blockValue);
 

@@ -25,6 +25,10 @@ namespace CardGame
 
         [Header("稀有度")]
         public RelicRarity rarity = RelicRarity.Common;
+
+        [Header("解锁")]
+        [Tooltip("解锁章节，0=初始可用，1+=需冒险解锁")]
+        public int unlockChapter = 0;
     }
 
     public enum RelicRarity

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using QFramework;
 using System.Collections.Generic;
+using System.Linq;
 
 using NueUIManager = NueGames.NueDeck.Scripts.Managers.UIManager;
 using Alchemy.Inspector;
@@ -114,11 +115,53 @@ namespace CardGame.UI
                 codexBtn.onClick.AddListener(OnCodex);
                 Debug.Log("[BaseUI] CodexButton created at runtime");
             }
+
+            // Create BreakthroughButton if not found
+            if (GetComponentsInChildren<Button>(true).All(b => b.gameObject.name != "BreakthroughButton"))
+            {
+                var btBtnObj = new GameObject("BreakthroughButton");
+                btBtnObj.transform.SetParent(transform, false);
+                var rt = btBtnObj.AddComponent<RectTransform>();
+                rt.anchorMin = new Vector2(0.51f, 0.03f); rt.anchorMax = new Vector2(0.66f, 0.12f);
+                rt.offsetMin = Vector2.zero; rt.offsetMax = Vector2.zero;
+                btBtnObj.AddComponent<Image>().color = new Color(0.3f, 0.2f, 0.5f, 1f);
+                var txtObj = new GameObject("Text");
+                txtObj.transform.SetParent(btBtnObj.transform, false);
+                var txtRt = txtObj.AddComponent<RectTransform>();
+                txtRt.anchorMin = Vector2.zero; txtRt.anchorMax = Vector2.one;
+                txtRt.offsetMin = Vector2.zero; txtRt.offsetMax = Vector2.zero;
+                var tmp = txtObj.AddComponent<TextMeshProUGUI>();
+                tmp.text = "突破"; tmp.fontSize = 16; tmp.color = new Color(0.9f, 0.8f, 0.3f);
+                tmp.alignment = TextAlignmentOptions.Center;
+                var libSans = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
+                if (libSans) tmp.font = libSans;
+                var btBtn = btBtnObj.AddComponent<Button>();
+                btBtn.onClick.AddListener(OnBreakthrough);
+                Debug.Log("[BaseUI] BreakthroughButton created at runtime");
+            }
         }
 
         private void OnEnable()
         {
             UpdateStatus();
+            try
+            {
+                var storySystem = this.GetSystem<IStorySystem>();
+                storySystem.InitRootNodes();
+                var available = storySystem.GetAvailableNodes();
+                if (available.Count > 0)
+                    Invoke(nameof(ShowStoryTree), 1f);
+            }
+            catch { }
+        }
+
+        private void ShowStoryTree()
+        {
+            var existing = GameObject.Find("StoryTreeCanvas");
+            if (existing != null) { existing.SetActive(true); return; }
+            var go = new GameObject("StoryTreeCanvas");
+            go.AddComponent<StoryTreeUIController>();
+            Debug.Log("[BaseUI] Story tree UI opened");
         }
 
         private void UpdateStatus()
@@ -180,6 +223,16 @@ namespace CardGame.UI
             go.SetActive(true);
         }
 
+        public void OnBreakthrough()
+        {
+            var existing = GameObject.Find("RealmBreakthroughCanvas");
+            if (existing != null) { existing.SetActive(true); return; }
+
+            var go = new GameObject("RealmBreakthroughCanvas");
+            go.AddComponent<RealmBreakthroughUIController>();
+            Debug.Log("[BaseUI] RealmBreakthrough panel opened");
+        }
+
         public void OnCodex()
         {
             // EnemyCodexCanvas is runtime-created, skip prefab lookup
@@ -222,12 +275,13 @@ namespace CardGame.UI
 
         public void OnAdventure()
         {
-            this.GetSystem<ILoadoutSystem>().StartAdventure();
-            var uiManager = NueUIManager.Instance;
-            if (uiManager != null && NueGames.NueDeck.Scripts.Managers.GameManager.Instance != null)
-            {
-                uiManager.ChangeScene(NueGames.NueDeck.Scripts.Managers.GameManager.Instance.SceneData.mapSceneIndex);
-            }
+            // 打开大地图选点面板（不直接进地图）
+            var existing = GameObject.Find("AdventureMapCanvas");
+            if (existing != null) { existing.SetActive(true); return; }
+
+            var go = new GameObject("AdventureMapCanvas");
+            go.AddComponent<AdventureMapUIController>();
+            Debug.Log("[BaseUI] Adventure map panel opened");
         }
     }
 }

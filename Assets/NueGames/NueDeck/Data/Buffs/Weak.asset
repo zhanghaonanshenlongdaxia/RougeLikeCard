@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8ec36e3041056f4db627a122dfefb88, type: 3}
+  m_Name: Weak
+  m_EditorClassIdentifier: 
+  statusType: 6
+  displayName: "\u865A\u5F31"
+  description: "\u653B\u51FB\u9020\u6210\u7684\u4F24\u5BB3\u51CF\u5C1125%"
+  icon: {fileID: 0}
+  decreaseOverTurn: 1
+  isPermanent: 0
+  canNegativeStack: 0
+  clearAtNextTurn: 0
+  damageTakenMult: 1
+  damageDealtMult: 0.75
+  blockMult: 1
+  specialEffect: 0

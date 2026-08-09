@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a73dcf31c5247158ca807d305cac9ba, type: 3}
+  m_Name: "Encounter_\u5E7D\u51A5\u79D8\u5883"
+  m_EditorClassIdentifier: 
+  encounterRandomlyAtStage: 1
+  enemyEncounterList:
+  - name: "\u5E7D\u51A5\u79D8\u5883 Stage 0"
+    stageId: 0
+    bossEncounterList:
+    - targetBackgroundType: 0
+      enemyList:
+      - {fileID: 11400000, guid: 91c07b81bb2b6a3468d8a2c4249b6a4a, type: 2}
+    - targetBackgroundType: 0
+      enemyList:
+      - {fileID: 11400000, guid: d7ea35164a1e5c441a1ed6f82eab7d71, type: 2}
+    - targetBackgroundType: 0
+      enemyList:
+      - {fileID: 11400000, guid: da7ad4a8d4a6b054b9cd6ed22134910e, type: 2}
+    enemyEncounterList:
+    - targetBackgroundType: 0
+      enemyList:
+      - {fileID: 11400000, guid: 9b79d76fb92dc7841a17e7c8a2f745e5, type: 2}
+      - {fileID: 11400000, guid: 1050818964960be4e81ff4b9e10e08d4, type: 2}
+      - {fileID: 11400000, guid: 8a944d12a85038a449fede4ae267b3e8, type: 2}
+    - targetBackgroundType: 0
+      enemyList:
+      - {fileID: 11400000, guid: 981b2b3f7796eba4b83a0dd02043d210, type: 2}
+      - {fileID: 11400000, guid: 9793e078f94f17347b41f9e0ac4f56ee, type: 2}
+      - {fileID: 11400000, guid: 62f0959e88402134c80a90192ad6b68d, type: 2}
+      - {fileID: 11400000, guid: 283f77d1fd2c5d349bef7cf0a831c921, type: 2}
+    - targetBackgroundType: 0
+      enemyList:
+      - {fileID: 11400000, guid: 090ae4623e86f8c44a0e3b00e3d63eef, type: 2}
+      - {fileID: 11400000, guid: 9b79d76fb92dc7841a17e7c8a2f745e5, type: 2}
+      - {fileID: 11400000, guid: 283f77d1fd2c5d349bef7cf0a831c921, type: 2}
+    - targetBackgroundType: 0
+      enemyList:
+      - {fileID: 11400000, guid: fd548d919b94ebe41b26b760e12f41bc, type: 2}
+      - {fileID: 11400000, guid: 9793e078f94f17347b41f9e0ac4f56ee, type: 2}
+      - {fileID: 11400000, guid: 62f0959e88402134c80a90192ad6b68d, type: 2}
+    - targetBackgroundType: 0
+      enemyList:
+      - {fileID: 11400000, guid: b47ec4d9bf4d4494488256051b992de8, type: 2}
+    - targetBackgroundType: 0
+      enemyList:
+      - {fileID: 11400000, guid: 17871b41204167a48924a0bac21704fc, type: 2}
+      - {fileID: 11400000, guid: 806a20b7fea569b47b32c7175d344fcf, type: 2}
+      - {fileID: 11400000, guid: 9793e078f94f17347b41f9e0ac4f56ee, type: 2}
+    - targetBackgroundType: 0
+      enemyList:
+      - {fileID: 11400000, guid: 806a20b7fea569b47b32c7175d344fcf, type: 2}
+      - {fileID: 11400000, guid: 090ae4623e86f8c44a0e3b00e3d63eef, type: 2}
+      - {fileID: 11400000, guid: 5fb3931ca5bbee14d961d6221c1949f6, type: 2}
+    - targetBackgroundType: 0
+      enemyList:
+      - {fileID: 11400000, guid: 9af66c62909d3bd46b991fe0c4ea0050, type: 2}
+      - {fileID: 11400000, guid: 2da00e52123de2e4a8723acc80e1f12d, type: 2}
+    - targetBackgroundType: 0
+      enemyList:
+      - {fileID: 11400000, guid: 62f0959e88402134c80a90192ad6b68d, type: 2}
+      - {fileID: 11400000, guid: 933eee04a64b74d49989c15208172093, type: 2}
+      - {fileID: 11400000, guid: 2faaf7e65f51abc4d95aa1303622aaff, type: 2}
+      - {fileID: 11400000, guid: bc6a8e2de6ecfaf4b87b5d3fcfe0fba5, type: 2}
+    - targetBackgroundType: 0
+      enemyList:
+      - {fileID: 11400000, guid: 86c774c277d9b434790c35d7a0ba4f24, type: 2}
+      - {fileID: 11400000, guid: d9539fa05cdf2104aaec139b3e6ca8ee, type: 2}
+      - {fileID: 11400000, guid: 9b79d76fb92dc7841a17e7c8a2f745e5, type: 2}
+      - {fileID: 11400000, guid: 283f77d1fd2c5d349bef7cf0a831c921, type: 2}

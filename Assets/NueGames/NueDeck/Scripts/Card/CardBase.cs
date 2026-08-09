@@ -278,11 +278,14 @@ namespace NueGames.NueDeck.Scripts.Card
             if (CardData.KeywordsList.Count<=0) return;
            
             var tooltipManager = TooltipManager.Instance;
-            foreach (var cardDataSpecialKeyword in CardData.KeywordsList)
+            var db = tooltipManager.BuffDatabase;
+            if (db == null) return;
+            
+            foreach (var keywordStatusType in CardData.KeywordsList)
             {
-                var specialKeyword = tooltipManager.SpecialKeywordData.SpecialKeywordBaseList.Find(x=>x.SpecialKeyword == cardDataSpecialKeyword);
-                if (specialKeyword != null)
-                    ShowTooltipInfo(tooltipManager,specialKeyword.GetContent(),specialKeyword.GetHeader(),descriptionRoot,CursorType.Default,CollectionManager ? CollectionManager.HandController.cam : Camera.main);
+                var buff = db.GetBuff(keywordStatusType);
+                if (buff != null)
+                    ShowTooltipInfo(tooltipManager, buff.Description, buff.DisplayName, descriptionRoot, CursorType.Default, CollectionManager ? CollectionManager.HandController.cam : Camera.main);
             }
         }
         public virtual void ShowTooltipInfo(TooltipManager tooltipManager, string content, string header = "", Transform tooltipStaticTransform = null, CursorType targetCursor = CursorType.Default,Camera cam = null, float delayShow =0)

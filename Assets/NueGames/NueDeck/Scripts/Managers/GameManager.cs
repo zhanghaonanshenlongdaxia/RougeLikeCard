@@ -23,6 +23,7 @@ namespace NueGames.NueDeck.Scripts.Managers
         [SerializeField] private GameplayData gameplayData;
         [SerializeField] private EncounterData encounterData;
         [SerializeField] private SceneData sceneData;
+        [SerializeField] private BuffDatabase buffDatabase;
 
 
         #region Cache
@@ -30,6 +31,7 @@ namespace NueGames.NueDeck.Scripts.Managers
         public EncounterData EncounterData => encounterData;
         public GameplayData GameplayData => gameplayData;
         public PersistentGameplayData PersistentGameplayData { get; private set; }
+        public BuffDatabase BuffDatabase => buffDatabase;
         protected UIManager UIManager => UIManager.Instance;
         #endregion
         
@@ -47,10 +49,14 @@ namespace NueGames.NueDeck.Scripts.Managers
                 transform.parent = null;
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
+                if (buffDatabase != null) buffDatabase.Init();
                 CardActionProcessor.Initialize();
                 EnemyActionProcessor.Initialize();
                 RelicProcessor.Initialize();
                 PotionProcessor.Initialize();
+                CardGame.ResourceCache.Init();
+                CardGame.YooAssetManager.Init();
+                CardGame.HotUpdateLoader.LoadHotUpdateAssembly();
                 InitGameplayData();
                 SyncBattleModel();
                 SetInitalHand();

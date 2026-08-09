@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 416498ea9ab3a7740a817f9d03d2a255, type: 3}
-  m_Name: BlockPotion
+  m_Name: "\u683C\u6321\u836F"
   m_EditorClassIdentifier: 
   potionId: potion_block
   name: Block Potion
@@ -19,3 +19,4 @@ MonoBehaviour:
   effectValue: 12
   rarity: 0
   targetType: 0
+  unlockChapter: 0

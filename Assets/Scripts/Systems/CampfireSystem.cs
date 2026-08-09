@@ -19,7 +19,9 @@ namespace CardGame
             // 优先使用 AllyHealthDataList（非战斗场景的标准数据源）
             if (pd.AllyHealthDataList != null && pd.AllyHealthDataList.Count > 0)
             {
-                foreach (var hd in pd.AllyHealthDataList)
+                // 复制一份避免遍历时SetAllyHealthData修改原List
+                var snapshot = new System.Collections.Generic.List<NueGames.NueDeck.Scripts.Characters.AllyHealthData>(pd.AllyHealthDataList);
+                foreach (var hd in snapshot)
                 {
                     var heal = Mathf.RoundToInt(hd.MaxHealth * 0.3f);
                     hd.CurrentHealth = Mathf.Min(hd.CurrentHealth + heal, hd.MaxHealth);

@@ -41,6 +41,10 @@ namespace NueGames.NueDeck.Scripts.UI.Reward
 
         public void PrepareCanvas()
         {
+            // 清理上一场战斗的残留奖励
+            ResetRewards();
+            ResetChoice();
+            
             rewardPanelRoot.gameObject.SetActive(true);
             
             // 显示继续按钮
@@ -145,11 +149,61 @@ namespace NueGames.NueDeck.Scripts.UI.Reward
         {
             // 隐藏继续按钮
             if (continueButtonObject) continueButtonObject.SetActive(false);
-            
+
+            // 检查是否是Boss节点 → 触发撤离选择
+            var arch = CardGameArchitecture.Interface;
+            var battleModel = arch.GetModel<IBattleModel>();
+            if (battleModel.IsFinalEncounter)
+            {
+                // Boss胜利 → 弹出撤离选择面板
+                ShowEvacuateChoice();
+                return;
+            }
+
             // 返回地图场景
             var sceneChanger = FindObjectOfType<SceneChanger>();
             if (sceneChanger) sceneChanger.OpenMapScene();
             else Debug.LogError("[RewardCanvas] SceneChanger not found!");
+        }
+
+        /// <summary>
+        /// 弹出撤离选择面板：撤离(回基地) 或 继续冒险
+        /// </summary>
+        private void ShowEvacuateChoice()
+        {
+            var arch = CardGameArchitecture.Interface;
+            var panelObj = new GameObject("EvacuateChoicePanel");
+            var panel = panelObj.AddComponent<CardGame.UI.EvacuateChoicePanel>();
+            panel.Init(
+                onEvacuate: () =>
+                {
+                    // 撤离：材料转移到乾坤袋，回基地
+                    arch.GetSystem<IEvacuateSystem>().Evacuate();
+                    arch.GetModel<IBattleModel>().IsFinalEncounter = false;
+                    GameManager.PersistentGameplayData.IsFinalEncounter = false;
+
+                    // 存档
+                    SaveSystem.Save();
+
+                    // 返回基地
+                    var sceneChanger = FindObjectOfType<SceneChanger>();
+                    if (sceneChanger) sceneChanger.OpenBaseScene();
+                    else UnityEngine.SceneManagement.SceneManager.LoadScene(2);
+                },
+                onContinue: () =>
+                {
+                    // 继续冒险
+                    arch.GetSystem<IEvacuateSystem>().ContinueAdventure();
+                    arch.GetModel<IBattleModel>().IsFinalEncounter = false;
+                    GameManager.PersistentGameplayData.IsFinalEncounter = false;
+
+                    SaveSystem.Save();
+
+                    var sceneChanger = FindObjectOfType<SceneChanger>();
+                    if (sceneChanger) sceneChanger.OpenMapScene();
+                    else UnityEngine.SceneManagement.SceneManager.LoadScene(3);
+                }
+            );
         }
         
     }

@@ -134,9 +134,17 @@ namespace CardGame.UI
                 for (int i = rewardSlotsRoot.childCount - 1; i >= 0; i--)
                     Destroy(rewardSlotsRoot.GetChild(i).gameObject);
             }
-            // 按钮文字恢复
-            var btnTmp = confirmButton?.GetComponentInChildren<TextMeshProUGUI>();
-            if (btnTmp) btnTmp.text = "确认拾取";
+            // 按钮文字恢复 — 确保confirmButton和文字组件都存在
+            if (confirmButton == null)
+            {
+                confirmButton = GetComponentInChildren<Button>(true);
+            }
+            if (confirmButton != null)
+            {
+                var btnTmp = confirmButton.GetComponentInChildren<TextMeshProUGUI>();
+                if (btnTmp != null) btnTmp.text = "确认拾取";
+                confirmButton.interactable = true;
+            }
             gameObject.SetActive(true);
         }
 
@@ -179,17 +187,11 @@ namespace CardGame.UI
             // 3. 50%几率额外药水
             if (Random.value < 0.5f)
             {
-                var potionDir = "Assets/NueGames/NueDeck/Data/Potions";
-                var potionGuids = UnityEditor.AssetDatabase.FindAssets("t:PotionData", new[] { potionDir });
-                if (potionGuids.Length > 0)
+                var potion = CardGame.ResourceCache.GetRandomPotion();
+                if (potion != null)
                 {
-                    var path = UnityEditor.AssetDatabase.GUIDToAssetPath(potionGuids[Random.Range(0, potionGuids.Length)]);
-                    var potion = UnityEditor.AssetDatabase.LoadAssetAtPath<PotionData>(path);
-                    if (potion != null)
-                    {
-                        arch.GetSystem<IPotionSystem>().ObtainPotion(potion);
-                        rewards.Add($"药水: {potion.name}");
-                    }
+                    arch.GetSystem<IPotionSystem>().ObtainPotion(potion);
+                    rewards.Add($"药水: {potion.name}");
                 }
             }
 
@@ -214,12 +216,7 @@ namespace CardGame.UI
 
         private void GrantRandomMaterial(System.Collections.Generic.List<string> rewards)
         {
-            var matDir = "Assets/NueGames/NueDeck/Data/Materials";
-            var guids = UnityEditor.AssetDatabase.FindAssets("t:MaterialData", new[] { matDir });
-            if (guids.Length == 0) return;
-
-            var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[Random.Range(0, guids.Length)]);
-            var mat = UnityEditor.AssetDatabase.LoadAssetAtPath<MaterialData>(path);
+            var mat = CardGame.ResourceCache.GetRandomMaterial();
             if (mat != null)
             {
                 this.GetSystem<IInventorySystem>().AddItem(mat, 1);

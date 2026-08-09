@@ -57,7 +57,7 @@ MonoBehaviour:
   specialKeywordsList: 
   audioType: 5
   upgradedCardName: 
-  upgradedManaCost: -1
+  upgradedManaCost: 1
   upgradedCardActionDataList: []
   pathType: 0
   buildTag: 0

@@ -23,6 +23,10 @@ namespace CardGame
 
         [Header("目标类型")]
         public PotionTargetType targetType = PotionTargetType.None;
+
+        [Header("解锁")]
+        [Tooltip("解锁章节，0=初始可用，1+=需冒险解锁")]
+        public int unlockChapter = 0;
     }
 
     public enum PotionRarity

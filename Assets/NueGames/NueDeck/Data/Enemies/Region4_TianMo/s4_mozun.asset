@@ -53,4 +53,59 @@ MonoBehaviour:
   enemyPortrait: {fileID: 0}
   encounterDialogue: "\uFF08\u88C2\u9699\u6DF1\u5904\u4F20\u6765\u53E4\u8001\u7684\u58F0\u97F3\uFF09\n\u4F60\u2026\u2026\u7EC8\u4E8E\u6765\u4E86\u2026\u2026\n\u672C\u5C0A\u5F00\u521B\u9B54\u9053\u4E07\u52AB\u2026\u2026\n\u89C1\u8FC7\u65E0\u6570\u5929\u9A84\u9668\u843D\u2026\u2026\n\u4F60\u2026\u2026\u4E0D\u8FC7\u662F\u53C8\u4E00\u4E2A\u8FC7\u5BA2\u2026\u2026\n\uFF08\u9B54\u5C0A\u4ECE\u865A\u7A7A\u8D70\u51FA\uFF0C\u4E07\u9B54\u530D\u5310\uFF09"
   victoryDialogue: "\u4E07\u52AB\u2026\u2026\u7EC8\u6709\u5C3D\u5934\u2026\u2026\n\u672C\u5C0A\u2026\u2026\u5F00\u521B\u9B54\u9053\u2026\u2026\n\u5374\u8D25\u5728\u4F60\u624B\u4E2D\u2026\u2026\n\u770B\u6765\u2026\u2026\u9B54\u9053\u2026\u2026\u4E5F\u6709\u7EC8\u70B9\u2026\u2026\n\u53BB\u5427\u2026\u2026\u8FD9\u4E2A\u4E16\u754C\u2026\u2026\n\u5DF2\u7ECF\u4E0D\u9700\u8981\u9B54\u4E86\u2026\u2026\n\uFF08\u9B54\u5C0A\u5316\u4E3A\u9B54\u5149\u6D88\u6563\uFF0C\u88C2\u9699\u5F7B\u5E95\u6108\u5408\uFF09"
-  phaseList: []
+  phaseList:
+  - healthThreshold: 0.6
+    phaseEnterName: "\u72C2\u66B4"
+    phaseAbilityList:
+    - name: Attack_18_25
+      intention: {fileID: 0}
+      hideActionValue: 0
+      actionList:
+      - actionType: 0
+        minActionValue: 18
+        maxActionValue: 25
+    - name: Attack_12_18
+      intention: {fileID: 0}
+      hideActionValue: 0
+      actionList:
+      - actionType: 0
+        minActionValue: 12
+        maxActionValue: 18
+    - name: Heal_8_12
+      intention: {fileID: 0}
+      hideActionValue: 0
+      actionList:
+      - actionType: 1
+        minActionValue: 8
+        maxActionValue: 12
+  - healthThreshold: 0.3
+    phaseEnterName: "\u672B\u65E5\u964D\u4E34"
+    phaseAbilityList:
+    - name: Attack_25_35
+      intention: {fileID: 0}
+      hideActionValue: 0
+      actionList:
+      - actionType: 0
+        minActionValue: 25
+        maxActionValue: 35
+    - name: ApplyWeak_3_3
+      intention: {fileID: 0}
+      hideActionValue: 0
+      actionList:
+      - actionType: 4
+        minActionValue: 3
+        maxActionValue: 3
+    - name: ApplyVulnerable_3_3
+      intention: {fileID: 0}
+      hideActionValue: 0
+      actionList:
+      - actionType: 6
+        minActionValue: 3
+        maxActionValue: 3
+    - name: Block_10_15
+      intention: {fileID: 0}
+      hideActionValue: 0
+      actionList:
+      - actionType: 3
+        minActionValue: 10
+        maxActionValue: 15

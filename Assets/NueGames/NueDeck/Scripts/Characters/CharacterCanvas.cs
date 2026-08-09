@@ -113,25 +113,22 @@ namespace NueGames.NueDeck.Scripts.Characters
         public void ShowTooltipInfo()
         {
             var tooltipManager = TooltipManager.Instance;
-            var specialKeywords = new List<SpecialKeywords>();
+            var db = tooltipManager.BuffDatabase;
+            if (db == null) return;
+            
+            var shownStatuses = new HashSet<StatusType>();
             
             foreach (var statusIcon in StatusDict)
             {
                 if (statusIcon.Value == null) continue;
                
-                var statusData = statusIcon.Value.MyStatusIconData;
-                foreach (var statusDataSpecialKeyword in statusData.SpecialKeywords)
-                {
-                    if (specialKeywords.Contains(statusDataSpecialKeyword)) continue;
-                    specialKeywords.Add(statusDataSpecialKeyword);
-                }
-            }
-            
-            foreach (var specialKeyword in specialKeywords)
-            {
-                var specialKeywordData =tooltipManager.SpecialKeywordData.SpecialKeywordBaseList.Find(x => x.SpecialKeyword == specialKeyword);
-                if (specialKeywordData != null)
-                    ShowTooltipInfo(tooltipManager,specialKeywordData.GetContent(),specialKeywordData.GetHeader(),descriptionRoot);
+                var statusType = statusIcon.Value.MyStatusIconData.IconStatus;
+                if (shownStatuses.Contains(statusType)) continue;
+                shownStatuses.Add(statusType);
+                
+                var buff = db.GetBuff(statusType);
+                if (buff != null)
+                    ShowTooltipInfo(tooltipManager, buff.Description, buff.DisplayName, descriptionRoot);
             }
             
         }

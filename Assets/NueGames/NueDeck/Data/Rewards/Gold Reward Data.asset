@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Gold Reward Data
   m_EditorClassIdentifier: 
   rewardSprite: {fileID: 4322673043527013044, guid: a707003c96586cc41b22ae32a9cdb636, type: 3}
-  rewardDescription: Earn some gold
+  rewardDescription: 获得一些灵石
   minGold: 10
   maxGold: 100

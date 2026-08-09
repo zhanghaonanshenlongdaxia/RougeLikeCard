@@ -27,7 +27,7 @@ namespace NueGames.NueDeck.Scripts.Data.Collection
         
         [Header("Description")]
         [SerializeField] private List<CardDescriptionData> cardDescriptionDataList;
-        [SerializeField] private List<SpecialKeywords> specialKeywordsList;
+        [SerializeField] private List<StatusType> specialKeywordsList;
         
         [Header("Fx")]
         [SerializeField] private AudioActionType audioType;
@@ -60,7 +60,7 @@ namespace NueGames.NueDeck.Scripts.Data.Collection
         public Sprite CardSprite => cardSprite;
         public List<CardActionData> CardActionDataList => IsUpgraded && upgradedCardActionDataList != null && upgradedCardActionDataList.Count > 0 ? upgradedCardActionDataList : cardActionDataList;
         public List<CardDescriptionData> CardDescriptionDataList => cardDescriptionDataList;
-        public List<SpecialKeywords> KeywordsList => specialKeywordsList;
+        public List<StatusType> KeywordsList => specialKeywordsList;
         public AudioActionType AudioType => audioType;
         public string MyDescription { get; set; }
         public RarityType Rarity => rarity;
@@ -131,7 +131,7 @@ namespace NueGames.NueDeck.Scripts.Data.Collection
             cardActionDataList = newCardActionDataList;
         public void EditCardDescriptionDataList(List<CardDescriptionData> newCardDescriptionDataList) =>
             cardDescriptionDataList = newCardDescriptionDataList;
-        public void EditSpecialKeywordsList(List<SpecialKeywords> newSpecialKeywordsList) =>
+        public void EditSpecialKeywordsList(List<StatusType> newSpecialKeywordsList) =>
             specialKeywordsList = newSpecialKeywordsList;
         public void EditAudioType(AudioActionType newAudioActionType) => audioType = newAudioActionType;
         public void EditPathType(PathType newPathType) => pathType = newPathType;

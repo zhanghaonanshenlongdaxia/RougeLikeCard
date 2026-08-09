@@ -33,7 +33,7 @@ namespace NueGames.NueDeck.Editor
         private bool ExhaustAfterPlay{ get; set; }
         private List<CardActionData> CardActionDataList{ get; set; }
         private List<CardDescriptionData> CardDescriptionDataList{ get; set; }
-        private List<SpecialKeywords> SpecialKeywordsList{ get; set; }
+        private List<StatusType> SpecialKeywordsList{ get; set; }
         private AudioActionType AudioType{ get; set; }
         
         private RarityType CardRarity { get; set; }
@@ -48,7 +48,7 @@ namespace NueGames.NueDeck.Editor
             ExhaustAfterPlay = SelectedCardData.ExhaustAfterPlay;
             CardActionDataList = SelectedCardData.CardActionDataList.Count>0 ? new List<CardActionData>(SelectedCardData.CardActionDataList) : new List<CardActionData>();
             CardDescriptionDataList = SelectedCardData.CardDescriptionDataList.Count>0 ? new List<CardDescriptionData>(SelectedCardData.CardDescriptionDataList) : new List<CardDescriptionData>();
-            SpecialKeywordsList = SelectedCardData.KeywordsList.Count>0 ? new List<SpecialKeywords>(SelectedCardData.KeywordsList) : new List<SpecialKeywords>();
+            SpecialKeywordsList = SelectedCardData.KeywordsList.Count>0 ? new List<StatusType>(SelectedCardData.KeywordsList) : new List<StatusType>();
             AudioType = SelectedCardData.AudioType;
             CardRarity = SelectedCardData.Rarity;
         }
@@ -163,7 +163,7 @@ namespace NueGames.NueDeck.Editor
             clone.EditCardName(str.ToString());
             clone.EditCardActionDataList(new List<CardActionData>());
             clone.EditCardDescriptionDataList(new List<CardDescriptionData>());
-            clone.EditSpecialKeywordsList(new List<SpecialKeywords>());
+            clone.EditSpecialKeywordsList(new List<StatusType>());
             clone.EditRarity(RarityType.Common);
             var path = str.Insert(0, CardDataDefaultPath).Append(".asset").ToString();
             var uniquePath = AssetDatabase.GenerateUniqueAssetPath(path);
@@ -464,23 +464,24 @@ namespace NueGames.NueDeck.Editor
             EditorGUILayout.BeginVertical("box");
             _specialKeywordScrool = EditorGUILayout.BeginScrollView(_specialKeywordScrool);
             EditorGUILayout.BeginHorizontal();
-            var specialKeyCount = Enum.GetNames(typeof(SpecialKeywords));
+            var specialKeyCount = Enum.GetNames(typeof(StatusType));
 
             for (var i = 0; i < specialKeyCount.Length; i++)
             {
+                if ((StatusType)i == StatusType.None) continue;
                 EditorGUILayout.BeginVertical(GUILayout.Width(100));
-                var hasKey = SpecialKeywordsList.Contains((SpecialKeywords)i);
-                EditorGUILayout.LabelField(((SpecialKeywords)i).ToString());
+                var hasKey = SpecialKeywordsList.Contains((StatusType)i);
+                EditorGUILayout.LabelField(((StatusType)i).ToString());
                 var newValue = EditorGUILayout.Toggle(hasKey);
                 if (newValue)
                 {
-                    if (!SpecialKeywordsList.Contains((SpecialKeywords)i))
-                        SpecialKeywordsList.Add((SpecialKeywords)i);
+                    if (!SpecialKeywordsList.Contains((StatusType)i))
+                        SpecialKeywordsList.Add((StatusType)i);
                 }
                 else
                 {
-                    if (SpecialKeywordsList.Contains((SpecialKeywords)i))
-                        SpecialKeywordsList.Remove((SpecialKeywords)i);
+                    if (SpecialKeywordsList.Contains((StatusType)i))
+                        SpecialKeywordsList.Remove((StatusType)i);
                 }
                 EditorGUILayout.EndVertical();
             }

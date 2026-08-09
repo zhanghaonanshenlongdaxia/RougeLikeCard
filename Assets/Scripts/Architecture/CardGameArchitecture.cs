@@ -18,6 +18,9 @@ namespace CardGame
             RegisterModel<ILoadoutModel>(new LoadoutModel());
             RegisterModel<IEnemyCodexModel>(new EnemyCodexModel());
             RegisterModel<IRealmModel>(new RealmModel());
+            RegisterModel<IAdventureModel>(new AdventureModel());
+            RegisterModel<IMetaModel>(new MetaModel());
+            RegisterModel<IStoryModel>(new StoryModel());
             RegisterSystem<IBattleSystem>(new BattleSystem());
             RegisterSystem<ICardSystem>(new CardSystem());
             RegisterSystem<IRelicSystem>(new RelicSystem());
@@ -31,6 +34,8 @@ namespace CardGame
             RegisterSystem<IEvacuateSystem>(new EvacuateSystem());
             RegisterSystem<IEnemyCodexSystem>(new EnemyCodexSystem());
             RegisterSystem<IRealmSystem>(new RealmSystem());
+            RegisterSystem<IMetaSystem>(new MetaSystem());
+            RegisterSystem<IStorySystem>(new StorySystem());
         }
     }
 }

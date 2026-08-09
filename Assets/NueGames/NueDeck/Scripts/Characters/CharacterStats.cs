@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CardGame.Audio;
+using NueGames.NueDeck.Scripts.Data.Containers;
 using NueGames.NueDeck.Scripts.Enums;
 using UnityEngine;
 
@@ -68,29 +69,48 @@ namespace NueGames.NueDeck.Scripts.Characters
             for (int i = 0; i < Enum.GetNames(typeof(StatusType)).Length; i++)
                 StatusDict.Add((StatusType) i, new StatusStats((StatusType) i, 0));
 
-            StatusDict[StatusType.Poison].DecreaseOverTurn = true;
-            StatusDict[StatusType.Poison].OnTriggerAction += DamagePoison;
+            // 从 BuffDatabase 读取行为配置，数据驱动
+            var db = BuffDatabase.Instance;
+            if (db != null)
+            {
+                foreach (var buff in db.AllBuffs)
+                {
+                    if (buff == null) continue;
+                    if (!StatusDict.ContainsKey(buff.StatusType)) continue;
+                    var stats = StatusDict[buff.StatusType];
+                    stats.DecreaseOverTurn = buff.DecreaseOverTurn;
+                    stats.IsPermanent = buff.IsPermanent;
+                    stats.CanNegativeStack = buff.CanNegativeStack;
+                    stats.ClearAtNextTurn = buff.ClearAtNextTurn;
 
-            StatusDict[StatusType.Block].ClearAtNextTurn = true;
-
-            StatusDict[StatusType.Strength].CanNegativeStack = true;
-            StatusDict[StatusType.Dexterity].CanNegativeStack = true;
-            
-            StatusDict[StatusType.Stun].DecreaseOverTurn = true;
-            StatusDict[StatusType.Stun].OnTriggerAction += CheckStunStatus;
-
-            // 虚弱：攻击造成的伤害减少25%，回合结束递减
-            StatusDict[StatusType.Weak].DecreaseOverTurn = true;
-
-            // 脆弱：获得的格挡减少25%，回合结束递减
-            StatusDict[StatusType.Frail].DecreaseOverTurn = true;
-
-            // 易伤：受到的伤害增加50%，回合结束递减
-            StatusDict[StatusType.Vulnerable].DecreaseOverTurn = true;
-
-            // 反伤：受击时反弹伤害，永久状态（Power类型）
-            StatusDict[StatusType.Thorn].IsPermanent = true;
-            
+                    // 特殊效果挂载 OnTriggerAction
+                    switch (buff.SpecialEffect)
+                    {
+                        case BuffSpecialEffect.Poison:
+                            stats.OnTriggerAction += DamagePoison;
+                            break;
+                        case BuffSpecialEffect.Stun:
+                            stats.OnTriggerAction += CheckStunStatus;
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                // Fallback: 如果 BuffDatabase 未初始化，使用旧硬编码值
+                Debug.LogWarning("[CharacterStats] BuffDatabase.Instance is null, using fallback hardcoded values.");
+                StatusDict[StatusType.Poison].DecreaseOverTurn = true;
+                StatusDict[StatusType.Poison].OnTriggerAction += DamagePoison;
+                StatusDict[StatusType.Block].ClearAtNextTurn = true;
+                StatusDict[StatusType.Strength].CanNegativeStack = true;
+                StatusDict[StatusType.Dexterity].CanNegativeStack = true;
+                StatusDict[StatusType.Stun].DecreaseOverTurn = true;
+                StatusDict[StatusType.Stun].OnTriggerAction += CheckStunStatus;
+                StatusDict[StatusType.Weak].DecreaseOverTurn = true;
+                StatusDict[StatusType.Frail].DecreaseOverTurn = true;
+                StatusDict[StatusType.Vulnerable].DecreaseOverTurn = true;
+                StatusDict[StatusType.Thorn].IsPermanent = true;
+            }
         }
         #endregion
         
@@ -135,9 +155,13 @@ namespace NueGames.NueDeck.Scripts.Characters
             OnTakeDamageAction?.Invoke();
             var remainingDamage = value;
 
-            // 易伤：受到的伤害增加50%
+            // 易伤：从 BuffDatabase 读取 damageTakenMult
             if (StatusDict[StatusType.Vulnerable].IsActive)
-                remainingDamage = Mathf.RoundToInt(remainingDamage * 1.5f);
+            {
+                var mult = GetMultiplier(StatusType.Vulnerable, BuffField.DamageTakenMult);
+                if (!Mathf.Approximately(mult, 1f))
+                    remainingDamage = Mathf.RoundToInt(remainingDamage * mult);
+            }
 
             if (!canPierceArmor)
             {
@@ -257,7 +281,48 @@ namespace NueGames.NueDeck.Scripts.Characters
             
             IsStunned = true;
         }
-        
+
+        #endregion
+
+        #region BuffDatabase Helpers
+
+        private enum BuffField
+        {
+            DamageTakenMult,
+            DamageDealtMult,
+            BlockMult
+        }
+
+        /// <summary>从 BuffDatabase 读取指定buff的倍率，找不到时返回1f</summary>
+        private static float GetMultiplier(StatusType type, BuffField field)
+        {
+            var buff = BuffDatabase.Instance?.GetBuff(type);
+            if (buff == null) return 1f;
+            return field switch
+            {
+                BuffField.DamageTakenMult => buff.DamageTakenMult,
+                BuffField.DamageDealtMult => buff.DamageDealtMult,
+                BuffField.BlockMult => buff.BlockMult,
+                _ => 1f
+            };
+        }
+
+        /// <summary>静态helper：获取攻击伤害倍率（Weak用），供AttackAction等调用</summary>
+        public static float GetDamageDealtMult(CharacterStats stats)
+        {
+            if (stats.StatusDict[StatusType.Weak].IsActive)
+                return GetMultiplier(StatusType.Weak, BuffField.DamageDealtMult);
+            return 1f;
+        }
+
+        /// <summary>静态helper：获取格挡倍率（Frail用），供BlockAction等调用</summary>
+        public static float GetBlockMult(CharacterStats stats)
+        {
+            if (stats.StatusDict[StatusType.Frail].IsActive)
+                return GetMultiplier(StatusType.Frail, BuffField.BlockMult);
+            return 1f;
+        }
+
         #endregion
     }
 }

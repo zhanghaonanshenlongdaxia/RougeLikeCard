@@ -1,4 +1,5 @@
-﻿using NueGames.NueDeck.Scripts.Enums;
+﻿using NueGames.NueDeck.Scripts.Characters;
+using NueGames.NueDeck.Scripts.Enums;
 using NueGames.NueDeck.Scripts.Managers;
 using UnityEngine;
 
@@ -15,9 +16,10 @@ namespace NueGames.NueDeck.Scripts.EnemyBehaviour.EnemyActions
                                          actionParameters.SelfCharacter.CharacterStats.StatusDict[StatusType.Strength]
                                              .StatusValue);
 
-            // 虚弱：攻击造成的伤害减少25%
-            if (actionParameters.SelfCharacter.CharacterStats.StatusDict[StatusType.Weak].IsActive)
-                value = Mathf.RoundToInt(value * 0.75f);
+            // 虚弱：攻击造成的伤害倍率从BuffDatabase读取
+            var damageMult = CharacterStats.GetDamageDealtMult(actionParameters.SelfCharacter.CharacterStats);
+            if (!Mathf.Approximately(damageMult, 1f))
+                value = Mathf.RoundToInt(value * damageMult);
 
             actionParameters.TargetCharacter.CharacterStats.Damage(value, false, actionParameters.SelfCharacter.CharacterStats);
             if (FxManager != null)

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed539b5623e2fa0439afdc6a4138506f, type: 3}
+  m_Name: relic_enemy_damaged_heal
+  m_EditorClassIdentifier: 
+  relicId: relic_enemy_damaged_heal
+  name: "\u5438\u8840\u9B3C\u7259"
+  description: "\u5BF9\u654C\u4EBA\u9020\u6210\u4F24\u5BB3\u65F6\u56DE\u590D1\u70B9\u751F\u547D"
+  relicIcon: {fileID: 0}
+  triggerType: 9
+  effectValue: 1
+  oneTimeUse: 0
+  rarity: 0
+  unlockChapter: 0
