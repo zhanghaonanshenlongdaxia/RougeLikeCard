@@ -36,6 +36,7 @@ namespace CardGame
             RegisterSystem<IRealmSystem>(new RealmSystem());
             RegisterSystem<IMetaSystem>(new MetaSystem());
             RegisterSystem<IStorySystem>(new StorySystem());
+            RegisterSystem<IRitualSystem>(new RitualSystem());
         }
     }
 }

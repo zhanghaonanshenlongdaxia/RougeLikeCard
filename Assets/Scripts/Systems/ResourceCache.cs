@@ -15,6 +15,7 @@ namespace CardGame
         private static List<RelicData> _relics;
         private static List<PotionData> _potions;
         private static List<EventData> _events;
+        private static List<NueGames.NueDeck.Scripts.Data.Collection.CardData> _cards;
 
         public static void Init()
         {
@@ -26,7 +27,7 @@ namespace CardGame
             LoadFromResources();
 #endif
             _initialized = true;
-            Debug.Log($"[ResourceCache] Initialized: Materials={_materials?.Count}, Recipes={_recipes?.Count}, Relics={_relics?.Count}, Potions={_potions?.Count}, Events={_events?.Count}");
+            Debug.Log($"[ResourceCache] Initialized: Materials={_materials?.Count}, Recipes={_recipes?.Count}, Relics={_relics?.Count}, Potions={_potions?.Count}, Events={_events?.Count}, Cards={_cards?.Count}");
         }
 
 #if UNITY_EDITOR
@@ -81,6 +82,16 @@ namespace CardGame
                 var e = UnityEditor.AssetDatabase.LoadAssetAtPath<EventData>(path);
                 if (e != null) _events.Add(e);
             }
+
+            // Cards
+            _cards = new List<NueGames.NueDeck.Scripts.Data.Collection.CardData>();
+            var cardGuids = UnityEditor.AssetDatabase.FindAssets("t:CardData", new[] { "Assets/NueGames/NueDeck/Data/Cards" });
+            foreach (var g in cardGuids)
+            {
+                var path = UnityEditor.AssetDatabase.GUIDToAssetPath(g);
+                var c = UnityEditor.AssetDatabase.LoadAssetAtPath<NueGames.NueDeck.Scripts.Data.Collection.CardData>(path);
+                if (c != null) _cards.Add(c);
+            }
         }
 #else
         static void LoadFromResources()
@@ -90,6 +101,7 @@ namespace CardGame
             _relics = new List<RelicData>(Resources.LoadAll<RelicData>("Data/Relics"));
             _potions = new List<PotionData>(Resources.LoadAll<PotionData>("Data/Potions"));
             _events = new List<EventData>(Resources.LoadAll<EventData>("Data/Events"));
+            _cards = new List<NueGames.NueDeck.Scripts.Data.Collection.CardData>(Resources.LoadAll<NueGames.NueDeck.Scripts.Data.Collection.CardData>("Data/Cards"));
         }
 #endif
 
@@ -107,8 +119,8 @@ namespace CardGame
 
         public static List<NueGames.NueDeck.Scripts.Data.Collection.CardData> GetCardsFromAllList()
         {
-            var gm = NueGames.NueDeck.Scripts.Managers.GameManager.Instance;
-            return gm?.GameplayData?.AllCardsList ?? new List<NueGames.NueDeck.Scripts.Data.Collection.CardData>();
+            if (!_initialized) Init();
+            return _cards ?? new List<NueGames.NueDeck.Scripts.Data.Collection.CardData>();
         }
 
         public static List<RelicData> GetRelics()

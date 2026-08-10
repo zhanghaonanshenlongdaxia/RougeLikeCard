@@ -58,11 +58,12 @@ namespace NueGames.NueDeck.Scripts.Managers
                     try
                     {
                         var advModel = this.GetModel<CardGame.IAdventureModel>();
-                        var advConfig = UnityEditor.AssetDatabase.LoadAssetAtPath<CardGame.AdventureMapConfig>(
-                            "Assets/NueGames/NueDeck/Data/AdventureMaps/AdventureMapConfig.asset");
+                        CardGame.AdventureMapConfig advConfig = null;
 #if UNITY_EDITOR
                         advConfig = UnityEditor.AssetDatabase.LoadAssetAtPath<CardGame.AdventureMapConfig>(
                             "Assets/NueGames/NueDeck/Data/AdventureMaps/AdventureMapConfig.asset");
+#else
+                        advConfig = UnityEngine.Resources.Load<CardGame.AdventureMapConfig>("AdventureMapConfig");
 #endif
                         if (advConfig != null && !string.IsNullOrEmpty(advModel.SelectedMapId))
                         {
@@ -312,8 +313,13 @@ namespace NueGames.NueDeck.Scripts.Managers
                 }
             }
 
-            var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
+            var prefab = (GameObject)null;
+#if UNITY_EDITOR
+            prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
                 "Assets/NueGames/NueDeck/Prefabs/UI/EventCanvas.prefab");
+#endif
+            if (prefab == null)
+                prefab = UnityEngine.Resources.Load<GameObject>("UI/EventCanvas");
             if (prefab != null)
             {
                 var instance = Instantiate(prefab);

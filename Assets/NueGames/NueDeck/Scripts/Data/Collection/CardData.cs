@@ -149,20 +149,18 @@ namespace NueGames.NueDeck.Scripts.Data.Collection
             // 攻击卡：力量加成
             if (action.CardActionType == CardActionType.Attack)
             {
-                int strength = stats.StatusDict[StatusType.Strength].StatusValue;
-                if (strength != 0)
+                if (stats.StatusDict.TryGetValue(StatusType.Strength, out var strStats) && strStats.StatusValue != 0)
                 {
-                    int modified = baseValue + strength;
+                    int modified = baseValue + strStats.StatusValue;
                     text = ReplaceFirstNumber(text, baseValue, modified);
                 }
             }
             // 格挡卡：敏捷加成
             else if (action.CardActionType == CardActionType.Block)
             {
-                int dexterity = stats.StatusDict[StatusType.Dexterity].StatusValue;
-                if (dexterity != 0)
+                if (stats.StatusDict.TryGetValue(StatusType.Dexterity, out var dexStats) && dexStats.StatusValue != 0)
                 {
-                    int modified = baseValue + dexterity;
+                    int modified = baseValue + dexStats.StatusValue;
                     text = ReplaceFirstNumber(text, baseValue, modified);
                 }
             }

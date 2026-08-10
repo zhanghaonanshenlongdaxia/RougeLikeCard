@@ -26,6 +26,12 @@ namespace CardGame
         [Header("稀有度")]
         public RelicRarity rarity = RelicRarity.Common;
 
+        [Header("耐久度")]
+        [Tooltip("最大耐久度，归零后法宝损坏")]
+        public int maxDurability = 5;
+        [Tooltip("每次触发扣除的耐久度，强力效果可设2-3")]
+        public int durabilityCost = 1;
+
         [Header("解锁")]
         [Tooltip("解锁章节，0=初始可用，1+=需冒险解锁")]
         public int unlockChapter = 0;

@@ -29,6 +29,9 @@ namespace CardGame
         /// <summary>从安全箱取回</summary>
         bool TransferFromSafeBox(string itemId, int count = 1);
 
+        /// <summary>直接添加到安全箱（存档恢复用）</summary>
+        void AddToSafeBox(IInventoryItem item, int count);
+
         /// <summary>死亡掉落：清空背包（保留基础卡牌）</summary>
         void ClearOnDeath();
 

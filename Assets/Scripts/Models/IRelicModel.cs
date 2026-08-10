@@ -25,6 +25,10 @@ namespace CardGame
         public RelicData data;
         public int counter;
         public bool isUsed;
+        public int currentDurability;
+
+        /// <summary>法宝是否已损坏（耐久归零）</summary>
+        public bool IsBroken => currentDurability <= 0;
 
         public static RelicInstance FromData(RelicData d)
         {
@@ -33,7 +37,8 @@ namespace CardGame
                 relicId = d.relicId,
                 data = d,
                 counter = 0,
-                isUsed = false
+                isUsed = false,
+                currentDurability = d.maxDurability
             };
         }
     }

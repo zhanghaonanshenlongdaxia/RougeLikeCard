@@ -47,6 +47,11 @@ namespace CardGame
             return _allRecipes.Where(r => r.recipeType == type && (r.unlockByDefault || _unlockedRecipeIds.Contains(r.recipeId))).ToList();
         }
 
+        public System.Collections.Generic.HashSet<string> GetUnlockedRecipeIds()
+        {
+            return _unlockedRecipeIds;
+        }
+
         public bool CanCraft(RecipeData recipe)
         {
             if (recipe == null) return false;

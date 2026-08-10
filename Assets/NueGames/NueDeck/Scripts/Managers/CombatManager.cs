@@ -521,6 +521,9 @@ namespace NueGames.NueDeck.Scripts.Managers
             
             this.GetSystem<ICardSystem>().ClearPiles();
 
+            // 战斗结束：移除耐久归零的法宝
+            this.GetSystem<IRelicSystem>().RemoveBrokenRelics();
+
             // 显示战胜对话
             StartCoroutine(ShowVictoryDialogueThenReward());
         }
@@ -807,9 +810,11 @@ namespace NueGames.NueDeck.Scripts.Managers
         {
             var waitDelay = new WaitForSeconds(0.1f);
 
-            foreach (var currentEnemy in CurrentEnemiesList)
+            // 用索引遍历避免敌人死亡时修改集合导致异常
+            for (int i = 0; i < CurrentEnemiesList.Count; i++)
             {
-                yield return currentEnemy.StartCoroutine(nameof(EnemyExample.ActionRoutine));
+                if (CurrentEnemiesList[i] == null) continue;
+                yield return CurrentEnemiesList[i].StartCoroutine(nameof(EnemyExample.ActionRoutine));
                 yield return waitDelay;
             }
 

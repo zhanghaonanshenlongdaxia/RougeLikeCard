@@ -118,17 +118,7 @@ namespace CardGame
 
             var model = InventoryModel;
 
-            // 检查安全箱容量
-            int safeBoxCount = 0;
-            foreach (var slot in model.SafeBoxSlots)
-                if (slot != null && !slot.IsEmpty) safeBoxCount++;
-
-            // 安全箱按槽位计，不按堆叠
-            // 这里简化：直接转移
-            RemoveItem(itemId, count);
-
-            // 添加到安全箱
-            // 找到要转移的item引用
+            // 先获取item引用（在RemoveItem之前）
             IInventoryItem item = null;
             foreach (var slot in model.Slots)
             {
@@ -138,23 +128,12 @@ namespace CardGame
                     break;
                 }
             }
-
-            // 如果背包里没有了，从安全箱已有槽位找
-            if (item == null)
-            {
-                foreach (var slot in model.SafeBoxSlots)
-                {
-                    if (slot != null && !slot.IsEmpty && slot.item.ItemId == itemId)
-                    {
-                        item = slot.item;
-                        break;
-                    }
-                }
-            }
-
             if (item == null) return false;
 
-            // 可堆叠：尝试合并
+            // 从背包移除
+            RemoveItem(itemId, count);
+
+            // 添加到安全箱（可堆叠则合并）
             if (item.IsStackable)
             {
                 foreach (var slot in model.SafeBoxSlots)
@@ -187,7 +166,7 @@ namespace CardGame
         {
             var model = InventoryModel;
 
-            // 检查安全箱是否有
+            // 检查安全箱是否有足够的物品
             int safeCount = 0;
             IInventoryItem item = null;
             foreach (var slot in model.SafeBoxSlots)
@@ -201,23 +180,52 @@ namespace CardGame
 
             if (safeCount < count || item == null) return false;
 
+            int toTransfer = count;
+
             // 从安全箱移除
-            for (int i = model.SafeBoxSlots.Count - 1; i >= 0 && count > 0; i--)
+            for (int i = model.SafeBoxSlots.Count - 1; i >= 0 && toTransfer > 0; i--)
             {
                 var slot = model.SafeBoxSlots[i];
                 if (slot != null && !slot.IsEmpty && slot.item.ItemId == itemId)
                 {
-                    int remove = Mathf.Min(count, slot.count);
+                    int remove = Mathf.Min(toTransfer, slot.count);
                     slot.Remove(remove);
-                    count -= remove;
+                    toTransfer -= remove;
                     if (slot.IsEmpty)
                         model.SafeBoxSlots.RemoveAt(i);
                 }
             }
 
-            // 添加到背包
-            AddItem(item, safeCount - count + count); // 简化：重新添加全部取出的
+            // 添加到背包（只添加实际取出的数量）
+            int actualTransferred = count - toTransfer;
+            if (actualTransferred > 0)
+                AddItem(item, actualTransferred);
             return true;
+        }
+
+        /// <summary>直接添加到安全箱（存档恢复用）</summary>
+        public void AddToSafeBox(IInventoryItem item, int count)
+        {
+            if (item == null || count <= 0) return;
+            var model = InventoryModel;
+
+            if (item.IsStackable)
+            {
+                foreach (var slot in model.SafeBoxSlots)
+                {
+                    if (slot != null && !slot.IsEmpty && slot.item.ItemId == item.ItemId)
+                    {
+                        int canAdd = Mathf.Min(count, item.MaxStack - slot.count);
+                        if (canAdd > 0) { slot.Add(canAdd); count -= canAdd; if (count <= 0) return; }
+                    }
+                }
+            }
+            while (count > 0)
+            {
+                int addCount = item.IsStackable ? Mathf.Min(count, item.MaxStack) : 1;
+                model.SafeBoxSlots.Add(new InventorySlot(item, addCount));
+                count -= addCount;
+            }
         }
 
         public void ClearOnDeath()

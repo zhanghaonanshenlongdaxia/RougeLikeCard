@@ -13,5 +13,7 @@ namespace CardGame
         void RemoveRelic(string relicId);
         void TriggerRelics(RelicTriggerType triggerType, RelicTriggerContext context);
         bool HasRelic(string relicId);
+        /// <summary>移除所有耐久归零的法宝（战斗结束后调用）</summary>
+        void RemoveBrokenRelics();
     }
 }

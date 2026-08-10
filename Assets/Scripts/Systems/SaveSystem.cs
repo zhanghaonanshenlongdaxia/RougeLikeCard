@@ -39,8 +39,10 @@ namespace CardGame
                 unlockedRecipes = new List<string>(),
                 unlockedEnemyIds = new List<string>(),
                 ownedRelicIds = new List<string>(),
+                relicDurabilities = new List<SaveData.RelicDurabilityEntry>(),
                 ownedPotionIds = new List<string>(),
                 inventoryItems = new List<SaveData.InventoryItemEntry>(),
+                safeBoxItems = new List<SaveData.InventoryItemEntry>(),
                 allyHealth = new List<SaveData.AllyHealthEntry>(),
             };
 
@@ -51,8 +53,18 @@ namespace CardGame
             // 遗物
             var relicModel = arch.GetModel<IRelicModel>();
             if (relicModel.OwnedRelics != null)
+            {
                 foreach (var r in relicModel.OwnedRelics)
+                {
                     data.ownedRelicIds.Add(r.relicId);
+                    data.relicDurabilities.Add(new SaveData.RelicDurabilityEntry
+                    {
+                        relicId = r.relicId,
+                        currentDurability = r.currentDurability,
+                        isUsed = r.isUsed
+                    });
+                }
+            }
 
             // 药水
             var potionModel = arch.GetModel<IPotionModel>();
@@ -70,6 +82,28 @@ namespace CardGame
                             itemId = slot.item.ItemId,
                             count = slot.count
                         });
+
+            // 乾坤袋（安全箱）
+            if (invModel.SafeBoxSlots != null)
+                foreach (var slot in invModel.SafeBoxSlots)
+                    if (slot != null && slot.item != null)
+                        data.safeBoxItems.Add(new SaveData.InventoryItemEntry
+                        {
+                            itemId = slot.item.ItemId,
+                            count = slot.count
+                        });
+
+            // 已解锁配方
+            var craftSystem = arch.GetSystem<ICraftSystem>();
+            if (craftSystem != null)
+                foreach (var rid in craftSystem.GetUnlockedRecipeIds())
+                    data.unlockedRecipes.Add(rid);
+
+            // 已解锁敌人图鉴
+            var codexModel = arch.GetModel<IEnemyCodexModel>();
+            if (codexModel != null && codexModel.UnlockedEnemyIds != null)
+                foreach (var eid in codexModel.UnlockedEnemyIds)
+                    data.unlockedEnemyIds.Add(eid);
 
             // 角色血量
             if (pd.AllyHealthDataList != null)
@@ -150,7 +184,7 @@ namespace CardGame
                     pd.SetAllyHealthData(hd.characterId, hd.currentHealth, hd.maxHealth);
                 }
 
-                // 恢复遗物
+                // 恢复遗物（含耐久度）
                 var relicModel = arch.GetModel<IRelicModel>();
                 relicModel.OwnedRelics.Clear();
                 var relicSystem = arch.GetSystem<IRelicSystem>();
@@ -158,6 +192,20 @@ namespace CardGame
                 {
                     var relic = ResourceCache.GetRelics().Find(r => r.relicId == relicId);
                     if (relic != null) relicSystem.AddRelic(relic);
+                }
+
+                // 恢复遗物耐久度
+                if (data.relicDurabilities != null)
+                {
+                    foreach (var dur in data.relicDurabilities)
+                    {
+                        var inst = relicModel.OwnedRelics.Find(r => r.relicId == dur.relicId);
+                        if (inst != null)
+                        {
+                            inst.currentDurability = dur.currentDurability;
+                            inst.isUsed = dur.isUsed;
+                        }
+                    }
                 }
 
                 // 恢复灵材
@@ -168,6 +216,45 @@ namespace CardGame
                 {
                     var mat = ResourceCache.GetMaterials().Find(m => m.materialId == item.itemId);
                     if (mat != null) invSystem.AddItem(mat, item.count);
+                }
+
+                // 恢复乾坤袋
+                if (data.safeBoxItems != null)
+                {
+                    invModel.SafeBoxSlots?.Clear();
+                    foreach (var item in data.safeBoxItems)
+                    {
+                        var mat = ResourceCache.GetMaterials().Find(m => m.materialId == item.itemId);
+                        if (mat != null) invSystem.AddToSafeBox(mat, item.count);
+                    }
+                }
+
+                // 恢复药水
+                var potionSystem = arch.GetSystem<IPotionSystem>();
+                if (potionSystem != null)
+                {
+                    potionSystem.ClearPotions();
+                    foreach (var potionId in data.ownedPotionIds)
+                    {
+                        var potion = ResourceCache.GetPotions().Find(p => p.name == potionId || p.potionId == potionId);
+                        if (potion != null) potionSystem.ObtainPotion(potion);
+                    }
+                }
+
+                // 恢复已解锁配方
+                var craftSystem = arch.GetSystem<ICraftSystem>();
+                if (craftSystem != null && data.unlockedRecipes != null)
+                {
+                    foreach (var rid in data.unlockedRecipes)
+                        craftSystem.UnlockRecipe(rid);
+                }
+
+                // 恢复敌人图鉴
+                var codexSystem = arch.GetSystem<IEnemyCodexSystem>();
+                if (codexSystem != null && data.unlockedEnemyIds != null)
+                {
+                    foreach (var eid in data.unlockedEnemyIds)
+                        codexSystem.OnEncounter(eid);
                 }
 
                 Debug.Log("[Save] 存档加载成功");
@@ -205,10 +292,12 @@ namespace CardGame
 
         public List<string> cardIds;
         public List<string> ownedRelicIds;
+        public List<RelicDurabilityEntry> relicDurabilities;
         public List<string> ownedPotionIds;
         public List<string> unlockedRecipes;
         public List<string> unlockedEnemyIds;
         public List<InventoryItemEntry> inventoryItems;
+        public List<InventoryItemEntry> safeBoxItems;
         public List<AllyHealthEntry> allyHealth;
 
         [Serializable]
@@ -224,6 +313,14 @@ namespace CardGame
             public string characterId;
             public int currentHealth;
             public int maxHealth;
+        }
+
+        [Serializable]
+        public class RelicDurabilityEntry
+        {
+            public string relicId;
+            public int currentDurability;
+            public bool isUsed;
         }
     }
 }

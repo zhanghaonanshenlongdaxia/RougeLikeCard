@@ -48,9 +48,10 @@ namespace CardGame
         {
             if (!RelicProcessor.IsInitialized) return;
 
+            bool anyChanged = false;
             foreach (var instance in RelicModel.OwnedRelics)
             {
-                if (instance.isUsed) continue;
+                if (instance.isUsed || instance.IsBroken) continue;
 
                 var relicBase = RelicProcessor.GetRelic(instance.relicId);
                 if (relicBase == null) continue;
@@ -59,15 +60,45 @@ namespace CardGame
                 {
                     relicBase.OnTrigger(instance.data, context);
 
-                    if (instance.data.oneTimeUse)
+                    int cost = instance.data.durabilityCost > 0 ? instance.data.durabilityCost : 1;
+                    instance.currentDurability -= cost;
+                    anyChanged = true;
+
+                    if (instance.data.oneTimeUse || instance.currentDurability <= 0)
+                    {
                         instance.isUsed = true;
+                        if (instance.currentDurability <= 0)
+                            Debug.Log($"[RelicSystem] {instance.relicId} 已损坏 (耐久归零)");
+                    }
+
+                    Debug.Log($"[RelicSystem] {instance.relicId} triggered, durability {instance.currentDurability}/{instance.data.maxDurability}");
                 }
+            }
+
+            // 触发UI刷新
+            if (anyChanged)
+            {
+                RelicModel.RelicCount.Value = RelicModel.OwnedRelics.Count;
             }
         }
 
         public bool HasRelic(string relicId)
         {
             return RelicModel.OwnedRelics.Exists(r => r.relicId == relicId);
+        }
+
+        /// <summary>移除所有耐久归零的法宝（战斗结束后调用）</summary>
+        public void RemoveBrokenRelics()
+        {
+            var broken = RelicModel.OwnedRelics.FindAll(r => r.IsBroken);
+            if (broken.Count == 0) return;
+
+            foreach (var r in broken)
+            {
+                RelicModel.OwnedRelics.Remove(r);
+                Debug.Log($"[RelicSystem] 法宝报废: {r.relicId} (耐久归零，已从背包移除)");
+            }
+            RelicModel.RelicCount.Value = RelicModel.OwnedRelics.Count;
         }
     }
 }

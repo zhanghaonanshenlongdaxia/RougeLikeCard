@@ -67,5 +67,11 @@ namespace CardGame
             PotionModel.PotionCount.Value = PotionModel.OwnedPotions.Count;
             Debug.Log("[PotionSystem] Potion discarded");
         }
+
+        public void ClearPotions()
+        {
+            PotionModel.OwnedPotions.Clear();
+            PotionModel.PotionCount.Value = 0;
+        }
     }
 }

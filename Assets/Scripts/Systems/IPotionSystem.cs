@@ -11,5 +11,7 @@ namespace CardGame
         bool ObtainPotion(PotionData potion);
         void UsePotion(int slotIndex, PotionUseContext context);
         void DiscardPotion(int slotIndex);
+        /// <summary>清空所有药水（存档恢复用）</summary>
+        void ClearPotions();
     }
 }

@@ -20,4 +20,6 @@ MonoBehaviour:
   effectValue: 1
   oneTimeUse: 0
   rarity: 0
+  maxDurability: 3
+  durabilityCost: 1
   unlockChapter: 0

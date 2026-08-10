@@ -163,6 +163,30 @@ namespace CardGame.UI
                 stBtn.onClick.AddListener(ShowStoryTree);
                 Debug.Log("[BaseUI] StoryTreeButton created at runtime");
             }
+
+            // Create RelicStorageButton if not found
+            if (GetComponentsInChildren<Button>(true).All(b => b.gameObject.name != "RelicStorageButton"))
+            {
+                var rsBtnObj = new GameObject("RelicStorageButton");
+                rsBtnObj.transform.SetParent(transform, false);
+                var rt = rsBtnObj.AddComponent<RectTransform>();
+                rt.anchorMin = new Vector2(0.82f, 0.03f); rt.anchorMax = new Vector2(0.97f, 0.12f);
+                rt.offsetMin = Vector2.zero; rt.offsetMax = Vector2.zero;
+                rsBtnObj.AddComponent<Image>().color = new Color(0.25f, 0.2f, 0.4f, 1f);
+                var txtObj = new GameObject("Text");
+                txtObj.transform.SetParent(rsBtnObj.transform, false);
+                var txtRt = txtObj.AddComponent<RectTransform>();
+                txtRt.anchorMin = Vector2.zero; txtRt.anchorMax = Vector2.one;
+                txtRt.offsetMin = Vector2.zero; txtRt.offsetMax = Vector2.zero;
+                var tmp = txtObj.AddComponent<TextMeshProUGUI>();
+                tmp.text = "法宝仓"; tmp.fontSize = 14; tmp.color = new Color(0.8f, 0.7f, 1f);
+                tmp.alignment = TextAlignmentOptions.Center;
+                var libSans3 = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
+                if (libSans3) tmp.font = libSans3;
+                var rsBtn = rsBtnObj.AddComponent<Button>();
+                rsBtn.onClick.AddListener(OnRelicStorage);
+                Debug.Log("[BaseUI] RelicStorageButton created at runtime");
+            }
         }
 
         private void OnEnable()
@@ -214,7 +238,11 @@ namespace CardGame.UI
 
         public void OnRitual()
         {
-            OpenCraftPanel();
+            var existing = GameObject.Find("RitualCanvas");
+            if (existing != null) { existing.SetActive(!existing.activeSelf); return; }
+            var go = new GameObject("RitualCanvas");
+            go.AddComponent<RitualUIController>();
+            go.SetActive(true);
         }
 
         private void OpenCraftPanel()
@@ -262,6 +290,15 @@ namespace CardGame.UI
             var codexObj = new GameObject("EnemyCodexCanvas");
             codexObj.AddComponent<EnemyCodexUIController>();
             codexObj.SetActive(true);
+        }
+
+        public void OnRelicStorage()
+        {
+            var existing = GameObject.Find("RelicStorageCanvas");
+            if (existing != null) { existing.SetActive(!existing.activeSelf); return; }
+            var go = new GameObject("RelicStorageCanvas");
+            go.AddComponent<RelicStorageUIController>();
+            go.SetActive(true);
         }
 
         /// <summary>

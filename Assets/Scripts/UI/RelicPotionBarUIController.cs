@@ -46,13 +46,39 @@ namespace CardGame.UI
             foreach (var relic in _relicModel.OwnedRelics)
             {
                 if (count >= maxRelicSlots) break;
-                var slot = CreateSlot(relicBarRoot, relic.data?.name ?? "?", relic.data?.relicIcon, false);
+                bool broken = relic.IsBroken;
+                CreateRelicSlot(relicBarRoot, relic.data?.name ?? "?", relic.data?.relicIcon, broken, relic.currentDurability, relic.data?.maxDurability ?? 0);
                 count++;
             }
 
-            // 濉厖绌烘Ы
             for (int i = count; i < maxRelicSlots; i++)
                 CreateSlot(relicBarRoot, "", null, false);
+        }
+
+        private void CreateRelicSlot(Transform parent, string label, Sprite icon, bool broken, int currentDur, int maxDur)
+        {
+            var go = new GameObject("RelicSlot");
+            go.transform.SetParent(parent);
+            var rt = go.AddComponent<RectTransform>();
+            rt.sizeDelta = new Vector2(45, 55);
+            var img = go.AddComponent<Image>();
+            img.color = broken ? new Color(0.1f, 0.1f, 0.1f, 0.5f) : new Color(0.3f, 0.25f, 0.1f, 1);
+            if (icon) img.sprite = icon;
+            if (broken) img.color = new Color(0.2f, 0.2f, 0.2f, 0.5f);
+
+            var durStr = broken ? "×" : $"{currentDur}";
+            var durColor = broken ? Color.red :
+                currentDur <= 2 ? new Color(1f, 0.4f, 0.2f) : new Color(0.4f, 0.8f, 0.4f);
+            var durObj = new GameObject("Dur");
+            durObj.transform.SetParent(go.transform, false);
+            var durRt = durObj.AddComponent<RectTransform>();
+            durRt.anchorMin = new Vector2(0, 0); durRt.anchorMax = new Vector2(1, 0);
+            durRt.offsetMin = new Vector2(0, -2); durRt.offsetMax = new Vector2(0, 12);
+            var durTmp = durObj.AddComponent<TextMeshProUGUI>();
+            durTmp.text = durStr; durTmp.fontSize = 11; durTmp.color = durColor;
+            durTmp.alignment = TextAlignmentOptions.Center;
+            var libSans = UnityEngine.Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
+            if (libSans) durTmp.font = libSans;
         }
 
         private void RefreshPotions()
