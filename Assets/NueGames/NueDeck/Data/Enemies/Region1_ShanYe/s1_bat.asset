@@ -15,27 +15,34 @@ MonoBehaviour:
   characterID: s1_bat
   characterName: "\u8840\u8760"
   characterDescription: 
-  maxHealth: 34
+  maxHealth: 23
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
-  followAbilityPattern: 0
+  followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u5438\u8840\u5544\u51FB"
+  - name: "\u5438\u8840"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 4
+      maxActionValue: 6
+    - actionType: 1
+      minActionValue: 2
+      maxActionValue: 2
+  - name: "\u6251\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
       minActionValue: 5
-      maxActionValue: 5
-    - actionType: 1
-      minActionValue: 3
-      maxActionValue: 3
-  - name: "\u4FEF\u51B2"
-    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+      maxActionValue: 7
+  - name: "\u75AB\u6BD2"
+    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
     hideActionValue: 0
     actionList:
-    - actionType: 0
-      minActionValue: 7
-      maxActionValue: 7
+    - actionType: 2
+      minActionValue: 2
+      maxActionValue: 2
   enemyTier: 0
   regionId: 0
   enemyDescription: "\u55DC\u8840\u5982\u547D\u7684\u6697\u591C\u8759\u8760\uFF0C\u6210\u7FA4\u7ED3\u961F\u51FA\u6CA1\u3002\u5438\u8840\u65F6\u80FD\u76D7\u53D6\u730E\u7269\u751F\u673A\u6ECB\u517B\u5DF1\u8EAB\u3002"

@@ -10,16 +10,13 @@ namespace NueGames.NueDeck.Scripts.Card.CardActions
 
         public override void DoAction(CardActionParameters actionParameters)
         {
-            var target = actionParameters.TargetCharacter
-                ? actionParameters.TargetCharacter
-                : actionParameters.SelfCharacter;
+            // Debuff 只作用于目标敌人，不 fallback 到自己
+            if (!actionParameters.TargetCharacter) return;
 
-            if (!target) return;
-
-            target.CharacterStats.ApplyStatus(StatusType.Weak, Mathf.RoundToInt(actionParameters.Value));
+            actionParameters.TargetCharacter.CharacterStats.ApplyStatus(StatusType.Weak, Mathf.RoundToInt(actionParameters.Value));
 
             if (FxManager != null)
-                FxManager.PlayFx(target.transform, FxType.Debuff);
+                FxManager.PlayFx(actionParameters.TargetCharacter.transform, FxType.Debuff);
 
             if (AudioManager != null)
                 AudioManager.PlayOneShot(actionParameters.CardData.AudioType);

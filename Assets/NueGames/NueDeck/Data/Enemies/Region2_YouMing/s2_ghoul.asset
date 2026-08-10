@@ -15,30 +15,31 @@ MonoBehaviour:
   characterID: s2_ghoul
   characterName: "\u98DF\u5C38\u9B3C"
   characterDescription: 
-  maxHealth: 48
+  maxHealth: 37
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
   followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u55DC\u8840\u722A"
+  - name: "\u653B\u51FB"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 5
+      maxActionValue: 8
+  - name: "\u683C\u6321"
+    intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 3
+      minActionValue: 4
+      maxActionValue: 4
+  - name: "\u731B\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
       minActionValue: 7
-      maxActionValue: 7
-    - actionType: 1
-      minActionValue: 4
-      maxActionValue: 4
-  - name: "\u8FDE\u722A"
-    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
-    hideActionValue: 0
-    actionList:
-    - actionType: 0
-      minActionValue: 6
-      maxActionValue: 6
-    - actionType: 0
-      minActionValue: 6
-      maxActionValue: 6
+      maxActionValue: 10
   enemyTier: 0
   regionId: 1
   enemyDescription: "\u4EE5\u5C38\u4F53\u4E3A\u98DF\u7684\u6076\u7075\uFF0C\u653B\u51FB\u9644\u5E26\u5438\u8840\u3002\u8D8A\u6218\u8D8A\u52C7\u3002"

@@ -15,34 +15,31 @@ MonoBehaviour:
   characterID: s1_bear
   characterName: "\u718A\u5996"
   characterDescription: 
-  maxHealth: 60
+  maxHealth: 25
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
   followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u718A\u638C"
+  - name: "\u653B\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
-      minActionValue: 8
+      minActionValue: 5
       maxActionValue: 8
-  - name: "\u62A4\u4F53"
+  - name: "\u683C\u6321"
     intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 3
-      minActionValue: 6
-      maxActionValue: 6
-  - name: "\u66B4\u6012\u8FDE\u51FB"
+      minActionValue: 4
+      maxActionValue: 4
+  - name: "\u731B\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
-      minActionValue: 8
-      maxActionValue: 8
-    - actionType: 0
-      minActionValue: 8
-      maxActionValue: 8
+      minActionValue: 7
+      maxActionValue: 10
   enemyTier: 0
   regionId: 0
   enemyDescription: "\u4FEE\u70BC\u767E\u5E74\u5316\u5F62\u7684\u718A\u5996\uFF0C\u76AE\u7CD9\u8089\u539A\u529B\u5927\u65E0\u7A77\u3002\u66B4\u6012\u65F6\u53CC\u638C\u8FDE\u51FB\u3002"

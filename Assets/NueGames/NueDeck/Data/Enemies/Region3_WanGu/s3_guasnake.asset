@@ -15,34 +15,31 @@ MonoBehaviour:
   characterID: s3_guasnake
   characterName: "\u86CA\u86C7"
   characterDescription: 
-  maxHealth: 46
+  maxHealth: 44
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
   followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u86CA\u6BD2"
-    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+  - name: "\u653B\u51FB"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
-    - actionType: 2
+    - actionType: 0
+      minActionValue: 5
+      maxActionValue: 8
+  - name: "\u683C\u6321"
+    intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 3
       minActionValue: 4
       maxActionValue: 4
-    - actionType: 6
-      minActionValue: 1
-      maxActionValue: 1
-  - name: "\u6BD2\u7259"
+  - name: "\u731B\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
       minActionValue: 7
-      maxActionValue: 7
-  - name: "\u86CA\u6BD2"
-    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
-    hideActionValue: 0
-    actionList:
-    - actionType: 2
-      minActionValue: 4
-      maxActionValue: 4
+      maxActionValue: 10
   enemyTier: 0
   regionId: 2
   enemyDescription: "\u86CA\u5E08\u57F9\u80B2\u7684\u6BD2\u86C7\u3002\u6BD2\u4E0E\u6613\u4F24\u4EA4\u66FF\u3002"

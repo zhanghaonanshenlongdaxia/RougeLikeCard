@@ -15,7 +15,7 @@ MonoBehaviour:
   id: body_su_aura
   cardName: "\u62A4\u4F53\u771F\u6C14"
   manaCost: 2
-  cardSprite: {fileID: 0}
+  cardSprite: {fileID: 21300000, guid: 04684b85c9246b945a48b41d9ec2f4be, type: 3}
   rarity: 2
   usableWithoutTarget: 1
   exhaustAfterPlay: 1
@@ -37,7 +37,7 @@ MonoBehaviour:
     overrideColor: {r: 0, g: 0, b: 0, a: 1}
     useModifier: 0
     modifiedActionValueIndex: 0
-    modiferStats: 0
+    modiferStats: 4
     usePrefixOnModifiedValue: 0
     modifiedValuePrefix: '*'
     overrideColorOnValueScaled: 0
@@ -51,6 +51,7 @@ MonoBehaviour:
     modifiedValuePrefix: '*'
     overrideColorOnValueScaled: 0
   specialKeywordsList: 
+  shortDescription: 
   audioType: 0
   upgradedCardName: 
   upgradedManaCost: 1

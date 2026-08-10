@@ -15,31 +15,31 @@ MonoBehaviour:
   characterID: s1_beetle
   characterName: "\u7532\u866B"
   characterDescription: 
-  maxHealth: 45
+  maxHealth: 26
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
   followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u7532\u58F3\u62A4\u4F53"
-    intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
-    hideActionValue: 0
-    actionList:
-    - actionType: 3
-      minActionValue: 5
-      maxActionValue: 5
-  - name: "\u89D2\u649E"
+  - name: "\u653B\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
-      minActionValue: 6
-      maxActionValue: 6
-  - name: "\u7532\u58F3\u62A4\u4F53"
+      minActionValue: 5
+      maxActionValue: 8
+  - name: "\u683C\u6321"
     intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 3
-      minActionValue: 5
-      maxActionValue: 5
+      minActionValue: 4
+      maxActionValue: 4
+  - name: "\u731B\u51FB"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 7
+      maxActionValue: 10
   enemyTier: 0
   regionId: 0
   enemyDescription: "\u7075\u77FF\u4E2D\u53D8\u5F02\u7684\u7532\u866B\uFF0C\u7532\u58F3\u6CDB\u7740\u91D1\u5C5E\u5149\u6CFD\u3002\u653B\u9632\u5747\u8861\uFF0C\u4E0D\u597D\u5BF9\u4ED8\u3002"

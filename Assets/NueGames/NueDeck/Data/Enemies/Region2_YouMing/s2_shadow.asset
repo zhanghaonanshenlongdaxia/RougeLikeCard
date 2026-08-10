@@ -15,29 +15,29 @@ MonoBehaviour:
   characterID: s2_shadow
   characterName: "\u5F71\u715E"
   characterDescription: 
-  maxHealth: 42
+  maxHealth: 19
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
   followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u5F71\u5203"
+  - name: "\u84C4\u529B\u6697\u6740"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
       minActionValue: 10
-      maxActionValue: 10
-  - name: "\u9690\u533F\u84C4\u529B"
+      maxActionValue: 14
+  - name: "\u6697\u5203"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
-    hideActionValue: 1
+    hideActionValue: 0
     actionList:
     - actionType: 0
-      minActionValue: 15
-      maxActionValue: 15
-  - name: "\u7834\u7532"
+      minActionValue: 5
+      maxActionValue: 7
+  - name: "\u81F4\u76F2"
     intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
     hideActionValue: 0
     actionList:
-    - actionType: 5
+    - actionType: 4
       minActionValue: 2
       maxActionValue: 2
   enemyTier: 0

@@ -15,24 +15,31 @@ MonoBehaviour:
   characterID: s1_snake
   characterName: "\u78A7\u78F7\u86C7\u5996"
   characterDescription: 
-  maxHealth: 35
+  maxHealth: 10
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
-  followAbilityPattern: 0
+  followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u6BD2\u7259"
-    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
-    hideActionValue: 0
-    actionList:
-    - actionType: 2
-      minActionValue: 3
-      maxActionValue: 3
-  - name: "\u5410\u4FE1"
+  - name: "\u653B\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
       minActionValue: 5
-      maxActionValue: 5
+      maxActionValue: 8
+  - name: "\u683C\u6321"
+    intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 3
+      minActionValue: 4
+      maxActionValue: 4
+  - name: "\u731B\u51FB"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 7
+      maxActionValue: 10
   enemyTier: 0
   regionId: 0
   enemyDescription: "\u5728\u7075\u77FF\u6BD2\u6C14\u4E2D\u4FEE\u70BC\u767E\u5E74\u7684\u86C7\u5996\uFF0C\u9CDE\u7247\u6CDB\u7740\u78A7\u7EFF\u78F7\u5149\u3002\u6BD2\u7259\u85CF\u6709\u5267\u6BD2\uFF0C\u54AC\u4E2D\u5373\u8150\u3002"

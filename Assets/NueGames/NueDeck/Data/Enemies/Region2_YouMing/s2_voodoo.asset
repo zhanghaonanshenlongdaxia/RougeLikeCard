@@ -15,38 +15,31 @@ MonoBehaviour:
   characterID: s2_voodoo
   characterName: "\u5DEB\u5076"
   characterDescription: 
-  maxHealth: 48
+  maxHealth: 27
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
   followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u8BC5\u5492\u6BD2"
-    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+  - name: "\u653B\u51FB"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
-    - actionType: 2
-      minActionValue: 3
-      maxActionValue: 3
-  - name: "\u8BC5\u5492\u5F31"
-    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
-    hideActionValue: 0
-    actionList:
-    - actionType: 4
-      minActionValue: 2
-      maxActionValue: 2
-  - name: "\u8BC5\u5492\u6BD2"
-    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
-    hideActionValue: 0
-    actionList:
-    - actionType: 2
-      minActionValue: 3
-      maxActionValue: 3
-  - name: "\u5076\u76FE"
+    - actionType: 0
+      minActionValue: 5
+      maxActionValue: 8
+  - name: "\u683C\u6321"
     intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 3
-      minActionValue: 5
-      maxActionValue: 5
+      minActionValue: 4
+      maxActionValue: 4
+  - name: "\u731B\u51FB"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 7
+      maxActionValue: 10
   enemyTier: 0
   regionId: 1
   enemyDescription: "\u51A5\u754C\u5DEB\u5E08\u5236\u4F5C\u7684\u8BC5\u5492\u4EBA\u5076\u3002\u4EE5\u6BD2\u548Cdebuff\u4E3A\u624B\u6BB5\u3002"

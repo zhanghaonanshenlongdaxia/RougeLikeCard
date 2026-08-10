@@ -15,31 +15,31 @@ MonoBehaviour:
   characterID: s1_brute
   characterName: "\u86EE\u529B\u58EB"
   characterDescription: 
-  maxHealth: 52
+  maxHealth: 15
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
   followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u91CD\u62F3"
+  - name: "\u653B\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
-      minActionValue: 9
-      maxActionValue: 9
-  - name: "\u91CD\u62F3"
-    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
-    hideActionValue: 0
-    actionList:
-    - actionType: 0
-      minActionValue: 9
-      maxActionValue: 9
-  - name: "\u62A4\u5934"
+      minActionValue: 5
+      maxActionValue: 8
+  - name: "\u683C\u6321"
     intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 3
-      minActionValue: 6
-      maxActionValue: 6
+      minActionValue: 4
+      maxActionValue: 4
+  - name: "\u731B\u51FB"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 7
+      maxActionValue: 10
   enemyTier: 0
   regionId: 0
   enemyDescription: "\u4EE5\u86EE\u529B\u8457\u79F0\u7684\u5C71\u91CE\u83BD\u6C49\uFF0C\u4E0D\u61C2\u6CD5\u672F\u53EA\u77E5\u6325\u62F3\u3002\u4F46\u90A3\u4E00\u62F3\u7684\u529B\u9053\u8DB3\u4EE5\u788E\u77F3\u3002"

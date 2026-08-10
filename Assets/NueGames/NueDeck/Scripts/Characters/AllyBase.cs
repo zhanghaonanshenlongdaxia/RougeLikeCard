@@ -40,7 +40,10 @@ namespace NueGames.NueDeck.Scripts.Characters
             CharacterStats.SetCurrentHealth(CharacterStats.CurrentHealth);
             
             if (CombatManager != null)
-                CombatManager.OnAllyTurnStarted += CharacterStats.TriggerAllStatus;
+            {
+                // 玩家身上的状态在玩家回合结束时结算衰减（中毒扣血、虚弱递减等）
+                CombatManager.OnAllyTurnEnded += CharacterStats.TriggerAllStatus;
+            }
         }
         
         protected override void OnDeath()
@@ -48,7 +51,7 @@ namespace NueGames.NueDeck.Scripts.Characters
             base.OnDeath();
             if (CombatManager != null)
             {
-                CombatManager.OnAllyTurnStarted -= CharacterStats.TriggerAllStatus;
+                CombatManager.OnAllyTurnEnded -= CharacterStats.TriggerAllStatus;
                 CombatManager.OnAllyDeath(this);
             }
 

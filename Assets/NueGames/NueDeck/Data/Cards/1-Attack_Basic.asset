@@ -32,16 +32,7 @@ MonoBehaviour:
     overrideColor: {r: 0, g: 0, b: 0, a: 1}
     useModifier: 0
     modifiedActionValueIndex: 0
-    modiferStats: 0
-    usePrefixOnModifiedValue: 0
-    modifiedValuePrefix: '*'
-    overrideColorOnValueScaled: 0
-  - descriptionText: "\n\u6700\u57FA\u7840\u7684\u653B\u51FB\u624B\u6BB5\uFF0C\u6BCF\u4E2A\u4FEE\u58EB\u5165\u95E8\u5FC5\u4FEE\u3002"
-    enableOverrideColor: 0
-    overrideColor: {r: 0, g: 0, b: 0, a: 1}
-    useModifier: 0
-    modifiedActionValueIndex: 0
-    modiferStats: 0
+    modiferStats: 3
     usePrefixOnModifiedValue: 0
     modifiedValuePrefix: '*'
     overrideColorOnValueScaled: 0
@@ -55,6 +46,7 @@ MonoBehaviour:
     modifiedValuePrefix: '*'
     overrideColorOnValueScaled: 0
   specialKeywordsList: 
+  shortDescription: 
   audioType: 0
   upgradedCardName: 
   upgradedManaCost: 0

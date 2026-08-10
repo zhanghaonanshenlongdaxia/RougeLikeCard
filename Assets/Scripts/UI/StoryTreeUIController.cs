@@ -8,18 +8,24 @@ using CardGame.Audio;
 namespace CardGame.UI
 {
     /// <summary>
-    /// 故事线树状图UI面板。
-    /// 撤离返回基地后弹出，显示可解锁节点。
+    /// 故事线UI面板（重做版）：
+    /// - 底部一条从左到右可滑动的横线，线上有节点
+    /// - 分支从线往上延伸，分支之间有长方形剧情框
+    /// - 锁定节点灰色遮挡，有新剧情的节点闪烁，解锁后可点击放大
+    /// - 通过主界面"剧情树"按钮打开，不自动弹出
     /// </summary>
     public class StoryTreeUIController : MonoBehaviour
     {
         private TMP_FontAsset _font;
         private StoryTreeConfig _config;
-        private Transform _nodesRoot;
-        private TextMeshProUGUI _detailText;
-        private Button _unlockBtn;
-        private Button _closeBtn;
+        private Transform _contentRoot;
         private StoryNodeData _selectedNode;
+        private GameObject _detailPanel;
+        private TextMeshProUGUI _detailTitle;
+        private TextMeshProUGUI _detailDesc;
+        private TextMeshProUGUI _detailReward;
+        private Button _unlockBtn;
+        private Button _closeDetailBtn;
 
         public IArchitecture GetArchitecture() => CardGameArchitecture.Interface;
 
@@ -28,6 +34,7 @@ namespace CardGame.UI
             _font = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
             LoadConfig();
             BuildUI();
+            PopulateTree();
         }
 
         void LoadConfig()
@@ -42,6 +49,7 @@ namespace CardGame.UI
 
         void BuildUI()
         {
+            // Canvas
             var canvas = gameObject.GetComponent<Canvas>();
             if (canvas == null)
             {
@@ -54,96 +62,118 @@ namespace CardGame.UI
                 gameObject.AddComponent<GraphicRaycaster>();
             }
 
-            // 背景
+            // 半透明背景（点击关闭）
             var bg = new GameObject("BG");
             bg.transform.SetParent(transform, false);
             SetFullStretch(bg.AddComponent<RectTransform>());
-            bg.AddComponent<Image>().color = new Color(0.03f, 0.03f, 0.08f, 0.97f);
+            var bgImg = bg.AddComponent<Image>();
+            bgImg.color = new Color(0.02f, 0.03f, 0.06f, 0.85f);
+            var bgBtn = bg.AddComponent<Button>();
+            bgBtn.onClick.AddListener(() => { if (_detailPanel) _detailPanel.SetActive(false); else Close(); });
 
-            // 主面板
-            var panel = new GameObject("Panel");
-            panel.transform.SetParent(transform, false);
-            var pRt = panel.AddComponent<RectTransform>();
-            pRt.anchorMin = new Vector2(0.05f, 0.05f); pRt.anchorMax = new Vector2(0.95f, 0.95f);
-            pRt.offsetMin = Vector2.zero; pRt.offsetMax = Vector2.zero;
-            panel.AddComponent<Image>().color = new Color(0.06f, 0.08f, 0.12f, 0.98f);
+            // 主容器
+            var main = new GameObject("Main");
+            main.transform.SetParent(transform, false);
+            SetFullStretch(main.AddComponent<RectTransform>());
 
-            var hlg = panel.AddComponent<HorizontalLayoutGroup>();
-            hlg.spacing = 15; hlg.padding = new RectOffset(15, 15, 15, 15);
-            hlg.childControlWidth = true; hlg.childForceExpandWidth = true;
-
-            // === 左侧：树状图区域 ===
-            var treeArea = new GameObject("TreeArea");
-            treeArea.transform.SetParent(panel.transform, false);
-            treeArea.AddComponent<RectTransform>();
-            var treeLe = treeArea.AddComponent<LayoutElement>();
-            treeLe.flexibleWidth = 2;
-
-            // 标题
-            var title = CreateText(treeArea.transform, "\u6545\u4E8B\u7EBF", 26, new Color(0.9f, 0.8f, 0.3f));
-            title.AddComponent<LayoutElement>().preferredHeight = 35;
-
-            // 滚动区域
-            var scroll = new GameObject("Scroll");
-            scroll.transform.SetParent(treeArea.transform, false);
-            var scrollLe = scroll.AddComponent<LayoutElement>();
-            scrollLe.flexibleHeight = 1;
-            var scrollRect = scroll.AddComponent<ScrollRect>();
-            scrollRect.horizontal = true; scrollRect.vertical = true;
-
-            var vp = new GameObject("Viewport");
-            vp.transform.SetParent(scroll.transform, false);
-            SetFullStretch(vp.AddComponent<RectTransform>());
-            vp.AddComponent<Image>().color = new Color(0.04f, 0.06f, 0.1f, 1f);
-            vp.AddComponent<RectMask2D>();
-            scrollRect.viewport = vp.GetComponent<RectTransform>();
-
-            var content = new GameObject("Content");
-            content.transform.SetParent(vp.transform, false);
-            var cRt = content.AddComponent<RectTransform>();
-            cRt.anchorMin = Vector2.zero; cRt.anchorMax = Vector2.one;
-            cRt.pivot = new Vector2(0.5f, 1f);
-            cRt.offsetMin = Vector2.zero; cRt.offsetMax = Vector2.zero;
-            cRt.sizeDelta = new Vector2(1600, 1400); // 固定大小画布
-            scrollRect.content = cRt;
-            _nodesRoot = content.transform;
-
-            // === 右侧：详情面板 ===
-            var detailArea = new GameObject("DetailArea");
-            detailArea.transform.SetParent(panel.transform, false);
-            detailArea.AddComponent<RectTransform>();
-            var detailLe = detailArea.AddComponent<LayoutElement>();
-            detailLe.preferredWidth = 400;
-
-            var dVLG = detailArea.AddComponent<VerticalLayoutGroup>();
-            dVLG.spacing = 10; dVLG.padding = new RectOffset(10, 10, 10, 10);
-            dVLG.childControlWidth = true; dVLG.childAlignment = TextAnchor.UpperCenter;
-
-            // 详情标题
-            var dTitle = CreateText(detailArea.transform, "\u8282\u70B9\u8BE6\u60C5", 22, new Color(0.9f, 0.8f, 0.3f));
-            dTitle.AddComponent<LayoutElement>().preferredHeight = 30;
-
-            // 详情内容
-            _detailText = CreateText(detailArea.transform, "\u9009\u62E9\u5DE6\u4FA7\u7684\u8282\u70B9\u67E5\u770B\u8BE6\u60C5", 16, Color.white).GetComponent<TextMeshProUGUI>();
-            _detailText.alignment = TextAlignmentOptions.Left;
-            _detailText.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 0);
-            var dtLe = _detailText.gameObject.AddComponent<LayoutElement>();
-            dtLe.flexibleHeight = 1;
-
-            // 解锁按钮
-            _unlockBtn = CreateButton(detailArea.transform, "\u89E3\u9501", new Color(0.2f, 0.5f, 0.3f, 1f));
-            _unlockBtn.interactable = false;
-            _unlockBtn.onClick.AddListener(OnUnlockClick);
+            // 标题栏
+            var header = new GameObject("Header");
+            header.transform.SetParent(main.transform, false);
+            var hRt = header.AddComponent<RectTransform>();
+            hRt.anchorMin = new Vector2(0f, 0.93f); hRt.anchorMax = new Vector2(1f, 1f);
+            hRt.offsetMin = Vector2.zero; hRt.offsetMax = Vector2.zero;
+            var hTmp = header.AddComponent<TextMeshProUGUI>();
+            hTmp.text = "剧情线"; hTmp.fontSize = 28; hTmp.color = new Color(0.9f, 0.8f, 0.3f);
+            hTmp.alignment = TextAlignmentOptions.Center;
+            if (_font) hTmp.font = _font;
 
             // 关闭按钮
-            _closeBtn = CreateButton(detailArea.transform, "\u5173\u95ED", new Color(0.3f, 0.2f, 0.1f, 1f));
-            _closeBtn.onClick.AddListener(() =>
-            {
-                if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
-                gameObject.SetActive(false);
-            });
+            var closeBtn = new GameObject("CloseButton");
+            closeBtn.transform.SetParent(main.transform, false);
+            var cRt = closeBtn.AddComponent<RectTransform>();
+            cRt.anchorMin = new Vector2(0.92f, 0.93f); cRt.anchorMax = new Vector2(0.99f, 0.99f);
+            cRt.offsetMin = Vector2.zero; cRt.offsetMax = Vector2.zero;
+            closeBtn.AddComponent<Image>().color = new Color(0.3f, 0.15f, 0.1f, 1f);
+            var cBtn = closeBtn.AddComponent<Button>();
+            cBtn.onClick.AddListener(Close);
+            var cTxtObj = new GameObject("Text");
+            cTxtObj.transform.SetParent(closeBtn.transform, false);
+            var cTxtRt = cTxtObj.AddComponent<RectTransform>();
+            cTxtRt.anchorMin = Vector2.zero; cTxtRt.anchorMax = Vector2.one;
+            cTxtRt.offsetMin = Vector2.zero; cTxtRt.offsetMax = Vector2.zero;
+            var cTmp = cTxtObj.AddComponent<TextMeshProUGUI>();
+            cTmp.text = "✕"; cTmp.fontSize = 22; cTmp.color = Color.white;
+            cTmp.alignment = TextAlignmentOptions.Center;
+            if (_font) cTmp.font = _font;
 
-            PopulateTree();
+            // 横向滚动区域（故事线）
+            var scrollObj = new GameObject("StoryScroll");
+            scrollObj.transform.SetParent(main.transform, false);
+            var sRt = scrollObj.AddComponent<RectTransform>();
+            sRt.anchorMin = Vector2.zero; sRt.anchorMax = Vector2.one;
+            sRt.offsetMin = Vector2.zero; sRt.offsetMax = new Vector2(0, -10);
+            var scroll = scrollObj.AddComponent<ScrollRect>();
+            scroll.horizontal = true; scroll.vertical = false;
+            scroll.scrollSensitivity = 30f;
+
+            var vp = new GameObject("Viewport");
+            vp.transform.SetParent(scrollObj.transform, false);
+            SetFullStretch(vp.AddComponent<RectTransform>());
+            var vpMask = vp.AddComponent<RectMask2D>();
+            scroll.viewport = vp.GetComponent<RectTransform>();
+
+            // Content — 宽度根据节点数动态计算
+            var content = new GameObject("Content");
+            content.transform.SetParent(vp.transform, false);
+            var cContentRt = content.AddComponent<RectTransform>();
+            cContentRt.anchorMin = new Vector2(0, 0); cContentRt.anchorMax = new Vector2(0, 1);
+            cContentRt.pivot = new Vector2(0, 0.5f);
+            cContentRt.offsetMin = Vector2.zero; cContentRt.offsetMax = Vector2.zero;
+            scroll.content = cContentRt;
+            _contentRoot = content.transform;
+
+            // 详情弹窗（默认隐藏）
+            BuildDetailPanel(main.transform);
+        }
+
+        void BuildDetailPanel(Transform parent)
+        {
+            _detailPanel = new GameObject("DetailPanel");
+            _detailPanel.transform.SetParent(parent, false);
+            var dRt = _detailPanel.AddComponent<RectTransform>();
+            dRt.anchorMin = new Vector2(0.25f, 0.2f); dRt.anchorMax = new Vector2(0.75f, 0.8f);
+            dRt.offsetMin = Vector2.zero; dRt.offsetMax = Vector2.zero;
+            _detailPanel.AddComponent<Image>().color = new Color(0.06f, 0.08f, 0.12f, 0.98f);
+
+            var vlg = _detailPanel.AddComponent<VerticalLayoutGroup>();
+            vlg.spacing = 10; vlg.padding = new RectOffset(25, 25, 25, 25);
+            vlg.childControlWidth = true; vlg.childForceExpandHeight = false;
+
+            _detailTitle = CreateTMP(_detailPanel.transform, "", 24, new Color(0.9f, 0.8f, 0.3f));
+            _detailTitle.alignment = TextAlignmentOptions.Center;
+            _detailTitle.gameObject.AddComponent<LayoutElement>().preferredHeight = 35;
+
+            _detailDesc = CreateTMP(_detailPanel.transform, "", 16, Color.white);
+            _detailDesc.alignment = TextAlignmentOptions.Left;
+            _detailDesc.gameObject.AddComponent<LayoutElement>().flexibleHeight = 1;
+
+            _detailReward = CreateTMP(_detailPanel.transform, "", 15, new Color(0.5f, 0.8f, 0.5f));
+            _detailReward.alignment = TextAlignmentOptions.Left;
+
+            // 按钮行
+            var btnRow = new GameObject("BtnRow");
+            btnRow.transform.SetParent(_detailPanel.transform, false);
+            btnRow.AddComponent<RectTransform>();
+            var hlg = btnRow.AddComponent<HorizontalLayoutGroup>();
+            hlg.spacing = 20; hlg.childAlignment = TextAnchor.MiddleCenter;
+
+            _unlockBtn = CreateButtonInRow(btnRow.transform, "解锁", new Color(0.2f, 0.5f, 0.3f, 1f));
+            _unlockBtn.onClick.AddListener(OnUnlockClick);
+
+            _closeDetailBtn = CreateButtonInRow(btnRow.transform, "关闭", new Color(0.3f, 0.2f, 0.1f, 1f));
+            _closeDetailBtn.onClick.AddListener(() => _detailPanel.SetActive(false));
+
+            _detailPanel.SetActive(false);
         }
 
         void PopulateTree()
@@ -152,128 +182,178 @@ namespace CardGame.UI
 
             var storySystem = CardGameArchitecture.Interface.GetSystem<IStorySystem>();
 
-            // 先画连接线（在节点下方层）
-            foreach (var node in _config.nodes)
+            // 按章节排序节点
+            var sortedNodes = new List<StoryNodeData>(_config.nodes);
+            sortedNodes.Sort((a, b) => a.chapter.CompareTo(b.chapter));
+
+            // 计算总宽度
+            float nodeSpacing = 180f;
+            float totalWidth = Mathf.Max(sortedNodes.Count * nodeSpacing + 100, 1920);
+            var contentRt = _contentRoot.GetComponent<RectTransform>();
+            contentRt.sizeDelta = new Vector2(totalWidth, 0);
+
+            // 画底部主线（一条横线）
+            var lineObj = new GameObject("MainLine");
+            lineObj.transform.SetParent(_contentRoot, false);
+            var lRt = lineObj.AddComponent<RectTransform>();
+            lRt.anchorMin = new Vector2(0, 0.12f); lRt.anchorMax = new Vector2(1, 0.12f);
+            lRt.offsetMin = new Vector2(50, -2); lRt.offsetMax = new Vector2(-50, 2);
+            lineObj.AddComponent<Image>().color = new Color(0.7f, 0.6f, 0.3f, 0.6f);
+
+            // 画每个节点
+            for (int i = 0; i < sortedNodes.Count; i++)
+            {
+                var node = sortedNodes[i];
+                bool unlocked = storySystem.IsNodeUnlocked(node.nodeId);
+                bool available = !unlocked && node.prerequisites.TrueForAll(p => storySystem.IsNodeUnlocked(p));
+
+                float xPos = 80 + i * nodeSpacing;
+                CreateStoryNode(node, unlocked, available, xPos);
+            }
+
+            // 画连接线（前置 → 后继）
+            foreach (var node in sortedNodes)
             {
                 foreach (var preId in node.prerequisites)
                 {
                     var preNode = _config.GetNode(preId);
                     if (preNode == null) continue;
-                    DrawConnectionLine(preNode.position, node.position, preId + "_to_" + node.nodeId);
+                    int preIdx = sortedNodes.IndexOf(preNode);
+                    int curIdx = sortedNodes.IndexOf(node);
+                    if (preIdx < 0 || curIdx < 0) continue;
+
+                    float x1 = 80 + preIdx * nodeSpacing;
+                    float x2 = 80 + curIdx * nodeSpacing;
+                    DrawBranchLine(x1, x2, preId + "_to_" + node.nodeId);
                 }
-            }
-
-            // 再画节点
-            foreach (var node in _config.nodes)
-            {
-                bool unlocked = storySystem.IsNodeUnlocked(node.nodeId);
-                bool available = !unlocked && node.prerequisites.TrueForAll(p => storySystem.IsNodeUnlocked(p));
-
-                // 节点容器（圆形节点+名称在下方）
-                var nodeContainer = new GameObject($"Node_{node.nodeId}");
-                nodeContainer.transform.SetParent(_nodesRoot, false);
-                var containerRt = nodeContainer.AddComponent<RectTransform>();
-                containerRt.anchoredPosition = new Vector2(node.position.x, -node.position.y);
-                containerRt.sizeDelta = new Vector2(140, 100);
-                containerRt.pivot = new Vector2(0.5f, 0.5f);
-
-                // 圆形节点图标
-                var iconObj = new GameObject("Icon");
-                iconObj.transform.SetParent(nodeContainer.transform, false);
-                var iconRt = iconObj.AddComponent<RectTransform>();
-                iconRt.anchorMin = new Vector2(0.5f, 0.5f); iconRt.anchorMax = new Vector2(0.5f, 0.5f);
-                iconRt.pivot = new Vector2(0.5f, 0.5f);
-                iconRt.anchoredPosition = new Vector2(0, 15);
-                iconRt.sizeDelta = new Vector2(70, 70);
-                var iconImg = iconObj.AddComponent<Image>();
-                
-                Color nodeColor;
-                if (unlocked) nodeColor = HexToColor(node.colorHex);
-                else if (available) nodeColor = new Color(0.15f, 0.45f, 0.2f, 1f);
-                else nodeColor = new Color(0.15f, 0.15f, 0.18f, 0.7f);
-                iconImg.color = nodeColor;
-
-                // 边框（已解锁/可解锁时有发光边框）
-                if (unlocked || available)
-                {
-                    var borderObj = new GameObject("Border");
-                    borderObj.transform.SetParent(nodeContainer.transform, false);
-                    var borderRt = borderObj.AddComponent<RectTransform>();
-                    borderRt.anchorMin = new Vector2(0.5f, 0.5f); borderRt.anchorMax = new Vector2(0.5f, 0.5f);
-                    borderRt.pivot = new Vector2(0.5f, 0.5f);
-                    borderRt.anchoredPosition = new Vector2(0, 15);
-                    borderRt.sizeDelta = new Vector2(76, 76);
-                    var borderImg = borderObj.AddComponent<Image>();
-                    borderImg.color = unlocked ? new Color(1f, 0.85f, 0.3f, 0.8f) : new Color(0.2f, 0.8f, 0.3f, 0.6f);
-                }
-
-                // 图标文字
-                var iconTxt = CreateText(iconObj.transform, node.iconText ?? "", 28, 
-                    unlocked ? new Color(0.1f, 0.1f, 0.2f) : Color.white);
-                iconTxt.GetComponent<RectTransform>().anchorMin = Vector2.zero;
-                iconTxt.GetComponent<RectTransform>().anchorMax = Vector2.one;
-                iconTxt.GetComponent<RectTransform>().offsetMin = Vector2.zero;
-                iconTxt.GetComponent<RectTransform>().offsetMax = Vector2.zero;
-
-                // 节点名称（图标下方）
-                var nameObj = CreateText(nodeContainer.transform, node.nodeName, 13, 
-                    unlocked ? new Color(0.9f, 0.8f, 0.3f) : available ? new Color(0.3f, 0.9f, 0.4f) : new Color(0.5f, 0.5f, 0.55f));
-                nameObj.GetComponent<RectTransform>().anchorMin = new Vector2(0f, 0f);
-                nameObj.GetComponent<RectTransform>().anchorMax = new Vector2(1f, 0.3f);
-                nameObj.GetComponent<RectTransform>().offsetMin = Vector2.zero;
-                nameObj.GetComponent<RectTransform>().offsetMax = Vector2.zero;
-
-                // 点击按钮（覆盖在图标上）
-                var btn = iconObj.AddComponent<Button>();
-                btn.targetGraphic = iconImg;
-                btn.interactable = available || unlocked;
-
-                var captured = node;
-                var capturedAvailable = available;
-                btn.onClick.AddListener(() =>
-                {
-                    if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
-                    OnNodeSelected(captured, capturedAvailable);
-                });
             }
         }
 
-        void DrawConnectionLine(Vector2 from, Vector2 to, string name)
+        void CreateStoryNode(StoryNodeData node, bool unlocked, bool available, float xPos)
         {
-            // 转换为画布坐标（Y翻转）
-            var fromCanvas = new Vector2(from.x, -from.y);
-            var toCanvas = new Vector2(to.x, -to.y);
+            // 节点容器
+            var nodeObj = new GameObject($"Node_{node.nodeId}");
+            nodeObj.transform.SetParent(_contentRoot, false);
+            var nRt = nodeObj.AddComponent<RectTransform>();
+            nRt.anchorMin = new Vector2(0, 0); nRt.anchorMax = new Vector2(0, 1);
+            nRt.pivot = new Vector2(0.5f, 0.5f);
+            nRt.anchoredPosition = new Vector2(xPos, 0);
+            nRt.sizeDelta = new Vector2(160, 0);
 
-            var lineObj = new GameObject($"Line_{name}");
-            lineObj.transform.SetParent(_nodesRoot, false);
+            // 线上的圆点（主线节点标记）
+            var dotObj = new GameObject("Dot");
+            dotObj.transform.SetParent(nodeObj.transform, false);
+            var dRt = dotObj.AddComponent<RectTransform>();
+            dRt.anchorMin = new Vector2(0.5f, 0.12f); dRt.anchorMax = new Vector2(0.5f, 0.12f);
+            dRt.pivot = new Vector2(0.5f, 0.5f);
+            dRt.sizeDelta = new Vector2(24, 24);
+            var dotImg = dotObj.AddComponent<Image>();
+            dotImg.color = unlocked ? new Color(1f, 0.85f, 0.3f, 1f) : available ? new Color(0.2f, 0.8f, 0.3f, 1f) : new Color(0.2f, 0.2f, 0.25f, 1f);
+
+            // 剧情框（长方形，在线上方）
+            var boxObj = new GameObject("StoryBox");
+            boxObj.transform.SetParent(nodeObj.transform, false);
+            var bRt = boxObj.AddComponent<RectTransform>();
+            bRt.anchorMin = new Vector2(0.5f, 0.2f); bRt.anchorMax = new Vector2(0.5f, 0.2f);
+            bRt.pivot = new Vector2(0.5f, 0.5f);
+            bRt.sizeDelta = new Vector2(140, 80);
+            bRt.anchoredPosition = new Vector2(0, 50);
+            var boxImg = boxObj.AddComponent<Image>();
+
+            // 状态颜色
+            if (unlocked)
+                boxImg.color = new Color(0.15f, 0.25f, 0.15f, 0.95f);
+            else if (available)
+                boxImg.color = new Color(0.1f, 0.2f, 0.35f, 0.95f);
+            else
+                boxImg.color = new Color(0.08f, 0.08f, 0.1f, 0.8f);
+
+            // 框内文字
+            var txt = CreateTMP(boxObj.transform, node.nodeName, 15,
+                unlocked ? new Color(0.9f, 0.8f, 0.3f) : available ? new Color(0.3f, 0.9f, 0.4f) : new Color(0.4f, 0.4f, 0.45f));
+            txt.GetComponent<RectTransform>().anchorMin = Vector2.zero;
+            txt.GetComponent<RectTransform>().anchorMax = Vector2.one;
+            txt.GetComponent<RectTransform>().offsetMin = new Vector2(5, 5);
+            txt.GetComponent<RectTransform>().offsetMax = new Vector2(-5, -5);
+            tmp.alignment = TextAlignmentOptions.Center;
+
+            // 锁定装饰（未解锁时显示锁图标）
+            if (!unlocked)
+            {
+                var lockObj = new GameObject("LockIcon");
+                lockObj.transform.SetParent(boxObj.transform, false);
+                var lockRt = lockObj.AddComponent<RectTransform>();
+                lockRt.anchorMin = new Vector2(1, 1); lockRt.anchorMax = new Vector2(1, 1);
+                lockRt.pivot = new Vector2(1, 1);
+                lockRt.sizeDelta = new Vector2(20, 20);
+                lockRt.anchoredPosition = new Vector2(-3, -3);
+                var lockTmp = lockObj.AddComponent<TextMeshProUGUI>();
+                lockTmp.text = "🔒"; lockTmp.fontSize = 14;
+                lockTmp.color = new Color(0.5f, 0.5f, 0.5f, 0.8f);
+                lockTmp.alignment = TextAlignmentOptions.Center;
+                if (_font) lockTmp.font = _font;
+            }
+
+            // 闪烁效果（可解锁时）
+            if (available)
+            {
+                var blinker = boxObj.AddComponent<StoryBoxBlinker>();
+                blinker.targetImage = boxImg;
+            }
+
+            // 点击事件
+            var btn = boxObj.AddComponent<Button>();
+            btn.targetGraphic = boxImg;
+            btn.interactable = unlocked || available;
+            var captured = node;
+            var capturedAvailable = available;
+            btn.onClick.AddListener(() =>
+            {
+                if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
+                ShowDetail(captured, capturedAvailable);
+            });
+        }
+
+        TextMeshProUGUI tmp;
+        TextMeshProUGUI CreateTMP(Transform parent, string text, float size, Color color)
+        {
+            var go = new GameObject("Text");
+            go.transform.SetParent(parent, false);
+            go.AddComponent<RectTransform>();
+            var t = go.AddComponent<TextMeshProUGUI>();
+            t.text = text; t.fontSize = size; t.color = color;
+            t.alignment = TextAlignmentOptions.Center;
+            if (_font) t.font = _font;
+            tmp = t;
+            return t;
+        }
+
+        void DrawBranchLine(float x1, float x2, string name)
+        {
+            // 从主线往上画的连接线（垂直+水平）
+            var lineObj = new GameObject($"Branch_{name}");
+            lineObj.transform.SetParent(_contentRoot, false);
             var rt = lineObj.AddComponent<RectTransform>();
-            rt.anchorMin = new Vector2(0.5f, 0.5f);
-            rt.anchorMax = new Vector2(0.5f, 0.5f);
-            rt.pivot = new Vector2(0.5f, 0.5f);
+            rt.anchorMin = new Vector2(0, 0); rt.anchorMax = new Vector2(0, 0);
+            rt.pivot = new Vector2(0, 0.5f);
 
-            var mid = (fromCanvas + toCanvas) * 0.5f;
-            var diff = toCanvas - fromCanvas;
-            float length = diff.magnitude;
-            float angle = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
-
-            rt.anchoredPosition = mid;
-            rt.sizeDelta = new Vector2(length, 3f);
-            rt.localRotation = Quaternion.Euler(0, 0, angle);
+            float mid = (x1 + x2) * 0.5f;
+            float width = Mathf.Abs(x2 - x1);
+            rt.anchoredPosition = new Vector2(Mathf.Min(x1, x2), 0.12f * 1080);
+            rt.sizeDelta = new Vector2(width, 3f);
 
             var img = lineObj.AddComponent<Image>();
-            img.color = new Color(0.6f, 0.5f, 0.2f, 0.4f);
-            // 确保线在节点下方
-            lineObj.transform.SetAsFirstSibling();
+            img.color = new Color(0.5f, 0.4f, 0.2f, 0.3f);
         }
 
-        void OnNodeSelected(StoryNodeData node, bool canUnlock)
+        void ShowDetail(StoryNodeData node, bool canUnlock)
         {
             _selectedNode = canUnlock ? node : null;
 
             var storySystem = CardGameArchitecture.Interface.GetSystem<IStorySystem>();
             bool unlocked = storySystem.IsNodeUnlocked(node.nodeId);
 
-            string status = unlocked ? "\u2713 \u5DF2\u89E3\u9501" : canUnlock ? "\u53EF\u89E3\u9501" : "\u9501\u5B9A";
+            string status = unlocked ? "✓ 已解锁" : canUnlock ? "可解锁" : "锁定";
             string prereq = "";
             if (!unlocked && !canUnlock)
             {
@@ -284,21 +364,25 @@ namespace CardGame.UI
                         var preNode = _config.GetNode(p);
                         missing.Add(preNode?.nodeName ?? p);
                     }
-                prereq = $"\n\u524D\u7F6E\u6761\u4EF6: {string.Join(", ", missing)}";
+                prereq = $"\n前置: {string.Join(", ", missing)}";
             }
 
             string rewardStr = "";
             if (node.rewardIds.Count > 0)
-                rewardStr = $"\n\u5956\u52B1: {node.rewardIds.Count}\u9879";
+                rewardStr = $"\n奖励: {node.rewardIds.Count}项";
             if (node.goldReward > 0)
-                rewardStr += $"\n\u7075\u77F3: +{node.goldReward}";
+                rewardStr += $"\n灵石: +{node.goldReward}";
 
-            _detailText.text = $"{node.nodeName}\n\u72B6\u6001: {status}{prereq}\n\n{node.description}{rewardStr}";
+            _detailTitle.text = $"{node.nodeName}  [{status}]";
+            _detailDesc.text = $"{node.description}{prereq}";
+            _detailReward.text = rewardStr;
 
             _unlockBtn.interactable = canUnlock;
             var unlockTmp = _unlockBtn.GetComponentInChildren<TextMeshProUGUI>();
             if (unlockTmp != null)
-                unlockTmp.text = unlocked ? "\u5DF2\u89E3\u9501" : canUnlock ? "\u89E3\u9501" : "\u65E0\u6CD5\u89E3\u9501";
+                unlockTmp.text = unlocked ? "已解锁" : canUnlock ? "解锁" : "无法解锁";
+
+            _detailPanel.SetActive(true);
         }
 
         void OnUnlockClick()
@@ -307,28 +391,19 @@ namespace CardGame.UI
             if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
 
             CardGameArchitecture.Interface.GetSystem<IStorySystem>().UnlockNode(_selectedNode.nodeId);
-            FloatingTip.ShowSuccess($"\u89E3\u9501: {_selectedNode.nodeName}");
+            FloatingTip.ShowSuccess($"解锁: {_selectedNode.nodeName}");
 
-            // 刷新UI
-            // 简单方案：重建所有节点
-            for (int i = _nodesRoot.childCount - 1; i >= 0; i--)
-                Destroy(_nodesRoot.GetChild(i).gameObject);
+            // 重建树
+            for (int i = _contentRoot.childCount - 1; i >= 0; i--)
+                Destroy(_contentRoot.GetChild(i).gameObject);
             PopulateTree();
 
-            _selectedNode = null;
-            _unlockBtn.interactable = false;
-            _detailText.text = "\u89E3\u9501\u6210\u529F\uFF01\u9009\u62E9\u5176\u4ED6\u8282\u70B9\u7EE7\u7EED\u3002";
+            _detailPanel.SetActive(false);
         }
 
-        Color HexToColor(string hex)
+        void Close()
         {
-            if (string.IsNullOrEmpty(hex)) return Color.gray;
-            hex = hex.Replace("#", "");
-            if (hex.Length != 6) return Color.gray;
-            byte r = System.Convert.ToByte(hex.Substring(0, 2), 16);
-            byte g = System.Convert.ToByte(hex.Substring(2, 2), 16);
-            byte b = System.Convert.ToByte(hex.Substring(4, 2), 16);
-            return new Color32(r, g, b, 255);
+            gameObject.SetActive(false);
         }
 
         void SetFullStretch(RectTransform rt)
@@ -337,30 +412,39 @@ namespace CardGame.UI
             rt.offsetMin = Vector2.zero; rt.offsetMax = Vector2.zero;
         }
 
-        GameObject CreateText(Transform parent, string text, float size, Color color)
-        {
-            var go = new GameObject("Text");
-            go.transform.SetParent(parent, false);
-            go.AddComponent<RectTransform>();
-            var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = text; tmp.fontSize = size; tmp.color = color;
-            tmp.alignment = TextAlignmentOptions.Center;
-            if (_font) tmp.font = _font;
-            return go;
-        }
-
-        Button CreateButton(Transform parent, string label, Color color)
+        Button CreateButtonInRow(Transform parent, string label, Color color)
         {
             var go = new GameObject($"Btn_{label}");
             go.transform.SetParent(parent, false);
             go.AddComponent<Image>().color = color;
-            go.AddComponent<LayoutElement>().preferredHeight = 45;
-            var txt = CreateText(go.transform, label, 20, new Color(0.95f, 0.85f, 0.4f));
-            txt.GetComponent<RectTransform>().anchorMin = Vector2.zero;
-            txt.GetComponent<RectTransform>().anchorMax = Vector2.one;
-            txt.GetComponent<RectTransform>().offsetMin = Vector2.zero;
-            txt.GetComponent<RectTransform>().offsetMax = Vector2.zero;
+            go.AddComponent<LayoutElement>().preferredHeight = 40;
+            var t = CreateTMP(go.transform, label, 18, new Color(0.95f, 0.85f, 0.4f));
+            t.GetComponent<RectTransform>().anchorMin = Vector2.zero;
+            t.GetComponent<RectTransform>().anchorMax = Vector2.one;
+            t.GetComponent<RectTransform>().offsetMin = Vector2.zero;
+            t.GetComponent<RectTransform>().offsetMax = Vector2.zero;
             return go.AddComponent<Button>();
+        }
+    }
+
+    /// <summary>可解锁剧情框的闪烁动画组件</summary>
+    public class StoryBoxBlinker : MonoBehaviour
+    {
+        public Image targetImage;
+        private float _timer;
+        private Color _baseColor;
+
+        void Start()
+        {
+            if (targetImage != null) _baseColor = targetImage.color;
+        }
+
+        void Update()
+        {
+            if (targetImage == null) return;
+            _timer += Time.deltaTime;
+            float alpha = 0.6f + Mathf.Sin(_timer * 3f) * 0.35f;
+            targetImage.color = new Color(_baseColor.r, _baseColor.g, _baseColor.b, alpha);
         }
     }
 }

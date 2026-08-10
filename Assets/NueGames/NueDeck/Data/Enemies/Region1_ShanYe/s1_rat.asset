@@ -15,31 +15,31 @@ MonoBehaviour:
   characterID: s1_rat
   characterName: "\u5996\u9F20"
   characterDescription: 
-  maxHealth: 25
+  maxHealth: 16
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
-  followAbilityPattern: 0
+  followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u5543\u54AC"
+  - name: "\u653B\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
-      minActionValue: 3
-      maxActionValue: 3
-  - name: "\u6BD2\u54AC"
-    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+      minActionValue: 5
+      maxActionValue: 8
+  - name: "\u683C\u6321"
+    intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
     hideActionValue: 0
     actionList:
-    - actionType: 2
-      minActionValue: 2
-      maxActionValue: 2
-  - name: "\u5077\u88AD"
+    - actionType: 3
+      minActionValue: 4
+      maxActionValue: 4
+  - name: "\u731B\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
-      minActionValue: 3
-      maxActionValue: 3
+      minActionValue: 7
+      maxActionValue: 10
   enemyTier: 0
   regionId: 0
   enemyDescription: "\u5543\u98DF\u7075\u8C37\u53D8\u5F02\u7684\u5996\u9F20\uFF0C\u4F53\u578B\u867D\u5C0F\u4F46\u7E41\u6B96\u6781\u5FEB\u3002\u5E38\u6210\u7FA4\u51FA\u6CA1\u3002"

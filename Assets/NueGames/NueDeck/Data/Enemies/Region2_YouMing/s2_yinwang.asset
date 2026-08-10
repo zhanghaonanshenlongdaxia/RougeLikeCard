@@ -15,38 +15,10 @@ MonoBehaviour:
   characterID: s2_yinwang
   characterName: "\u5E7D\u51A5\u738B"
   characterDescription: 
-  maxHealth: 300
+  maxHealth: 217
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
   followAbilityPattern: 1
-  enemyAbilityList:
-  - name: "\u51A5\u738B\u65A9"
-    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
-    hideActionValue: 0
-    actionList:
-    - actionType: 0
-      minActionValue: 13
-      maxActionValue: 13
-  - name: "\u51A5\u738B\u76FE"
-    intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
-    hideActionValue: 0
-    actionList:
-    - actionType: 3
-      minActionValue: 15
-      maxActionValue: 15
-  - name: "\u51A5\u7F5A"
-    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
-    hideActionValue: 0
-    actionList:
-    - actionType: 4
-      minActionValue: 3
-      maxActionValue: 3
-  - name: "\u51A5\u51FB"
-    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
-    hideActionValue: 0
-    actionList:
-    - actionType: 0
-      minActionValue: 10
-      maxActionValue: 10
+  enemyAbilityList: []
   enemyTier: 2
   regionId: 1
   enemyDescription: "\u5E7D\u51A5\u79D8\u5883\u7684\u771F\u6B63\u4E3B\u5BB0\u3002\u6267\u638C\u751F\u6B7B\u4E4B\u529B\u3002\u4E09\u9636\u6BB5\u4ECE\u653B\u9632\u5747\u8861\u5230\u6781\u9650\u7206\u53D1\u3002"
@@ -57,55 +29,74 @@ MonoBehaviour:
   - healthThreshold: 0.6
     phaseEnterName: "\u72C2\u66B4"
     phaseAbilityList:
-    - name: Attack_18_25
-      intention: {fileID: 0}
-      hideActionValue: 0
-      actionList:
-      - actionType: 0
-        minActionValue: 18
-        maxActionValue: 25
-    - name: Attack_12_18
-      intention: {fileID: 0}
+    - name: "\u5929\u9B54\u65A9"
+      intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
       hideActionValue: 0
       actionList:
       - actionType: 0
         minActionValue: 12
-        maxActionValue: 18
-    - name: Heal_8_12
-      intention: {fileID: 0}
-      hideActionValue: 0
-      actionList:
-      - actionType: 1
-        minActionValue: 8
-        maxActionValue: 12
-  - healthThreshold: 0.3
-    phaseEnterName: "\u672B\u65E5\u964D\u4E34"
-    phaseAbilityList:
-    - name: Attack_25_35
-      intention: {fileID: 0}
-      hideActionValue: 0
-      actionList:
-      - actionType: 0
-        minActionValue: 25
-        maxActionValue: 35
-    - name: ApplyWeak_3_3
-      intention: {fileID: 0}
+        maxActionValue: 15
+    - name: "\u9B54\u6C14\u4FB5\u8680"
+      intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
       hideActionValue: 0
       actionList:
       - actionType: 4
-        minActionValue: 3
-        maxActionValue: 3
-    - name: ApplyVulnerable_3_3
-      intention: {fileID: 0}
+        minActionValue: 2
+        maxActionValue: 2
+      - actionType: 6
+        minActionValue: 2
+        maxActionValue: 2
+    - name: "\u9B54\u6C14\u56DE\u5143"
+      intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
       hideActionValue: 0
       actionList:
-      - actionType: 6
-        minActionValue: 3
-        maxActionValue: 3
-    - name: Block_10_15
-      intention: {fileID: 0}
+      - actionType: 1
+        minActionValue: 10
+        maxActionValue: 10
+    - name: "\u9B54\u7532"
+      intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
       hideActionValue: 0
       actionList:
       - actionType: 3
         minActionValue: 10
+        maxActionValue: 10
+  - healthThreshold: 0.3
+    phaseEnterName: "\u672B\u65E5\u964D\u4E34"
+    phaseAbilityList:
+    - name: "\u672B\u65E5\xB7\u5929\u9B54\u5D29"
+      intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+      hideActionValue: 0
+      actionList:
+      - actionType: 0
+        minActionValue: 16
+        maxActionValue: 21
+    - name: "\u672B\u65E5\xB7\u4E07\u9B54\u8680"
+      intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+      hideActionValue: 0
+      actionList:
+      - actionType: 4
+        minActionValue: 2
+        maxActionValue: 2
+      - actionType: 5
+        minActionValue: 2
+        maxActionValue: 2
+      - actionType: 6
+        minActionValue: 2
+        maxActionValue: 2
+    - name: "\u672B\u65E5\xB7\u9B54\u8FDE\u65A9"
+      intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+      hideActionValue: 0
+      actionList:
+      - actionType: 0
+        minActionValue: 8
+        maxActionValue: 8
+      - actionType: 0
+        minActionValue: 8
+        maxActionValue: 8
+    - name: "\u672B\u65E5\xB7\u9B54\u94E0"
+      intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
+      hideActionValue: 0
+      actionList:
+      - actionType: 3
+        minActionValue: 15
         maxActionValue: 15

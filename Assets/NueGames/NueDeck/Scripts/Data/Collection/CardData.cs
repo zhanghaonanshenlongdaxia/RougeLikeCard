@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using NueGames.NueDeck.Scripts.Enums;
 using NueGames.NueDeck.Scripts.Managers;
 using NueGames.NueDeck.Scripts.NueExtentions;
@@ -28,6 +29,8 @@ namespace NueGames.NueDeck.Scripts.Data.Collection
         [Header("Description")]
         [SerializeField] private List<CardDescriptionData> cardDescriptionDataList;
         [SerializeField] private List<StatusType> specialKeywordsList;
+        [Tooltip("简略描述：卡牌面上显示的短文本，保留数值信息，省略修饰词")]
+        [SerializeField] private string shortDescription;
         
         [Header("Fx")]
         [SerializeField] private AudioActionType audioType;
@@ -63,6 +66,8 @@ namespace NueGames.NueDeck.Scripts.Data.Collection
         public List<StatusType> KeywordsList => specialKeywordsList;
         public AudioActionType AudioType => audioType;
         public string MyDescription { get; set; }
+        /// <summary>卡牌面显示描述：第一条效果文本，动态反映buff加成</summary>
+        public string ShortDescription => GetDisplayDescription();
         public RarityType Rarity => rarity;
 
         public bool ExhaustAfterPlay => exhaustAfterPlay;
@@ -116,6 +121,63 @@ namespace NueGames.NueDeck.Scripts.Data.Collection
             
             MyDescription = str.ToString();
         }
+
+        /// <summary>
+        /// 卡牌面显示用的简略描述：取第一个描述条目的文本，
+        /// 并根据玩家当前 buff（力量/敏捷）动态替换数值。
+        /// 例：基础文本"造成6点伤害"，玩家有力量3 → "造成9点伤害"
+        /// </summary>
+        public string GetDisplayDescription()
+        {
+            if (cardDescriptionDataList == null || cardDescriptionDataList.Count == 0)
+                return MyDescription;
+
+            // 取第一条描述（效果文本，如"造成6点伤害"）
+            var text = cardDescriptionDataList[0].DescriptionText;
+            if (string.IsNullOrEmpty(text)) return MyDescription;
+
+            // 战斗中才动态计算
+            var cm = CombatManager.Instance;
+            if (cm == null || cm.CurrentMainAlly == null) return text;
+
+            var stats = cm.CurrentMainAlly.CharacterStats;
+            if (cardActionDataList == null || cardActionDataList.Count == 0) return text;
+
+            var action = cardActionDataList[0];
+            int baseValue = Mathf.RoundToInt(action.ActionValue);
+
+            // 攻击卡：力量加成
+            if (action.CardActionType == CardActionType.Attack)
+            {
+                int strength = stats.StatusDict[StatusType.Strength].StatusValue;
+                if (strength != 0)
+                {
+                    int modified = baseValue + strength;
+                    text = ReplaceFirstNumber(text, baseValue, modified);
+                }
+            }
+            // 格挡卡：敏捷加成
+            else if (action.CardActionType == CardActionType.Block)
+            {
+                int dexterity = stats.StatusDict[StatusType.Dexterity].StatusValue;
+                if (dexterity != 0)
+                {
+                    int modified = baseValue + dexterity;
+                    text = ReplaceFirstNumber(text, baseValue, modified);
+                }
+            }
+
+            return text;
+        }
+
+        /// <summary>将文本中第一个出现的 oldNum 替换为 newNum</summary>
+        private static string ReplaceFirstNumber(string text, int oldNum, int newNum)
+        {
+            var pattern = oldNum.ToString();
+            var idx = text.IndexOf(pattern);
+            if (idx < 0) return text;
+            return text.Substring(0, idx) + newNum + text.Substring(idx + pattern.Length);
+        }
         #endregion
 
         #region Editor Methods
@@ -139,6 +201,7 @@ namespace NueGames.NueDeck.Scripts.Data.Collection
         public void EditUnlockChapter(int newChapter) => unlockChapter = newChapter;
         public void EditPowerTier(int newTier) => powerTier = newTier;
         public void EditReplacesCardId(string newId) => replacesCardId = newId;
+        public void EditShortDescription(string desc) => shortDescription = desc;
 #endif
 
         #endregion

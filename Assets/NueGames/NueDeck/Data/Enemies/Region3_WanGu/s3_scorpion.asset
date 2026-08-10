@@ -15,33 +15,30 @@ MonoBehaviour:
   characterID: s3_scorpion
   characterName: "\u86CA\u874E"
   characterDescription: 
-  maxHealth: 52
+  maxHealth: 46
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
   followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u6BD2\u5C3E"
+  - name: "\u653B\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
-      minActionValue: 8
+      minActionValue: 5
       maxActionValue: 8
-    - actionType: 2
-      minActionValue: 3
-      maxActionValue: 3
-  - name: "\u7532\u58F3"
+  - name: "\u683C\u6321"
     intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 3
-      minActionValue: 6
-      maxActionValue: 6
-  - name: "\u94B3\u51FB"
+      minActionValue: 4
+      maxActionValue: 4
+  - name: "\u731B\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
-      minActionValue: 10
+      minActionValue: 7
       maxActionValue: 10
   enemyTier: 0
   regionId: 2

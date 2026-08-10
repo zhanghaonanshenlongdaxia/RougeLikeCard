@@ -15,34 +15,31 @@ MonoBehaviour:
   characterID: s1_eagle
   characterName: "\u9E70\u5996"
   characterDescription: 
-  maxHealth: 38
+  maxHealth: 14
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
   followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u53CC\u722A\u6495"
+  - name: "\u653B\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
-      minActionValue: 4
-      maxActionValue: 4
-    - actionType: 0
-      minActionValue: 4
-      maxActionValue: 4
-  - name: "\u9510\u773C\u9501\u5B9A"
-    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+      minActionValue: 5
+      maxActionValue: 8
+  - name: "\u683C\u6321"
+    intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
     hideActionValue: 0
     actionList:
-    - actionType: 6
-      minActionValue: 1
-      maxActionValue: 1
-  - name: "\u4FEF\u51B2"
+    - actionType: 3
+      minActionValue: 4
+      maxActionValue: 4
+  - name: "\u731B\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
-      minActionValue: 6
-      maxActionValue: 6
+      minActionValue: 7
+      maxActionValue: 10
   enemyTier: 0
   regionId: 0
   enemyDescription: "\u9AD8\u7A7A\u76D8\u65CB\u7684\u9E70\u5996\uFF0C\u76EE\u5149\u5982\u70AC\u3002\u5584\u4E8E\u4FEF\u51B2\u7A81\u51FB\uFF0C\u5229\u722A\u80FD\u6495\u88C2\u62A4\u7532\u3002"

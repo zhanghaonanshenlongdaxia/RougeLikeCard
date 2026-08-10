@@ -16,8 +16,8 @@ MonoBehaviour:
   displayName: "\u529B\u91CF"
   description: "\u589E\u52A0\u653B\u51FB\u4F24\u5BB3"
   icon: {fileID: 8414397559482299720, guid: a707003c96586cc41b22ae32a9cdb636, type: 3}
-  decreaseOverTurn: 0
-  isPermanent: 1
+  decreaseOverTurn: 1
+  isPermanent: 0
   canNegativeStack: 1
   clearAtNextTurn: 0
   damageTakenMult: 1

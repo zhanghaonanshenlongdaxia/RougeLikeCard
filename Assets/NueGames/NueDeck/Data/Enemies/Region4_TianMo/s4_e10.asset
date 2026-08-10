@@ -19,48 +19,44 @@ MonoBehaviour:
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
   followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u653B\u51FB"
+  - name: "\u91CD\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
-      minActionValue: 20
-      maxActionValue: 20
-  - name: "\u865A\u5F31"
-    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+      minActionValue: 13
+      maxActionValue: 19
+  - name: "\u538B\u5236"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
+    - actionType: 0
+      minActionValue: 10
+      maxActionValue: 12
     - actionType: 4
-      minActionValue: 3
-      maxActionValue: 3
+      minActionValue: 2
+      maxActionValue: 2
+  - name: "\u94C1\u58C1"
+    intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 3
+      minActionValue: 15
+      maxActionValue: 15
+  - name: "\u7834\u7532\u7A81\u88AD"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 12
+      maxActionValue: 14
+    - actionType: 6
+      minActionValue: 2
+      maxActionValue: 2
   enemyTier: 1
   regionId: 3
   enemyDescription: "\u5929\u9B54\u88C2\u9699\u7684\u7CBE\u82F1\u3002\u7F16\u53F710\u3002"
   enemyPortrait: {fileID: 0}
   encounterDialogue: "\u9B54\u5C0610\u62E6\u8DEF\uFF01"
   victoryDialogue: "\u9B54\u5C0610\u5012\u4E0B\u4E86\u2026\u2026"
-  phaseList:
-  - healthThreshold: 0.5
-    phaseEnterName: "\u72C2\u66B4"
-    phaseAbilityList:
-    - name: Attack_12_18
-      intention: {fileID: 0}
-      hideActionValue: 0
-      actionList:
-      - actionType: 0
-        minActionValue: 12
-        maxActionValue: 18
-    - name: Attack_8_12
-      intention: {fileID: 0}
-      hideActionValue: 0
-      actionList:
-      - actionType: 0
-        minActionValue: 8
-        maxActionValue: 12
-    - name: ApplyWeak_2_2
-      intention: {fileID: 0}
-      hideActionValue: 0
-      actionList:
-      - actionType: 4
-        minActionValue: 2
-        maxActionValue: 2
+  phaseList: []

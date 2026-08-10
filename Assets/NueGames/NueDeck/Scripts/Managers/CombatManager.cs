@@ -35,6 +35,9 @@ namespace NueGames.NueDeck.Scripts.Managers
 
         public Action OnAllyTurnStarted;
         public Action OnEnemyTurnStarted;
+        // 回合结束事件：玩家/敌人在各自回合结束时结算状态衰减（而不是回合开始）
+        public Action OnAllyTurnEnded;
+        public Action OnEnemyTurnEnded;
         public List<Transform> EnemyPosList => enemyPosList;
 
         public List<Transform> AllyPosList => allyPosList;
@@ -256,6 +259,9 @@ namespace NueGames.NueDeck.Scripts.Managers
                     this.GetSystem<IRelicSystem>().TriggerRelics(RelicTriggerType.OnTurnStart,
                         new RelicTriggerContext(player: CurrentMainAlly, enemies: CurrentEnemiesList));
                     
+                    // 刷新手牌卡牌数值（反映当前buff加成）
+                    RefreshHandCardDisplay();
+                    
                     break;
                 case CombatStateType.EnemyTurn:
 
@@ -288,7 +294,21 @@ namespace NueGames.NueDeck.Scripts.Managers
         #region Public Methods
         public void EndTurn()
         {
+            // 玩家回合结束：结算玩家身上的状态衰减（中毒扣血/虚弱递减等）
+            OnAllyTurnEnded?.Invoke();
+            // buff变化后刷新卡牌数值
+            RefreshHandCardDisplay();
             CurrentCombatStateType = CombatStateType.EnemyTurn;
+        }
+
+        /// <summary>刷新手牌中所有卡牌的显示数值（反映当前buff加成）</summary>
+        public void RefreshHandCardDisplay()
+        {
+            if (CollectionManager == null || CollectionManager.HandController == null) return;
+            foreach (var card in CollectionManager.HandController.hand)
+            {
+                if (card != null) card.UpdateCardText();
+            }
         }
         public void OnAllyDeath(AllyBase targetAlly)
         {
@@ -362,12 +382,58 @@ namespace NueGames.NueDeck.Scripts.Managers
         #region Private Methods
         private void BuildEnemies()
         {
+            // 测试模式：使用强制指定的敌人（Boss 关卡不使用测试模式）
+            if (CardGame.EnemyTestMode.Enabled && CardGame.EnemyTestMode.ForcedEnemies.Count > 0
+                && !GameManager.PersistentGameplayData.IsFinalEncounter)
+            {
+                Debug.Log($"[CombatManager] Test mode active — spawning {CardGame.EnemyTestMode.ForcedEnemies.Count} forced enemies.");
+                var forcedList = CardGame.EnemyTestMode.ForcedEnemies;
+                var typeCounter = new System.Collections.Generic.Dictionary<string, int>();
+                for (var i = 0; i < forcedList.Count && i < EnemyPosList.Count; i++)
+                {
+                    var enemyData = forcedList[i];
+                    if (enemyData == null || enemyData.EnemyPrefab == null) continue;
+                    var clone = Instantiate(enemyData.EnemyPrefab, EnemyPosList[i]);
+                    var dataField = typeof(EnemyBase).GetField("enemyCharacterData", 
+                        System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    if (dataField != null) dataField.SetValue(clone, enemyData);
+                    clone.BuildCharacter();
+                    // 相同敌人分配不同技能起始偏移
+                    AssignAbilityOffset(clone, enemyData, typeCounter);
+                    ApplyDynamicScaling(clone, forcedList.Count);
+                    ApplyDifficultyMultiplier(clone);
+                    ApplyEnemySprite(clone, enemyData);
+                    CurrentEnemiesList.Add(clone);
+                }
+
+                // 测试模式没有随机遭遇 → 用当前区域的第一个普通遭遇兜底，供背景/胜利对话使用
+                try
+                {
+                    if (GameManager.EncounterData != null &&
+                        GameManager.EncounterData.EnemyEncounterList != null &&
+                        GameManager.EncounterData.EnemyEncounterList.Count > 0)
+                    {
+                        var stage = GameManager.EncounterData.EnemyEncounterList
+                            .Find(s => s.StageId == GameManager.PersistentGameplayData.CurrentStageId) ??
+                            GameManager.EncounterData.EnemyEncounterList[0];
+                        if (stage != null && stage.EnemyEncounterList != null && stage.EnemyEncounterList.Count > 0)
+                            CurrentEncounter = stage.EnemyEncounterList[0];
+                    }
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogWarning($"[CombatManager] Test mode fallback encounter failed: {e.Message}");
+                }
+                return;
+            }
+
             CurrentEncounter = GameManager.EncounterData.GetEnemyEncounter(
                 GameManager.PersistentGameplayData.CurrentStageId,
                 GameManager.PersistentGameplayData.CurrentEncounterId,
                 GameManager.PersistentGameplayData.IsFinalEncounter);
             
             var enemyList = CurrentEncounter.EnemyList;
+            var typeCounter2 = new System.Collections.Generic.Dictionary<string, int>();
             for (var i = 0; i < enemyList.Count; i++)
             {
                 var clone = Instantiate(enemyList[i].EnemyPrefab, EnemyPosList.Count >= i ? EnemyPosList[i] : EnemyPosList[0]);
@@ -377,8 +443,12 @@ namespace NueGames.NueDeck.Scripts.Managers
                 if (dataField != null) dataField.SetValue(clone, enemyList[i]);
                 clone.BuildCharacter();
                 
-                // 应用难度倍率
+                // 相同敌人分配不同技能起始偏移
+                AssignAbilityOffset(clone, enemyList[i], typeCounter2);
+                // 应用动态难度缩放（基于敌人数量 + 楼层）
+                ApplyDynamicScaling(clone, enemyList.Count);
                 ApplyDifficultyMultiplier(clone);
+                ApplyEnemySprite(clone, enemyList[i]);
                 
                 CurrentEnemiesList.Add(clone);
             }
@@ -557,6 +627,91 @@ namespace NueGames.NueDeck.Scripts.Managers
         }
 
         /// <summary>
+        /// 动态难度缩放（StS 规则）：
+        /// 1. 多敌人时降低个体 HP（避免血量总和过高）
+        /// 2. 楼层越高 HP 小幅增长
+        /// 3. 伤害不变（多敌人 = 更多行动 = 更高威胁，靠数量而非数值）
+        /// </summary>
+        private void ApplyDynamicScaling(EnemyBase enemy, int enemyCount)
+        {
+            if (enemy.CharacterStats == null) return;
+
+            int baseHP = enemy.CharacterStats.MaxHealth;
+            float hpMult = 1f;
+
+            // StS 规则：多敌人时个体 HP 降低
+            // 1个: 100%, 2个: 75%, 3个: 60%, 4+: 50%
+            switch (enemyCount)
+            {
+                case 1: hpMult = 1.0f; break;
+                case 2: hpMult = 0.75f; break;
+                case 3: hpMult = 0.60f; break;
+                default: hpMult = 0.50f; break;
+            }
+
+            // 楼层加成：每5层 HP +5%（上限 +50%）
+            int floor = GameManager.PersistentGameplayData.CurrentStageId;
+            float floorBonus = Mathf.Min(floor * 0.05f, 0.5f);
+            hpMult += floorBonus;
+
+            int newHP = Mathf.RoundToInt(baseHP * hpMult);
+            if (newHP < 1) newHP = 1;
+            enemy.CharacterStats.IncreaseMaxHealth(newHP - baseHP);
+            enemy.CharacterStats.SetCurrentHealth(newHP);
+
+            Debug.Log($"[Dynamic] {enemy.EnemyCharacterData?.CharacterName}: count={enemyCount}, floor={floor}, HP {baseHP}→{newHP} (×{hpMult:F2})");
+        }
+
+        /// <summary>
+        /// 为相同类型的敌人分配不同的技能起始偏移。
+        /// 例：3个相同敌人各有3个技能，分别从技能0/1/2开始轮转，
+        /// 这样同一回合不会3个敌人同时放同一个技能。
+        /// </summary>
+        private void AssignAbilityOffset(EnemyBase enemy, EnemyCharacterData enemyData,
+            System.Collections.Generic.Dictionary<string, int> typeCounter)
+        {
+            if (enemyData == null) return;
+            string key = enemyData.CharacterID ?? enemyData.name;
+
+            if (!typeCounter.ContainsKey(key))
+                typeCounter[key] = 0;
+
+            int offset = typeCounter[key];
+            typeCounter[key]++;
+
+            if (offset > 0)
+            {
+                enemy.SetAbilityStartOffset(offset);
+                Debug.Log($"[AbilityOffset] {enemyData.CharacterName} #{offset + 1}: starts from ability index {offset}");
+            }
+        }
+
+        /// <summary>
+        /// 替换敌人战斗精灵为 enemyPortrait（如果有），调整大小和朝向
+        /// </summary>
+        private void ApplyEnemySprite(EnemyBase enemy, EnemyCharacterData enemyData)
+        {
+            if (enemyData == null || enemyData.EnemyPortrait == null) return;
+
+            var sr = enemy.GetComponentInChildren<SpriteRenderer>();
+            if (sr != null)
+            {
+                sr.sprite = enemyData.EnemyPortrait;
+
+                // 调整 scale：原始敌人 64x68px PPU=100 → 0.64x0.68 世界单位
+                // 立绘 256x341px PPU=100 → 2.56x3.41 世界单位，scale=0.25 → 0.64x0.85
+                var t = sr.transform;
+                float targetHeight = 1.0f; // 接近原始敌人高度
+                float spriteHeight = enemyData.EnemyPortrait.rect.height / enemyData.EnemyPortrait.pixelsPerUnit;
+                float scale = targetHeight / spriteHeight;
+                // 朝左（敌人面对玩家，玩家在左边）
+                t.localScale = new Vector3(-scale, scale, 1f);
+
+                Debug.Log($"[EnemySprite] {enemyData.CharacterName}: scale={scale}, height={spriteHeight}, facing left");
+            }
+        }
+
+        /// <summary>
         /// 战斗胜利后根据敌人品阶掉落材料+配方
         /// </summary>
         private void DropLoot()
@@ -659,7 +814,11 @@ namespace NueGames.NueDeck.Scripts.Managers
             }
 
             if (CurrentCombatStateType != CombatStateType.EndCombat)
+            {
+                // 敌方回合结束：结算敌人身上的状态衰减（玩家施加的虚弱/易伤等递减）
+                OnEnemyTurnEnded?.Invoke();
                 CurrentCombatStateType = CombatStateType.AllyTurn;
+            }
         }
         #endregion
     }

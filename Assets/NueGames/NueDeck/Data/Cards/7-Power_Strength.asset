@@ -45,16 +45,8 @@ MonoBehaviour:
     usePrefixOnModifiedValue: 0
     modifiedValuePrefix: '*'
     overrideColorOnValueScaled: 0
-  - descriptionText: "\n\u6FC0\u53D1\u8840\u8109\u4E4B\u529B\uFF0C\u77ED\u65F6\u95F4\u5185\u529B\u91CF\u66B4\u6DA8\u3002"
-    enableOverrideColor: 0
-    overrideColor: {r: 0, g: 0, b: 0, a: 1}
-    useModifier: 0
-    modifiedActionValueIndex: 0
-    modiferStats: 0
-    usePrefixOnModifiedValue: 0
-    modifiedValuePrefix: '*'
-    overrideColorOnValueScaled: 0
   specialKeywordsList: 01000000
+  shortDescription: 
   audioType: 9
   upgradedCardName: 
   upgradedManaCost: 1

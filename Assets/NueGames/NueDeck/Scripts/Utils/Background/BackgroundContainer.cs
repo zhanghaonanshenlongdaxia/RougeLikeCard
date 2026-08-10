@@ -14,9 +14,24 @@ namespace NueGames.NueDeck.Scripts.Utils.Background
         
         public void OpenSelectedBackground()
         {
-            var encounter = CombatManager.CurrentEncounter;
+            if (backgroundRootList == null || backgroundRootList.Count == 0) return;
+
+            var encounter = CombatManager != null ? CombatManager.CurrentEncounter : null;
             foreach (var backgroundRoot in BackgroundRootList)
-                backgroundRoot.gameObject.SetActive(encounter.TargetBackgroundType == backgroundRoot.BackgroundType);
+            {
+                if (backgroundRoot == null) continue;
+                var targetBg = encounter != null ? encounter.TargetBackgroundType : NueGames.NueDeck.Scripts.Enums.BackgroundTypes.Profile1;
+                backgroundRoot.gameObject.SetActive(targetBg == backgroundRoot.BackgroundType);
+            }
+
+            // 确保至少一个背景激活（如果全没匹配上，激活第一个）
+            bool anyActive = false;
+            foreach (var bg in BackgroundRootList)
+            {
+                if (bg != null && bg.gameObject.activeSelf) { anyActive = true; break; }
+            }
+            if (!anyActive && BackgroundRootList.Count > 0 && BackgroundRootList[0] != null)
+                BackgroundRootList[0].gameObject.SetActive(true);
         }
     }
 }

@@ -15,7 +15,7 @@ MonoBehaviour:
   id: leg_gen_rebirth
   cardName: "\u51E4\u51F0\u6D85\u69C3"
   manaCost: 5
-  cardSprite: {fileID: 0}
+  cardSprite: {fileID: 21300000, guid: f699460fbf1b2404bb6c2e727663fc86, type: 3}
   rarity: 3
   usableWithoutTarget: 1
   exhaustAfterPlay: 1
@@ -37,6 +37,7 @@ MonoBehaviour:
     modifiedValuePrefix: '*'
     overrideColorOnValueScaled: 0
   specialKeywordsList: 
+  shortDescription: 
   audioType: 0
   upgradedCardName: "\u51E4\u51F0\u6D85\u69C3+"
   upgradedManaCost: 4

@@ -15,24 +15,31 @@ MonoBehaviour:
   characterID: s1_crab
   characterName: "\u87F9\u5996"
   characterDescription: 
-  maxHealth: 50
+  maxHealth: 26
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
   followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u94C1\u58F3\u62A4\u4F53"
-    intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
-    hideActionValue: 0
-    actionList:
-    - actionType: 3
-      minActionValue: 10
-      maxActionValue: 10
-  - name: "\u94B3\u51FB"
+  - name: "\u653B\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
       minActionValue: 5
-      maxActionValue: 5
+      maxActionValue: 8
+  - name: "\u683C\u6321"
+    intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 3
+      minActionValue: 4
+      maxActionValue: 4
+  - name: "\u731B\u51FB"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 7
+      maxActionValue: 10
   enemyTier: 0
   regionId: 0
   enemyDescription: "\u6EAA\u6D41\u4E2D\u4FEE\u70BC\u7684\u87F9\u5996\uFF0C\u58F3\u5982\u7CBE\u94C1\u3002\u653B\u51FB\u867D\u5F31\u4F46\u9632\u5FA1\u6781\u9AD8\uFF0C\u6781\u96BE\u51FB\u7834\u3002"

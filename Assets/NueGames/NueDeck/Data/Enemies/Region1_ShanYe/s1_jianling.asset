@@ -15,34 +15,41 @@ MonoBehaviour:
   characterID: s1_jianling
   characterName: "\u5251\u7075"
   characterDescription: 
-  maxHealth: 80
+  maxHealth: 89
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
   followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u4E00\u5251"
+  - name: "\u91CD\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
-      minActionValue: 12
-      maxActionValue: 12
-  - name: "\u4E09\u8FDE\u65A9"
+      minActionValue: 8
+      maxActionValue: 14
+  - name: "\u538B\u5236"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
-      minActionValue: 4
-      maxActionValue: 4
-    - actionType: 0
-      minActionValue: 4
-      maxActionValue: 4
-    - actionType: 0
-      minActionValue: 4
-      maxActionValue: 4
-  - name: "\u7834\u7EFD"
-    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+      minActionValue: 5
+      maxActionValue: 7
+    - actionType: 4
+      minActionValue: 2
+      maxActionValue: 2
+  - name: "\u94C1\u58C1"
+    intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
     hideActionValue: 0
     actionList:
+    - actionType: 3
+      minActionValue: 10
+      maxActionValue: 10
+  - name: "\u7834\u7532\u7A81\u88AD"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 7
+      maxActionValue: 9
     - actionType: 6
       minActionValue: 2
       maxActionValue: 2
@@ -52,30 +59,4 @@ MonoBehaviour:
   enemyPortrait: {fileID: 0}
   encounterDialogue: "\uFF08\u5251\u7075\u51DD\u5F62\uFF0C\u5251\u610F\u5982\u5C71\u538B\u6765\uFF09\n\u5251\u2026\u2026\u51FA\u2026\u2026\u9798\u2026\u2026\n\u6321\u6211\u8005\uFF0C\u6B7B\uFF01"
   victoryDialogue: "\u5251\u610F\u2026\u2026\u6563\u4E86\u2026\u2026\n\u539F\u6765\u2026\u2026\u8FD9\u5C31\u662F\u51E1\u4EBA\u7684\u529B\u91CF\u2026\u2026\n\uFF08\u5251\u7075\u5316\u4E3A\u6D41\u5149\u6D88\u6563\uFF09"
-  phaseList:
-  - healthThreshold: 0.4
-    phaseEnterName: "\u5251\u610F\u7206\u53D1"
-    phaseAbilityList:
-    - name: "\u5251\u610F\u4E00\u51FB"
-      intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
-      hideActionValue: 0
-      actionList:
-      - actionType: 0
-        minActionValue: 18
-        maxActionValue: 18
-    - name: "\u56DB\u8FDE\u65A9"
-      intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
-      hideActionValue: 0
-      actionList:
-      - actionType: 0
-        minActionValue: 6
-        maxActionValue: 6
-      - actionType: 0
-        minActionValue: 6
-        maxActionValue: 6
-      - actionType: 0
-        minActionValue: 6
-        maxActionValue: 6
-      - actionType: 0
-        minActionValue: 6
-        maxActionValue: 6
+  phaseList: []

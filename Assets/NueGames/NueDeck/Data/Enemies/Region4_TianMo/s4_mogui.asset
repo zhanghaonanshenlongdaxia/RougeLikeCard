@@ -15,34 +15,34 @@ MonoBehaviour:
   characterID: s4_mogui
   characterName: "\u9B54\u9B3C"
   characterDescription: 
-  maxHealth: 50
+  maxHealth: 36
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
   followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u9B54\u722A"
+  - name: "\u9B54\u8BC0"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
-      minActionValue: 8
-      maxActionValue: 8
-  - name: "\u9B54\u5492"
+      minActionValue: 7
+      maxActionValue: 10
+  - name: "\u805A\u9B54\u6C14"
     intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
     hideActionValue: 0
     actionList:
-    - actionType: 4
-      minActionValue: 2
-      maxActionValue: 2
-    - actionType: 6
-      minActionValue: 2
-      maxActionValue: 2
-  - name: "\u9B54\u722A"
+    - actionType: 1
+      minActionValue: 5
+      maxActionValue: 5
+  - name: "\u53CC\u9B54\u8BC0"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
-      minActionValue: 8
-      maxActionValue: 8
+      minActionValue: 5
+      maxActionValue: 5
+    - actionType: 0
+      minActionValue: 5
+      maxActionValue: 5
   enemyTier: 0
   regionId: 3
   enemyDescription: "\u7EAF\u7CB9\u7684\u9B54\u9B3C\u3002\u653B\u51FB\u914D\u5408\u53CCdebuff\u3002"

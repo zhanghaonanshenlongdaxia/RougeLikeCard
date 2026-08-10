@@ -15,34 +15,31 @@ MonoBehaviour:
   characterID: s3_newt
   characterName: "\u706B\u877E\u8788"
   characterDescription: 
-  maxHealth: 48
+  maxHealth: 42
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
   followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u706B\u820C"
+  - name: "\u653B\u51FB"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 5
+      maxActionValue: 8
+  - name: "\u683C\u6321"
+    intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 3
+      minActionValue: 4
+      maxActionValue: 4
+  - name: "\u731B\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
       minActionValue: 7
-      maxActionValue: 7
-    - actionType: 6
-      minActionValue: 1
-      maxActionValue: 1
-  - name: "\u7206\u88C2"
-    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
-    hideActionValue: 0
-    actionList:
-    - actionType: 0
-      minActionValue: 9
-      maxActionValue: 9
-  - name: "\u76AE\u76FE"
-    intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
-    hideActionValue: 0
-    actionList:
-    - actionType: 3
-      minActionValue: 5
-      maxActionValue: 5
+      maxActionValue: 10
   enemyTier: 0
   regionId: 2
   enemyDescription: "\u6CBC\u6CFD\u4E2D\u7684\u706B\u877E\u8788\u3002\u653B\u51FB\u914D\u5408\u6613\u4F24\u4E0E\u683C\u6321\u3002"

@@ -20,7 +20,7 @@ using Random = UnityEngine.Random;
 
 namespace NueGames.NueDeck.Scripts.Card
 {
-    public class CardBase : MonoBehaviour,I2DTooltipTarget, IPointerDownHandler, IPointerUpHandler, IController
+    public class CardBase : MonoBehaviour,I2DTooltipTarget, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, IController
     {
         public IArchitecture GetArchitecture() => CardGameArchitecture.Interface;
         [Header("Base References")]
@@ -63,9 +63,11 @@ namespace NueGames.NueDeck.Scripts.Card
             CardData = targetProfile;
             IsPlayable = isPlayable;
             nameTextField.text = CardData.CardName;
-            descTextField.text = CardData.MyDescription;
+            descTextField.text = CardData.ShortDescription;
             manaTextField.text = CardData.ManaCost.ToString();
-            cardImage.sprite = CardData.CardSprite;
+            // 仅当卡牌有自定义图片时才覆盖，否则保留prefab默认卡牌框
+            if (CardData.CardSprite != null)
+                cardImage.sprite = CardData.CardSprite;
             foreach (var rarityRoot in RarityRootList)
                 rarityRoot.gameObject.SetActive(rarityRoot.Rarity == CardData.Rarity);
         }
@@ -176,7 +178,7 @@ namespace NueGames.NueDeck.Scripts.Card
         {
             CardData.UpdateDescription();
             nameTextField.text = CardData.CardName;
-            descTextField.text = CardData.MyDescription;
+            descTextField.text = CardData.ShortDescription;
             manaTextField.text = CardData.ManaCost.ToString();
         }
         
@@ -268,6 +270,15 @@ namespace NueGames.NueDeck.Scripts.Card
         public virtual void OnPointerUp(PointerEventData eventData)
         {
             ShowTooltipInfo();
+        }
+
+        public virtual void OnPointerClick(PointerEventData eventData)
+        {
+            // 右键点击：打开卡牌详情面板
+            if (eventData.button == PointerEventData.InputButton.Right)
+            {
+                CardGame.UI.CardDetailPanel.Show(CardData);
+            }
         }
         #endregion
 

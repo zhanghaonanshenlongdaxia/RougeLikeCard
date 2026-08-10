@@ -15,30 +15,31 @@ MonoBehaviour:
   characterID: s2_raven
   characterName: "\u51A5\u9E26"
   characterDescription: 
-  maxHealth: 34
+  maxHealth: 18
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
   followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u4E09\u5544"
+  - name: "\u653B\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
-      minActionValue: 3
-      maxActionValue: 3
-    - actionType: 0
-      minActionValue: 3
-      maxActionValue: 3
-    - actionType: 0
-      minActionValue: 3
-      maxActionValue: 3
-  - name: "\u541E\u98DF\u4EA1\u6C14"
-    intention: {fileID: 11400000, guid: d8b91adf93b4e21419f64f9a68fc3c70, type: 2}
+      minActionValue: 5
+      maxActionValue: 8
+  - name: "\u683C\u6321"
+    intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
     hideActionValue: 0
     actionList:
-    - actionType: 1
-      minActionValue: 5
-      maxActionValue: 5
+    - actionType: 3
+      minActionValue: 4
+      maxActionValue: 4
+  - name: "\u731B\u51FB"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 7
+      maxActionValue: 10
   enemyTier: 0
   regionId: 1
   enemyDescription: "\u51A5\u754C\u7684\u9ED1\u9E26\uFF0C\u4EE5\u4EA1\u7075\u4E3A\u98DF\u3002\u4E09\u6BB5\u5544\u51FB\u914D\u5408\u81EA\u8EAB\u6CBB\u7597\u3002"

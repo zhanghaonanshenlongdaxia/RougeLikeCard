@@ -139,18 +139,39 @@ namespace CardGame.UI
                 btBtn.onClick.AddListener(OnBreakthrough);
                 Debug.Log("[BaseUI] BreakthroughButton created at runtime");
             }
+
+            // Create StoryTreeButton if not found
+            if (GetComponentsInChildren<Button>(true).All(b => b.gameObject.name != "StoryTreeButton"))
+            {
+                var stBtnObj = new GameObject("StoryTreeButton");
+                stBtnObj.transform.SetParent(transform, false);
+                var rt = stBtnObj.AddComponent<RectTransform>();
+                rt.anchorMin = new Vector2(0.67f, 0.03f); rt.anchorMax = new Vector2(0.82f, 0.12f);
+                rt.offsetMin = Vector2.zero; rt.offsetMax = Vector2.zero;
+                stBtnObj.AddComponent<Image>().color = new Color(0.15f, 0.35f, 0.2f, 1f);
+                var txtObj = new GameObject("Text");
+                txtObj.transform.SetParent(stBtnObj.transform, false);
+                var txtRt = txtObj.AddComponent<RectTransform>();
+                txtRt.anchorMin = Vector2.zero; txtRt.anchorMax = Vector2.one;
+                txtRt.offsetMin = Vector2.zero; txtRt.offsetMax = Vector2.zero;
+                var tmp = txtObj.AddComponent<TextMeshProUGUI>();
+                tmp.text = "剧情树"; tmp.fontSize = 16; tmp.color = new Color(0.9f, 0.8f, 0.3f);
+                tmp.alignment = TextAlignmentOptions.Center;
+                var libSans2 = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
+                if (libSans2) tmp.font = libSans2;
+                var stBtn = stBtnObj.AddComponent<Button>();
+                stBtn.onClick.AddListener(ShowStoryTree);
+                Debug.Log("[BaseUI] StoryTreeButton created at runtime");
+            }
         }
 
         private void OnEnable()
         {
             UpdateStatus();
+            // 初始化故事树根节点（不再自动弹出）
             try
             {
-                var storySystem = this.GetSystem<IStorySystem>();
-                storySystem.InitRootNodes();
-                var available = storySystem.GetAvailableNodes();
-                if (available.Count > 0)
-                    Invoke(nameof(ShowStoryTree), 1f);
+                this.GetSystem<IStorySystem>().InitRootNodes();
             }
             catch { }
         }

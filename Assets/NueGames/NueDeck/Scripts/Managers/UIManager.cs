@@ -54,6 +54,11 @@ namespace NueGames.NueDeck.Scripts.Managers
 
         public void OpenInventory(List<CardData> cardList,string title)
         {
+            if (InventoryCanvas == null)
+            {
+                Debug.LogWarning("[UIManager] InventoryCanvas is null — skipping open inventory.");
+                return;
+            }
            SetCanvas(InventoryCanvas,true,true);
            InventoryCanvas.ChangeTitle(title);
            InventoryCanvas.SetCards(cardList);
@@ -61,6 +66,11 @@ namespace NueGames.NueDeck.Scripts.Managers
         
         public void SetCanvas(CanvasBase targetCanvas,bool open,bool reset = false)
         {
+            if (targetCanvas == null)
+            {
+                Debug.LogWarning($"[UIManager] SetCanvas called with null targetCanvas (open={open})");
+                return;
+            }
             if (reset)
                 targetCanvas.ResetCanvas();
             

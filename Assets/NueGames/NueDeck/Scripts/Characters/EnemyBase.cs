@@ -36,7 +36,8 @@ namespace NueGames.NueDeck.Scripts.Characters
             CharacterStats.OnDeath += OnDeath;
             CharacterStats.SetCurrentHealth(CharacterStats.CurrentHealth);
             CombatManager.OnAllyTurnStarted += ShowNextAbility;
-            CombatManager.OnEnemyTurnStarted += CharacterStats.TriggerAllStatus;
+            // 敌人身上的状态在敌人回合结束时结算衰减（玩家施加的虚弱/易伤等递减）
+            CombatManager.OnEnemyTurnEnded += CharacterStats.TriggerAllStatus;
             
             // Subscribe to health changes for phase switching
             if (EnemyCharacterData.HasPhases)
@@ -46,7 +47,7 @@ namespace NueGames.NueDeck.Scripts.Characters
         {
             base.OnDeath();
             CombatManager.OnAllyTurnStarted -= ShowNextAbility;
-            CombatManager.OnEnemyTurnStarted -= CharacterStats.TriggerAllStatus;
+            CombatManager.OnEnemyTurnEnded -= CharacterStats.TriggerAllStatus;
             if (EnemyCharacterData.HasPhases)
                 CharacterStats.OnHealthChanged -= OnHealthChanged;
            
@@ -59,6 +60,15 @@ namespace NueGames.NueDeck.Scripts.Characters
         #region Private Methods
 
         private int _usedAbilityCount;
+        /// <summary>
+        /// 设置技能轮转起始偏移：相同类型的多个敌人分别从不同技能开始，
+        /// 形成错开的攻击节奏（如敌人A先放技能1，敌人B先放技能2）。
+        /// </summary>
+        public void SetAbilityStartOffset(int offset)
+        {
+            if (_usedAbilityCount == 0)
+                _usedAbilityCount = offset;
+        }
         private void ShowNextAbility()
         {
             // Get active ability list based on current phase

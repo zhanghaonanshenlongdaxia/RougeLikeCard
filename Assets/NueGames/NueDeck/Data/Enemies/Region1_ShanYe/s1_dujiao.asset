@@ -15,59 +15,48 @@ MonoBehaviour:
   characterID: s1_dujiao
   characterName: "\u6BD2\u86DF"
   characterDescription: 
-  maxHealth: 130
+  maxHealth: 85
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
   followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u6BD2\u96FE"
-    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
-    hideActionValue: 0
-    actionList:
-    - actionType: 2
-      minActionValue: 5
-      maxActionValue: 5
-  - name: "\u86DF\u5C3E\u626B"
+  - name: "\u72C2\u89D2\u51B2\u649E"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
       minActionValue: 8
+      maxActionValue: 11
+  - name: "\u88C2\u5730\u8E0F"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 6
       maxActionValue: 8
-  - name: "\u86DF\u9CDE\u62A4\u4F53"
+    - actionType: 6
+      minActionValue: 2
+      maxActionValue: 2
+  - name: "\u94DC\u76AE"
     intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 3
-      minActionValue: 8
-      maxActionValue: 8
+      minActionValue: 10
+      maxActionValue: 10
+  - name: "\u9707\u8361"
+    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 5
+      minActionValue: 2
+      maxActionValue: 2
+    - actionType: 4
+      minActionValue: 2
+      maxActionValue: 2
   enemyTier: 1
   regionId: 0
   enemyDescription: "\u5C71\u95F4\u6BD2\u86DF\uFF0C\u4EE5\u6BD2\u96FE\u95FB\u540D\u3002\u8840\u91CF\u516D\u6210\u540E\u6BD2\u606F\u7206\u53D1\uFF0C\u53CC\u91CD\u65BD\u6BD2\u3002"
-  enemyPortrait: {fileID: 0}
+  enemyPortrait: {fileID: 21300000, guid: 8b5eb58df9cdd2e44958d455488c70ca, type: 3}
   encounterDialogue: "\u5636\u2014\u2014\uFF08\u6BD2\u86DF\u4ECE\u6F6D\u4E2D\u63A2\u51FA\uFF0C\u6BD2\u96FE\u5F25\u6F2B\uFF09\n\u8E0F\u5165\u6211\u9886\u5730\u8005\u2026\u2026\n\u5C06\u5316\u4E3A\u6BD2\u6F6D\u4E2D\u7684\u4E00\u5177\u767D\u9AA8\uFF01"
   victoryDialogue: "\u86DF\u8EAB\u2026\u2026\u88C2\u4E86\u2026\u2026\n\u6BD2\u6F6D\u2026\u2026\u5E72\u6DB8\u2026\u2026\n\uFF08\u6BD2\u86DF\u7FFB\u6EDA\u7740\u6C89\u5165\u6F6D\u5E95\uFF0C\u518D\u65E0\u58F0\u606F\uFF09"
-  phaseList:
-  - healthThreshold: 0.5
-    phaseEnterName: "\u72C2\u66B4"
-    phaseAbilityList:
-    - name: Attack_12_18
-      intention: {fileID: 0}
-      hideActionValue: 0
-      actionList:
-      - actionType: 0
-        minActionValue: 12
-        maxActionValue: 18
-    - name: Attack_8_12
-      intention: {fileID: 0}
-      hideActionValue: 0
-      actionList:
-      - actionType: 0
-        minActionValue: 8
-        maxActionValue: 12
-    - name: ApplyWeak_2_2
-      intention: {fileID: 0}
-      hideActionValue: 0
-      actionList:
-      - actionType: 4
-        minActionValue: 2
-        maxActionValue: 2
+  phaseList: []

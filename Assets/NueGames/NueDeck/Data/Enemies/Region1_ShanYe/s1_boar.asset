@@ -15,24 +15,31 @@ MonoBehaviour:
   characterID: s1_boar
   characterName: "\u91CE\u732A\u5996"
   characterDescription: 
-  maxHealth: 48
+  maxHealth: 22
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
-  followAbilityPattern: 0
+  followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u62F1\u51FB"
+  - name: "\u653B\u51FB"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 5
+      maxActionValue: 8
+  - name: "\u683C\u6321"
+    intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 3
+      minActionValue: 4
+      maxActionValue: 4
+  - name: "\u731B\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
       minActionValue: 7
-      maxActionValue: 7
-  - name: "\u84C4\u529B\u731B\u51B2"
-    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
-    hideActionValue: 1
-    actionList:
-    - actionType: 0
-      minActionValue: 14
-      maxActionValue: 14
+      maxActionValue: 10
   enemyTier: 0
   regionId: 0
   enemyDescription: "\u5C71\u6D77\u95F4\u5076\u5F97\u673A\u7F18\u5F00\u4E86\u7075\u667A\u7684\u91CE\u732A\uFF0C\u76AE\u7CD9\u8089\u539A\u3002\u66B4\u6012\u65F6\u4F4E\u5934\u731B\u51B2\uFF0C\u52BF\u4E0D\u53EF\u6321\u3002"

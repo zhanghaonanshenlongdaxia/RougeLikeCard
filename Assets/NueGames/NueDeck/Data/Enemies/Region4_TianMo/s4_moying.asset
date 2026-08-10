@@ -15,30 +15,31 @@ MonoBehaviour:
   characterID: s4_moying
   characterName: "\u9B54\u5F71"
   characterDescription: 
-  maxHealth: 42
+  maxHealth: 53
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
   followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u9B54\u722A"
+  - name: "\u653B\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
-      minActionValue: 4
-      maxActionValue: 4
-    - actionType: 0
-      minActionValue: 4
-      maxActionValue: 4
-    - actionType: 0
-      minActionValue: 4
-      maxActionValue: 4
-  - name: "\u7834\u7EFD"
-    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
+      minActionValue: 5
+      maxActionValue: 8
+  - name: "\u683C\u6321"
+    intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
     hideActionValue: 0
     actionList:
-    - actionType: 6
-      minActionValue: 2
-      maxActionValue: 2
+    - actionType: 3
+      minActionValue: 4
+      maxActionValue: 4
+  - name: "\u731B\u51FB"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 7
+      maxActionValue: 10
   enemyTier: 0
   regionId: 3
   enemyDescription: "\u6697\u5F71\u4E2D\u7684\u9B54\u7269\u3002\u591A\u6BB5\u653B\u51FB\u3002"

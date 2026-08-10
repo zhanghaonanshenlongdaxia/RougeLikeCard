@@ -15,37 +15,37 @@ MonoBehaviour:
   characterID: s1_mantis
   characterName: "\u87B3\u8782\u5996"
   characterDescription: 
-  maxHealth: 40
+  maxHealth: 23
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
   followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u53CC\u5200\u65A9"
+  - name: "\u6495\u54AC"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
-      minActionValue: 5
+      minActionValue: 3
       maxActionValue: 5
-    - actionType: 0
-      minActionValue: 5
-      maxActionValue: 5
-  - name: "\u53CC\u5200\u65A9"
+  - name: "\u866B\u7FA4\u51B2\u950B"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
-      minActionValue: 5
-      maxActionValue: 5
+      minActionValue: 2
+      maxActionValue: 2
     - actionType: 0
-      minActionValue: 5
-      maxActionValue: 5
-  - name: "\u81F4\u547D\u65A9"
-    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+      minActionValue: 2
+      maxActionValue: 2
+  - name: "\u866B\u7532\u786C\u5316"
+    intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
     hideActionValue: 0
     actionList:
-    - actionType: 0
-      minActionValue: 10
-      maxActionValue: 10
+    - actionType: 3
+      minActionValue: 3
+      maxActionValue: 3
+    - actionType: 5
+      minActionValue: 1
+      maxActionValue: 1
   enemyTier: 0
   regionId: 0
   enemyDescription: "\u4EE5\u5FEB\u53D6\u80DC\u7684\u87B3\u8782\u5996\uFF0C\u53CC\u5200\u5982\u9570\u3002\u524D\u4E24\u56DE\u5408\u8BD5\u63A2\uFF0C\u7B2C\u4E09\u56DE\u5408\u81F4\u547D\u4E00\u51FB\u3002"

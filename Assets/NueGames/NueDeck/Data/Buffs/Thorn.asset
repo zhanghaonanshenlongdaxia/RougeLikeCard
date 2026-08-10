@@ -16,8 +16,8 @@ MonoBehaviour:
   displayName: "\u53CD\u4F24"
   description: "\u53D7\u51FB\u65F6\u53CD\u5F39\u4F24\u5BB3\u7ED9\u653B\u51FB\u8005"
   icon: {fileID: 0}
-  decreaseOverTurn: 0
-  isPermanent: 1
+  decreaseOverTurn: 1
+  isPermanent: 0
   canNegativeStack: 0
   clearAtNextTurn: 0
   damageTakenMult: 1

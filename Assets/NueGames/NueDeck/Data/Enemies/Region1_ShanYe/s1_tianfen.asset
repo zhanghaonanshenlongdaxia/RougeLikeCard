@@ -15,65 +15,48 @@ MonoBehaviour:
   characterID: s1_tianfen
   characterName: "\u5929\u9B54\u5206\u8EAB"
   characterDescription: 
-  maxHealth: 120
+  maxHealth: 95
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
   followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u9B54\u538B"
-    intention: {fileID: 11400000, guid: e7deaaa3f01f8f54ab8c29a0ce3c8f31, type: 2}
-    hideActionValue: 0
-    actionList:
-    - actionType: 4
-      minActionValue: 2
-      maxActionValue: 2
-    - actionType: 6
-      minActionValue: 2
-      maxActionValue: 2
-    - actionType: 5
-      minActionValue: 2
-      maxActionValue: 2
-  - name: "\u9B54\u51FB"
+  - name: "\u91CD\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
-      minActionValue: 10
-      maxActionValue: 10
-  - name: "\u9B54\u6C14\u56DE\u6D41"
-    intention: {fileID: 11400000, guid: d8b91adf93b4e21419f64f9a68fc3c70, type: 2}
+      minActionValue: 8
+      maxActionValue: 14
+  - name: "\u538B\u5236"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
-    - actionType: 1
-      minActionValue: 8
-      maxActionValue: 8
+    - actionType: 0
+      minActionValue: 5
+      maxActionValue: 7
+    - actionType: 4
+      minActionValue: 2
+      maxActionValue: 2
+  - name: "\u94C1\u58C1"
+    intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 3
+      minActionValue: 10
+      maxActionValue: 10
+  - name: "\u7834\u7532\u7A81\u88AD"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 7
+      maxActionValue: 9
+    - actionType: 6
+      minActionValue: 2
+      maxActionValue: 2
   enemyTier: 1
   regionId: 0
   enemyDescription: "\u5929\u9B54\u7684\u4E00\u7F15\u5206\u8EAB\uFF0C\u8574\u542B\u5929\u9B54\u90E8\u5206\u529B\u91CF\u3002\u8840\u91CF\u8FC7\u534A\u540E\u88C2\u9699\u7206\u53D1\uFF0C\u5168debuff\u914D\u5408\u591A\u6BB5\u653B\u51FB\u3002"
   enemyPortrait: {fileID: 0}
   encounterDialogue: "\uFF08\u865A\u7A7A\u4E2D\u88C2\u5F00\u4E00\u9053\u7F1D\u9699\uFF0C\u5929\u9B54\u5206\u8EAB\u8D70\u51FA\uFF09\n\u6709\u8DA3\u2026\u2026\u4F60\u5F15\u6765\u4E86\u672C\u5EA7\u7684\u6CE8\u610F\u2026\u2026\n\u8BA9\u672C\u5EA7\u770B\u770B\u4F60\u7684\u6781\u9650\u5728\u54EA\u91CC\u3002"
   victoryDialogue: "\u4E0D\u9519\u2026\u2026\n\u4F60\u5F15\u8D77\u4E86\u672C\u5EA7\u7684\u5174\u8DA3\u2026\u2026\n\u4E0B\u6B21\u89C1\u9762\u2026\u2026\u4FBF\u662F\u4F60\u7684\u672B\u65E5\u2026\u2026\n\uFF08\u5206\u8EAB\u5316\u4E3A\u788E\u7247\u6D88\u6563\uFF09"
-  phaseList:
-  - healthThreshold: 0.5
-    phaseEnterName: "\u72C2\u66B4"
-    phaseAbilityList:
-    - name: Attack_12_18
-      intention: {fileID: 0}
-      hideActionValue: 0
-      actionList:
-      - actionType: 0
-        minActionValue: 12
-        maxActionValue: 18
-    - name: Attack_8_12
-      intention: {fileID: 0}
-      hideActionValue: 0
-      actionList:
-      - actionType: 0
-        minActionValue: 8
-        maxActionValue: 12
-    - name: ApplyWeak_2_2
-      intention: {fileID: 0}
-      hideActionValue: 0
-      actionList:
-      - actionType: 4
-        minActionValue: 2
-        maxActionValue: 2
+  phaseList: []

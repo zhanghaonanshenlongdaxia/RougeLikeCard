@@ -15,31 +15,31 @@ MonoBehaviour:
   characterID: s1_treeent
   characterName: "\u767E\u5E74\u6811\u7075"
   characterDescription: 
-  maxHealth: 45
+  maxHealth: 17
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
-  followAbilityPattern: 0
+  followAbilityPattern: 1
   enemyAbilityList:
-  - name: "\u85E4\u8513\u62BD\u6253"
+  - name: "\u653B\u51FB"
     intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 0
-      minActionValue: 6
-      maxActionValue: 6
-  - name: "\u6C72\u53D6\u7CBE\u534E"
-    intention: {fileID: 11400000, guid: d8b91adf93b4e21419f64f9a68fc3c70, type: 2}
-    hideActionValue: 0
-    actionList:
-    - actionType: 1
-      minActionValue: 4
-      maxActionValue: 4
-  - name: "\u6811\u76AE\u62A4\u4F53"
+      minActionValue: 5
+      maxActionValue: 8
+  - name: "\u683C\u6321"
     intention: {fileID: 11400000, guid: b0b1e7f2f78bb444eb1666e4accf22ee, type: 2}
     hideActionValue: 0
     actionList:
     - actionType: 3
-      minActionValue: 8
-      maxActionValue: 8
+      minActionValue: 4
+      maxActionValue: 4
+  - name: "\u731B\u51FB"
+    intention: {fileID: 11400000, guid: 2af475f5121b73d4c99b67551230aa48, type: 2}
+    hideActionValue: 0
+    actionList:
+    - actionType: 0
+      minActionValue: 7
+      maxActionValue: 10
   enemyTier: 0
   regionId: 0
   enemyDescription: "\u624E\u6839\u5343\u5E74\u7684\u53E4\u6811\u5B55\u80B2\u51FA\u7075\u667A\uFF0C\u679D\u53F6\u5982\u624B\u81C2\u822C\u6325\u52A8\u3002\u80FD\u6C72\u53D6\u5927\u5730\u7CBE\u534E\u6062\u590D\u81EA\u8EAB\u3002"

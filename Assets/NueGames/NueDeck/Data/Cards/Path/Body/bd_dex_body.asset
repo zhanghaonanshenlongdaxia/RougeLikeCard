@@ -15,7 +15,7 @@ MonoBehaviour:
   id: bd_dex_body
   cardName: "\u7075\u733F\u4F53"
   manaCost: 1
-  cardSprite: {fileID: 0}
+  cardSprite: {fileID: 21300000, guid: 1ff30701a92bdf24e802aeecfcb1eff8, type: 3}
   rarity: 1
   usableWithoutTarget: 1
   exhaustAfterPlay: 1
@@ -37,6 +37,7 @@ MonoBehaviour:
     modifiedValuePrefix: '*'
     overrideColorOnValueScaled: 0
   specialKeywordsList: 
+  shortDescription: 
   audioType: 0
   upgradedCardName: "\u7075\u733F\u4F53+"
   upgradedManaCost: 0
