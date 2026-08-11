@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using NueGames.NueDeck.Scripts.Enums;
 using UnityEngine;
 
 namespace CardGame
@@ -153,7 +154,16 @@ namespace CardGame
             return list.Count > 0 ? list[Random.Range(0, list.Count)] : null;
         }
 
-        /// <summary>按品阶获取随机材料</summary>
+        /// <summary>按品质获取随机材料</summary>
+        public static MaterialData GetRandomMaterialByQuality(ItemQuality quality)
+        {
+            var list = GetMaterials();
+            var filtered = list.FindAll(m => m.quality == quality);
+            if (filtered.Count == 0) filtered = list;
+            return filtered.Count > 0 ? filtered[Random.Range(0, filtered.Count)] : null;
+        }
+
+        /// <summary>按旧品阶名称获取随机材料（兼容旧调用）</summary>
         public static MaterialData GetRandomMaterialByRarity(string rarityName)
         {
             var list = GetMaterials();

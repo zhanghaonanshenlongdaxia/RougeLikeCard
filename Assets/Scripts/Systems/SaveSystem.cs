@@ -44,6 +44,15 @@ namespace CardGame
                 inventoryItems = new List<SaveData.InventoryItemEntry>(),
                 safeBoxItems = new List<SaveData.InventoryItemEntry>(),
                 allyHealth = new List<SaveData.AllyHealthEntry>(),
+                // Cultivation
+                comprehensionPoints = 0,
+                learnedMethodIds = new List<string>(),
+                activeMethodId = "",
+                unlockedNodeIds = new List<string>(),
+                learnedAbilityIds = new List<string>(),
+                equippedAbilityIds = new List<string>(),
+                acquiredAbilityBookIds = new List<string>(),
+                acquiredMethodFragmentIds = new List<string>(),
             };
 
             // 卡牌
@@ -114,6 +123,20 @@ namespace CardGame
                         currentHealth = hd.CurrentHealth,
                         maxHealth = hd.MaxHealth
                     });
+
+            // 功法系统
+            var cultModel = arch.GetModel<ICultivationModel>();
+            if (cultModel != null)
+            {
+                data.comprehensionPoints = cultModel.ComprehensionPoints.Value;
+                data.activeMethodId = cultModel.ActiveMethodId.Value;
+                data.learnedMethodIds = new List<string>(cultModel.LearnedMethodIds);
+                data.unlockedNodeIds = new List<string>(cultModel.UnlockedNodeIds);
+                data.learnedAbilityIds = new List<string>(cultModel.LearnedAbilityIds);
+                data.equippedAbilityIds = new List<string>(cultModel.EquippedAbilityIds);
+                data.acquiredAbilityBookIds = new List<string>(cultModel.AcquiredAbilityBookIds);
+                data.acquiredMethodFragmentIds = new List<string>(cultModel.AcquiredMethodFragmentIds);
+            }
 
             try
             {
@@ -257,6 +280,32 @@ namespace CardGame
                         codexSystem.OnEncounter(eid);
                 }
 
+                // 恢复功法系统
+                var cultModel2 = arch.GetModel<ICultivationModel>();
+                if (cultModel2 != null)
+                {
+                    cultModel2.ComprehensionPoints.Value = data.comprehensionPoints;
+                    cultModel2.ActiveMethodId.Value = data.activeMethodId ?? "";
+                    cultModel2.LearnedMethodIds.Clear();
+                    if (data.learnedMethodIds != null)
+                        foreach (var id in data.learnedMethodIds) cultModel2.LearnedMethodIds.Add(id);
+                    cultModel2.UnlockedNodeIds.Clear();
+                    if (data.unlockedNodeIds != null)
+                        foreach (var id in data.unlockedNodeIds) cultModel2.UnlockedNodeIds.Add(id);
+                    cultModel2.LearnedAbilityIds.Clear();
+                    if (data.learnedAbilityIds != null)
+                        foreach (var id in data.learnedAbilityIds) cultModel2.LearnedAbilityIds.Add(id);
+                    cultModel2.EquippedAbilityIds.Clear();
+                    if (data.equippedAbilityIds != null)
+                        foreach (var id in data.equippedAbilityIds) cultModel2.EquippedAbilityIds.Add(id);
+                    cultModel2.AcquiredAbilityBookIds.Clear();
+                    if (data.acquiredAbilityBookIds != null)
+                        foreach (var id in data.acquiredAbilityBookIds) cultModel2.AcquiredAbilityBookIds.Add(id);
+                    cultModel2.AcquiredMethodFragmentIds.Clear();
+                    if (data.acquiredMethodFragmentIds != null)
+                        foreach (var id in data.acquiredMethodFragmentIds) cultModel2.AcquiredMethodFragmentIds.Add(id);
+                }
+
                 Debug.Log("[Save] 存档加载成功");
                 return true;
             }
@@ -299,6 +348,16 @@ namespace CardGame
         public List<InventoryItemEntry> inventoryItems;
         public List<InventoryItemEntry> safeBoxItems;
         public List<AllyHealthEntry> allyHealth;
+
+        // Cultivation
+        public int comprehensionPoints;
+        public string activeMethodId;
+        public List<string> learnedMethodIds;
+        public List<string> unlockedNodeIds;
+        public List<string> learnedAbilityIds;
+        public List<string> equippedAbilityIds;
+        public List<string> acquiredAbilityBookIds;
+        public List<string> acquiredMethodFragmentIds;
 
         [Serializable]
         public class InventoryItemEntry

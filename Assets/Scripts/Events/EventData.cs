@@ -73,7 +73,11 @@ namespace CardGame
         MiniCardGuess,      // 猜牌大小
         MiniTreasureHunt,   // 寻宝迷踪
         // ── 无效果 ──
-        Nothing             // 无效果
+        Nothing,            // 无效果
+        // ── 功法系统 (3) ──
+        GainComprehension,   // 获得参悟点
+        GainAbilityBook,     // 获得神通书籍 (不可重复)
+        GainMethodFragment   // 获得功法残篇 (不可重复)
     }
 
     /// <summary>

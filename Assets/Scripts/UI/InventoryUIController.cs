@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using NueGames.NueDeck.Scripts.Enums;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -210,14 +211,8 @@ namespace CardGame.UI
                     string rarityColor = "";
                     if (slot.item is MaterialData m)
                     {
-                        rarityColor = m.rarity switch
-                        {
-                            MaterialRarity.FanPin => "<color=#AAAAAA>",
-                            MaterialRarity.LingPin => "<color=#4FC3F7>",
-                            MaterialRarity.XuanPin => "<color=#CE93D8>",
-                            MaterialRarity.XianPin => "<color=#FFD54F>",
-                            _ => ""
-                        };
+                        var c = ItemQualityHelper.GetColor(m.quality);
+                        rarityColor = $"<color=#{ColorUtility.ToHtmlStringRGB(c)}>";
                     }
                     tmps[0].text = $"{rarityColor}{slot.item.ItemName}</color>\n×{slot.count}";
                 }

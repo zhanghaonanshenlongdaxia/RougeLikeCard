@@ -50,26 +50,31 @@ namespace CardGame
 
         public void StartAdventure()
         {
-            if (!ValidateLoadout()) return;
-
             var model = LoadoutModel;
             var gm = NueGames.NueDeck.Scripts.Managers.GameManager.Instance;
             if (gm == null) return;
 
-            // 设置当前卡组 = 基础卡 + 已选卡
+            // 出征卡组 = 功法基础卡 + 功法自带神通卡 + 自选神通卡
             gm.PersistentGameplayData.CurrentCardsList.Clear();
-            foreach (var cardId in model.BasicCardIds)
-            {
-                var card = gm.GameplayData.AllCardsList.Find(c => c.Id == cardId);
-                if (card != null) gm.PersistentGameplayData.CurrentCardsList.Add(card);
-            }
-            foreach (var cardId in model.SelectedCardIds)
+
+            // 1. 功法基础卡 + 功法自带神通卡 (从当前装备功法的已解锁节点获取)
+            var cultSystem = this.GetSystem<ICultivationSystem>();
+            var methodCards = cultSystem.GetActiveMethodCards();
+            foreach (var cardId in methodCards)
             {
                 var card = gm.GameplayData.AllCardsList.Find(c => c.Id == cardId);
                 if (card != null) gm.PersistentGameplayData.CurrentCardsList.Add(card);
             }
 
-            Debug.Log($"[Loadout] 出征! 基础卡{model.BasicCardIds.Count}张 + 自选{model.SelectedCardIds.Count}张 = {gm.PersistentGameplayData.CurrentCardsList.Count}张");
+            // 2. 自选神通卡 (玩家从已学神通中选配的，受能量上限限制)
+            var equippedAbilities = cultSystem.GetEquippedAbilities();
+            foreach (var ability in equippedAbilities)
+            {
+                var card = gm.GameplayData.AllCardsList.Find(c => c.Id == ability.CardId);
+                if (card != null) gm.PersistentGameplayData.CurrentCardsList.Add(card);
+            }
+
+            Debug.Log($"[Loadout] 出征! 功法{methodCards.Count} + 神通{equippedAbilities.Count} = {gm.PersistentGameplayData.CurrentCardsList.Count}张");
         }
     }
 }

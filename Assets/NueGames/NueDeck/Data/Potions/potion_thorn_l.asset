@@ -18,5 +18,6 @@ MonoBehaviour:
   potionIcon: {fileID: 0}
   effectValue: 6
   rarity: 1
+  quality: 1
   targetType: 0
   unlockChapter: 1

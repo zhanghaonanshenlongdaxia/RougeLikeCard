@@ -142,7 +142,7 @@ namespace CardGame.UI
 
             _nameText.text = cardData.CardName;
             _costText.text = $"消耗: {cardData.ManaCost}";
-            _rarityText.text = $"稀有度: {GetRarityName(cardData.Rarity)}";
+            _rarityText.text = $"品质: {ItemQualityHelper.GetDisplayName(cardData.Quality)}";
 
             string pathStr = cardData.PathType != PathType.None ? $"道途: {GetPathName(cardData.PathType)}" : "";
             if (cardData.BuildTag != BuildTag.None)

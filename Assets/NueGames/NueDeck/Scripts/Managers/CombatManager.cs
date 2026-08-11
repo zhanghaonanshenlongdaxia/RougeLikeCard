@@ -111,8 +111,62 @@ namespace NueGames.NueDeck.Scripts.Managers
             // 应用事件预存的状态加成
             ApplyPendingBuffs();
 
+            // 应用功法被动属性
+            ApplyCultivationPassives();
+
             // 图鉴解锁 + 战前对话
             StartCoroutine(StartCombatWithDialogue());
+        }
+
+        /// <summary>
+        /// 应用功法被动属性 (MaxHP/ShenShi/Strength/Dexterity/DrawCount/MaxMana/BlockStart)
+        /// </summary>
+        private void ApplyCultivationPassives()
+        {
+            var cultSystem = this.GetSystem<ICultivationSystem>();
+            if (cultSystem == null) return;
+
+            var passives = cultSystem.GetActivePassiveStats();
+            if (passives == null || passives.Count == 0) return;
+
+            var player = CurrentMainAlly;
+            if (player == null || player.CharacterStats == null) return;
+
+            var bm = this.GetModel<IBattleModel>();
+            var gm = GameManager.Instance;
+
+            foreach (var kv in passives)
+            {
+                switch (kv.Key)
+                {
+                    case NueGames.NueDeck.Scripts.Enums.PassiveStatType.MaxHP:
+                        player.CharacterStats.IncreaseMaxHealth(kv.Value);
+                        player.CharacterStats.Heal(kv.Value);
+                        break;
+                    case NueGames.NueDeck.Scripts.Enums.PassiveStatType.ShenShi:
+                        var loadout = this.GetModel<ILoadoutModel>();
+                        loadout.MaxShenShi.Value += kv.Value;
+                        break;
+                    case NueGames.NueDeck.Scripts.Enums.PassiveStatType.Strength:
+                        player.CharacterStats.ApplyStatus(NueGames.NueDeck.Scripts.Enums.StatusType.Strength, kv.Value);
+                        break;
+                    case NueGames.NueDeck.Scripts.Enums.PassiveStatType.Dexterity:
+                        player.CharacterStats.ApplyStatus(NueGames.NueDeck.Scripts.Enums.StatusType.Dexterity, kv.Value);
+                        break;
+                    case NueGames.NueDeck.Scripts.Enums.PassiveStatType.DrawCount:
+                        if (bm != null) bm.DrawCount.Value += kv.Value;
+                        if (gm != null) gm.PersistentGameplayData.DrawCount += kv.Value;
+                        break;
+                    case NueGames.NueDeck.Scripts.Enums.PassiveStatType.MaxMana:
+                        if (bm != null) bm.MaxMana.Value += kv.Value;
+                        if (gm != null) gm.PersistentGameplayData.MaxMana += kv.Value;
+                        break;
+                    case NueGames.NueDeck.Scripts.Enums.PassiveStatType.BlockStart:
+                        player.CharacterStats.ApplyStatus(NueGames.NueDeck.Scripts.Enums.StatusType.Block, kv.Value);
+                        break;
+                }
+                Debug.Log($"[Combat] Cultivation passive: {kv.Key} +{kv.Value}");
+            }
         }
 
         /// <summary>
@@ -750,25 +804,22 @@ namespace NueGames.NueDeck.Scripts.Managers
                 int baseMatCount = hasBoss ? 3 : hasElite ? 2 : 1;
                 int matCount = Mathf.RoundToInt(baseMatCount * lootMult);
                 
-                // 品阶提升
-                var baseRarity = hasBoss ? MaterialRarity.XuanPin : hasElite ? MaterialRarity.LingPin : MaterialRarity.FanPin;
-                var targetRarity = baseRarity;
-                for (int i = 0; i < rarityBonus; i++)
-                {
-                    if (targetRarity == MaterialRarity.FanPin) targetRarity = MaterialRarity.LingPin;
-                    else if (targetRarity == MaterialRarity.LingPin) targetRarity = MaterialRarity.XuanPin;
-                    else if (targetRarity == MaterialRarity.XuanPin) targetRarity = MaterialRarity.XianPin;
-                }
+                // 品质计算：根据敌人品阶决定基础品质，rarityBonus提升品阶
+                int baseQualityVal = hasBoss ? (int)NueGames.NueDeck.Scripts.Enums.ItemQuality.JinDan_T1
+                                   : hasElite ? (int)NueGames.NueDeck.Scripts.Enums.ItemQuality.ZhuJi_T1
+                                   : (int)NueGames.NueDeck.Scripts.Enums.ItemQuality.LianQi_T1;
+                int targetQualityVal = Mathf.Min(19, baseQualityVal + rarityBonus);
+                var targetQuality = (NueGames.NueDeck.Scripts.Enums.ItemQuality)targetQualityVal;
                 
-                var candidateMats = allMaterials.Where(m => m.rarity == targetRarity && (m.regionId == regionId || m.regionId == -1)).ToList();
-                if (candidateMats.Count == 0) // 没找到指定品阶，降级
+                var candidateMats = allMaterials.Where(m => m.quality == targetQuality && (m.regionId == regionId || m.regionId == -1)).ToList();
+                if (candidateMats.Count == 0) // 没找到指定品质，按旧rarity降级
                     candidateMats = allMaterials.Where(m => m.regionId == regionId || m.regionId == -1).ToList();
                 
                 for (int i = 0; i < matCount && candidateMats.Count > 0; i++)
                 {
                     var mat = candidateMats[UnityEngine.Random.Range(0, candidateMats.Count)];
                     inventorySystem.AddItem(mat, 1);
-                    Debug.Log($"[掉落] 材料: {mat.name} ×1 (品阶:{targetRarity}, 难度倍率:×{lootMult})");
+                    Debug.Log($"[掉落] 材料: {mat.name} ×1 (品质:{NueGames.NueDeck.Scripts.Enums.ItemQualityHelper.GetDisplayName(targetQuality)}, 难度倍率:×{lootMult})");
                 }
 
                 // 配方掉落：精英50%概率，Boss必掉 — 高难度增加概率
@@ -796,6 +847,57 @@ namespace NueGames.NueDeck.Scripts.Managers
                     battleModel.CurrentGold.Value += bonusGold;
                     GameManager.PersistentGameplayData.CurrentGold = battleModel.CurrentGold.Value;
                     Debug.Log($"[掉落] 难度金币奖励: +{bonusGold} (×{goldMult})");
+                }
+
+                // 参悟点掉落: Normal 1-2, Elite 3-5, Boss 8-10 (×难度倍率)
+                var cultSystem2 = this.GetSystem<ICultivationSystem>();
+                if (cultSystem2 != null)
+                {
+                    int basePoints = hasBoss ? UnityEngine.Random.Range(8, 11) : hasElite ? UnityEngine.Random.Range(3, 6) : UnityEngine.Random.Range(1, 3);
+                    int points = Mathf.RoundToInt(basePoints * lootMult);
+                    if (points > 0)
+                    {
+                        cultSystem2.AddComprehensionPoints(points);
+                        Debug.Log($"[掉落] 参悟点: +{points} (base={basePoints}, ×{lootMult})");
+                    }
+
+                    // 神通书籍掉落: Boss 2%, Elite 0.5%, Normal 0%
+                    float abilityChance = hasBoss ? 0.02f : hasElite ? 0.005f : 0f;
+                    if (UnityEngine.Random.value < abilityChance)
+                    {
+                        var allAbilities = cultSystem2.GetAllMethodConfigs(); // not this - need ability list
+                        // Pick a random unacquired ability
+                        var allAbilityConfigs = UnityEngine.Resources.LoadAll<NueGames.NueDeck.Scripts.Data.Cultivation.DivineAbilityData>("");
+                        if (allAbilityConfigs != null && allAbilityConfigs.Length > 0)
+                        {
+                            var unacquired = new System.Collections.Generic.List<NueGames.NueDeck.Scripts.Data.Cultivation.DivineAbilityData>();
+                            foreach (var a in allAbilityConfigs)
+                            {
+                                if (!cultSystem2.GetLearnedAbilities().Exists(x => x.AbilityId == a.AbilityId))
+                                    unacquired.Add(a);
+                            }
+                            if (unacquired.Count > 0)
+                            {
+                                var drop = unacquired[UnityEngine.Random.Range(0, unacquired.Count)];
+                                cultSystem2.TryAcquireAbilityBook(drop.AbilityId);
+                                Debug.Log($"[掉落] 神通书籍: {drop.AbilityName}!");
+                            }
+                        }
+                    }
+
+                    // 功法残篇掉落: Boss 1%, Elite 0.3%, Normal 0%
+                    float methodChance = hasBoss ? 0.01f : hasElite ? 0.003f : 0f;
+                    if (UnityEngine.Random.value < methodChance)
+                    {
+                        var allMethods = cultSystem2.GetAllMethodConfigs();
+                        var unlearned = allMethods.FindAll(m => !cultSystem2.GetLearnedMethods().Contains(m));
+                        if (unlearned.Count > 0)
+                        {
+                            var drop = unlearned[UnityEngine.Random.Range(0, unlearned.Count)];
+                            cultSystem2.TryAcquireMethodFragment(drop.MethodId);
+                            Debug.Log($"[掉落] 功法残篇: {drop.MethodName}!");
+                        }
+                    }
                 }
             }
             catch (System.Exception e)

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95e81fa04c707bc45aab4f082bb42201, type: 3}
+  m_Name: da_lingxi
+  m_EditorClassIdentifier: 
+  abilityId: da_lingxi
+  abilityName: "\u7075\u606F\u8BC0"
+  description: "\u8C03\u606F\u6062\u590D\u7075\u529B\uFF0C\u63D0\u5347\u7075\u6C14\u4E0A\u9650\u3002"
+  icon: {fileID: 0}
+  element: 0
+  quality: 2
+  cardId: 5-Heal_Basic
+  energyCost: 3

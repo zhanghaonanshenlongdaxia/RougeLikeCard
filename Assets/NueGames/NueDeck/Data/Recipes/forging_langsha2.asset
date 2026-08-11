@@ -26,3 +26,4 @@ MonoBehaviour:
     count: 2
   successRate: 0.65
   unlockByDefault: 0
+  quality: 0

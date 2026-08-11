@@ -401,6 +401,20 @@ namespace CardGame
                 case EventEffectType.Nothing:
                 default:
                     break;
+
+                case EventEffectType.GainComprehension:
+                    this.GetSystem<ICultivationSystem>().AddComprehensionPoints(choice.effectValue);
+                    break;
+
+                case EventEffectType.GainAbilityBook:
+                    if (!string.IsNullOrEmpty(choice.cardId))
+                        this.GetSystem<ICultivationSystem>().TryAcquireAbilityBook(choice.cardId);
+                    break;
+
+                case EventEffectType.GainMethodFragment:
+                    if (!string.IsNullOrEmpty(choice.cardId))
+                        this.GetSystem<ICultivationSystem>().TryAcquireMethodFragment(choice.cardId);
+                    break;
             }
 
             Debug.Log($"[Event] Executed choice: {choice.choiceText} ({choice.effectType}:{choice.effectValue})");

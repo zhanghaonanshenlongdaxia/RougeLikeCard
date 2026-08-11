@@ -1,3 +1,4 @@
+using NueGames.NueDeck.Scripts.Enums;
 using UnityEngine;
 
 namespace CardGame
@@ -23,8 +24,11 @@ namespace CardGame
         [Tooltip("是否一次性触发（如回血一次）还是每次触发")]
         public bool oneTimeUse = false;
 
-        [Header("稀有度")]
+        [Header("品质")]
+        [Tooltip("旧稀有度，已废弃，用quality代替")]
         public RelicRarity rarity = RelicRarity.Common;
+        [Tooltip("统一品质")]
+        public ItemQuality quality = ItemQuality.LianQi_T1;
 
         [Header("耐久度")]
         [Tooltip("最大耐久度，归零后法宝损坏")]
@@ -37,12 +41,6 @@ namespace CardGame
         public int unlockChapter = 0;
     }
 
-    public enum RelicRarity
-    {
-        Common,
-        Uncommon,
-        Rare,
-        Boss,
-        Shop
-    }
+    /// <summary>旧遗物稀有度，保留用于序列化兼容</summary>
+    public enum RelicRarity { Common, Uncommon, Rare, Boss, Shop }
 }

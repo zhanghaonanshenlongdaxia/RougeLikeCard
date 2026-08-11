@@ -116,30 +116,6 @@ namespace CardGame.UI
                 Debug.Log("[BaseUI] CodexButton created at runtime");
             }
 
-            // Create BreakthroughButton if not found
-            if (GetComponentsInChildren<Button>(true).All(b => b.gameObject.name != "BreakthroughButton"))
-            {
-                var btBtnObj = new GameObject("BreakthroughButton");
-                btBtnObj.transform.SetParent(transform, false);
-                var rt = btBtnObj.AddComponent<RectTransform>();
-                rt.anchorMin = new Vector2(0.51f, 0.03f); rt.anchorMax = new Vector2(0.66f, 0.12f);
-                rt.offsetMin = Vector2.zero; rt.offsetMax = Vector2.zero;
-                btBtnObj.AddComponent<Image>().color = new Color(0.3f, 0.2f, 0.5f, 1f);
-                var txtObj = new GameObject("Text");
-                txtObj.transform.SetParent(btBtnObj.transform, false);
-                var txtRt = txtObj.AddComponent<RectTransform>();
-                txtRt.anchorMin = Vector2.zero; txtRt.anchorMax = Vector2.one;
-                txtRt.offsetMin = Vector2.zero; txtRt.offsetMax = Vector2.zero;
-                var tmp = txtObj.AddComponent<TextMeshProUGUI>();
-                tmp.text = "突破"; tmp.fontSize = 16; tmp.color = new Color(0.9f, 0.8f, 0.3f);
-                tmp.alignment = TextAlignmentOptions.Center;
-                var libSans = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
-                if (libSans) tmp.font = libSans;
-                var btBtn = btBtnObj.AddComponent<Button>();
-                btBtn.onClick.AddListener(OnBreakthrough);
-                Debug.Log("[BaseUI] BreakthroughButton created at runtime");
-            }
-
             // Create StoryTreeButton if not found
             if (GetComponentsInChildren<Button>(true).All(b => b.gameObject.name != "StoryTreeButton"))
             {
@@ -186,6 +162,30 @@ namespace CardGame.UI
                 var rsBtn = rsBtnObj.AddComponent<Button>();
                 rsBtn.onClick.AddListener(OnRelicStorage);
                 Debug.Log("[BaseUI] RelicStorageButton created at runtime");
+            }
+
+            // Create CultivationButton if not found
+            if (GetComponentsInChildren<Button>(true).All(b => b.gameObject.name != "CultivationButton"))
+            {
+                var cultBtnObj = new GameObject("CultivationButton");
+                cultBtnObj.transform.SetParent(transform, false);
+                var rt = cultBtnObj.AddComponent<RectTransform>();
+                rt.anchorMin = new Vector2(0.35f, 0.14f); rt.anchorMax = new Vector2(0.5f, 0.23f);
+                rt.offsetMin = Vector2.zero; rt.offsetMax = Vector2.zero;
+                cultBtnObj.AddComponent<Image>().color = new Color(0.2f, 0.4f, 0.3f, 1f);
+                var txtObj = new GameObject("Text");
+                txtObj.transform.SetParent(cultBtnObj.transform, false);
+                var txtRt = txtObj.AddComponent<RectTransform>();
+                txtRt.anchorMin = Vector2.zero; txtRt.anchorMax = Vector2.one;
+                txtRt.offsetMin = Vector2.zero; txtRt.offsetMax = Vector2.zero;
+                var tmp = txtObj.AddComponent<TextMeshProUGUI>();
+                tmp.text = "修炼"; tmp.fontSize = 18; tmp.color = new Color(0.9f, 0.85f, 0.4f);
+                tmp.alignment = TextAlignmentOptions.Center;
+                var libSans4 = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
+                if (libSans4) tmp.font = libSans4;
+                var cultBtn = cultBtnObj.AddComponent<Button>();
+                cultBtn.onClick.AddListener(OnCultivation);
+                Debug.Log("[BaseUI] CultivationButton created at runtime");
             }
         }
 
@@ -272,16 +272,6 @@ namespace CardGame.UI
             go.SetActive(true);
         }
 
-        public void OnBreakthrough()
-        {
-            var existing = GameObject.Find("RealmBreakthroughCanvas");
-            if (existing != null) { existing.SetActive(true); return; }
-
-            var go = new GameObject("RealmBreakthroughCanvas");
-            go.AddComponent<RealmBreakthroughUIController>();
-            Debug.Log("[BaseUI] RealmBreakthrough panel opened");
-        }
-
         public void OnCodex()
         {
             // EnemyCodexCanvas is runtime-created, skip prefab lookup
@@ -299,6 +289,28 @@ namespace CardGame.UI
             var go = new GameObject("RelicStorageCanvas");
             go.AddComponent<RelicStorageUIController>();
             go.SetActive(true);
+        }
+
+        public void OnCultivation()
+        {
+            // 先找场景中是否已有
+            var existing = GameObject.Find("CultivationCanvas");
+            if (existing != null)
+            {
+                // 已存在就切换显示/隐藏
+                existing.SetActive(!existing.activeSelf);
+                if (existing.activeSelf)
+                {
+                    var ctrl = existing.GetComponent<CultivationTreeUIController>();
+                    if (ctrl != null) ctrl.Show();
+                }
+                return;
+            }
+            // 新建
+            var go = new GameObject("CultivationCanvas");
+            go.SetActive(true); // 先激活再AddComponent，确保Awake/Start正常
+            var ctrl2 = go.AddComponent<CultivationTreeUIController>();
+            ctrl2.Show();
         }
 
         /// <summary>

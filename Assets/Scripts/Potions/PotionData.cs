@@ -1,3 +1,4 @@
+using NueGames.NueDeck.Scripts.Enums;
 using UnityEngine;
 
 namespace CardGame
@@ -18,8 +19,11 @@ namespace CardGame
         [Tooltip("效果数值，含义由具体药水逻辑决定")]
         public int effectValue;
 
-        [Header("稀有度")]
+        [Header("品质")]
+        [Tooltip("旧稀有度，已废弃，用quality代替")]
         public PotionRarity rarity = PotionRarity.Common;
+        [Tooltip("统一品质")]
+        public ItemQuality quality = ItemQuality.LianQi_T1;
 
         [Header("目标类型")]
         public PotionTargetType targetType = PotionTargetType.None;
@@ -29,12 +33,8 @@ namespace CardGame
         public int unlockChapter = 0;
     }
 
-    public enum PotionRarity
-    {
-        Common,
-        Uncommon,
-        Rare
-    }
+    /// <summary>旧药水稀有度，保留用于序列化兼容</summary>
+    public enum PotionRarity { Common, Uncommon, Rare }
 
     public enum PotionTargetType
     {

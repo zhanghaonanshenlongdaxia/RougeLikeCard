@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using NueGames.NueDeck.Scripts.Enums;
 using UnityEngine;
 
 namespace CardGame
@@ -48,5 +49,9 @@ namespace CardGame
         [Header("属性")]
         [Range(0f, 1f)] public float successRate = 0.8f;
         public bool unlockByDefault = true;
+
+        [Header("品质")]
+        [Tooltip("配方产出物品的品质")]
+        public ItemQuality quality = ItemQuality.LianQi_T1;
     }
 }

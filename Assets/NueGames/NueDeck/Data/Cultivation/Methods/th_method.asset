@@ -1,0 +1,596 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 845131dd76f49af43a38fcb9b7479b68, type: 3}
+  m_Name: th_method
+  m_EditorClassIdentifier: 
+  methodId: th_method
+  methodName: "\u592A\u548C\u5341\u516D\u6D1E\u5929"
+  description: "\u6C34\u5C5E\u6027\u529F\u6CD5\uFF0C\u592A\u4E00\u95E8\u9547\u6D3E\u4E94\u884C\u771F\u8BC0\u4E4B\u4E00\u3002\u64C5\u795E\u901A\uFF0C\u529F\u80FD\u5F3A\u5927\uFF0C\u53EF\u8F85\u52A9\u95E8\u6D3E\u5EFA\u8BBE\u3002\u5171\u56DB\u5883\u56DB\u56DB\u4E00\u5341\u516D\u6D1E\u5929\u74F6\u9888\uFF0C\u6D1E\u5929\u5706\u6EE1\u5F97\u4EE5\u767B\u4ED9\u3002"
+  icon: {fileID: 0}
+  element: 3
+  grade: 0
+  maxRealm: 5
+  quality: 3
+  nodes:
+  - nodeId: th_lq_1
+    nodeName: "\u5C01\u7075\u672F"
+    description: "\u5236\u4F5C\u7075\u5951\uFF0C\u5C01\u5370\u4E4B\u672F\u3002"
+    realm: 0
+    position: {x: 0, y: 0}
+    unlockType: 0
+    comprehensionCost: 5
+    prerequisites: []
+    mutexGroup: 
+    rewardType: 5
+    rewardIds:
+    - da_huashang
+    passiveStat: 0
+    passiveValue: 0
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_lq_2
+    nodeName: "\u8D4B\u7075\u672F"
+    description: "\u6FC0\u6D3B\u624B\u5DE5\u5080\u5121\u3002"
+    realm: 0
+    position: {x: 0, y: 1}
+    unlockType: 0
+    comprehensionCost: 5
+    prerequisites:
+    - th_lq_1
+    mutexGroup: 
+    rewardType: 5
+    rewardIds:
+    - da_quyun
+    passiveStat: 0
+    passiveValue: 0
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_lq_3
+    nodeName: "\u4E94\u6CC9\u6DA4\u5FC3"
+    description: "\u4E94\u6CC9\u6D17\u6DA4\u5FC3\u795E\uFF0C\u63D0\u5347\u7075\u6C14\u4E0A\u9650\u3002"
+    realm: 0
+    position: {x: 0, y: 2}
+    unlockType: 0
+    comprehensionCost: 8
+    prerequisites:
+    - th_lq_2
+    mutexGroup: 
+    rewardType: 3
+    rewardIds: []
+    passiveStat: 6
+    passiveValue: 1
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_lq_4
+    nodeName: "\u5148\u5929\u7F61\u6C14"
+    description: "\u70BC\u5C31\u5148\u5929\u7F61\u6C14\uFF0C\u63D0\u5347\u7075\u6C14\u4E0A\u9650\u3002"
+    realm: 0
+    position: {x: 0, y: 3}
+    unlockType: 0
+    comprehensionCost: 10
+    prerequisites:
+    - th_lq_3
+    mutexGroup: 
+    rewardType: 3
+    rewardIds: []
+    passiveStat: 6
+    passiveValue: 1
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_lq_5
+    nodeName: "\u5316\u4F24\u672F"
+    description: "\u57FA\u7840\u6CBB\u7597\u672F\u3002"
+    realm: 0
+    position: {x: 0, y: 4}
+    unlockType: 0
+    comprehensionCost: 8
+    prerequisites:
+    - th_lq_4
+    mutexGroup: 
+    rewardType: 5
+    rewardIds:
+    - da_huashang
+    passiveStat: 0
+    passiveValue: 0
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_zj_1
+    nodeName: "\u7A81\u7834\xB7\u5468\u5929"
+    description: "\u6253\u901A\u5468\u5929\uFF0C\u8E0F\u5165\u7B51\u57FA\u4E4B\u5883\u3002"
+    realm: 1
+    position: {x: 1, y: 0}
+    unlockType: 1
+    comprehensionCost: 15
+    prerequisites:
+    - th_lq_5
+    mutexGroup: 
+    rewardType: 3
+    rewardIds: []
+    passiveStat: 1
+    passiveValue: 20
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_jd_1
+    nodeName: "\u6C42\u96E8\u672F"
+    description: "\u6C42\u96E8\u4E4B\u672F\uFF0C\u53EF\u6539\u53D8\u5929\u6C14\u3002"
+    realm: 2
+    position: {x: 2, y: 0}
+    unlockType: 0
+    comprehensionCost: 20
+    prerequisites:
+    - th_zj_1
+    mutexGroup: 
+    rewardType: 1
+    rewardIds:
+    - sp_mn_bolt2
+    passiveStat: 0
+    passiveValue: 0
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_jd_2
+    nodeName: "\u58F9\xB7\u7518\u9716\u672F"
+    description: "\u65BD\u80A5\u706D\u706B\uFF0C\u6062\u590D\u4E4B\u672F\u3002"
+    realm: 2
+    position: {x: 2, y: 1}
+    unlockType: 0
+    comprehensionCost: 15
+    prerequisites:
+    - th_jd_1
+    mutexGroup: 
+    rewardType: 1
+    rewardIds:
+    - 5-Heal_Basic
+    passiveStat: 0
+    passiveValue: 0
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_jd_3
+    nodeName: "\u98CE\u6C34\u9274\u5B9A"
+    description: "\u9274\u5B9A\u9547\u7269\u4FE1\u606F\u3002"
+    realm: 2
+    position: {x: 2, y: 2}
+    unlockType: 0
+    comprehensionCost: 15
+    prerequisites:
+    - th_jd_2
+    mutexGroup: 
+    rewardType: 4
+    rewardIds: []
+    passiveStat: 0
+    passiveValue: 0
+    craftBonusType: 1
+    craftBonusValue: 0.1
+  - nodeId: th_jd_4
+    nodeName: "\u592A\u548C\u5FA1\u6C14"
+    description: "\u63D0\u5347\u672F\u6CD5\u5A01\u529B\u3002"
+    realm: 2
+    position: {x: 2, y: 3}
+    unlockType: 0
+    comprehensionCost: 20
+    prerequisites:
+    - th_jd_3
+    mutexGroup: 
+    rewardType: 3
+    rewardIds: []
+    passiveStat: 3
+    passiveValue: 1
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_jd_5
+    nodeName: "\u6E05\u5FC3\u5492"
+    description: "\u6E05\u5FC3\u5B81\u795E\u3002"
+    realm: 2
+    position: {x: 2, y: 4}
+    unlockType: 0
+    comprehensionCost: 15
+    prerequisites:
+    - th_jd_4
+    mutexGroup: 
+    rewardType: 3
+    rewardIds: []
+    passiveStat: 5
+    passiveValue: 1
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_jd_6a
+    nodeName: "\u58F9\xB7\u5FA1\u6728\u8BC0"
+    description: "\u4EE5\u9633\u5BFF\u65BD\u80A5\u3002"
+    realm: 2
+    position: {x: 2, y: 5}
+    unlockType: 4
+    comprehensionCost: 0
+    prerequisites:
+    - th_jd_5
+    mutexGroup: th_jd_branch1
+    rewardType: 1
+    rewardIds:
+    - sw_mh_twin
+    passiveStat: 0
+    passiveValue: 0
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_jd_6b
+    nodeName: "\u8D30\xB7\u5929\u9716\u8BC0"
+    description: "\u4EE5\u7075\u6C14\u65BD\u80A5\u3002"
+    realm: 2
+    position: {x: 2, y: 6}
+    unlockType: 4
+    comprehensionCost: 0
+    prerequisites:
+    - th_jd_5
+    mutexGroup: th_jd_branch1
+    rewardType: 1
+    rewardIds:
+    - sw_mh_storm
+    passiveStat: 0
+    passiveValue: 0
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_jd_7a
+    nodeName: "\u58F9\xB7\u5929\u4F24\u5316\u6C34"
+    description: "\u6062\u590D\u53CB\u65B9\u7075\u6C14\u3002"
+    realm: 2
+    position: {x: 2, y: 7}
+    unlockType: 4
+    comprehensionCost: 0
+    prerequisites:
+    - th_jd_6a
+    mutexGroup: th_jd_branch2
+    rewardType: 3
+    rewardIds: []
+    passiveStat: 6
+    passiveValue: 1
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_jd_7b
+    nodeName: "\u8D30\xB7\u5929\u4E00\u771F\u6CD5"
+    description: "\u5927\u5E45\u6062\u590D\u53CB\u65B9\u7075\u6C14\u3002"
+    realm: 2
+    position: {x: 2, y: 8}
+    unlockType: 4
+    comprehensionCost: 0
+    prerequisites:
+    - th_jd_6a
+    mutexGroup: th_jd_branch2
+    rewardType: 3
+    rewardIds: []
+    passiveStat: 6
+    passiveValue: 2
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_jd_8
+    nodeName: "\u91C7\u6C34\u8BC0"
+    description: "\u91C7\u96C6\u7075\u6C34\uFF0C\u63D0\u5347\u7075\u6C14\u3002"
+    realm: 2
+    position: {x: 2, y: 9}
+    unlockType: 0
+    comprehensionCost: 15
+    prerequisites:
+    - th_jd_7a
+    mutexGroup: 
+    rewardType: 3
+    rewardIds: []
+    passiveStat: 6
+    passiveValue: 1
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_yy_1a
+    nodeName: "\u58F9\xB7\u5165\u5B9A\u4E4B\u672F"
+    description: "\u4FEE\u70BC\u5165\u5B9A\u4E4B\u6CD5\u3002"
+    realm: 3
+    position: {x: 3, y: 0}
+    unlockType: 4
+    comprehensionCost: 0
+    prerequisites:
+    - th_jd_8
+    mutexGroup: th_yy_branch1
+    rewardType: 5
+    rewardIds:
+    - da_ruding
+    passiveStat: 0
+    passiveValue: 0
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_yy_1b
+    nodeName: "\u8D30\xB7\u6C34\u955C\u89C2\u5FC3\u5B9A"
+    description: "\u66F4\u6DF1\u5C42\u6B21\u5165\u5B9A\u3002(\u5143\u795E)"
+    realm: 3
+    position: {x: 3, y: 1}
+    unlockType: 4
+    comprehensionCost: 0
+    prerequisites:
+    - th_jd_8
+    mutexGroup: th_yy_branch1
+    rewardType: 5
+    rewardIds:
+    - da_ruding
+    passiveStat: 0
+    passiveValue: 0
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_yy_2
+    nodeName: "\u7075\u606F\u8BC0"
+    description: "\u8C03\u606F\u6062\u590D\u7075\u529B\u3002"
+    realm: 3
+    position: {x: 3, y: 2}
+    unlockType: 0
+    comprehensionCost: 25
+    prerequisites:
+    - th_yy_1a
+    mutexGroup: 
+    rewardType: 5
+    rewardIds:
+    - da_lingxi
+    passiveStat: 0
+    passiveValue: 0
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_yy_3
+    nodeName: "\u7384\u725D\u91CD\u751F\u6CD5"
+    description: "\u91CD\u751F\u79D8\u6CD5\u3002"
+    realm: 3
+    position: {x: 3, y: 3}
+    unlockType: 0
+    comprehensionCost: 30
+    prerequisites:
+    - th_yy_2
+    mutexGroup: 
+    rewardType: 5
+    rewardIds:
+    - da_xuanpi
+    passiveStat: 0
+    passiveValue: 0
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_yy_4a
+    nodeName: "\u58F9\xB7\u4E58\u98CE\u8BC0"
+    description: "\u4E58\u98CE\u4E4B\u672F\u3002"
+    realm: 3
+    position: {x: 3, y: 4}
+    unlockType: 4
+    comprehensionCost: 0
+    prerequisites:
+    - th_yy_3
+    mutexGroup: th_yy_branch2
+    rewardType: 3
+    rewardIds: []
+    passiveStat: 2
+    passiveValue: 3
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_yy_4b
+    nodeName: "\u8D30\xB7\u540C\u98CE\u8BC0"
+    description: "\u66F4\u6DF1\u5C42\u6B21\u4E58\u98CE\u3002"
+    realm: 3
+    position: {x: 3, y: 5}
+    unlockType: 4
+    comprehensionCost: 0
+    prerequisites:
+    - th_yy_3
+    mutexGroup: th_yy_branch2
+    rewardType: 3
+    rewardIds: []
+    passiveStat: 2
+    passiveValue: 5
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_yy_5a
+    nodeName: "\u58F9\xB7\u5954\u6D41\u8BC0"
+    description: "\u5954\u6D41\u4E4B\u672F\u3002"
+    realm: 3
+    position: {x: 3, y: 6}
+    unlockType: 4
+    comprehensionCost: 0
+    prerequisites:
+    - th_yy_4a
+    mutexGroup: th_yy_branch3
+    rewardType: 3
+    rewardIds: []
+    passiveStat: 3
+    passiveValue: 2
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_yy_5b
+    nodeName: "\u8D30\xB7\u5F52\u6D77\u8BC0"
+    description: "\u66F4\u6DF1\u5C42\u6B21\u5954\u6D41\u3002"
+    realm: 3
+    position: {x: 3, y: 7}
+    unlockType: 4
+    comprehensionCost: 0
+    prerequisites:
+    - th_yy_4a
+    mutexGroup: th_yy_branch3
+    rewardType: 3
+    rewardIds: []
+    passiveStat: 3
+    passiveValue: 3
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_yy_6a
+    nodeName: "\u6C34\u7CBE\u771F\u5F62"
+    description: "\u63D0\u5347\u6839\u9AA8\u3002"
+    realm: 3
+    position: {x: 3, y: 8}
+    unlockType: 4
+    comprehensionCost: 0
+    prerequisites:
+    - th_yy_5a
+    mutexGroup: th_yy_triple
+    rewardType: 3
+    rewardIds: []
+    passiveStat: 2
+    passiveValue: 5
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_yy_6b
+    nodeName: "\u6C34\u6C14\u771F\u5F62"
+    description: "\u63D0\u5347\u9B45\u529B\u3002"
+    realm: 3
+    position: {x: 3, y: 9}
+    unlockType: 4
+    comprehensionCost: 0
+    prerequisites:
+    - th_yy_5a
+    mutexGroup: th_yy_triple
+    rewardType: 3
+    rewardIds: []
+    passiveStat: 1
+    passiveValue: 40
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_yy_6c
+    nodeName: "\u6C34\u795E\u771F\u5F62"
+    description: "\u63D0\u5347\u609F\u6027\u3002"
+    realm: 3
+    position: {x: 3, y: 10}
+    unlockType: 4
+    comprehensionCost: 0
+    prerequisites:
+    - th_yy_5a
+    mutexGroup: th_yy_triple
+    rewardType: 3
+    rewardIds: []
+    passiveStat: 5
+    passiveValue: 1
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_hs_1a
+    nodeName: "\u58F9\xB7\u66B4\u96E8\u672F"
+    description: "\u53EC\u5524\u66B4\u96E8\u3002"
+    realm: 4
+    position: {x: 4, y: 0}
+    unlockType: 4
+    comprehensionCost: 0
+    prerequisites:
+    - th_yy_6a
+    mutexGroup: th_hs_branch1
+    rewardType: 1
+    rewardIds:
+    - sp_mn_storm2
+    passiveStat: 0
+    passiveValue: 0
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_hs_1b
+    nodeName: "\u8D30\xB7\u4E5D\u9634\u771F\u6C34\u754C"
+    description: "\u4E5D\u9634\u771F\u6C34\u9886\u57DF\u3002(\u771F\u4ED9)"
+    realm: 4
+    position: {x: 4, y: 1}
+    unlockType: 4
+    comprehensionCost: 0
+    prerequisites:
+    - th_yy_6a
+    mutexGroup: th_hs_branch1
+    rewardType: 1
+    rewardIds:
+    - leg_spirit_chaos
+    passiveStat: 0
+    passiveValue: 0
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_hs_2
+    nodeName: "\u7384\u9B42\u9020\u547D"
+    description: "\u4F7F\u7269\u54C1\u901A\u7075\u3002"
+    realm: 4
+    position: {x: 4, y: 2}
+    unlockType: 2
+    comprehensionCost: 0
+    prerequisites:
+    - th_hs_1a
+    mutexGroup: 
+    rewardType: 4
+    rewardIds: []
+    passiveStat: 0
+    passiveValue: 0
+    craftBonusType: 2
+    craftBonusValue: 0.15
+  - nodeId: th_hs_3a
+    nodeName: "\u58F9\xB7\u7F61\u715E\u5408\u6D41"
+    description: "\u7F61\u715E\u5408\u4E00\u3002"
+    realm: 4
+    position: {x: 4, y: 3}
+    unlockType: 4
+    comprehensionCost: 0
+    prerequisites:
+    - th_hs_2
+    mutexGroup: th_hs_branch2
+    rewardType: 3
+    rewardIds: []
+    passiveStat: 3
+    passiveValue: 2
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_hs_3b
+    nodeName: "\u8D30\xB7\u7F61\u715E\u5408\u6D41"
+    description: "\u66F4\u6DF1\u5C42\u6B21\u7F61\u715E\u5408\u4E00\u3002"
+    realm: 4
+    position: {x: 4, y: 4}
+    unlockType: 4
+    comprehensionCost: 0
+    prerequisites:
+    - th_hs_2
+    mutexGroup: th_hs_branch2
+    rewardType: 3
+    rewardIds: []
+    passiveStat: 3
+    passiveValue: 3
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_hs_3c
+    nodeName: "\u53C1\xB7\u7F61\u715E\u5408\u6D41"
+    description: "\u6700\u6DF1\u5C42\u6B21\u7F61\u715E\u5408\u4E00\u3002"
+    realm: 4
+    position: {x: 4, y: 5}
+    unlockType: 4
+    comprehensionCost: 0
+    prerequisites:
+    - th_hs_2
+    mutexGroup: th_hs_branch2
+    rewardType: 3
+    rewardIds: []
+    passiveStat: 3
+    passiveValue: 4
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_hs_4
+    nodeName: "\u918D\u9190\u704C\u9876"
+    description: "\u4E94\u7EF4\u6DEC\u4F53\uFF0C\u63D0\u5347\u609F\u6027\u3002"
+    realm: 4
+    position: {x: 4, y: 6}
+    unlockType: 3
+    comprehensionCost: 0
+    prerequisites:
+    - th_hs_3a
+    mutexGroup: 
+    rewardType: 3
+    rewardIds: []
+    passiveStat: 5
+    passiveValue: 1
+    craftBonusType: 0
+    craftBonusValue: 0
+  - nodeId: th_dj_1
+    nodeName: "\u7A81\u7834\xB7\u98DE\u5347"
+    description: "\u6E21\u8FC7\u5929\u52AB\uFF0C\u98DE\u5347\u6210\u4ED9\u3002"
+    realm: 5
+    position: {x: 5, y: 0}
+    unlockType: 3
+    comprehensionCost: 0
+    prerequisites:
+    - th_hs_4
+    mutexGroup: 
+    rewardType: 1
+    rewardIds:
+    - leg_taiji
+    passiveStat: 0
+    passiveValue: 0
+    craftBonusType: 0
+    craftBonusValue: 0

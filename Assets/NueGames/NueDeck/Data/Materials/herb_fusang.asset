@@ -18,6 +18,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   materialType: 0
   rarity: 3
+  quality: 3
   regionId: -1
   weight: 1
   stackable: 1

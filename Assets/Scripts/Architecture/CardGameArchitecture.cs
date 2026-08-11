@@ -21,6 +21,7 @@ namespace CardGame
             RegisterModel<IAdventureModel>(new AdventureModel());
             RegisterModel<IMetaModel>(new MetaModel());
             RegisterModel<IStoryModel>(new StoryModel());
+            RegisterModel<ICultivationModel>(new CultivationModel());
             RegisterSystem<IBattleSystem>(new BattleSystem());
             RegisterSystem<ICardSystem>(new CardSystem());
             RegisterSystem<IRelicSystem>(new RelicSystem());
@@ -37,6 +38,7 @@ namespace CardGame
             RegisterSystem<IMetaSystem>(new MetaSystem());
             RegisterSystem<IStorySystem>(new StorySystem());
             RegisterSystem<IRitualSystem>(new RitualSystem());
+            RegisterSystem<ICultivationSystem>(new CultivationSystem());
         }
     }
 }

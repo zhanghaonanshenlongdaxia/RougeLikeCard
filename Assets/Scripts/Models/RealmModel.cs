@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using NueGames.NueDeck.Scripts.Enums;
 using QFramework;
 using UnityEngine;
 
@@ -26,7 +27,7 @@ namespace CardGame
         public RealmLevel targetRealm;
         public string realmName;
         public int goldCost;              // 灵石
-        public string materialRarity;     // 所需材料品阶 "LingPin"/"XuanPin"/"XianPin"/"HeavenlyTreasure"
+        public ItemQuality requiredQuality;  // 所需材料品质
         public int materialCount;         // 材料数量
         public string requiredPotionId;   // 所需丹药ID
         public int hpBonus;               // HP加成
@@ -57,31 +58,31 @@ namespace CardGame
             // 境界突破表
             RealmTable.Add(new RealmBreakthroughRequirement {
                 targetRealm = RealmLevel.ZhuJi, realmName = "筑基期",
-                goldCost = 100, materialRarity = "LingPin", materialCount = 5,
+                goldCost = 100, requiredQuality = ItemQuality.LianQi_T2, materialCount = 5,
                 requiredPotionId = "potion_zhuji", hpBonus = 30, shenShiBonus = 5,
                 description = "筑基铸根，灵力初凝。从此踏上修仙正途。"
             });
             RealmTable.Add(new RealmBreakthroughRequirement {
                 targetRealm = RealmLevel.JinDan, realmName = "金丹期",
-                goldCost = 300, materialRarity = "XuanPin", materialCount = 5,
+                goldCost = 300, requiredQuality = ItemQuality.LianQi_T3, materialCount = 5,
                 requiredPotionId = "potion_jindan", hpBonus = 50, shenShiBonus = 10,
                 description = "金丹大成，灵力凝实。可御剑飞行，翻江倒海。"
             });
             RealmTable.Add(new RealmBreakthroughRequirement {
                 targetRealm = RealmLevel.YuanYing, realmName = "元婴期",
-                goldCost = 800, materialRarity = "XianPin", materialCount = 3,
+                goldCost = 800, requiredQuality = ItemQuality.LianQi_T4, materialCount = 3,
                 requiredPotionId = "potion_yuanying", hpBonus = 80, shenShiBonus = 15,
                 description = "元婴出窍，神游太虚。寿元千载，挥手灭城。"
             });
             RealmTable.Add(new RealmBreakthroughRequirement {
                 targetRealm = RealmLevel.HuaShen, realmName = "化神期",
-                goldCost = 2000, materialRarity = "XianPin", materialCount = 8,
+                goldCost = 2000, requiredQuality = ItemQuality.LianQi_T4, materialCount = 8,
                 requiredPotionId = "potion_huashen", hpBonus = 120, shenShiBonus = 20,
                 description = "化神归元，神通自成。天地法则，信手拈来。"
             });
             RealmTable.Add(new RealmBreakthroughRequirement {
                 targetRealm = RealmLevel.DuJie, realmName = "渡劫期",
-                goldCost = 5000, materialRarity = "HeavenlyTreasure", materialCount = 5,
+                goldCost = 5000, requiredQuality = ItemQuality.ZhuJi_T4, materialCount = 5,
                 requiredPotionId = "potion_dujie", hpBonus = 200, shenShiBonus = 30,
                 description = "渡劫飞升，超脱轮回。天雷洗礼，成就真仙。"
             });

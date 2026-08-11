@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using NueGames.NueDeck.Scripts.Enums;
 using QFramework;
 using UnityEngine;
 
@@ -75,13 +76,25 @@ namespace CardGame
             foreach (var ingredient in recipe.ingredients)
                 InventorySystem.RemoveItem(ingredient.materialId, ingredient.count);
 
-            // 成功率判定
-            bool success = Random.value <= recipe.successRate;
+            // 成功率判定 — 应用功法炼制加成
+            float finalSuccessRate = recipe.successRate;
+            var cultSystem = this.GetSystem<ICultivationSystem>();
+            if (cultSystem != null)
+            {
+                var bonuses = cultSystem.GetActiveCraftBonuses();
+                if (recipe.recipeType == RecipeType.Alchemy && bonuses.ContainsKey(CraftBonusType.AlchemySuccess))
+                    finalSuccessRate += bonuses[CraftBonusType.AlchemySuccess];
+                if (recipe.recipeType == RecipeType.Forging && bonuses.ContainsKey(CraftBonusType.ForgingSuccess))
+                    finalSuccessRate += bonuses[CraftBonusType.ForgingSuccess];
+            }
+            bool success = Random.value <= Mathf.Clamp01(finalSuccessRate);
 
             if (success)
             {
                 Debug.Log($"[Craft] 炼制成功! 产出: {recipe.outputItemId}");
                 GrantOutput(recipe);
+                // 炼制成功获得参悟点
+                cultSystem?.AddComprehensionPoints(1);
             }
             else
             {

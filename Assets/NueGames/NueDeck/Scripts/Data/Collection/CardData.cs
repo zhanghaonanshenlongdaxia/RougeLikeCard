@@ -18,6 +18,8 @@ namespace NueGames.NueDeck.Scripts.Data.Collection
         [SerializeField] private int manaCost;
         [SerializeField] private Sprite cardSprite;
         [SerializeField] private RarityType rarity;
+        [Tooltip("统一品质")]
+        [SerializeField] private ItemQuality quality = ItemQuality.LianQi_T1;
         
         [Header("Action Settings")]
         [SerializeField] private bool usableWithoutTarget;
@@ -69,6 +71,7 @@ namespace NueGames.NueDeck.Scripts.Data.Collection
         /// <summary>卡牌面显示描述：第一条效果文本，动态反映buff加成</summary>
         public string ShortDescription => GetDisplayDescription();
         public RarityType Rarity => rarity;
+        public ItemQuality Quality => quality;
 
         public bool ExhaustAfterPlay => exhaustAfterPlay;
         public bool IsPowerCard => isPowerCard;
@@ -184,6 +187,7 @@ namespace NueGames.NueDeck.Scripts.Data.Collection
         public void EditId(string newId) => id = newId;
         public void EditManaCost(int newCost) => manaCost = newCost;
         public void EditRarity(RarityType targetRarity) => rarity = targetRarity;
+        public void EditQuality(ItemQuality q) => quality = q;
         public void EditCardSprite(Sprite newSprite) => cardSprite = newSprite;
         public void EditUsableWithoutTarget(bool newStatus) => usableWithoutTarget = newStatus;
         public void EditExhaustAfterPlay(bool newStatus) => exhaustAfterPlay = newStatus;

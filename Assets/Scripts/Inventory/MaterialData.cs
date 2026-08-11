@@ -1,18 +1,8 @@
+using NueGames.NueDeck.Scripts.Enums;
 using UnityEngine;
 
 namespace CardGame
 {
-    /// <summary>
-    /// 材料稀有度
-    /// </summary>
-    public enum MaterialRarity
-    {
-        FanPin,   // 凡品
-        LingPin,  // 灵品
-        XuanPin,  // 玄品
-        XianPin   // 仙品
-    }
-
     /// <summary>
     /// 材料类型
     /// </summary>
@@ -43,7 +33,10 @@ namespace CardGame
 
         [Header("分类")]
         public MaterialType materialType;
+        [Tooltip("旧稀有度，已废弃，用quality代替")]
         public MaterialRarity rarity;
+        [Tooltip("统一品质")]
+        public ItemQuality quality = ItemQuality.LianQi_T1;
         [Tooltip("产出区域：0=山野荒原 1=幽冥秘境 2=万蛊沼泽 3=天魔裂隙 -1=通用")]
         public int regionId = -1;
 
@@ -63,4 +56,7 @@ namespace CardGame
         public bool IsStackable => stackable;
         public int MaxStack => maxStack;
     }
+
+    /// <summary>旧材料稀有度枚举，保留用于序列化兼容</summary>
+    public enum MaterialRarity { FanPin, LingPin, XuanPin, XianPin }
 }

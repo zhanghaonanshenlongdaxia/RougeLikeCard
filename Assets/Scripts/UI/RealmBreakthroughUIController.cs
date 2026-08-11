@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using QFramework;
 using CardGame.Audio;
+using NueGames.NueDeck.Scripts.Enums;
 
 namespace CardGame.UI
 {
@@ -125,7 +126,7 @@ namespace CardGame.UI
             }
 
             bool canBreak = realmSystem.CanBreakthrough();
-            _costText.text = $"突破至：{next.realmName}\n\n灵石：{next.goldCost}（持有 {battleModel.CurrentGold.Value}）\n材料：{next.materialRarity} × {next.materialCount}\n丹药：{next.requiredPotionId}\n\n奖励：+{next.hpBonus} HP / +{next.shenShiBonus} 神识上限\n\n{next.description}";
+            _costText.text = $"突破至：{next.realmName}\n\n灵石：{next.goldCost}（持有 {battleModel.CurrentGold.Value}）\n材料：{ItemQualityHelper.GetDisplayName(next.requiredQuality)} × {next.materialCount}\n丹药：{next.requiredPotionId}\n\n奖励：+{next.hpBonus} HP / +{next.shenShiBonus} 神识上限\n\n{next.description}";
 
             _breakthroughBtn.interactable = canBreak;
             _breakthroughBtn.GetComponent<Image>().color = canBreak

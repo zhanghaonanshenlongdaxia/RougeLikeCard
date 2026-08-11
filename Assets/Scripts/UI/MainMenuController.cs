@@ -1,7 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using CardGame;
 using CardGame.Audio;
+using QFramework;
 
 namespace CardGame.UI
 {
@@ -90,15 +92,16 @@ namespace CardGame.UI
             var gm = NueGames.NueDeck.Scripts.Managers.GameManager.Instance;
             if (gm != null) gm.InitGameplayData();
 
-            // 给6张基础卡
-            var basicCards = gm.GameplayData.AllCardsList.FindAll(c =>
-                c.Id.Contains("basic") || c.Id.Contains("attack") || c.Id.Contains("block") ||
-                c.Id.Contains("heal") || c.Id.Contains("draw") || c.Id.Contains("mana") || c.Id.Contains("fast"));
-            gm.PersistentGameplayData.CurrentCardsList.Clear();
-            foreach (var c in basicCards)
-                gm.PersistentGameplayData.CurrentCardsList.Add(c);
+            // 给玩家一本初始功法 (火法) 并自动设为当前
+            var arch = CardGameArchitecture.Interface;
+            var cultSystem = arch.GetSystem<ICultivationSystem>();
+            cultSystem.LearnMethod("sy_method"); // 三阳三昧丙丁炼火诀
+            cultSystem.LearnMethod("th_method"); // 太和十六洞天
+            cultSystem.SetActiveMethod("sy_method");
+            // 给一些初始参悟点
+            arch.GetModel<ICultivationModel>().ComprehensionPoints.Value = 20;
 
-            FloatingTip.ShowSuccess("开始新游戏");
+            FloatingTip.ShowSuccess("开始新游戏，已获得《三阳三昧丙丁炼火诀》");
             var sceneChanger = FindObjectOfType<NueGames.NueDeck.Scripts.Utils.SceneChanger>();
             if (sceneChanger != null) sceneChanger.OpenBaseScene();
             else UnityEngine.SceneManagement.SceneManager.LoadScene(2);

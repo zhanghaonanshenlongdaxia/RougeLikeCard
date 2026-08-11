@@ -143,6 +143,12 @@ namespace NueGames.NueDeck.Scripts.Characters
             if (CharacterStats.IsStunned)
                 yield break;
             
+            if (NextAbility == null)
+            {
+                Debug.LogWarning("[EnemyBase] NextAbility is null, skipping action for " + name);
+                yield break;
+            }
+
             EnemyCanvas.IntentImage.gameObject.SetActive(false);
             if (NextAbility.Intention.EnemyIntentionType == EnemyIntentionType.Attack || NextAbility.Intention.EnemyIntentionType == EnemyIntentionType.Debuff)
             {
