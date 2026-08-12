@@ -131,32 +131,54 @@ namespace CardGame.UI
                     if (_font) descTmp.font = _font;
                 }
 
-                // Set difficulty buttons in DiffRow
+                // Set difficulty buttons in DiffRow (clone from btnDiff template)
                 var diffRow = itemGo.transform.Find("DiffRow");
                 if (diffRow != null)
                 {
-                    // Clear any existing diff buttons
-                    for (int i = diffRow.childCount - 1; i >= 0; i--)
-                        Destroy(diffRow.GetChild(i).gameObject);
-
-                    foreach (var diff in mapData.difficulties)
+                    // Get the btnDiff template
+                    var btnDiffTemplate = diffRow.Find("btnDiff");
+                    if (btnDiffTemplate != null)
                     {
-                        bool canEnter = mapUnlocked && currentShenShi >= diff.requiredShenShi;
-                        Color btnColor = mapUnlocked
-                            ? (canEnter ? GetDifficultyColor(diff.difficultyType) : new Color(0.15f, 0.15f, 0.15f, 0.8f))
-                            : new Color(0.15f, 0.15f, 0.15f, 0.8f);
+                        // Hide the template
+                        btnDiffTemplate.gameObject.SetActive(false);
 
-                        var diffBtn = CreateDiffButton(diffRow, diff.difficultyName, btnColor);
-                        diffBtn.interactable = true;
-
-                        var capturedMap = mapData;
-                        var capturedDiff = diff;
-                        var capturedCanEnter = canEnter;
-                        diffBtn.onClick.AddListener(() =>
+                        foreach (var diff in mapData.difficulties)
                         {
-                            if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
-                            OnDifficultySelected(capturedMap, capturedDiff, capturedCanEnter);
-                        });
+                            bool canEnter = mapUnlocked && currentShenShi >= diff.requiredShenShi;
+                            Color btnColor = mapUnlocked
+                                ? (canEnter ? GetDifficultyColor(diff.difficultyType) : new Color(0.15f, 0.15f, 0.15f, 0.8f))
+                                : new Color(0.15f, 0.15f, 0.15f, 0.8f);
+
+                            // Clone btnDiff
+                            var diffBtnGo = Instantiate(btnDiffTemplate.gameObject, diffRow, false);
+                            diffBtnGo.name = $"Btn_{diff.difficultyName}";
+                            diffBtnGo.SetActive(true);
+
+                            var diffBtn = diffBtnGo.GetComponent<Button>();
+                            var diffImg = diffBtnGo.GetComponent<Image>();
+                            if (diffImg != null) diffImg.color = btnColor;
+
+                            var diffTmp = diffBtnGo.GetComponentInChildren<TextMeshProUGUI>();
+                            if (diffTmp != null)
+                            {
+                                diffTmp.text = diff.difficultyName;
+                                diffTmp.color = new Color(0.95f, 0.85f, 0.4f);
+                                if (_font) diffTmp.font = _font;
+                            }
+
+                            if (diffBtn != null)
+                            {
+                                diffBtn.interactable = true;
+                                var capturedMap = mapData;
+                                var capturedDiff = diff;
+                                var capturedCanEnter = canEnter;
+                                diffBtn.onClick.AddListener(() =>
+                                {
+                                    if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
+                                    OnDifficultySelected(capturedMap, capturedDiff, capturedCanEnter);
+                                });
+                            }
+                        }
                     }
                 }
             }

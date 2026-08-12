@@ -193,7 +193,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &369433135823618025
 CanvasRenderer:
@@ -459,8 +459,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 349.5, y: -105}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 342.6, y: -438.5}
+  m_SizeDelta: {x: 655.2, y: 757}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1042674784955462470
 CanvasRenderer:
@@ -1176,7 +1176,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &545841694655343474
 CanvasRenderer:
@@ -1496,6 +1496,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d988680f891cedc48ae5301056d477f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _mapItemPrefab: {fileID: 0}
+  _mapListRoot: {fileID: 0}
+  _detailText: {fileID: 0}
+  _departButton: {fileID: 0}
+  _backButton: {fileID: 0}
+  _departButtonText: {fileID: 0}
 --- !u!1 &8739092802858193826
 GameObject:
   m_ObjectHideFlags: 0
@@ -1534,7 +1540,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3706401130156050940
 CanvasRenderer:
