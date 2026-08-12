@@ -71,15 +71,6 @@ namespace CardGame.UI.Cultivation
             if (starsRow != null)
             {
                 if (_starsRowObj == null) _starsRowObj = starsRow.gameObject;
-                if (_starImages == null || _starImages.Count == 0)
-                {
-                    _starImages = new List<Image>();
-                    foreach (Transform child in starsRow)
-                    {
-                        var img = child.GetComponent<Image>();
-                        if (img != null) _starImages.Add(img);
-                    }
-                }
             }
         }
 
@@ -130,22 +121,41 @@ namespace CardGame.UI.Cultivation
             if (_iconImage && _abilityData?.Icon == null) _iconImage.color = frameColor;
             if (_nameText) _nameText.color = nameColor;
 
-            // Stars
+            // Stars - dynamic: clone from single template star based on mergedNodes count
             if (_starsRowObj)
             {
                 bool hasStars = _mergedNodes != null && _mergedNodes.Count > 1;
                 _starsRowObj.SetActive(hasStars);
-                int starCount = hasStars ? _mergedNodes.Count : 0;
-                for (int i = 0; i < _starImages.Count; i++)
+
+                if (hasStars)
                 {
-                    if (_starImages[i] == null) continue;
-                    bool visible = i < starCount;
-                    _starImages[i].gameObject.SetActive(visible);
-                    if (visible)
+                    int starCount = _mergedNodes.Count;
+                    var starsRowTransform = _starsRowObj.transform;
+
+                    // Keep the first child as template (hidden), clone for the rest
+                    if (starsRowTransform.childCount > 0)
                     {
-                        _starImages[i].color = i < _currentAdvLevel
-                            ? new Color(1f, 0.8f, 0.15f, 1f)
-                            : new Color(0.2f, 0.2f, 0.25f, 0.5f);
+                        var templateStar = starsRowTransform.GetChild(0);
+                        templateStar.gameObject.SetActive(false);
+
+                        // Remove old clones (child 1+)
+                        for (int i = starsRowTransform.childCount - 1; i >= 1; i--)
+                            Destroy(starsRowTransform.GetChild(i).gameObject);
+
+                        // Create exactly starCount stars
+                        for (int i = 0; i < starCount; i++)
+                        {
+                            var starGo = Instantiate(templateStar.gameObject, starsRowTransform, false);
+                            starGo.name = $"Star_{i}";
+                            starGo.SetActive(true);
+                            var starImg = starGo.GetComponent<Image>();
+                            if (starImg != null)
+                            {
+                                starImg.color = i < _currentAdvLevel
+                                    ? new Color(1f, 0.8f, 0.15f, 1f)
+                                    : new Color(0.2f, 0.2f, 0.25f, 0.5f);
+                            }
+                        }
                     }
                 }
             }

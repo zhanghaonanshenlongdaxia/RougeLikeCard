@@ -3,7 +3,8 @@
 ## Codely Structured Memories
 
 undefined
-- [2026-08-12 21:07:15] 全部14个UI Prefab化完成 (2026-08-12): 所有 BuildUI() 方法已删除，改用 Prefab 驱动。Prefab 目录结构: Assets/Prefabs/UI/{Base|Map|MainMenu}/{功能名}/{Canvas名}.prefab。控制器用 [SerializeField] + AutoBindReferences() (Transform.Find by name) 自动绑定。BaseSceneInitializer.InstantiateCanvas 遍历 Base/Map/MainMenu 三个子目录查找 Prefab，未找到时用 AssetDatabase.FindAssets 模糊搜索兜底。BaseUIController 和 MapManager 入口全部改为 InstantiateCanvas()。Play Mode 验证全部 15 个面板实例化成功，0 errors 0 assertions。LoopVerticalScrollRect 直接放进 Prefab（不再运行时 AddComponent）。4 个 item 预制体：InventoryItem.prefab / RecipeItem.prefab / EnemyItem.prefab / CardItem.prefab。Refresh 调用从 OnEnable 移到 Start 避免 layout 未完成时刷新。
+- [2026-08-12 21:44:34] 全部15个UI Prefab化完成 (2026-08-12): 所有 BuildUI() 方法已删除，改用 Prefab 驱动。Prefab 目录结构: Assets/Prefabs/UI/{Base|Map|MainMenu}/{功能名}/{Canvas名}.prefab。控制器用 [SerializeField] + AutoBindReferences() (Transform.Find by name) 自动绑定。BaseSceneInitializer.InstantiateCanvas 遍历 Base/Map/MainMenu 三个子目录查找 Prefab，未找到时用 AssetDatabase.FindAssets 模糊搜索兜底。BaseUIController 和 MapManager 入口全部改为 InstantiateCanvas()。Play Mode 验证全部 15 个面板实例化成功，0 errors 0 assertions。LoopVerticalScrollRect 直接放进 Prefab（不再运行时 AddComponent）。5 个 item 预制体：InventoryItem / RecipeItem / EnemyItem / CardItem / MapItem（MapItem 内含 btnDiff 模板，运行时克隆）。Refresh 调用从 OnEnable 移到 Start 避免 layout 未完成时刷新。全部 15 个面板关闭按钮已验证可用。AdventureMapCanvas 布局：MapList flexibleWidth=3 (60%)，DetailPanel flexibleWidth=2 (40%)，DetailPanel 内部：标题→详情(填充)→出发按钮→返回按钮。
+
 
 
 
