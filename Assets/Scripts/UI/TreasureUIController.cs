@@ -7,13 +7,16 @@ using CardGame.Audio;
 
 namespace CardGame.UI
 {
+    /// <summary>
+    /// 宝箱面板。Prefab 驱动，运行时只刷新数据和处理确认逻辑。
+    /// </summary>
     public class TreasureUIController : MonoBehaviour, IController
     {
-        [SerializeField] private Image rewardImage;
-        [SerializeField] private TextMeshProUGUI descriptionText;
-        [SerializeField] private Transform rewardSlotsRoot;
-        [SerializeField] private Button confirmButton;
-        private TMP_FontAsset _font;
+        [Header("References")]
+        [SerializeField] private TextMeshProUGUI _descriptionText;
+        [SerializeField] private Transform _rewardSlotsRoot;
+        [SerializeField] private Button _confirmButton;
+        [SerializeField] private TextMeshProUGUI _confirmButtonText;
 
         private bool _rewardClaimed;
 
@@ -21,130 +24,40 @@ namespace CardGame.UI
 
         private void Awake()
         {
-            _font = UnityEngine.Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
-            BuildUI();
+            AutoBindReferences();
+            if (_confirmButton != null)
+            {
+                _confirmButton.onClick.RemoveAllListeners();
+                _confirmButton.onClick.AddListener(() => {
+                    if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
+                    OnConfirm();
+                });
+            }
         }
 
-        private void BuildUI()
+        private void AutoBindReferences()
         {
-            var canvas = GetComponent<Canvas>();
-            if (canvas == null)
-            {
-                canvas = gameObject.AddComponent<Canvas>();
-                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-                canvas.sortingOrder = 50;
-                var scaler = gameObject.AddComponent<CanvasScaler>();
-                scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-                scaler.referenceResolution = new Vector2(1920, 1080);
-                gameObject.AddComponent<GraphicRaycaster>();
-            }
-            else if (canvas.sortingOrder < 50)
-            {
-                canvas.sortingOrder = 50;
-                if (GetComponent<GraphicRaycaster>() == null)
-                    gameObject.AddComponent<GraphicRaycaster>();
-            }
+            var panel = transform.Find("Panel");
+            if (panel == null) return;
 
-            // 清理prefab静态子物体
-            Transform panel = transform.Find("Panel");
-            if (panel != null)
-            {
-                for (int i = panel.childCount - 1; i >= 0; i--)
-                    DestroyImmediate(panel.GetChild(i).gameObject);
-                var vlg = panel.GetComponent<VerticalLayoutGroup>();
-                if (vlg != null) DestroyImmediate(vlg);
-                var csf = panel.GetComponent<ContentSizeFitter>();
-                if (csf != null) DestroyImmediate(csf);
-            }
-            if (panel == null)
-            {
-                var panelObj = new GameObject("Panel");
-                panelObj.transform.SetParent(transform, false);
-                var panelRt = panelObj.AddComponent<RectTransform>();
-                panelRt.anchorMin = new Vector2(0.25f, 0.15f); panelRt.anchorMax = new Vector2(0.75f, 0.85f);
-                panelRt.offsetMin = Vector2.zero; panelRt.offsetMax = Vector2.zero;
-                panelObj.AddComponent<Image>().color = new Color(0.08f, 0.1f, 0.15f, 0.95f);
-                panel = panelObj.transform;
-            }
-
-            // 标题
-            var titleObj = new GameObject("Title");
-            titleObj.transform.SetParent(panel, false);
-            var titleRt = titleObj.AddComponent<RectTransform>();
-            titleRt.anchorMin = new Vector2(0f, 0.85f); titleRt.anchorMax = new Vector2(1f, 1f);
-            titleRt.offsetMin = Vector2.zero; titleRt.offsetMax = Vector2.zero;
-            var titleTmp = titleObj.AddComponent<TextMeshProUGUI>();
-            titleTmp.text = "宝箱"; titleTmp.fontSize = 28; titleTmp.color = new Color(0.9f, 0.8f, 0.3f);
-            titleTmp.alignment = TextAlignmentOptions.Center;
-            if (_font) titleTmp.font = _font;
-
-            // 描述
-            var dObj = new GameObject("DescriptionText");
-            dObj.transform.SetParent(panel, false);
-            var dRt = dObj.AddComponent<RectTransform>();
-            dRt.anchorMin = new Vector2(0.05f, 0.45f); dRt.anchorMax = new Vector2(0.95f, 0.85f);
-            dRt.offsetMin = Vector2.zero; dRt.offsetMax = Vector2.zero;
-            descriptionText = dObj.AddComponent<TextMeshProUGUI>();
-            descriptionText.fontSize = 20; descriptionText.color = Color.white;
-            descriptionText.alignment = TextAlignmentOptions.Center;
-            if (_font) descriptionText.font = _font;
-
-            // 奖励区
-            var rewardObj = new GameObject("RewardArea");
-            rewardObj.transform.SetParent(panel, false);
-            var rRt = rewardObj.AddComponent<RectTransform>();
-            rRt.anchorMin = new Vector2(0.05f, 0.25f); rRt.anchorMax = new Vector2(0.95f, 0.45f);
-            rRt.offsetMin = Vector2.zero; rRt.offsetMax = Vector2.zero;
-            rewardObj.AddComponent<Image>().color = new Color(0.05f, 0.08f, 0.12f, 0.6f);
-            rewardSlotsRoot = rewardObj.transform;
-
-            // 确认按钮
-            var cObj = new GameObject("ConfirmButton");
-            cObj.transform.SetParent(panel, false);
-            var cRt = cObj.AddComponent<RectTransform>();
-            cRt.anchorMin = new Vector2(0.3f, 0.05f); cRt.anchorMax = new Vector2(0.7f, 0.2f);
-            cRt.offsetMin = Vector2.zero; cRt.offsetMax = Vector2.zero;
-            cObj.AddComponent<Image>().color = new Color(0.2f, 0.5f, 0.3f, 1f);
-
-            var ctObj = new GameObject("Text");
-            ctObj.transform.SetParent(cObj.transform, false);
-            var ctRt = ctObj.AddComponent<RectTransform>();
-            ctRt.anchorMin = Vector2.zero; ctRt.anchorMax = Vector2.one;
-            ctRt.offsetMin = Vector2.zero; ctRt.offsetMax = Vector2.zero;
-            var ctTmp = ctObj.AddComponent<TextMeshProUGUI>();
-            ctTmp.text = "确认拾取"; ctTmp.fontSize = 20; ctTmp.color = Color.white;
-            ctTmp.alignment = TextAlignmentOptions.Center;
-            if (_font) ctTmp.font = _font;
-
-            confirmButton = cObj.AddComponent<Button>();
-            confirmButton.onClick.RemoveAllListeners();
-            confirmButton.onClick.AddListener(() => {
-                if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
-                OnConfirm();
-            });
+            if (_descriptionText == null) _descriptionText = panel.Find("DescriptionText")?.GetComponent<TextMeshProUGUI>();
+            if (_rewardSlotsRoot == null) _rewardSlotsRoot = panel.Find("RewardArea");
+            if (_confirmButton == null) _confirmButton = panel.Find("ConfirmButton")?.GetComponent<Button>();
+            if (_confirmButtonText == null && _confirmButton != null)
+                _confirmButtonText = _confirmButton.transform.Find("Text")?.GetComponent<TextMeshProUGUI>();
         }
 
         public void ShowTreasure(string desc)
         {
             _rewardClaimed = false;
-            if (descriptionText) descriptionText.text = desc;
-            // 清理旧奖励显示
-            if (rewardSlotsRoot != null)
+            if (_descriptionText) _descriptionText.text = desc;
+            if (_rewardSlotsRoot != null)
             {
-                for (int i = rewardSlotsRoot.childCount - 1; i >= 0; i--)
-                    Destroy(rewardSlotsRoot.GetChild(i).gameObject);
+                for (int i = _rewardSlotsRoot.childCount - 1; i >= 0; i--)
+                    Destroy(_rewardSlotsRoot.GetChild(i).gameObject);
             }
-            // 按钮文字恢复 — 确保confirmButton和文字组件都存在
-            if (confirmButton == null)
-            {
-                confirmButton = GetComponentInChildren<Button>(true);
-            }
-            if (confirmButton != null)
-            {
-                var btnTmp = confirmButton.GetComponentInChildren<TextMeshProUGUI>();
-                if (btnTmp != null) btnTmp.text = "确认拾取";
-                confirmButton.interactable = true;
-            }
+            if (_confirmButtonText) _confirmButtonText.text = "确认拾取";
+            if (_confirmButton) _confirmButton.interactable = true;
             gameObject.SetActive(true);
         }
 
@@ -152,16 +65,12 @@ namespace CardGame.UI
         {
             if (!_rewardClaimed)
             {
-                // 发放宝箱奖励
                 GrantTreasureReward();
                 _rewardClaimed = true;
-                // 更新按钮文字
-                var btnTmp = confirmButton?.GetComponentInChildren<TextMeshProUGUI>();
-                if (btnTmp) btnTmp.text = "离开";
+                if (_confirmButtonText) _confirmButtonText.text = "离开";
                 return;
             }
 
-            // 第二次点击关闭
             gameObject.SetActive(false);
             var mapMgr = FindObjectOfType<NueGames.NueDeck.Scripts.Managers.MapManager>();
             if (mapMgr != null) mapMgr.SendMessage("BuildMap");
@@ -174,17 +83,14 @@ namespace CardGame.UI
 
             var rewards = new System.Collections.Generic.List<string>();
 
-            // 1. 灵石奖励
             int gold = Random.Range(30, 80);
             var arch = CardGameArchitecture.Interface;
             arch.GetModel<IBattleModel>().CurrentGold.Value += gold;
             gm.PersistentGameplayData.CurrentGold = arch.GetModel<IBattleModel>().CurrentGold.Value;
             rewards.Add($"+{gold}灵石");
 
-            // 2. 随机灵材
             GrantRandomMaterial(rewards);
 
-            // 3. 50%几率额外药水
             if (Random.value < 0.5f)
             {
                 var potion = CardGame.ResourceCache.GetRandomPotion();
@@ -195,11 +101,10 @@ namespace CardGame.UI
                 }
             }
 
-            // 显示奖励在UI上
-            if (rewardSlotsRoot != null)
+            if (_rewardSlotsRoot != null)
             {
                 var rewardObj = new GameObject("RewardText");
-                rewardObj.transform.SetParent(rewardSlotsRoot, false);
+                rewardObj.transform.SetParent(_rewardSlotsRoot, false);
                 var rt = rewardObj.AddComponent<RectTransform>();
                 rt.anchorMin = Vector2.zero; rt.anchorMax = Vector2.one;
                 rt.offsetMin = new Vector2(10, 5); rt.offsetMax = new Vector2(-10, -5);
@@ -207,11 +112,9 @@ namespace CardGame.UI
                 tmp.text = string.Join("\n", rewards);
                 tmp.fontSize = 20; tmp.color = new Color(1f, 0.85f, 0f);
                 tmp.alignment = TextAlignmentOptions.Center;
-                if (_font) tmp.font = _font;
             }
 
             FloatingTip.ShowSuccess("宝箱开启! " + string.Join(" ", rewards));
-            Debug.Log($"[Treasure] 宝箱奖励: {string.Join(", ", rewards)}");
         }
 
         private void GrantRandomMaterial(System.Collections.Generic.List<string> rewards)

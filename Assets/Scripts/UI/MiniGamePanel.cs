@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -15,16 +15,19 @@ namespace CardGame.UI
     /// </summary>
     public class MiniGamePanel : MonoBehaviour
     {
+        [Header("References")]
+        [SerializeField] private TextMeshProUGUI _titleText;
+        [SerializeField] private TextMeshProUGUI _costText;
+        [SerializeField] private Transform _gameArea;
+        [SerializeField] private TextMeshProUGUI _resultText;
+        [SerializeField] private Button _confirmButton;
+        [SerializeField] private Button _cancelButton;
+
         private EventEffectType _gameType;
         private int _cost;
         private EventData _currentEvent;
         private int _choiceIndex;
         private TMP_FontAsset _font;
-        private TextMeshProUGUI _titleText;
-        private TextMeshProUGUI _resultText;
-        private Transform _gameArea;
-        private Button _confirmButton;
-        private Button _cancelButton;
 
         // 小游戏结果回调
         private System.Action<int> _onGameComplete; // int = 最终effectValue
@@ -38,101 +41,26 @@ namespace CardGame.UI
             _currentEvent = eventData;
             _choiceIndex = choiceIndex;
             _font = UnityEngine.Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
-            BuildUI();
+            AutoBindReferences();
+            if (_titleText) _titleText.text = GetGameTitle(_gameType);
+            if (_costText) _costText.text = $"消耗: {_cost}灵石";
+            if (_cancelButton) _cancelButton.onClick.AddListener(() => { Destroy(gameObject); });
             BuildGameContent();
         }
 
-        void BuildUI()
+        private void AutoBindReferences()
         {
-            var canvas = gameObject.GetComponent<Canvas>();
-            if (canvas == null)
-            {
-                canvas = gameObject.AddComponent<Canvas>();
-                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-                canvas.sortingOrder = 200;
-                var scaler = gameObject.AddComponent<CanvasScaler>();
-                scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-                scaler.referenceResolution = new Vector2(1920, 1080);
-                gameObject.AddComponent<GraphicRaycaster>();
-            }
+            var panel = transform.Find("Panel");
+            if (panel == null) return;
 
-            // 背景
-            var bg = CreateImage("BG", transform, new Color(0, 0, 0, 0.85f));
-            SetFullStretch(bg);
-
-            // 主面板
-            var panel = CreateImage("Panel", transform, new Color(0.08f, 0.1f, 0.15f, 0.98f));
-            var pRt = panel.GetComponent<RectTransform>();
-            pRt.anchorMin = new Vector2(0.15f, 0.1f);
-            pRt.anchorMax = new Vector2(0.85f, 0.9f);
-            pRt.offsetMin = Vector2.zero; pRt.offsetMax = Vector2.zero;
-
-            var vlg = panel.gameObject.AddComponent<VerticalLayoutGroup>();
-            vlg.spacing = 10; vlg.padding = new RectOffset(20, 20, 20, 20);
-            vlg.childControlWidth = true; vlg.childControlHeight = true;
-            vlg.childForceExpandHeight = false;
-
-            // 标题
-            var titleObj = CreateText("Title", panel.transform, GetGameTitle(_gameType), 30, new Color(0.9f, 0.8f, 0.3f));
-            var titleLe = titleObj.AddComponent<LayoutElement>();
-            titleLe.preferredHeight = 40;
-
-            // 消耗提示
-            var costText = CreateText("Cost", panel.transform, $"消耗: {_cost}灵石", 20, new Color(1f, 0.85f, 0f));
-            var costLe = costText.AddComponent<LayoutElement>();
-            costLe.preferredHeight = 25;
-
-            // 游戏区域
-            var areaObj = new GameObject("GameArea");
-            areaObj.transform.SetParent(panel.transform, false);
-            var areaRt = areaObj.AddComponent<RectTransform>();
-            areaObj.AddComponent<Image>().color = new Color(0.05f, 0.08f, 0.12f, 0.5f);
-            var areaLe = areaObj.AddComponent<LayoutElement>();
-            areaLe.flexibleHeight = 1;
-            _gameArea = areaObj.transform;
-
-            // 结果文字
-            var resObj = CreateText("Result", panel.transform, "", 22, Color.white);
-            _resultText = resObj.GetComponent<TextMeshProUGUI>();
-            _resultText.alignment = TextAlignmentOptions.Center;
-            var resLe = resObj.AddComponent<LayoutElement>();
-            resLe.preferredHeight = 35;
-
-            // 按钮行
-            var btnRow = new GameObject("ButtonRow");
-            btnRow.transform.SetParent(panel.transform, false);
-            var bRt = btnRow.AddComponent<RectTransform>();
-            var hlg = btnRow.AddComponent<HorizontalLayoutGroup>();
-            hlg.spacing = 20; hlg.childControlWidth = true; hlg.childForceExpandWidth = true;
-            var bLe = btnRow.AddComponent<LayoutElement>();
-            bLe.preferredHeight = 50;
-
-            // 开始/确认按钮
-            var confirmObj = new GameObject("ConfirmButton");
-            confirmObj.transform.SetParent(btnRow.transform, false);
-            confirmObj.AddComponent<Image>().color = new Color(0.15f, 0.4f, 0.2f, 1f);
-            var cTmp = CreateTextObject(confirmObj.transform, "开始!", 22, Color.white);
-            var cRt = cTmp.GetComponent<RectTransform>();
-            cRt.anchorMin = Vector2.zero; cRt.anchorMax = Vector2.one;
-            cRt.offsetMin = Vector2.zero; cRt.offsetMax = Vector2.zero;
-            _confirmButton = confirmObj.AddComponent<Button>();
-            var cLe = confirmObj.AddComponent<LayoutElement>();
-            cLe.preferredHeight = 45;
-
-            // 取消按钮
-            var cancelObj = new GameObject("CancelButton");
-            cancelObj.transform.SetParent(btnRow.transform, false);
-            cancelObj.AddComponent<Image>().color = new Color(0.5f, 0.2f, 0.2f, 1f);
-            var xTmp = CreateTextObject(cancelObj.transform, "离开", 22, Color.white);
-            var xRt = xTmp.GetComponent<RectTransform>();
-            xRt.anchorMin = Vector2.zero; xRt.anchorMax = Vector2.one;
-            xRt.offsetMin = Vector2.zero; xRt.offsetMax = Vector2.zero;
-            _cancelButton = cancelObj.AddComponent<Button>();
-            var xLe = cancelObj.AddComponent<LayoutElement>();
-            xLe.preferredHeight = 45;
-
-            _cancelButton.onClick.AddListener(() => { Destroy(gameObject); });
+            if (_titleText == null) _titleText = panel.Find("Title")?.GetComponent<TextMeshProUGUI>();
+            if (_costText == null) _costText = panel.Find("Cost")?.GetComponent<TextMeshProUGUI>();
+            if (_gameArea == null) _gameArea = panel.Find("GameArea");
+            if (_resultText == null) _resultText = panel.Find("Result")?.GetComponent<TextMeshProUGUI>();
+            if (_confirmButton == null) _confirmButton = panel.Find("ButtonRow/ConfirmButton")?.GetComponent<Button>();
+            if (_cancelButton == null) _cancelButton = panel.Find("ButtonRow/CancelButton")?.GetComponent<Button>();
         }
+
 
         void BuildGameContent()
         {

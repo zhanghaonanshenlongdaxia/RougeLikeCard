@@ -37,15 +37,19 @@ namespace CardGame.UI
                 return existing;
             }
 
-            // 从 Prefab 加载（支持旧路径和新按功能分文件夹的路径）
+            // 从 Prefab 加载（支持新按功能分文件夹的路径 + 旧路径兼容）
             GameObject prefab = null;
             string functionName = canvasName.EndsWith("Canvas") 
                 ? canvasName.Substring(0, canvasName.Length - 6) 
                 : canvasName;
 #if UNITY_EDITOR
-            // 新路径：Assets/Prefabs/UI/Base/{Function}/{CanvasName}.prefab
-            prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
-                $"Assets/Prefabs/UI/Base/{functionName}/{canvasName}.prefab");
+            // 新路径：尝试 Base / Map / MainMenu 三个子目录
+            foreach (var sub in new[] { "Base", "Map", "MainMenu" })
+            {
+                prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
+                    $"Assets/Prefabs/UI/{sub}/{functionName}/{canvasName}.prefab");
+                if (prefab != null) break;
+            }
             // 旧路径兼容
             if (prefab == null)
                 prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(

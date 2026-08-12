@@ -124,12 +124,11 @@ namespace CardGame.UI
 
         void OnSettings()
         {
-            // 如果已有设置面板则不重复创建
-            if (GameObject.Find("SettingsPanel") != null) return;
+            var existing = GameObject.Find("SettingsCanvas");
+            if (existing != null) { existing.SetActive(!existing.activeSelf); return; }
 
-            var go = new GameObject("SettingsPanel");
-            go.AddComponent<SettingsPanel>();
-            Debug.Log("[MainMenu] 设置面板已打开");
+            var go = BaseSceneInitializer.InstantiateCanvas("SettingsCanvas");
+            if (go != null) Debug.Log("[MainMenu] 设置面板已打开");
         }
 
         void OnExit()

@@ -258,9 +258,21 @@ namespace NueGames.NueDeck.Scripts.Managers
 
             // 从 Prefab 实例化
             GameObject prefab = null;
+            string functionName = canvasName.EndsWith("Canvas")
+                ? canvasName.Substring(0, canvasName.Length - 6)
+                : canvasName;
 #if UNITY_EDITOR
-            prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
-                $"Assets/NueGames/NueDeck/Prefabs/UI/{canvasName}.prefab");
+            // 新路径：尝试 Base / Map / MainMenu 三个子目录
+            foreach (var sub in new[] { "Map", "Base", "MainMenu" })
+            {
+                prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
+                    $"Assets/Prefabs/UI/{sub}/{functionName}/{canvasName}.prefab");
+                if (prefab != null) break;
+            }
+            // 旧路径兼容
+            if (prefab == null)
+                prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
+                    $"Assets/NueGames/NueDeck/Prefabs/UI/{canvasName}.prefab");
 #endif
             if (prefab == null)
                 prefab = UnityEngine.Resources.Load<GameObject>($"UI/{canvasName}");
