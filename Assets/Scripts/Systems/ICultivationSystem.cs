@@ -134,19 +134,16 @@ namespace CardGame
             // 检查功法是否已学习
             if (!_model.LearnedMethodIds.Contains(method.MethodId)) return false;
 
-            // 检查前置
+            // 境界检查 — 节点所在境界不能超过玩家当前境界
+            int currentRealm = this.GetModel<IRealmModel>().CurrentRealm.Value;
+            if ((int)node.Realm > currentRealm) return false;
+
+            // 检查前置 — 全部前置节点已解锁才能解锁
             if (node.Prerequisites != null)
                 foreach (var pre in node.Prerequisites)
                     if (!_model.UnlockedNodeIds.Contains(pre)) return false;
 
-            // 检查互斥 — 如果同组已选了其他节点
-            if (!string.IsNullOrEmpty(node.MutexGroup))
-            {
-                if (_model.SelectedMutexChoices.TryGetValue(node.MutexGroup, out var selected))
-                    if (selected != nodeId) return false; // 同组选了别的
-            }
-
-            // 参悟点检查
+            // 参悟点检查 — 只要参悟点够就能解锁（不再有互斥限制）
             if (node.UnlockType == NodeUnlockType.Comprehension && node.ComprehensionCost > 0)
                 if (_model.ComprehensionPoints.Value < node.ComprehensionCost) return false;
 

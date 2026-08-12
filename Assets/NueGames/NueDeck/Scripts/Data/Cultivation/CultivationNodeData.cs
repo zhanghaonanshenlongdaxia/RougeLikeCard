@@ -19,12 +19,17 @@ namespace NueGames.NueDeck.Scripts.Data.Cultivation
 
         [Header("Tree Position")]
         [SerializeField] private RealmLevel realm;
-        [SerializeField] private Vector2 position;
+        [Tooltip("x=列号(从0开始)，y=该列内下标(从0开始)。用于控制 UI 排列顺序")]
+        [SerializeField] private Vector2 gridIndex;
+
+        [Header("Element")]
+        [Tooltip("节点元素属性。None=使用功法主元素；设为具体元素则覆盖。用于无属性节点显示")]
+        [SerializeField] private ElementType nodeElement = ElementType.None;
 
         [Header("Unlock")]
         [SerializeField] private NodeUnlockType unlockType;
         [SerializeField] private int comprehensionCost;
-        [Tooltip("前置节点ID列表，全部解锁后此节点才可解锁。空=该层首个可解锁")]
+        [Tooltip("前置节点ID列表，全部解锁后此节点才可解锁。空=无前置，只要参悟点够就能解锁")]
         [SerializeField] private List<string> prerequisites;
         [Tooltip("互斥组ID，同组只能选一个节点。空=不互斥")]
         [SerializeField] private string mutexGroup;
@@ -54,7 +59,8 @@ namespace NueGames.NueDeck.Scripts.Data.Cultivation
         public string NodeName => nodeName;
         public string Description => description;
         public RealmLevel Realm => realm;
-        public Vector2 Position => position;
+        public Vector2 GridIndex => gridIndex;
+        public ElementType NodeElement => nodeElement;
         public NodeUnlockType UnlockType => unlockType;
         public int ComprehensionCost => comprehensionCost;
         public List<string> Prerequisites => prerequisites;
@@ -75,7 +81,8 @@ namespace NueGames.NueDeck.Scripts.Data.Cultivation
         public void EditNodeName(string name) => nodeName = name;
         public void EditDescription(string desc) => description = desc;
         public void EditRealm(RealmLevel r) => realm = r;
-        public void EditPosition(Vector2 pos) => position = pos;
+        public void EditGridIndex(Vector2 idx) => gridIndex = idx;
+        public void EditNodeElement(ElementType el) => nodeElement = el;
         public void EditUnlockType(NodeUnlockType type) => unlockType = type;
         public void EditComprehensionCost(int cost) => comprehensionCost = cost;
         public void EditPrerequisites(List<string> pre) => prerequisites = pre;

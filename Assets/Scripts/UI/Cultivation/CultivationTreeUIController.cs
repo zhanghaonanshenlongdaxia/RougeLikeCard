@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using CardGame;
 using NueGames.NueDeck.Scripts.Data.Cultivation;
 using NueGames.NueDeck.Scripts.Enums;
@@ -187,8 +188,7 @@ namespace CardGame.UI.Cultivation
 
         #region Node Merging
         /// <summary>
-        /// 将同一互斥组的节点合并为一组，每层对应一个星星。
-        /// 无互斥组的节点单独成组。
+        /// 互斥组合并，无互斥的单独成组，按 gridIndex.y 排序。
         /// </summary>
         private List<List<CultivationNodeData>> MergeNodes(List<CultivationNodeData> realmNodes)
         {
@@ -208,7 +208,7 @@ namespace CardGame.UI.Cultivation
 
             foreach (var kvp in mutexGroups)
             {
-                kvp.Value.Sort((a, b) => a.Position.y.CompareTo(b.Position.y));
+                kvp.Value.Sort((a, b) => a.GridIndex.y.CompareTo(b.GridIndex.y));
                 result.Add(kvp.Value);
             }
 
@@ -218,12 +218,10 @@ namespace CardGame.UI.Cultivation
                 if (usedIds.Contains(node.NodeId)) continue;
                 standalone.Add(node);
             }
-            standalone.Sort((a, b) => a.Position.x.CompareTo(b.Position.x));
             foreach (var node in standalone)
                 result.Add(new List<CultivationNodeData> { node });
 
-            result.Sort((a, b) => a[0].Position.x.CompareTo(b[0].Position.x));
-
+            result.Sort((a, b) => a[0].GridIndex.y.CompareTo(b[0].GridIndex.y));
             return result;
         }
         #endregion
@@ -248,6 +246,10 @@ namespace CardGame.UI.Cultivation
 
             float currentY = 0f;
             float maxRowWidth = 0f;
+            float minSpacing = _itemWidth + _itemSpacingX;
+
+            // 记录每个境界的节点位置，供下一境界定位参考
+            var realmPositions = new Dictionary<RealmLevel, List<(string nodeId, float x)>>();
 
             foreach (var realm in realms)
             {
@@ -260,9 +262,92 @@ namespace CardGame.UI.Cultivation
                 currentY += _realmHeaderHeight;
 
                 int count = mergedGroups.Count;
-                float rowWidth = count * _itemWidth + (count - 1) * _itemSpacingX;
-                if (rowWidth > maxRowWidth) maxRowWidth = rowWidth;
-                float startX = -rowWidth / 2f + _itemWidth / 2f;
+
+                // === 计算每个 group 的期望 X ===
+                float[] desiredX = new float[count];
+                bool[] hasParent = new bool[count];
+
+                int realmIdx = realms.IndexOf(realm);
+                RealmLevel? prevRealm = realmIdx > 0 ? realms[realmIdx - 1] : (RealmLevel?)null;
+
+                for (int i = 0; i < count; i++)
+                {
+                    var group = mergedGroups[i];
+                    var parentXs = new List<float>();
+
+                    if (prevRealm != null && realmPositions.ContainsKey(prevRealm.Value))
+                    {
+                        foreach (var prevItem in realmPositions[prevRealm.Value])
+                        {
+                            // 检查 group 中任何节点的 prerequisites 是否包含这个上一境界节点
+                            foreach (var node in group)
+                            {
+                                if (node.Prerequisites != null && node.Prerequisites.Contains(prevItem.nodeId))
+                                {
+                                    parentXs.Add(prevItem.x);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (parentXs.Count > 0)
+                    {
+                        desiredX[i] = parentXs.Average();
+                        hasParent[i] = true;
+                    }
+                    else
+                    {
+                        desiredX[i] = 0;
+                        hasParent[i] = false;
+                    }
+                }
+
+                // === 排列：有连接的居中，无连接的放两边 ===
+                float[] xPositions = new float[count];
+
+                var withParent = new List<(int idx, float x)>();
+                var withoutParent = new List<int>();
+                for (int i = 0; i < count; i++)
+                {
+                    if (hasParent[i])
+                        withParent.Add((i, desiredX[i]));
+                    else
+                        withoutParent.Add(i);
+                }
+
+                withParent.Sort((a, b) => a.x.CompareTo(b.x));
+
+                if (withParent.Count > 0)
+                {
+                    // 有连接的居中排列
+                    float centerX = withParent.Average(t => t.x);
+                    int n = withParent.Count;
+                    for (int i = 0; i < n; i++)
+                        xPositions[withParent[i].idx] = centerX + (i - (n - 1) / 2f) * minSpacing;
+
+                    // 无连接的放两边
+                    int leftCount = withoutParent.Count / 2;
+                    int rightCount = withoutParent.Count - leftCount;
+                    withoutParent.Sort((a, b) => mergedGroups[a][0].GridIndex.y.CompareTo(mergedGroups[b][0].GridIndex.y));
+
+                    for (int i = 0; i < leftCount; i++)
+                        xPositions[withoutParent[i]] = xPositions[withParent[0].idx] - (leftCount - i) * minSpacing;
+
+                    for (int i = 0; i < rightCount; i++)
+                        xPositions[withoutParent[leftCount + i]] = xPositions[withParent[n - 1].idx] + (i + 1) * minSpacing;
+                }
+                else
+                {
+                    // 全部无连接，等距居中
+                    float rowWidth = count * _itemWidth + (count - 1) * _itemSpacingX;
+                    float startX = -rowWidth / 2f + _itemWidth / 2f;
+                    for (int i = 0; i < count; i++)
+                        xPositions[i] = startX + i * minSpacing;
+                }
+
+                // === 创建 item ===
+                var currentRealmPositions = new List<(string nodeId, float x)>();
 
                 for (int i = 0; i < count; i++)
                 {
@@ -280,22 +365,39 @@ namespace CardGame.UI.Cultivation
                     if (primaryNode.RewardType == NodeRewardType.DivineAbility && primaryNode.RewardIds != null && primaryNode.RewardIds.Count > 0)
                         ability = _cultSystem.GetAbilityConfig(primaryNode.RewardIds[0]);
 
-                    ElementType element = ability?.Element ?? ElementType.None;
-                    if (element == ElementType.None) element = _selectedMethod.Element;
+                    ElementType element = primaryNode.NodeElement;
 
                     var itemGo = Instantiate(_abilityItemPrefab, _treeContent, false);
                     itemGo.name = "Node_" + primaryNode.NodeId;
                     var itemRt = itemGo.GetComponent<RectTransform>();
                     itemRt.anchorMin = new Vector2(0.5f, 1f); itemRt.anchorMax = new Vector2(0.5f, 1f);
                     itemRt.pivot = new Vector2(0.5f, 1f);
-                    itemRt.anchoredPosition = new Vector2(startX + i * (_itemWidth + _itemSpacingX), -currentY);
+                    itemRt.anchoredPosition = new Vector2(xPositions[i], -currentY);
                     itemRt.sizeDelta = new Vector2(_itemWidth, _itemHeight);
 
                     var controller = itemGo.GetComponent<AbilityItemController>();
                     controller.Init(group, ability, element, isUnlocked, canUnlock, advLevel, OnNodeClicked);
 
                     foreach (var n in group)
+                    {
                         _itemRects[n.NodeId] = itemRt;
+                        currentRealmPositions.Add((n.NodeId, xPositions[i]));
+                    }
+                }
+
+                realmPositions[realm] = currentRealmPositions;
+
+                // 计算行宽
+                if (count > 0)
+                {
+                    float minX = float.MaxValue, maxX = float.MinValue;
+                    for (int i = 0; i < count; i++)
+                    {
+                        if (xPositions[i] < minX) minX = xPositions[i];
+                        if (xPositions[i] > maxX) maxX = xPositions[i];
+                    }
+                    float rowWidth = maxX - minX + _itemWidth;
+                    if (rowWidth > maxRowWidth) maxRowWidth = rowWidth;
                 }
 
                 currentY += _itemHeight + _itemSpacingY;
@@ -352,19 +454,11 @@ namespace CardGame.UI.Cultivation
             foreach (var node in _selectedMethod.Nodes)
             {
                 if (node.Prerequisites == null) continue;
-                ElementType nodeElement = GetNodeElement(node);
-                if (nodeElement == ElementType.None) continue;
 
                 foreach (var preId in node.Prerequisites)
                 {
                     if (!_itemRects.TryGetValue(preId, out var parentRt)) continue;
                     if (!_itemRects.TryGetValue(node.NodeId, out var childRt)) continue;
-
-                    var parentNode = _selectedMethod.GetNode(preId);
-                    if (parentNode == null) continue;
-                    ElementType parentElement = GetNodeElement(parentNode);
-                    if (parentElement == ElementType.None) continue;
-
                     if (parentRt == childRt) continue;
 
                     DrawLine(parentRt, childRt, _cultModel.UnlockedNodeIds.Contains(preId));
@@ -374,12 +468,7 @@ namespace CardGame.UI.Cultivation
 
         private ElementType GetNodeElement(CultivationNodeData node)
         {
-            if (node.RewardType == NodeRewardType.DivineAbility && node.RewardIds != null && node.RewardIds.Count > 0)
-            {
-                var ability = _cultSystem.GetAbilityConfig(node.RewardIds[0]);
-                if (ability != null) return ability.Element;
-            }
-            return _selectedMethod?.Element ?? ElementType.None;
+            return node.NodeElement;
         }
 
         private void DrawLine(RectTransform from, RectTransform to, bool isUnlocked)

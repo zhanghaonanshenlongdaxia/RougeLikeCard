@@ -409,7 +409,7 @@ namespace CardGame.Editor
             node.EditNodeName(name);
             node.EditDescription(desc);
             node.EditRealm(realm);
-            node.EditPosition(pos);
+            node.EditGridIndex(pos);
             node.EditUnlockType(unlockType);
             node.EditComprehensionCost(cost);
             node.EditMutexGroup(mutex);

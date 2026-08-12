@@ -20,3 +20,4 @@ MonoBehaviour:
   quality: 2
   cardId: 5-Heal_Basic
   energyCost: 4
+  comprehensionCost: 5

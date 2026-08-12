@@ -1,10 +1,13 @@
+using System;
+using System.Collections.Generic;
 using NueGames.NueDeck.Scripts.Enums;
 using UnityEngine;
 
 namespace NueGames.NueDeck.Scripts.Data.Cultivation
 {
     /// <summary>
-    /// 神通数据SO — 独立书籍，冒险中获得，撤离带出后学习转化为卡牌
+    /// 神通数据SO — 独立书籍，冒险中获得，撤离带出后学习转化为卡牌。
+    /// 神通本身不包含功法树内的位置/前置关系，这些由功法节点(CultivationNodeData)决定。
     /// </summary>
     [CreateAssetMenu(fileName = "Divine Ability", menuName = "NueDeck/Cultivation/Divine Ability", order = 21)]
     public class DivineAbilityData : ScriptableObject
@@ -26,6 +29,10 @@ namespace NueGames.NueDeck.Scripts.Data.Cultivation
         [Tooltip("带入冒险的能量消耗")]
         [SerializeField] private int energyCost;
 
+        [Header("Unlock")]
+        [Tooltip("解锁所需参悟点")]
+        [SerializeField] private int comprehensionCost = 5;
+
         #region Properties
         public string AbilityId => abilityId;
         public string AbilityName => abilityName;
@@ -35,6 +42,7 @@ namespace NueGames.NueDeck.Scripts.Data.Cultivation
         public ItemQuality Quality => quality;
         public string CardId => cardId;
         public int EnergyCost => energyCost;
+        public int ComprehensionCost => comprehensionCost;
         #endregion
 
         #region Editor
@@ -47,6 +55,7 @@ namespace NueGames.NueDeck.Scripts.Data.Cultivation
         public void EditQuality(ItemQuality q) => quality = q;
         public void EditCardId(string id) => cardId = id;
         public void EditEnergyCost(int cost) => energyCost = cost;
+        public void EditComprehensionCost(int cost) => comprehensionCost = cost;
 #endif
         #endregion
     }

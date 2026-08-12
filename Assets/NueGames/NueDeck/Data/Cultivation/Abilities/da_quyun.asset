@@ -20,3 +20,4 @@ MonoBehaviour:
   quality: 2
   cardId: 3-Block_Basic
   energyCost: 1
+  comprehensionCost: 5
