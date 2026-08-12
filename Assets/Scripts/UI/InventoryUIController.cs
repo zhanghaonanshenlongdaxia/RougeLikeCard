@@ -164,13 +164,11 @@ namespace CardGame.UI
             if (scrollObj != null && _loopScroll == null)
             {
                 scrollObj.gameObject.SetActive(false);
-                var oldSR = scrollObj.GetComponent<ScrollRect>(); if (oldSR != null) DestroyImmediate(oldSR);
-                _loopScroll = scrollObj.gameObject.AddComponent<LoopVerticalScrollRect>();
-                // Fix m_Horizontal/m_Vertical via reflection (avoid Awake assertion)
-                _loopScroll.horizontal = false;
-                _loopScroll.vertical = true;
-                // _prefabSource created after template below
-                scrollObj.gameObject.SetActive(true);
+                // Get LoopScrollRect from prefab (pre-configured)
+                _loopScroll = scrollObj.GetComponent<LoopVerticalScrollRect>();
+                _loopScroll.dataSource = this;
+                _itemTemplate = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/UI/Base/Inventory/InventoryItem.prefab");
+                _prefabSource = new LoopScrollPrefabSourceImpl(_itemTemplate, scrollObj);
                 _loopScroll.prefabSource = _prefabSource;
                 _loopScroll.dataSource = this;
                 _loopScroll.viewport = scrollObj.Find("Viewport")?.GetComponent<RectTransform>();

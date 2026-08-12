@@ -250,27 +250,10 @@ namespace CardGame.UI
             if (scrollObj != null && _loopScroll == null)
             {
                 scrollObj.gameObject.SetActive(false);
-                var oldSR = scrollObj.GetComponent<ScrollRect>(); if (oldSR != null) DestroyImmediate(oldSR);
-                _loopScroll = scrollObj.gameObject.AddComponent<LoopVerticalScrollRect>();
-                // Fix m_Horizontal/m_Vertical via reflection (avoid Awake assertion)
-                _loopScroll.horizontal = false;
-                _loopScroll.vertical = true;
-                scrollObj.gameObject.SetActive(true);
+                // Get LoopScrollRect from prefab (pre-configured)
+                _loopScroll = scrollObj.GetComponent<LoopVerticalScrollRect>();
                 _loopScroll.dataSource = this;
-                _loopScroll.viewport = scrollObj.Find("Viewport")?.GetComponent<RectTransform>();
-                _loopScroll.content = recipeListRoot?.GetComponent<RectTransform>();
-                _itemTemplate = new GameObject("RecipeItem");
-                _itemTemplate.transform.SetParent(transform, false);
-                _itemTemplate.SetActive(false);
-                var rt = _itemTemplate.AddComponent<RectTransform>();
-                rt.sizeDelta = new Vector2(0, 60);
-                _itemTemplate.AddComponent<Image>().color = new Color(0.1f, 0.15f, 0.25f, 1f);
-                var nameTmp = new GameObject("NameText"); nameTmp.transform.SetParent(_itemTemplate.transform, false);
-                nameTmp.AddComponent<RectTransform>();
-                var nt = nameTmp.AddComponent<TMPro.TextMeshProUGUI>(); nt.fontSize = 16; nt.color = Color.white; nt.alignment = TextAlignmentOptions.Left;
-                var rateTmp = new GameObject("RateText"); rateTmp.transform.SetParent(_itemTemplate.transform, false);
-                rateTmp.AddComponent<RectTransform>();
-                var rt2 = rateTmp.AddComponent<TMPro.TextMeshProUGUI>(); rt2.fontSize = 14; rt2.color = new Color(0.9f, 0.7f, 0.2f); rt2.alignment = TextAlignmentOptions.Left;
+                _itemTemplate = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/UI/Base/Craft/RecipeItem.prefab");
                 _prefabSource = new LoopScrollPrefabSourceImpl(_itemTemplate, scrollObj);
                 _loopScroll.prefabSource = _prefabSource;
             }
