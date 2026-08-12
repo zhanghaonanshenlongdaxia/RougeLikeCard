@@ -676,6 +676,13 @@ namespace CardGame.UI
 
         }
 
+        private void WireCloseButton()
+        {
+            var panel = transform.Find("Panel");
+            var closeBtn = panel?.Find("CloseButton")?.GetComponent<UnityEngine.UI.Button>();
+            if (closeBtn != null) closeBtn.onClick.AddListener(() => { gameObject.SetActive(false); });
+        }
+
         private void AutoBindReferences()
 
         {

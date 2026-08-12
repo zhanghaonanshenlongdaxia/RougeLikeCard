@@ -189,7 +189,7 @@ namespace CardGame.UI
             if (_cardPoolLoopScroll != null)
             {
                 _cardPoolLoopScroll.totalCount = _cardPoolData.Count;
-                _cardPoolLoopScroll.RefillCells();
+                if (_cardPoolLoopScroll != null && _cardPoolLoopScroll.prefabSource != null) if (_cardPoolLoopScroll != null && _cardPoolLoopScroll.prefabSource != null) _cardPoolLoopScroll.RefillCells();
             }
         }
 

@@ -57,6 +57,10 @@ namespace CardGame.UI
                     btn.onClick.AddListener(() => { OnTabSelected(idx); });
                 }
             }
+        }
+
+        private void Start()
+        {
             ShowRecipes(_currentType);
         }
 
@@ -82,7 +86,7 @@ namespace CardGame.UI
             if (_loopScroll != null)
             {
                 _loopScroll.totalCount = _currentRecipes.Count;
-                _loopScroll.RefillCells();
+                if (_loopScroll != null && _loopScroll.prefabSource != null) if (_loopScroll != null && _loopScroll.prefabSource != null) _loopScroll.RefillCells();
             }
 
             if (detailTitle) detailTitle.text = $"请选择配方";

@@ -67,7 +67,7 @@ namespace CardGame.UI
             }
 
             _loopScroll.totalCount = _filteredSlots.Count;
-            _loopScroll.RefillCells();
+            if (_loopScroll != null && _loopScroll.prefabSource != null) if (_loopScroll != null && _loopScroll.prefabSource != null) _loopScroll.RefillCells();
         }
 
         public void ProvideData(Transform transform, int idx)

@@ -75,7 +75,7 @@ namespace CardGame.UI
             if (_loopScroll != null)
             {
                 _loopScroll.totalCount = _allEnemies.Count;
-                _loopScroll.RefillCells();
+                if (_loopScroll != null && _loopScroll.prefabSource != null) if (_loopScroll != null && _loopScroll.prefabSource != null) _loopScroll.RefillCells();
             }
         }
 
@@ -212,6 +212,8 @@ namespace CardGame.UI
                 _storyText = detail.Find("StoryText")?.GetComponent<TMPro.TextMeshProUGUI>();
             }
             _closeButton = panel.Find("CloseButton")?.GetComponent<UnityEngine.UI.Button>();
+            if (_closeButton != null) _closeButton.onClick.AddListener(() => { gameObject.SetActive(false); });
+            if (_closeButton != null) _closeButton.onClick.AddListener(() => { gameObject.SetActive(false); });
         
             // Setup LoopScrollRect on ListPanel ScrollView
             var listPanel = panel.Find("ListPanel");
