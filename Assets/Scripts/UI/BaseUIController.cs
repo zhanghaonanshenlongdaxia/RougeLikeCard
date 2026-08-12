@@ -37,11 +37,19 @@ namespace CardGame.UI
                 return existing;
             }
 
-            // 从 Prefab 加载
+            // 从 Prefab 加载（支持旧路径和新按功能分文件夹的路径）
             GameObject prefab = null;
+            string functionName = canvasName.EndsWith("Canvas") 
+                ? canvasName.Substring(0, canvasName.Length - 6) 
+                : canvasName;
 #if UNITY_EDITOR
+            // 新路径：Assets/Prefabs/UI/Base/{Function}/{CanvasName}.prefab
             prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
-                $"Assets/NueGames/NueDeck/Prefabs/UI/{canvasName}.prefab");
+                $"Assets/Prefabs/UI/Base/{functionName}/{canvasName}.prefab");
+            // 旧路径兼容
+            if (prefab == null)
+                prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
+                    $"Assets/NueGames/NueDeck/Prefabs/UI/{canvasName}.prefab");
 #endif
             if (prefab == null)
                 prefab = Resources.Load<GameObject>($"UI/{canvasName}");
@@ -294,11 +302,9 @@ namespace CardGame.UI
 
         public void OnCultivation()
         {
-            // 先找场景中是否已有
             var existing = GameObject.Find("CultivationCanvas");
             if (existing != null)
             {
-                // 已存在就切换显示/隐藏
                 existing.SetActive(!existing.activeSelf);
                 if (existing.activeSelf)
                 {
@@ -307,11 +313,13 @@ namespace CardGame.UI
                 }
                 return;
             }
-            // 新建
-            var go = new GameObject("CultivationCanvas");
-            go.SetActive(true); // 先激活再AddComponent，确保Awake/Start正常
-            var ctrl2 = go.AddComponent<CultivationTreeUIController>();
-            ctrl2.Show();
+
+            var go = BaseSceneInitializer.InstantiateCanvas("CultivationCanvas");
+            if (go != null)
+            {
+                var ctrl = go.GetComponent<CultivationTreeUIController>();
+                if (ctrl != null) ctrl.Show();
+            }
         }
 
         /// <summary>
