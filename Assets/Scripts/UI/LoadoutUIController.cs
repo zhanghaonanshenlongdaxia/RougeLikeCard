@@ -346,7 +346,39 @@ namespace CardGame.UI
             if (selectedCardRoot == null) selectedCardRoot = panel.Find("Section_已选卡牌/ScrollView/Viewport/Content");
             if (cardPoolRoot == null) cardPoolRoot = panel.Find("Section_可选卡牌池/ScrollView/Viewport/Content");
             if (shenShiText == null) shenShiText = panel.Find("Header/ShenShiText")?.GetComponent<TMPro.TextMeshProUGUI>();
-        }
+        
+            // Setup LoopScrollRect on cardPool ScrollView
+            var poolSection = panel.Find("Section_可选卡牌池");
+            if (poolSection != null && _cardPoolLoopScroll == null)
+            {
+                var scrollObj = poolSection.Find("ScrollView");
+                if (scrollObj != null)
+                {
+                    scrollObj.gameObject.SetActive(false);
+                    var oldSR2 = scrollObj.GetComponent<ScrollRect>(); if (oldSR2 != null) DestroyImmediate(oldSR2);
+                    _cardPoolLoopScroll = scrollObj.gameObject.AddComponent<LoopVerticalScrollRect>();
+                    _cardPoolLoopScroll.horizontal = false;
+                    _cardPoolLoopScroll.vertical = true;
+                    // _cardPoolPrefabSource created after template below
+                    scrollObj.gameObject.SetActive(true);
+                                        _cardPoolLoopScroll.dataSource = this;
+                    _cardPoolLoopScroll.viewport = scrollObj.Find("Viewport")?.GetComponent<RectTransform>();
+                    _cardPoolLoopScroll.content = cardPoolRoot?.GetComponent<RectTransform>();
+                    _cardItemTemplate = new GameObject("CardItem");
+                    _cardItemTemplate.transform.SetParent(transform, false);
+                    _cardItemTemplate.SetActive(false);
+                    var rt = _cardItemTemplate.AddComponent<RectTransform>();
+                    rt.sizeDelta = new Vector2(0, 50);
+                    _cardItemTemplate.AddComponent<Image>().color = new Color(0.1f, 0.15f, 0.25f, 1f);
+                    var nameGO = new GameObject("NameText"); nameGO.transform.SetParent(_cardItemTemplate.transform, false);
+                    nameGO.AddComponent<RectTransform>();
+                    var nt = nameGO.AddComponent<TMPro.TextMeshProUGUI>(); nt.fontSize = 16; nt.color = Color.white; nt.alignment = TextAlignmentOptions.Left;
+                    _cardPoolPrefabSource = new LoopScrollPrefabSourceImpl(_cardItemTemplate, scrollObj);
+                    _cardPoolLoopScroll.prefabSource = _cardPoolPrefabSource;
+                }
+            }
+
+}
 
     }
 

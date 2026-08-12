@@ -30,6 +30,18 @@ namespace CardGame.UI
             _font = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
             LoadConfig();
             AutoBindReferences();
+            PopulateMapList();
+            WireButtons();
+        }
+
+        void WireButtons()
+        {
+            if (_departButton != null) _departButton.onClick.AddListener(OnDepart);
+            if (_backButton != null) _backButton.onClick.AddListener(() =>
+            {
+                if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
+                gameObject.SetActive(false);
+            });
         }
 
         void LoadConfig()

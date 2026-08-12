@@ -149,6 +149,51 @@ namespace CardGame.UI
                 }
                 tabButtons = tabs.ToArray();
             }
+            // Wire tab buttons
+            for (int i = 0; i < tabButtons.Length; i++)
+            {
+                var btn = tabButtons[i].GetComponent<Button>();
+                if (btn != null)
+                {
+                    int idx = i;
+                    btn.onClick.AddListener(() => OnTabSelected(idx));
+                }
+            }
+            // Setup LoopScrollRect on GridPanel ScrollView
+            var scrollObj = panel.Find("GridPanel/ScrollView");
+            if (scrollObj != null && _loopScroll == null)
+            {
+                scrollObj.gameObject.SetActive(false);
+                var oldSR = scrollObj.GetComponent<ScrollRect>(); if (oldSR != null) DestroyImmediate(oldSR);
+                _loopScroll = scrollObj.gameObject.AddComponent<LoopVerticalScrollRect>();
+                // Fix m_Horizontal/m_Vertical via reflection (avoid Awake assertion)
+                _loopScroll.horizontal = false;
+                _loopScroll.vertical = true;
+                // _prefabSource created after template below
+                scrollObj.gameObject.SetActive(true);
+                _loopScroll.prefabSource = _prefabSource;
+                _loopScroll.dataSource = this;
+                _loopScroll.viewport = scrollObj.Find("Viewport")?.GetComponent<RectTransform>();
+                _loopScroll.content = itemGridRoot?.GetComponent<RectTransform>();
+
+                // Create item template
+                _itemTemplate = new GameObject("ItemSlot");
+                _itemTemplate.transform.SetParent(transform, false);
+                _itemTemplate.SetActive(false);
+                var slotRt = _itemTemplate.AddComponent<RectTransform>();
+                slotRt.sizeDelta = new Vector2(160, 50);
+                var slotImg = _itemTemplate.AddComponent<Image>();
+                slotImg.color = new Color(0.12f, 0.15f, 0.2f, 1f);
+                var slotText = new GameObject("Text");
+                slotText.transform.SetParent(_itemTemplate.transform, false);
+                var stRt = slotText.AddComponent<RectTransform>();
+                stRt.anchorMin = Vector2.zero; stRt.anchorMax = Vector2.one;
+                stRt.offsetMin = new Vector2(5, 2); stRt.offsetMax = new Vector2(-5, -2);
+                var stTmp = slotText.AddComponent<TextMeshProUGUI>();
+                stTmp.fontSize = 14; stTmp.color = Color.white; stTmp.alignment = TextAlignmentOptions.Center;
+                _prefabSource = new LoopScrollPrefabSourceImpl(_itemTemplate, scrollObj);
+                _loopScroll.prefabSource = _prefabSource;
+            }
         }
 
     }

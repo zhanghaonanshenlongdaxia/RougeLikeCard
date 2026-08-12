@@ -212,7 +212,42 @@ namespace CardGame.UI
                 _storyText = detail.Find("StoryText")?.GetComponent<TMPro.TextMeshProUGUI>();
             }
             _closeButton = panel.Find("CloseButton")?.GetComponent<UnityEngine.UI.Button>();
-        }
+        
+            // Setup LoopScrollRect on ListPanel ScrollView
+            var listPanel = panel.Find("ListPanel");
+            if (listPanel != null && _loopScroll == null)
+            {
+                var scrollObj = listPanel.Find("ScrollView");
+                if (scrollObj != null)
+                {
+                    scrollObj.gameObject.SetActive(false);
+                    var oldSR = scrollObj.GetComponent<ScrollRect>(); if (oldSR != null) DestroyImmediate(oldSR);
+                _loopScroll = scrollObj.gameObject.AddComponent<LoopVerticalScrollRect>();
+                // Fix m_Horizontal/m_Vertical via reflection (avoid Awake assertion)
+                _loopScroll.horizontal = false;
+                _loopScroll.vertical = true;
+                    // _prefabSource created after template below
+                    scrollObj.gameObject.SetActive(true);
+                                        _loopScroll.dataSource = this;
+                    _loopScroll.viewport = scrollObj.Find("Viewport")?.GetComponent<RectTransform>();
+                    _loopScroll.content = _listContent?.GetComponent<RectTransform>();
+                    _itemTemplate = new GameObject("EnemyItem");
+                    _itemTemplate.transform.SetParent(transform, false);
+                    _itemTemplate.SetActive(false);
+                    var rt = _itemTemplate.AddComponent<RectTransform>();
+                    rt.sizeDelta = new Vector2(0, 35);
+                    _itemTemplate.AddComponent<Image>().color = new Color(0.1f, 0.15f, 0.2f, 1f);
+                    var tmpGO = new GameObject("Text"); tmpGO.transform.SetParent(_itemTemplate.transform, false);
+                    var tmpRt = tmpGO.AddComponent<RectTransform>();
+                    tmpRt.anchorMin = Vector2.zero; tmpRt.anchorMax = Vector2.one;
+                    tmpRt.offsetMin = new Vector2(5, 0); tmpRt.offsetMax = new Vector2(-5, 0);
+                    var t = tmpGO.AddComponent<TMPro.TextMeshProUGUI>(); t.fontSize = 16; t.color = Color.white; t.alignment = TextAlignmentOptions.Left;
+                    _prefabSource = new LoopScrollPrefabSourceImpl(_itemTemplate, scrollObj);
+                _loopScroll.prefabSource = _prefabSource;
+                }
+            }
+
+}
 
     }
 
