@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -36,63 +36,10 @@ namespace CardGame.UI
             _model = this.GetModel<ILoadoutModel>();
             _system = this.GetSystem<ILoadoutSystem>();
             _font = UnityEngine.Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
-            BuildUI();
+            AutoBindReferences();
             UIHelper.EnsureCloseButton(this, OnBackButton);
         }
 
-        private void BuildUI()
-        {
-            var canvas = GetComponent<Canvas>();
-            if (canvas == null)
-            {
-                canvas = gameObject.AddComponent<Canvas>();
-                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-                canvas.sortingOrder = 60;
-                var scaler = gameObject.AddComponent<CanvasScaler>();
-                scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-                scaler.referenceResolution = new Vector2(1920, 1080);
-                gameObject.AddComponent<GraphicRaycaster>();
-            }
-            Transform panel = transform.Find("Panel");
-            if (panel == null)
-            {
-                var panelObj = new GameObject("Panel");
-                panelObj.transform.SetParent(transform, false);
-                var panelRt = panelObj.AddComponent<RectTransform>();
-                panelRt.anchorMin = new Vector2(0.05f, 0.05f); panelRt.anchorMax = new Vector2(0.95f, 0.95f);
-                panelRt.offsetMin = Vector2.zero; panelRt.offsetMax = Vector2.zero;
-                panelObj.AddComponent<Image>().color = new Color(0.08f, 0.1f, 0.15f, 0.95f);
-                panel = panelObj.transform;
-            }
-
-            // 标题+神识
-            var header = new GameObject("Header");
-            header.transform.SetParent(panel, false);
-            var hRt = header.AddComponent<RectTransform>();
-            hRt.anchorMin = new Vector2(0.02f, 0.93f); hRt.anchorMax = new Vector2(0.98f, 1f);
-            hRt.offsetMin = Vector2.zero; hRt.offsetMax = Vector2.zero;
-            var hLayout = header.AddComponent<HorizontalLayoutGroup>();
-            hLayout.childControlWidth = true; hLayout.childForceExpandWidth = true;
-
-            var titleObj = new GameObject("Title");
-            titleObj.transform.SetParent(header.transform, false);
-            var titleTmp = titleObj.AddComponent<TextMeshProUGUI>();
-            titleTmp.text = "编队"; titleTmp.fontSize = 28; titleTmp.color = new Color(0.9f, 0.8f, 0.3f);
-            titleTmp.alignment = TextAlignmentOptions.Left;
-            if (_font) titleTmp.font = _font;
-
-            var ssObj = new GameObject("ShenShiText");
-            ssObj.transform.SetParent(header.transform, false);
-            shenShiText = ssObj.AddComponent<TextMeshProUGUI>();
-            shenShiText.fontSize = 22; shenShiText.color = new Color(0.3f, 0.6f, 0.9f);
-            shenShiText.alignment = TextAlignmentOptions.Right;
-            if (_font) shenShiText.font = _font;
-
-            // 三栏布局
-            CreateSection(panel, "本命功法", 0.02f, 0.05f, 0.3f, 0.88f, out basicCardRoot);
-            CreateSection(panel, "已选卡牌", 0.35f, 0.05f, 0.63f, 0.88f, out selectedCardRoot);
-            CreateSection(panel, "可选卡牌池", 0.68f, 0.05f, 0.98f, 0.88f, out cardPoolRoot, true, true);
-        }
 
         private void CreateSection(Transform parent, string title, float xMin, float yMin, float xMax, float yMax, out Transform contentRoot, bool scrollable = true, bool useLoopScroll = false)
         {
@@ -391,5 +338,16 @@ namespace CardGame.UI
         {
             gameObject.SetActive(false);
         }
+        private void AutoBindReferences()
+        {
+            var panel = transform.Find("Panel");
+            if (panel == null) return;
+            if (basicCardRoot == null) basicCardRoot = panel.Find("Section_本命功法/ScrollView/Viewport/Content");
+            if (selectedCardRoot == null) selectedCardRoot = panel.Find("Section_已选卡牌/ScrollView/Viewport/Content");
+            if (cardPoolRoot == null) cardPoolRoot = panel.Find("Section_可选卡牌池/ScrollView/Viewport/Content");
+            if (shenShiText == null) shenShiText = panel.Find("Header/ShenShiText")?.GetComponent<TMPro.TextMeshProUGUI>();
+        }
+
     }
+
 }

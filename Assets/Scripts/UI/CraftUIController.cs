@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -39,7 +39,7 @@ namespace CardGame.UI
             _system = this.GetSystem<ICraftSystem>();
             _invSystem = this.GetSystem<IInventorySystem>();
             _font = UnityEngine.Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
-            BuildUI();
+            AutoBindReferences();
             UIHelper.EnsureCloseButton(this, OnBackButton);
         }
 
@@ -60,222 +60,6 @@ namespace CardGame.UI
             ShowRecipes(_currentType);
         }
 
-        private void BuildUI()
-        {
-            // 确保有Canvas
-            var canvas = GetComponent<Canvas>();
-            if (canvas == null)
-            {
-                canvas = gameObject.AddComponent<Canvas>();
-                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-                canvas.sortingOrder = 60;
-                var scaler = gameObject.AddComponent<CanvasScaler>();
-                scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-                scaler.referenceResolution = new Vector2(1920, 1080);
-                gameObject.AddComponent<GraphicRaycaster>();
-            }
-
-            // 创建全屏遮罩背景
-            // 创建主面板
-            Transform panel = transform.Find("Panel");
-            if (panel == null)
-            {
-                var panelObj = new GameObject("Panel");
-                panelObj.transform.SetParent(transform, false);
-                var panelRt = panelObj.AddComponent<RectTransform>();
-                panelRt.anchorMin = new Vector2(0.05f, 0.05f);
-                panelRt.anchorMax = new Vector2(0.95f, 0.95f);
-                panelRt.offsetMin = Vector2.zero; panelRt.offsetMax = Vector2.zero;
-                panelObj.AddComponent<Image>().color = new Color(0.08f, 0.1f, 0.15f, 0.95f);
-                panel = panelObj.transform;
-            }
-
-            // 标题
-            var titleObj = new GameObject("Title");
-            titleObj.transform.SetParent(panel, false);
-            var titleRt = titleObj.AddComponent<RectTransform>();
-            titleRt.anchorMin = new Vector2(0f, 0.93f); titleRt.anchorMax = new Vector2(1f, 1f);
-            titleRt.offsetMin = Vector2.zero; titleRt.offsetMax = Vector2.zero;
-            var titleTmp = titleObj.AddComponent<TextMeshProUGUI>();
-            titleTmp.text = "炼制"; titleTmp.fontSize = 28; titleTmp.color = new Color(0.9f, 0.8f, 0.3f);
-            titleTmp.alignment = TextAlignmentOptions.Center;
-            if (_font) titleTmp.font = _font;
-
-            // Tab按钮（丹道/器道/祭道）
-            if (tabButtons == null || tabButtons.Length == 0)
-            {
-                var tabContainer = new GameObject("TabContainer");
-                tabContainer.transform.SetParent(panel, false);
-                var tabRt = tabContainer.AddComponent<RectTransform>();
-                tabRt.anchorMin = new Vector2(0.02f, 0.88f);
-                tabRt.anchorMax = new Vector2(0.98f, 0.93f);
-                tabRt.offsetMin = Vector2.zero; tabRt.offsetMax = Vector2.zero;
-
-                var tabLayout = tabContainer.AddComponent<HorizontalLayoutGroup>();
-                tabLayout.spacing = 5;
-                tabLayout.childControlWidth = true;
-                tabLayout.childControlHeight = true;
-                tabLayout.childForceExpandWidth = true;
-                tabLayout.childForceExpandHeight = true;
-
-                string[] tabNames = { "丹道", "器道", "祭道" };
-                var btns = new Button[3];
-                for (int i = 0; i < 3; i++)
-                {
-                    var go = new GameObject($"Tab_{i}");
-                    go.transform.SetParent(tabContainer.transform, false);
-                    go.AddComponent<RectTransform>();
-                    var img = go.AddComponent<Image>();
-                    img.color = i == 0 ? new Color(0.15f, 0.45f, 0.25f, 1f) : new Color(0.2f, 0.2f, 0.28f, 1f);
-
-                    var txtObj = new GameObject("Text");
-                    txtObj.transform.SetParent(go.transform, false);
-                    var txtRt = txtObj.AddComponent<RectTransform>();
-                    txtRt.anchorMin = Vector2.zero; txtRt.anchorMax = Vector2.one;
-                    txtRt.offsetMin = Vector2.zero; txtRt.offsetMax = Vector2.zero;
-                    var tmp = txtObj.AddComponent<TextMeshProUGUI>();
-                    tmp.text = tabNames[i]; tmp.alignment = TextAlignmentOptions.Center;
-                    tmp.fontSize = 20; tmp.color = Color.white;
-                    if (_font) tmp.font = _font;
-
-                    btns[i] = go.AddComponent<Button>();
-                    int idx = i;
-                    btns[i].onClick.AddListener(() => { OnTabSelected(idx); });
-                }
-                tabButtons = btns;
-            }
-
-            // 左侧配方列表（滚动）
-            if (recipeListRoot == null)
-            {
-                var listPanel = new GameObject("RecipeListPanel");
-                listPanel.transform.SetParent(panel, false);
-                var listRt = listPanel.AddComponent<RectTransform>();
-                listRt.anchorMin = new Vector2(0.02f, 0.05f);
-                listRt.anchorMax = new Vector2(0.45f, 0.85f);
-                listRt.offsetMin = Vector2.zero; listRt.offsetMax = Vector2.zero;
-                listPanel.AddComponent<Image>().color = new Color(0.05f, 0.08f, 0.12f, 0.8f);
-
-                recipeScroll = listPanel.AddComponent<ScrollRect>();
-                recipeScroll.horizontal = false;
-
-                var viewport = new GameObject("Viewport");
-                viewport.transform.SetParent(listPanel.transform, false);
-                var vpRt = viewport.AddComponent<RectTransform>();
-                vpRt.anchorMin = Vector2.zero; vpRt.anchorMax = Vector2.one;
-                vpRt.pivot = new Vector2(0, 1);
-                vpRt.offsetMin = new Vector2(5, 5); vpRt.offsetMax = new Vector2(-5, -5);
-                var vpImg = viewport.AddComponent<Image>();
-                vpImg.color = new Color(0, 0, 0, 0.01f);
-                viewport.AddComponent<RectMask2D>();
-
-                var content = new GameObject("Content");
-                content.transform.SetParent(viewport.transform, false);
-                var contentRt = content.AddComponent<RectTransform>();
-                contentRt.anchorMin = new Vector2(0, 1); contentRt.anchorMax = new Vector2(1, 1);
-                contentRt.pivot = new Vector2(0, 1);
-                contentRt.offsetMin = Vector2.zero; contentRt.offsetMax = Vector2.zero;
-                var fitter = content.AddComponent<VerticalLayoutGroup>();
-                fitter.spacing = 3; fitter.childControlWidth = true; fitter.childForceExpandHeight = false;
-
-                // 替换 ScrollRect 为 LoopVerticalScrollRect
-                DestroyImmediate(recipeScroll);
-                // 先 inactive 再 AddComponent，避免 LoopVerticalScrollRect.Awake 编辑态断言
-                listPanel.SetActive(false);
-                _loopScroll = listPanel.AddComponent<LoopVerticalScrollRect>();
-                _loopScroll.horizontal = false;
-                _loopScroll.vertical = true;
-                _loopScroll.viewport = vpRt;
-                _loopScroll.content = contentRt;
-                recipeListRoot = content.transform;
-
-                // 创建模板 + PrefabSource
-                _itemTemplate = CreateRecipeItemTemplate();
-                _itemTemplate.SetActive(false);
-                _prefabSource = new LoopScrollPrefabSourceImpl(_itemTemplate, listPanel.transform);
-                _loopScroll.prefabSource = _prefabSource;
-                _loopScroll.dataSource = this;
-                // 配置完成后激活，Awake 断言通过
-                listPanel.SetActive(true);
-            }
-
-            // 右侧详情面板
-            if (detailTitle == null)
-            {
-                var detailPanel = new GameObject("DetailPanel");
-                detailPanel.transform.SetParent(panel, false);
-                var dpRt = detailPanel.AddComponent<RectTransform>();
-                dpRt.anchorMin = new Vector2(0.47f, 0.05f);
-                dpRt.anchorMax = new Vector2(0.98f, 0.85f);
-                dpRt.offsetMin = Vector2.zero; dpRt.offsetMax = Vector2.zero;
-                detailPanel.AddComponent<Image>().color = new Color(0.05f, 0.08f, 0.12f, 0.8f);
-
-                // 标题
-                var dtObj = new GameObject("DetailTitle");
-                dtObj.transform.SetParent(detailPanel.transform, false);
-                var dtRt = dtObj.AddComponent<RectTransform>();
-                dtRt.anchorMin = new Vector2(0.05f, 0.82f); dtRt.anchorMax = new Vector2(0.95f, 0.95f);
-                dtRt.offsetMin = Vector2.zero; dtRt.offsetMax = Vector2.zero;
-                detailTitle = dtObj.AddComponent<TextMeshProUGUI>();
-                detailTitle.fontSize = 22; detailTitle.color = new Color(0.9f, 0.8f, 0.3f);
-                detailTitle.alignment = TextAlignmentOptions.Center;
-                if (_font) detailTitle.font = _font;
-
-                // 描述
-                var ddObj = new GameObject("DetailDesc");
-                ddObj.transform.SetParent(detailPanel.transform, false);
-                var ddRt = ddObj.AddComponent<RectTransform>();
-                ddRt.anchorMin = new Vector2(0.05f, 0.68f); ddRt.anchorMax = new Vector2(0.95f, 0.82f);
-                ddRt.offsetMin = Vector2.zero; ddRt.offsetMax = Vector2.zero;
-                detailDesc = ddObj.AddComponent<TextMeshProUGUI>();
-                detailDesc.fontSize = 14; detailDesc.color = new Color(0.7f, 0.75f, 0.8f);
-                detailDesc.alignment = TextAlignmentOptions.Center;
-                if (_font) detailDesc.font = _font;
-
-                // 材料
-                var dmObj = new GameObject("DetailMats");
-                dmObj.transform.SetParent(detailPanel.transform, false);
-                var dmRt = dmObj.AddComponent<RectTransform>();
-                dmRt.anchorMin = new Vector2(0.05f, 0.3f); dmRt.anchorMax = new Vector2(0.95f, 0.68f);
-                dmRt.offsetMin = Vector2.zero; dmRt.offsetMax = Vector2.zero;
-                detailMats = dmObj.AddComponent<TextMeshProUGUI>();
-                detailMats.fontSize = 14; detailMats.color = Color.white;
-                detailMats.alignment = TextAlignmentOptions.Left;
-                if (_font) detailMats.font = _font;
-
-                // 产出
-                var drObj = new GameObject("DetailResult");
-                drObj.transform.SetParent(detailPanel.transform, false);
-                var drRt = drObj.AddComponent<RectTransform>();
-                drRt.anchorMin = new Vector2(0.05f, 0.2f); drRt.anchorMax = new Vector2(0.95f, 0.3f);
-                drRt.offsetMin = Vector2.zero; drRt.offsetMax = Vector2.zero;
-                detailResult = drObj.AddComponent<TextMeshProUGUI>();
-                detailResult.fontSize = 16; detailResult.color = new Color(0.4f, 0.8f, 0.4f);
-                detailResult.alignment = TextAlignmentOptions.Center;
-                if (_font) detailResult.font = _font;
-
-                // 炼制按钮
-                var cbObj = new GameObject("CraftButton");
-                cbObj.transform.SetParent(detailPanel.transform, false);
-                var cbRt = cbObj.AddComponent<RectTransform>();
-                cbRt.anchorMin = new Vector2(0.3f, 0.03f); cbRt.anchorMax = new Vector2(0.7f, 0.18f);
-                cbRt.offsetMin = Vector2.zero; cbRt.offsetMax = Vector2.zero;
-                cbObj.AddComponent<Image>().color = new Color(0.2f, 0.5f, 0.3f, 1f);
-
-                var cbtObj = new GameObject("Text");
-                cbtObj.transform.SetParent(cbObj.transform, false);
-                var cbtRt = cbtObj.AddComponent<RectTransform>();
-                cbtRt.anchorMin = Vector2.zero; cbtRt.anchorMax = Vector2.one;
-                cbtRt.offsetMin = Vector2.zero; cbtRt.offsetMax = Vector2.zero;
-                var cbtTmp = cbtObj.AddComponent<TextMeshProUGUI>();
-                cbtTmp.text = "炼制"; cbtTmp.fontSize = 20; cbtTmp.color = Color.white;
-                cbtTmp.alignment = TextAlignmentOptions.Center;
-                if (_font) cbtTmp.font = _font;
-
-                craftButton = cbObj.AddComponent<Button>();
-                craftButton.onClick.AddListener(OnCraft);
-            }
-        }
 
         public void OnTabSelected(int index)
         {
@@ -435,5 +219,29 @@ namespace CardGame.UI
             tmp.richText = true;
             if (_font) tmp.font = _font;
         }
+        private void AutoBindReferences()
+        {
+            var panel = transform.Find("Panel");
+            if (panel == null) return;
+            if (recipeListRoot == null) recipeListRoot = panel.Find("RecipeListPanel/ScrollView/Viewport/Content");
+            if (detailTitle == null) detailTitle = panel.Find("DetailPanel/DetailTitle")?.GetComponent<TMPro.TextMeshProUGUI>();
+            if (detailDesc == null) detailDesc = panel.Find("DetailPanel/DetailDesc")?.GetComponent<TMPro.TextMeshProUGUI>();
+            if (detailMats == null) detailMats = panel.Find("DetailPanel/DetailMats")?.GetComponent<TMPro.TextMeshProUGUI>();
+            if (detailResult == null) detailResult = panel.Find("DetailPanel/DetailResult")?.GetComponent<TMPro.TextMeshProUGUI>();
+            if (craftButton == null) craftButton = panel.Find("DetailPanel/CraftButton")?.GetComponent<UnityEngine.UI.Button>();
+            var tabContainer = panel.Find("TabContainer");
+            if (tabButtons == null || tabButtons.Length == 0)
+            {
+                var tabs = new List<UnityEngine.UI.Button>();
+                for (int i = 0; i < 3; i++)
+                {
+                    var tab = tabContainer?.Find($"Tab_{i}")?.GetComponent<UnityEngine.UI.Button>();
+                    if (tab != null) tabs.Add(tab);
+                }
+                tabButtons = tabs.ToArray();
+            }
+        }
+
     }
+
 }

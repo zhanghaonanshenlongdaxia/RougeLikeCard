@@ -253,55 +253,42 @@ namespace CardGame.UI
         {
             var existing = GameObject.Find("RitualCanvas");
             if (existing != null) { existing.SetActive(!existing.activeSelf); return; }
-            var go = new GameObject("RitualCanvas");
-            go.AddComponent<RitualUIController>();
-            go.SetActive(true);
+            BaseSceneInitializer.InstantiateCanvas("RitualCanvas");
         }
 
         private void OpenCraftPanel()
         {
             var existing = GameObject.Find("CraftCanvas");
             if (existing != null) { existing.SetActive(!existing.activeSelf); return; }
-            var go = new GameObject("CraftCanvas");
-            go.AddComponent<CraftUIController>();
-            go.SetActive(true);
+            BaseSceneInitializer.InstantiateCanvas("CraftCanvas");
         }
 
         public void OnInventory()
         {
             var existing = GameObject.Find("InventoryCanvas");
             if (existing != null) { existing.SetActive(!existing.activeSelf); return; }
-            var go = new GameObject("InventoryCanvas");
-            go.AddComponent<InventoryUIController>();
-            go.SetActive(true);
+            BaseSceneInitializer.InstantiateCanvas("InventoryCanvas");
         }
 
         public void OnLoadout()
         {
             var existing = GameObject.Find("LoadoutCanvas");
             if (existing != null) { existing.SetActive(!existing.activeSelf); return; }
-            var go = new GameObject("LoadoutCanvas");
-            go.AddComponent<LoadoutUIController>();
-            go.SetActive(true);
+            BaseSceneInitializer.InstantiateCanvas("LoadoutCanvas");
         }
 
         public void OnCodex()
         {
-            // EnemyCodexCanvas is runtime-created, skip prefab lookup
             var existing = GameObject.Find("EnemyCodexCanvas");
             if (existing != null) { existing.SetActive(!existing.activeSelf); return; }
-            var codexObj = new GameObject("EnemyCodexCanvas");
-            codexObj.AddComponent<EnemyCodexUIController>();
-            codexObj.SetActive(true);
+            BaseSceneInitializer.InstantiateCanvas("EnemyCodexCanvas");
         }
 
         public void OnRelicStorage()
         {
             var existing = GameObject.Find("RelicStorageCanvas");
             if (existing != null) { existing.SetActive(!existing.activeSelf); return; }
-            var go = new GameObject("RelicStorageCanvas");
-            go.AddComponent<RelicStorageUIController>();
-            go.SetActive(true);
+            BaseSceneInitializer.InstantiateCanvas("RelicStorageCanvas");
         }
 
         public void OnCultivation()
@@ -358,13 +345,9 @@ namespace CardGame.UI
 
         public void OnAdventure()
         {
-            // 打开大地图选点面板（不直接进地图）
             var existing = GameObject.Find("AdventureMapCanvas");
             if (existing != null) { existing.SetActive(true); return; }
-
-            var go = new GameObject("AdventureMapCanvas");
-            go.AddComponent<AdventureMapUIController>();
-            Debug.Log("[BaseUI] Adventure map panel opened");
+            BaseSceneInitializer.InstantiateCanvas("AdventureMapCanvas");
         }
     }
 }

@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using QFramework;
@@ -27,101 +27,10 @@ namespace CardGame.UI
             _system = this.GetSystem<IShopSystem>();
             _battleModel = this.GetModel<IBattleModel>();
             _font = UnityEngine.Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
-            BuildUI();
+            AutoBindReferences();
             UIHelper.EnsureCloseButton(this, OnBackButton);
         }
 
-        private void BuildUI()
-        {
-            var canvas = GetComponent<Canvas>();
-            if (canvas == null)
-            {
-                canvas = gameObject.AddComponent<Canvas>();
-                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-                canvas.sortingOrder = 60;
-                var scaler = gameObject.AddComponent<CanvasScaler>();
-                scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-                scaler.referenceResolution = new Vector2(1920, 1080);
-                gameObject.AddComponent<GraphicRaycaster>();
-            }
-            else if (canvas.sortingOrder < 60)
-            {
-                canvas.sortingOrder = 60;
-                if (GetComponent<GraphicRaycaster>() == null)
-                    gameObject.AddComponent<GraphicRaycaster>();
-            }
-
-            Transform panel = transform.Find("Panel");
-            if (panel == null)
-            {
-                var panelObj = new GameObject("Panel");
-                panelObj.transform.SetParent(transform, false);
-                var panelRt = panelObj.AddComponent<RectTransform>();
-                panelRt.anchorMin = new Vector2(0.05f, 0.05f); panelRt.anchorMax = new Vector2(0.95f, 0.95f);
-                panelRt.offsetMin = Vector2.zero; panelRt.offsetMax = Vector2.zero;
-                panelObj.AddComponent<Image>().color = new Color(0.08f, 0.1f, 0.15f, 0.95f);
-                panel = panelObj.transform;
-            }
-            else
-            {
-                // 清理 prefab 预烘焙的静态子物体，避免未绑定的按钮拦截点击
-                for (int i = panel.childCount - 1; i >= 0; i--)
-                    DestroyImmediate(panel.GetChild(i).gameObject);
-                // 移除可能存在的布局组件，因为子物体使用锚点定位
-                var vlg = panel.GetComponent<VerticalLayoutGroup>();
-                if (vlg != null) DestroyImmediate(vlg);
-                var csf = panel.GetComponent<ContentSizeFitter>();
-                if (csf != null) DestroyImmediate(csf);
-                var panelImg = panel.GetComponent<Image>();
-                if (panelImg == null) panel.gameObject.AddComponent<Image>().color = new Color(0.08f, 0.1f, 0.15f, 0.95f);
-            }
-
-            // 标题+灵石
-            var header = new GameObject("Header");
-            header.transform.SetParent(panel, false);
-            var hRt = header.AddComponent<RectTransform>();
-            hRt.anchorMin = new Vector2(0.02f, 0.93f); hRt.anchorMax = new Vector2(0.98f, 1f);
-            hRt.offsetMin = Vector2.zero; hRt.offsetMax = Vector2.zero;
-            var hLayout = header.AddComponent<HorizontalLayoutGroup>();
-            hLayout.childControlWidth = true; hLayout.childForceExpandWidth = true;
-
-            var titleObj = new GameObject("Title");
-            titleObj.transform.SetParent(header.transform, false);
-            var titleTmp = titleObj.AddComponent<TextMeshProUGUI>();
-            titleTmp.text = "商店"; titleTmp.fontSize = 28; titleTmp.color = new Color(0.9f, 0.8f, 0.3f);
-            titleTmp.alignment = TextAlignmentOptions.Left;
-            if (_font) titleTmp.font = _font;
-
-            var goldObj = new GameObject("GoldText");
-            goldObj.transform.SetParent(header.transform, false);
-            goldText = goldObj.AddComponent<TextMeshProUGUI>();
-            goldText.fontSize = 22; goldText.color = new Color(1f, 0.85f, 0f);
-            goldText.alignment = TextAlignmentOptions.Right;
-            if (_font) goldText.font = _font;
-
-            // 三个分类区域
-            CreateShopSection(panel, "卡牌", 0.05f, 0.35f, out cardRowRoot);
-            CreateShopSection(panel, "法宝", 0.37f, 0.62f, out relicRowRoot);
-            CreateShopSection(panel, "丹药", 0.64f, 0.89f, out potionRowRoot);
-
-            // 移除卡牌按钮
-            var rmObj = new GameObject("RemoveCardButton");
-            rmObj.transform.SetParent(panel, false);
-            var rmRt = rmObj.AddComponent<RectTransform>();
-            rmRt.anchorMin = new Vector2(0.3f, 0.05f); rmRt.anchorMax = new Vector2(0.7f, 0.12f);
-            rmRt.offsetMin = Vector2.zero; rmRt.offsetMax = Vector2.zero;
-            rmObj.AddComponent<Image>().color = new Color(0.5f, 0.2f, 0.2f, 1f);
-            var rmTxt = new GameObject("Text");
-            rmTxt.transform.SetParent(rmObj.transform, false);
-            var rmTxtRt = rmTxt.AddComponent<RectTransform>();
-            rmTxtRt.anchorMin = Vector2.zero; rmTxtRt.anchorMax = Vector2.one;
-            rmTxtRt.offsetMin = Vector2.zero; rmTxtRt.offsetMax = Vector2.zero;
-            var rmTmp = rmTxt.AddComponent<TextMeshProUGUI>();
-            rmTmp.fontSize = 18; rmTmp.color = Color.white; rmTmp.alignment = TextAlignmentOptions.Center;
-            if (_font) rmTmp.font = _font;
-            removeCardButton = rmObj.AddComponent<Button>();
-            removeCardButton.onClick.AddListener(OnRemoveCard);
-        }
 
         private void CreateShopSection(Transform parent, string title, float yMin, float yMax, out Transform rowRoot)
         {
@@ -335,5 +244,20 @@ namespace CardGame.UI
             tmp.fontSize = size; tmp.color = color;
             if (_font) tmp.font = _font;
         }
+        private void AutoBindReferences()
+        {
+            var panel = transform.Find("Panel");
+            if (panel == null) return;
+            if (goldText == null) goldText = panel.Find("Header/GoldText")?.GetComponent<TMPro.TextMeshProUGUI>();
+            var s1 = panel.Find("Section_卡牌");
+            var s2 = panel.Find("Section_法宝");
+            var s3 = panel.Find("Section_丹药");
+            if (cardRowRoot == null && s1 != null) cardRowRoot = s1.Find("Scroll/Viewport/Content");
+            if (relicRowRoot == null && s2 != null) relicRowRoot = s2.Find("Scroll/Viewport/Content");
+            if (potionRowRoot == null && s3 != null) potionRowRoot = s3.Find("Scroll/Viewport/Content");
+            if (removeCardButton == null) removeCardButton = panel.Find("RemoveCardButton")?.GetComponent<UnityEngine.UI.Button>();
+        }
+
     }
+
 }

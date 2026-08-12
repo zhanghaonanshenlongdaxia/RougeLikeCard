@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -35,7 +35,7 @@ namespace CardGame.UI
             _ritualSystem = this.GetSystem<IRitualSystem>();
             _inventoryModel = this.GetModel<IInventoryModel>();
             _inventorySystem = this.GetSystem<IInventorySystem>();
-            BuildUI();
+            AutoBindReferences();
             UIHelper.EnsureCloseButton(this, () => gameObject.SetActive(false));
         }
 
@@ -44,115 +44,6 @@ namespace CardGame.UI
             RefreshMaterialList();
         }
 
-        private void BuildUI()
-        {
-            var canvas = gameObject.GetComponent<Canvas>();
-            if (canvas == null)
-            {
-                canvas = gameObject.AddComponent<Canvas>();
-                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-                canvas.sortingOrder = 60;
-                var scaler = gameObject.AddComponent<CanvasScaler>();
-                scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-                scaler.referenceResolution = new Vector2(1920, 1080);
-                gameObject.AddComponent<GraphicRaycaster>();
-            }
-
-            // 清理 prefab 子物体
-            var panel = transform.Find("Panel");
-            if (panel != null)
-            {
-                for (int i = panel.childCount - 1; i >= 0; i--)
-                    DestroyImmediate(panel.GetChild(i).gameObject);
-                var vlg = panel.GetComponent<VerticalLayoutGroup>();
-                if (vlg) DestroyImmediate(vlg);
-                var csf = panel.GetComponent<ContentSizeFitter>();
-                if (csf) DestroyImmediate(csf);
-                if (panel.GetComponent<Image>() == null)
-                    panel.gameObject.AddComponent<Image>().color = new Color(0.06f, 0.04f, 0.1f, 0.97f);
-            }
-            else
-            {
-                var panelObj = new GameObject("Panel");
-                panelObj.transform.SetParent(transform, false);
-                var rt = panelObj.AddComponent<RectTransform>();
-                rt.anchorMin = new Vector2(0.05f, 0.05f); rt.anchorMax = new Vector2(0.95f, 0.95f);
-                rt.offsetMin = Vector2.zero; rt.offsetMax = Vector2.zero;
-                panelObj.AddComponent<Image>().color = new Color(0.06f, 0.04f, 0.1f, 0.97f);
-                panel = panelObj.transform;
-            }
-
-            // 标题
-            var titleObj = CreateText(panel, "祭祀", 26, new Color(0.9f, 0.5f, 1f));
-            titleObj.GetComponent<RectTransform>().anchorMin = new Vector2(0.02f, 0.93f);
-            titleObj.GetComponent<RectTransform>().anchorMax = new Vector2(0.5f, 1f);
-
-            // 说明
-            var descObj = CreateText(panel, "献祭材料抽奖：灵草→丹药 矿石→法宝 妖丹→卡牌 魂石→配方", 14, new Color(0.6f, 0.5f, 0.7f));
-            descObj.GetComponent<RectTransform>().anchorMin = new Vector2(0.02f, 0.88f);
-            descObj.GetComponent<RectTransform>().anchorMax = new Vector2(0.98f, 0.93f);
-
-            // 左侧材料列表
-            var leftPanel = new GameObject("MaterialList");
-            leftPanel.transform.SetParent(panel, false);
-            var lRt = leftPanel.AddComponent<RectTransform>();
-            lRt.anchorMin = new Vector2(0.02f, 0.05f); lRt.anchorMax = new Vector2(0.48f, 0.86f);
-            lRt.offsetMin = Vector2.zero; lRt.offsetMax = Vector2.zero;
-            leftPanel.AddComponent<Image>().color = new Color(0.05f, 0.03f, 0.08f, 0.8f);
-
-            var leftTitle = CreateText(leftPanel.transform, "背包材料", 18, new Color(0.7f, 0.6f, 0.8f));
-            leftTitle.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0.92f);
-            leftTitle.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
-
-            // 滚动列表
-            var scroll = CreateScroll(leftPanel.transform, 0f, 0.85f);
-            _materialListRoot = scroll;
-
-            // 右侧献祭区
-            var rightPanel = new GameObject("OfferingArea");
-            rightPanel.transform.SetParent(panel, false);
-            var rRt = rightPanel.AddComponent<RectTransform>();
-            rRt.anchorMin = new Vector2(0.52f, 0.05f); rRt.anchorMax = new Vector2(0.98f, 0.86f);
-            rRt.offsetMin = Vector2.zero; rRt.offsetMax = Vector2.zero;
-            rightPanel.AddComponent<Image>().color = new Color(0.08f, 0.05f, 0.12f, 0.8f);
-
-            var rightTitle = CreateText(rightPanel.transform, "献祭台", 18, new Color(0.7f, 0.6f, 0.8f));
-            rightTitle.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0.92f);
-            rightTitle.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
-
-            // 已选材料区
-            var offeringLabel = CreateText(rightPanel.transform, "已选材料:", 15, new Color(0.8f, 0.7f, 0.9f));
-            offeringLabel.GetComponent<RectTransform>().anchorMin = new Vector2(0.02f, 0.75f);
-            offeringLabel.GetComponent<RectTransform>().anchorMax = new Vector2(0.98f, 0.82f);
-
-            var offeringScroll = CreateScroll(rightPanel.transform, 0.1f, 0.75f, "OfferingScroll");
-            _offeringRoot = offeringScroll;
-
-            // 预览信息
-            _previewText = CreateText(rightPanel.transform, "", 15, new Color(0.6f, 0.8f, 0.6f)).GetComponent<TextMeshProUGUI>();
-            _previewText.GetComponent<RectTransform>().anchorMin = new Vector2(0.02f, 0.4f);
-            _previewText.GetComponent<RectTransform>().anchorMax = new Vector2(0.98f, 0.55f);
-
-            // 祭祀按钮
-            var sacBtnObj = new GameObject("SacrificeButton");
-            sacBtnObj.transform.SetParent(rightPanel.transform, false);
-            _sacrificeBtn = sacBtnObj.AddComponent<Button>();
-            var sRt = sacBtnObj.AddComponent<RectTransform>();
-            sRt.anchorMin = new Vector2(0.2f, 0.05f); sRt.anchorMax = new Vector2(0.8f, 0.15f);
-            sRt.offsetMin = Vector2.zero; sRt.offsetMax = Vector2.zero;
-            sacBtnObj.AddComponent<Image>().color = new Color(0.4f, 0.15f, 0.5f, 1f);
-            var sTxt = CreateText(_sacrificeBtn.transform, "祭祀！", 22, Color.white);
-            sTxt.GetComponent<RectTransform>().anchorMin = Vector2.zero;
-            sTxt.GetComponent<RectTransform>().anchorMax = Vector2.one;
-            sTxt.GetComponent<RectTransform>().offsetMin = Vector2.zero;
-            sTxt.GetComponent<RectTransform>().offsetMax = Vector2.zero;
-            _sacrificeBtn.onClick.AddListener(OnSacrifice);
-
-            // 结果显示
-            _resultText = CreateText(rightPanel.transform, "", 18, new Color(1f, 0.85f, 0.3f)).GetComponent<TextMeshProUGUI>();
-            _resultText.GetComponent<RectTransform>().anchorMin = new Vector2(0.02f, 0.18f);
-            _resultText.GetComponent<RectTransform>().anchorMax = new Vector2(0.98f, 0.38f);
-        }
 
         private void RefreshMaterialList()
         {
@@ -335,5 +226,26 @@ namespace CardGame.UI
             if (_font) tmp.font = _font;
             return go;
         }
+        private void AutoBindReferences()
+        {
+            var panel = transform.Find("Panel");
+            if (panel == null) return;
+            var matList = panel.Find("MaterialList");
+            if (matList != null)
+            {
+                var content = matList.Find("Scroll/Viewport/Content");
+                _materialListRoot = content;
+            }
+            var offering = panel.Find("OfferingArea");
+            if (offering != null)
+            {
+                _offeringRoot = offering.Find("OfferingScroll/Viewport/Content");
+                _previewText = offering.Find("PreviewText")?.GetComponent<TMPro.TextMeshProUGUI>();
+                _resultText = offering.Find("ResultText")?.GetComponent<TMPro.TextMeshProUGUI>();
+                _sacrificeBtn = offering.Find("SacrificeButton")?.GetComponent<UnityEngine.UI.Button>();
+            }
+        }
+
     }
+
 }

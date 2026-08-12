@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,7 +29,7 @@ namespace CardGame.UI
         {
             _font = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
             LoadConfig();
-            BuildUI();
+            AutoBindReferences();
         }
 
         void LoadConfig()
@@ -44,122 +44,6 @@ namespace CardGame.UI
                 Debug.LogError("[AdventureMap] AdventureMapConfig not found!");
         }
 
-        void BuildUI()
-        {
-            var canvas = gameObject.GetComponent<Canvas>();
-            if (canvas == null)
-            {
-                canvas = gameObject.AddComponent<Canvas>();
-                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-                canvas.sortingOrder = 70;
-                var scaler = gameObject.AddComponent<CanvasScaler>();
-                scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-                scaler.referenceResolution = new Vector2(1920, 1080);
-                gameObject.AddComponent<GraphicRaycaster>();
-            }
-
-            // 背景
-            var bg = new GameObject("BG");
-            bg.transform.SetParent(transform, false);
-            var bgRt = bg.AddComponent<RectTransform>();
-            bgRt.anchorMin = Vector2.zero; bgRt.anchorMax = Vector2.one;
-            bgRt.offsetMin = Vector2.zero; bgRt.offsetMax = Vector2.zero;
-            bg.AddComponent<Image>().color = new Color(0.05f, 0.05f, 0.1f, 0.95f);
-
-            // 主面板
-            var panel = new GameObject("Panel");
-            panel.transform.SetParent(transform, false);
-            var pRt = panel.AddComponent<RectTransform>();
-            pRt.anchorMin = new Vector2(0.05f, 0.05f); pRt.anchorMax = new Vector2(0.95f, 0.95f);
-            pRt.offsetMin = Vector2.zero; pRt.offsetMax = Vector2.zero;
-            panel.AddComponent<Image>().color = new Color(0.08f, 0.1f, 0.15f, 0.98f);
-
-            var hlg = panel.AddComponent<HorizontalLayoutGroup>();
-            hlg.spacing = 20; hlg.padding = new RectOffset(20, 20, 20, 20);
-            hlg.childControlWidth = true; hlg.childForceExpandWidth = true;
-
-            // === 左侧：地图列表 ===
-            var leftPanel = new GameObject("MapList");
-            leftPanel.transform.SetParent(panel.transform, false);
-            leftPanel.AddComponent<RectTransform>();
-            var leftLe = leftPanel.AddComponent<LayoutElement>();
-            leftLe.preferredWidth = 500;
-            var leftVLG = leftPanel.AddComponent<VerticalLayoutGroup>();
-            leftVLG.spacing = 10; leftVLG.padding = new RectOffset(10, 10, 10, 10);
-            leftVLG.childControlWidth = true; leftVLG.childForceExpandHeight = true;
-
-            // 标题
-            var title = CreateText(leftPanel.transform, "选择历练地点", 26, new Color(0.9f, 0.8f, 0.3f));
-            title.AddComponent<LayoutElement>().preferredHeight = 40;
-
-            // 滚动区域
-            var scrollObj = new GameObject("Scroll");
-            scrollObj.transform.SetParent(leftPanel.transform, false);
-            var scrollRt = scrollObj.AddComponent<RectTransform>();
-            var scrollLe = scrollObj.AddComponent<LayoutElement>();
-            scrollLe.flexibleHeight = 1;
-            var scroll = scrollObj.AddComponent<ScrollRect>();
-            scroll.horizontal = false; scroll.vertical = true;
-
-            var vp = new GameObject("Viewport");
-            vp.transform.SetParent(scrollObj.transform, false);
-            var vpRt = vp.AddComponent<RectTransform>();
-            vpRt.anchorMin = Vector2.zero; vpRt.anchorMax = Vector2.one;
-            vpRt.offsetMin = Vector2.zero; vpRt.offsetMax = Vector2.zero;
-            vp.AddComponent<Image>().color = new Color(0.05f, 0.08f, 0.12f, 1f);
-            vp.AddComponent<RectMask2D>();
-            scroll.viewport = vpRt;
-
-            var content = new GameObject("Content");
-            content.transform.SetParent(vp.transform, false);
-            var cRt = content.AddComponent<RectTransform>();
-            cRt.anchorMin = Vector2.zero; cRt.anchorMax = new Vector2(1, 1);
-            cRt.pivot = new Vector2(0.5f, 1f);
-            cRt.offsetMin = Vector2.zero; cRt.offsetMax = Vector2.zero;
-            var cVLG = content.AddComponent<VerticalLayoutGroup>();
-            cVLG.spacing = 8; cVLG.padding = new RectOffset(5, 5, 5, 5);
-            cVLG.childControlWidth = true; cVLG.childForceExpandHeight = false;
-            var csf = content.AddComponent<ContentSizeFitter>();
-            csf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            scroll.content = cRt;
-            _mapListRoot = content.transform;
-
-            // === 右侧：详情面板 ===
-            var rightPanel = new GameObject("DetailPanel");
-            rightPanel.transform.SetParent(panel.transform, false);
-            rightPanel.AddComponent<RectTransform>();
-            var rightLe = rightPanel.AddComponent<LayoutElement>();
-            rightLe.flexibleWidth = 1;
-            var rightVLG = rightPanel.AddComponent<VerticalLayoutGroup>();
-            rightVLG.spacing = 15; rightVLG.padding = new RectOffset(15, 15, 15, 15);
-            rightVLG.childControlWidth = true; rightVLG.childAlignment = TextAnchor.UpperCenter;
-            _detailRoot = rightPanel.transform;
-
-            // 详情标题
-            var detailTitle = CreateText(rightPanel.transform, "地图详情", 24, new Color(0.9f, 0.8f, 0.3f));
-            detailTitle.AddComponent<LayoutElement>().preferredHeight = 35;
-
-            // 详情内容
-            _detailText = CreateText(rightPanel.transform, "请选择左侧的历练地点", 18, Color.white).GetComponent<TextMeshProUGUI>();
-            _detailText.alignment = TextAlignmentOptions.Left;
-            var detailLe = _detailText.gameObject.AddComponent<LayoutElement>();
-            detailLe.flexibleHeight = 1;
-
-            // 出发按钮
-            _departButton = CreateButton(rightPanel.transform, "出  发", new Color(0.2f, 0.5f, 0.3f, 1f));
-            _departButton.interactable = false;
-            _departButton.onClick.AddListener(OnDepart);
-
-            // 返回按钮
-            _backButton = CreateButton(rightPanel.transform, "返  回", new Color(0.3f, 0.2f, 0.1f, 1f));
-            _backButton.onClick.AddListener(() =>
-            {
-                if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
-                gameObject.SetActive(false);
-            });
-
-            PopulateMapList();
-        }
 
         void PopulateMapList()
         {
@@ -367,5 +251,29 @@ namespace CardGame.UI
             if (_font) tmp.font = _font;
             return go.AddComponent<Button>();
         }
+        private void AutoBindReferences()
+        {
+            var panel = transform.Find("Panel");
+            if (panel == null) return;
+            var mapList = panel.Find("MapList");
+            if (mapList != null)
+            {
+                var scroll = mapList.Find("Scroll");
+                if (scroll != null)
+                {
+                    var content = scroll.Find("Viewport/Content");
+                    _mapListRoot = content;
+                }
+            }
+            var detailPanel = panel.Find("DetailPanel");
+            if (detailPanel != null)
+            {
+                _detailText = detailPanel.Find("DetailText")?.GetComponent<TMPro.TextMeshProUGUI>();
+                _departButton = detailPanel.Find("DepartButton")?.GetComponent<UnityEngine.UI.Button>();
+                _backButton = detailPanel.Find("BackButton")?.GetComponent<UnityEngine.UI.Button>();
+            }
+        }
+
     }
+
 }

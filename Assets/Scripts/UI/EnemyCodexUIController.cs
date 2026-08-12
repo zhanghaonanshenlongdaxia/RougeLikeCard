@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using TMPro;
 using UnityEngine;
@@ -38,132 +38,9 @@ namespace CardGame.UI
         private void Awake()
         {
             _font = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
-            BuildUI();
+            AutoBindReferences();
         }
 
-        private void BuildUI()
-        {
-            // Canvas
-            var canvas = gameObject.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = 50;
-            var scaler = gameObject.AddComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920, 1080);
-            gameObject.AddComponent<GraphicRaycaster>();
-
-            // BG
-            var bg = CreateImage("BG", transform, new Color(0.05f, 0.05f, 0.08f, 0.95f));
-            SetStretch(bg.rectTransform);
-
-            // Main panel
-            var panel = CreateImage("Panel", transform, new Color(0.08f, 0.1f, 0.15f, 0.95f));
-            panel.rectTransform.anchorMin = new Vector2(0.05f, 0.05f);
-            panel.rectTransform.anchorMax = new Vector2(0.95f, 0.95f);
-            panel.rectTransform.offsetMin = Vector2.zero;
-            panel.rectTransform.offsetMax = Vector2.zero;
-
-            // Title
-            var title = CreateText("Title", panel.transform, "敌人图鉴", 32, new Color(0.9f, 0.8f, 0.3f));
-            title.alignment = TextAlignmentOptions.Center;
-            title.rectTransform.anchorMin = new Vector2(0f, 0.93f);
-            title.rectTransform.anchorMax = new Vector2(1f, 1f);
-            title.rectTransform.offsetMin = new Vector2(0, 0); title.rectTransform.offsetMax = new Vector2(0, -5);
-
-            // Close button
-            var closeObj = new GameObject("CloseButton");
-            closeObj.transform.SetParent(panel.transform, false);
-            var closeRt = closeObj.AddComponent<RectTransform>();
-            closeRt.anchorMin = new Vector2(0.92f, 0.93f); closeRt.anchorMax = new Vector2(1f, 1f);
-            closeRt.offsetMin = new Vector2(5, 5); closeRt.offsetMax = new Vector2(-5, -5);
-            var closeImg = closeObj.AddComponent<Image>(); closeImg.color = new Color(0.6f, 0.15f, 0.15f, 1f);
-            var closeTxtObj = new GameObject("Text"); closeTxtObj.transform.SetParent(closeObj.transform, false);
-            var closeTxtRt = closeTxtObj.AddComponent<RectTransform>();
-            closeTxtRt.anchorMin = Vector2.zero; closeTxtRt.anchorMax = Vector2.one;
-            closeTxtRt.offsetMin = Vector2.zero; closeTxtRt.offsetMax = Vector2.zero;
-            var closeTmp = closeTxtObj.AddComponent<TextMeshProUGUI>();
-            closeTmp.text = "关闭"; closeTmp.alignment = TextAlignmentOptions.Center; closeTmp.fontSize = 18; closeTmp.color = Color.white;
-            if (_font) closeTmp.font = _font;
-            _closeButton = closeObj.AddComponent<Button>();
-            _closeButton.onClick.AddListener(() => {
-                if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
-                gameObject.SetActive(false);
-            });
-
-            // Left list (scroll)
-            var listPanel = CreateImage("ListPanel", panel.transform, new Color(0.05f, 0.08f, 0.12f, 0.8f));
-            listPanel.rectTransform.anchorMin = new Vector2(0.02f, 0.05f);
-            listPanel.rectTransform.anchorMax = new Vector2(0.35f, 0.9f);
-            listPanel.rectTransform.offsetMin = Vector2.zero; listPanel.rectTransform.offsetMax = Vector2.zero;
-
-            var scrollObj = new GameObject("ScrollView");
-            scrollObj.transform.SetParent(listPanel.transform, false);
-            var scrollRt = scrollObj.AddComponent<RectTransform>();
-            scrollRt.anchorMin = Vector2.zero; scrollRt.anchorMax = Vector2.one;
-            scrollRt.offsetMin = new Vector2(5, 5); scrollRt.offsetMax = new Vector2(-5, -5);
-            // 先设 inactive 再 AddComponent，避免 LoopVerticalScrollRect.Awake 的编辑态断言（m_Horizontal 默认 true）
-            scrollObj.SetActive(false);
-            _loopScroll = scrollObj.AddComponent<LoopVerticalScrollRect>();
-            _loopScroll.horizontal = false;
-            _loopScroll.vertical = true;
-
-            var viewportObj = new GameObject("Viewport");
-            viewportObj.transform.SetParent(scrollObj.transform, false);
-            var viewportRt = viewportObj.AddComponent<RectTransform>();
-            viewportRt.anchorMin = Vector2.zero; viewportRt.anchorMax = Vector2.one;
-            viewportRt.offsetMin = Vector2.zero; viewportRt.offsetMax = Vector2.zero;
-            viewportRt.pivot = new Vector2(0, 1);
-            var viewportImg = viewportObj.AddComponent<Image>(); viewportImg.color = new Color(0.05f, 0.08f, 0.12f, 1f);
-            viewportObj.AddComponent<UnityEngine.UI.Mask>();
-            _loopScroll.viewport = viewportRt;
-
-            var contentObj = new GameObject("Content");
-            contentObj.transform.SetParent(viewportObj.transform, false);
-            var contentRt = contentObj.AddComponent<RectTransform>();
-            contentRt.anchorMin = new Vector2(0, 1); contentRt.anchorMax = new Vector2(1, 1);
-            contentRt.pivot = new Vector2(0, 1);
-            contentRt.offsetMin = Vector2.zero; contentRt.offsetMax = Vector2.zero;
-            var contentFitter = contentObj.AddComponent<VerticalLayoutGroup>();
-            contentFitter.spacing = 2; contentFitter.childAlignment = TextAnchor.UpperCenter;
-            contentFitter.childControlWidth = true; contentFitter.childControlHeight = false;
-            _loopScroll.content = contentRt;
-            _listContent = contentObj.transform;
-
-            // 创建模板 + PrefabSource
-            _itemTemplate = CreateListItemTemplate();
-            _itemTemplate.SetActive(false);
-            _prefabSource = new LoopScrollPrefabSourceImpl(_itemTemplate, scrollObj.transform);
-            _loopScroll.prefabSource = _prefabSource;
-            _loopScroll.dataSource = this;
-            // 配置完成后再激活，此时 m_Horizontal 已是 false，Awake 断言通过
-            scrollObj.SetActive(true);
-
-            // Right detail
-            var detailPanel = CreateImage("DetailPanel", panel.transform, new Color(0.05f, 0.08f, 0.12f, 0.8f));
-            detailPanel.rectTransform.anchorMin = new Vector2(0.37f, 0.05f);
-            detailPanel.rectTransform.anchorMax = new Vector2(0.98f, 0.9f);
-            detailPanel.rectTransform.offsetMin = Vector2.zero; detailPanel.rectTransform.offsetMax = Vector2.zero;
-
-            _nameText = CreateText("NameText", detailPanel.transform, "", 28, new Color(0.9f, 0.8f, 0.3f));
-            _nameText.rectTransform.anchorMin = new Vector2(0.05f, 0.85f); _nameText.rectTransform.anchorMax = new Vector2(0.95f, 0.98f);
-            _nameText.rectTransform.offsetMin = Vector2.zero; _nameText.rectTransform.offsetMax = Vector2.zero;
-
-            _tierText = CreateText("TierText", detailPanel.transform, "", 20, new Color(0.6f, 0.7f, 0.9f));
-            _tierText.rectTransform.anchorMin = new Vector2(0.05f, 0.78f); _tierText.rectTransform.anchorMax = new Vector2(0.95f, 0.85f);
-            _tierText.rectTransform.offsetMin = Vector2.zero; _tierText.rectTransform.offsetMax = Vector2.zero;
-
-            _hpText = CreateText("HPText", detailPanel.transform, "", 20, new Color(0.9f, 0.4f, 0.4f));
-            _hpText.rectTransform.anchorMin = new Vector2(0.05f, 0.72f); _hpText.rectTransform.anchorMax = new Vector2(0.95f, 0.78f);
-            _hpText.rectTransform.offsetMin = Vector2.zero; _hpText.rectTransform.offsetMax = Vector2.zero;
-
-            _skillText = CreateText("SkillText", detailPanel.transform, "", 16, Color.white);
-            _skillText.rectTransform.anchorMin = new Vector2(0.05f, 0.4f); _skillText.rectTransform.anchorMax = new Vector2(0.95f, 0.72f);
-            _skillText.rectTransform.offsetMin = Vector2.zero; _skillText.rectTransform.offsetMax = Vector2.zero;
-
-            _storyText = CreateText("StoryText", detailPanel.transform, "", 16, new Color(0.7f, 0.75f, 0.8f));
-            _storyText.rectTransform.anchorMin = new Vector2(0.05f, 0.02f); _storyText.rectTransform.anchorMax = new Vector2(0.95f, 0.4f);
-            _storyText.rectTransform.offsetMin = Vector2.zero; _storyText.rectTransform.offsetMax = Vector2.zero;
-        }
 
         private void OnEnable()
         {
@@ -319,5 +196,24 @@ namespace CardGame.UI
             rt.anchorMin = Vector2.zero; rt.anchorMax = Vector2.one;
             rt.offsetMin = Vector2.zero; rt.offsetMax = Vector2.zero;
         }
+        private void AutoBindReferences()
+        {
+            var panel = transform.Find("Panel");
+            if (panel == null) return;
+            _listContent = panel.Find("ListPanel/ScrollView/Viewport/Content");
+            var detail = panel.Find("DetailPanel");
+            if (detail != null)
+            {
+                _portraitImage = detail.Find("PortraitImage")?.GetComponent<Image>();
+                _nameText = detail.Find("NameText")?.GetComponent<TMPro.TextMeshProUGUI>();
+                _tierText = detail.Find("TierText")?.GetComponent<TMPro.TextMeshProUGUI>();
+                _hpText = detail.Find("HPText")?.GetComponent<TMPro.TextMeshProUGUI>();
+                _skillText = detail.Find("SkillText")?.GetComponent<TMPro.TextMeshProUGUI>();
+                _storyText = detail.Find("StoryText")?.GetComponent<TMPro.TextMeshProUGUI>();
+            }
+            _closeButton = panel.Find("CloseButton")?.GetComponent<UnityEngine.UI.Button>();
+        }
+
     }
+
 }
