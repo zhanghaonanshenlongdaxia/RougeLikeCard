@@ -3,7 +3,8 @@
 ## Codely Structured Memories
 
 undefined
-- [2026-08-12 19:51:53] Cultivation UI Prefab化完成 (2026-08-12): CultivationTreeUIController + AbilityItemController 从运行时 BuildUI() 改为 Prefab 驱动。Prefab 路径: Assets/Prefabs/UI/Base/Cultivation/CultivationCanvas.prefab + CultivationAbilityItem.prefab。控制器用 [SerializeField] + AutoBindReferences() (Transform.Find by name) 自动绑定子对象。BaseSceneInitializer.InstantiateCanvas 支持新路径 Assets/Prefabs/UI/Base/{FunctionName}/{CanvasName}.prefab。ActionButton 必须放在 DetailPanel 直接子级（不能放在 DetailContent/VerticalLayoutGroup 内，否则被 VLG 压缩不可见）。RefreshDetail 清理动态子对象时需跳过 ActionButton。GB2312 encoding issue: replace tool fails on Chinese chars, must use execute_csharp_script with File.ReadAllLines/WriteAllLines to edit. 
+- [2026-08-12 20:07:43] 全部14个UI Prefab化完成 (2026-08-12): 所有 BuildUI() 方法已删除，改用 Prefab 驱动。Prefab 目录结构: Assets/Prefabs/UI/{Base|Map|MainMenu}/{功能名}/{Canvas名}.prefab。控制器用 [SerializeField] + AutoBindReferences() (Transform.Find by name) 自动绑定。BaseSceneInitializer.InstantiateCanvas 遍历 Base/Map/MainMenu 三个子目录查找 Prefab。BaseUIController 和 MapManager 入口全部改为 InstantiateCanvas()。编译 0 errors。CultivationCanvas + CultivationAbilityItem 已 Play Mode 验证通过（节点树/连线/详情面板/ActionButton 全部正常）。其余面板尚未逐个 Play Mode 验证。
+
 
 
 ### User

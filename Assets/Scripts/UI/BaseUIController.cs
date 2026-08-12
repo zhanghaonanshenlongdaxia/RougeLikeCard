@@ -43,12 +43,19 @@ namespace CardGame.UI
                 ? canvasName.Substring(0, canvasName.Length - 6) 
                 : canvasName;
 #if UNITY_EDITOR
-            // 新路径：尝试 Base / Map / MainMenu 三个子目录
+            // 新路径：尝试 Base / Map / MainMenu 三个子目录，先用 functionName 再用模糊搜索
             foreach (var sub in new[] { "Base", "Map", "MainMenu" })
             {
                 prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
                     $"Assets/Prefabs/UI/{sub}/{functionName}/{canvasName}.prefab");
                 if (prefab != null) break;
+            }
+            // 模糊搜索：在整个 Prefabs/UI 下找文件名匹配的 prefab
+            if (prefab == null)
+            {
+                var guids = UnityEditor.AssetDatabase.FindAssets($"{canvasName} t:Prefab", new[] { "Assets/Prefabs/UI" });
+                if (guids.Length > 0)
+                    prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]));
             }
             // 旧路径兼容
             if (prefab == null)
@@ -217,8 +224,7 @@ namespace CardGame.UI
         {
             var existing = GameObject.Find("StoryTreeCanvas");
             if (existing != null) { existing.SetActive(true); return; }
-            var go = new GameObject("StoryTreeCanvas");
-            go.AddComponent<StoryTreeUIController>();
+            BaseSceneInitializer.InstantiateCanvas("StoryTreeCanvas");
             Debug.Log("[BaseUI] Story tree UI opened");
         }
 
