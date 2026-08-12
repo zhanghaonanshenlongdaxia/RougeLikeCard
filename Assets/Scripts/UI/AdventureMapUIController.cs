@@ -8,18 +8,22 @@ using CardGame.Audio;
 namespace CardGame.UI
 {
     /// <summary>
-    /// 大地图选点面板。点击"下山历练"后弹出，选择地图+难度+确认出发。
-    /// 运行时创建，无prefab依赖。
+    /// 大地图选点面板。Prefab 驱动，MapItem 用预制体。
     /// </summary>
     public class AdventureMapUIController : MonoBehaviour
     {
+        [Header("Prefabs")]
+        [SerializeField] private GameObject _mapItemPrefab;
+
+        [Header("References")]
+        [SerializeField] private Transform _mapListRoot;
+        [SerializeField] private TextMeshProUGUI _detailText;
+        [SerializeField] private Button _departButton;
+        [SerializeField] private Button _backButton;
+        [SerializeField] private TextMeshProUGUI _departButtonText;
+
         private TMP_FontAsset _font;
         private AdventureMapConfig _config;
-        private Transform _mapListRoot;
-        private Transform _detailRoot;
-        private TextMeshProUGUI _detailText;
-        private Button _departButton;
-        private Button _backButton;
         private AdventureMapData _selectedMap;
         private AdventureDifficulty _selectedDifficulty;
 
@@ -34,7 +38,35 @@ namespace CardGame.UI
             WireButtons();
         }
 
-        void WireButtons()
+        private void AutoBindReferences()
+        {
+            var panel = transform.Find("Panel");
+            if (panel == null) return;
+
+            if (_mapItemPrefab == null)
+                _mapItemPrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
+                    "Assets/Prefabs/UI/Map/AdventureMap/MapItem.prefab");
+
+            var mapList = panel.Find("MapList");
+            if (mapList != null && _mapListRoot == null)
+            {
+                var scroll = mapList.Find("Scroll");
+                if (scroll != null)
+                    _mapListRoot = scroll.Find("Viewport/Content");
+            }
+
+            var detailPanel = panel.Find("DetailPanel");
+            if (detailPanel != null)
+            {
+                if (_detailText == null) _detailText = detailPanel.Find("DetailText")?.GetComponent<TextMeshProUGUI>();
+                if (_departButton == null) _departButton = detailPanel.Find("DepartButton")?.GetComponent<Button>();
+                if (_backButton == null) _backButton = detailPanel.Find("BackButton")?.GetComponent<Button>();
+                if (_departButtonText == null && _departButton != null)
+                    _departButtonText = _departButton.transform.Find("Text")?.GetComponent<TextMeshProUGUI>();
+            }
+        }
+
+        private void WireButtons()
         {
             if (_departButton != null) _departButton.onClick.AddListener(OnDepart);
             if (_backButton != null) _backButton.onClick.AddListener(() =>
@@ -44,7 +76,7 @@ namespace CardGame.UI
             });
         }
 
-        void LoadConfig()
+        private void LoadConfig()
         {
 #if UNITY_EDITOR
             _config = UnityEditor.AssetDatabase.LoadAssetAtPath<AdventureMapConfig>(
@@ -56,10 +88,13 @@ namespace CardGame.UI
                 Debug.LogError("[AdventureMap] AdventureMapConfig not found!");
         }
 
-
-        void PopulateMapList()
+        private void PopulateMapList()
         {
-            if (_config == null) return;
+            if (_config == null || _mapListRoot == null || _mapItemPrefab == null) return;
+
+            // Clear old items
+            for (int i = _mapListRoot.childCount - 1; i >= 0; i--)
+                Destroy(_mapListRoot.GetChild(i).gameObject);
 
             var arch = CardGameArchitecture.Interface;
             var realmModel = arch.GetModel<IRealmModel>();
@@ -71,43 +106,48 @@ namespace CardGame.UI
             {
                 bool mapUnlocked = currentRealm >= mapData.unlockRealmLevel;
 
-                var mapItem = new GameObject($"Map_{mapData.mapId}");
-                mapItem.transform.SetParent(_mapListRoot, false);
-                var img = mapItem.AddComponent<Image>();
-                img.color = mapUnlocked ? new Color(0.1f, 0.2f, 0.3f, 1f) : new Color(0.1f, 0.1f, 0.1f, 0.5f);
-                var le = mapItem.AddComponent<LayoutElement>();
-                le.preferredHeight = 100;
-                var vlg = mapItem.AddComponent<VerticalLayoutGroup>();
-                vlg.spacing = 3; vlg.padding = new RectOffset(10, 10, 8, 8);
-                vlg.childControlWidth = true; vlg.childForceExpandHeight = false;
+                // Instantiate MapItem prefab
+                var itemGo = Instantiate(_mapItemPrefab, _mapListRoot, false);
+                itemGo.name = $"Map_{mapData.mapId}";
 
-                // 地图名
-                var nameText = CreateText(mapItem.transform,
-                    mapUnlocked ? mapData.mapName : $"{mapData.mapName} (未解锁)",
-                    20, mapUnlocked ? new Color(0.9f, 0.8f, 0.3f) : new Color(0.4f, 0.4f, 0.4f));
-                nameText.AddComponent<LayoutElement>().preferredHeight = 25;
+                // Set background color
+                var img = itemGo.GetComponent<Image>();
+                if (img != null) img.color = mapUnlocked ? new Color(0.1f, 0.2f, 0.3f, 1f) : new Color(0.1f, 0.1f, 0.1f, 0.5f);
 
-                // 描述
-                var descText = CreateText(mapItem.transform, mapData.description, 14, new Color(0.7f, 0.7f, 0.7f));
-                descText.AddComponent<LayoutElement>().preferredHeight = 30;
-
-                // 难度按钮行
-                var diffRow = new GameObject("DiffRow");
-                diffRow.transform.SetParent(mapItem.transform, false);
-                diffRow.AddComponent<RectTransform>();
-                var diffHLG = diffRow.AddComponent<HorizontalLayoutGroup>();
-                diffHLG.spacing = 5; diffHLG.childControlWidth = true; diffHLG.childForceExpandWidth = true;
-                diffRow.AddComponent<LayoutElement>().preferredHeight = 35;
-
-                if (mapUnlocked)
+                // Set name
+                var nameTmp = itemGo.transform.Find("NameText")?.GetComponent<TextMeshProUGUI>();
+                if (nameTmp != null)
                 {
+                    nameTmp.text = mapUnlocked ? mapData.mapName : $"{mapData.mapName} (未解锁)";
+                    nameTmp.color = mapUnlocked ? new Color(0.9f, 0.8f, 0.3f) : new Color(0.4f, 0.4f, 0.4f);
+                    if (_font) nameTmp.font = _font;
+                }
+
+                // Set description
+                var descTmp = itemGo.transform.Find("DescText")?.GetComponent<TextMeshProUGUI>();
+                if (descTmp != null)
+                {
+                    descTmp.text = mapData.description;
+                    if (_font) descTmp.font = _font;
+                }
+
+                // Set difficulty buttons in DiffRow
+                var diffRow = itemGo.transform.Find("DiffRow");
+                if (diffRow != null)
+                {
+                    // Clear any existing diff buttons
+                    for (int i = diffRow.childCount - 1; i >= 0; i--)
+                        Destroy(diffRow.GetChild(i).gameObject);
+
                     foreach (var diff in mapData.difficulties)
                     {
-                        // 所有难度都可点击查看信息，但颜色区分是否满足要求
-                        bool canEnter = currentShenShi >= diff.requiredShenShi;
-                        var diffBtn = CreateButton(diffRow.transform, diff.difficultyName,
-                            canEnter ? GetDifficultyColor(diff.difficultyType) : new Color(0.15f, 0.15f, 0.15f, 0.8f));
-                        diffBtn.interactable = true; // 始终可点击查看
+                        bool canEnter = mapUnlocked && currentShenShi >= diff.requiredShenShi;
+                        Color btnColor = mapUnlocked
+                            ? (canEnter ? GetDifficultyColor(diff.difficultyType) : new Color(0.15f, 0.15f, 0.15f, 0.8f))
+                            : new Color(0.15f, 0.15f, 0.15f, 0.8f);
+
+                        var diffBtn = CreateDiffButton(diffRow, diff.difficultyName, btnColor);
+                        diffBtn.interactable = true;
 
                         var capturedMap = mapData;
                         var capturedDiff = diff;
@@ -119,40 +159,38 @@ namespace CardGame.UI
                         });
                     }
                 }
-                else
-                {
-                    // 未解锁的地图也显示难度按钮（灰色但可点击查看详情）
-                    foreach (var diff in mapData.difficulties)
-                    {
-                        var diffBtn = CreateButton(diffRow.transform, diff.difficultyName,
-                            new Color(0.15f, 0.15f, 0.15f, 0.8f));
-                        diffBtn.interactable = true; // 可点击查看详情
-
-                        var capturedMap = mapData;
-                        var capturedDiff = diff;
-                        diffBtn.onClick.AddListener(() =>
-                        {
-                            if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
-                            OnDifficultySelected(capturedMap, capturedDiff, false);
-                        });
-                    }
-                }
             }
         }
 
-        Color GetDifficultyColor(DifficultyType type)
+        private Button CreateDiffButton(Transform parent, string label, Color color)
         {
-            return type switch
-            {
-                DifficultyType.Normal => new Color(0.15f, 0.3f, 0.5f, 1f),
-                DifficultyType.Hard => new Color(0.4f, 0.2f, 0.1f, 1f),
-                DifficultyType.Extreme => new Color(0.3f, 0.1f, 0.3f, 1f),
-                DifficultyType.Hell => new Color(0.5f, 0.1f, 0.1f, 1f),
-                _ => Color.gray
-            };
+            var go = new GameObject($"Btn_{label}");
+            go.transform.SetParent(parent, false);
+            go.AddComponent<Image>().color = color;
+            var le = go.AddComponent<LayoutElement>();
+            le.preferredHeight = 35;
+            var txtObj = new GameObject("Text");
+            txtObj.transform.SetParent(go.transform, false);
+            var txtRt = txtObj.AddComponent<RectTransform>();
+            txtRt.anchorMin = Vector2.zero; txtRt.anchorMax = Vector2.one;
+            txtRt.offsetMin = Vector2.zero; txtRt.offsetMax = Vector2.zero;
+            var tmp = txtObj.AddComponent<TextMeshProUGUI>();
+            tmp.text = label; tmp.fontSize = 18; tmp.color = new Color(0.95f, 0.85f, 0.4f);
+            tmp.alignment = TextAlignmentOptions.Center;
+            if (_font) tmp.font = _font;
+            return go.AddComponent<Button>();
         }
 
-        void OnDifficultySelected(AdventureMapData map, AdventureDifficulty diff, bool canEnter)
+        private Color GetDifficultyColor(DifficultyType type) => type switch
+        {
+            DifficultyType.Normal => new Color(0.15f, 0.3f, 0.5f, 1f),
+            DifficultyType.Hard => new Color(0.4f, 0.2f, 0.1f, 1f),
+            DifficultyType.Extreme => new Color(0.3f, 0.1f, 0.3f, 1f),
+            DifficultyType.Hell => new Color(0.5f, 0.1f, 0.1f, 1f),
+            _ => Color.gray
+        };
+
+        private void OnDifficultySelected(AdventureMapData map, AdventureDifficulty diff, bool canEnter)
         {
             _selectedMap = canEnter ? map : null;
             _selectedDifficulty = diff;
@@ -162,65 +200,63 @@ namespace CardGame.UI
             bool realmUnlocked = currentRealm >= map.unlockRealmLevel;
             string realmName = ((RealmLevel)map.unlockRealmLevel).ToString();
 
-            // 更新详情
-            _detailText.text = $"{map.mapName} — {diff.difficultyName}\n\n{map.description}\n\n" +
-                $"难度：{diff.difficultyName}\n" +
-                $"{diff.description}\n\n" +
-                $"层数：{diff.mapFloors}层\n" +
-                $"敌HP倍率：×{diff.enemyHpMultiplier}\n" +
-                $"敌攻击倍率：×{diff.enemyDamageMultiplier}\n" +
-                $"精英出现率：{diff.eliteChance * 100}%\n" +
-                $"Boss阶段数：{diff.bossPhaseCount}\n\n" +
-                $"掉落倍率：×{diff.lootMultiplier}\n" +
-                $"掉落品阶提升：+{diff.lootRarityBonus}\n" +
-                $"金币奖励倍率：×{diff.goldRewardMultiplier}\n\n" +
-                $"出发需要神识：{diff.requiredShenShi}（当前：{currentShenShi}）\n" +
-                $"解锁境界：{realmName}（当前：{((RealmLevel)currentRealm).ToString()}）";
-
-            // 出发按钮：满足条件绿色可点，不满足灰色显示要求
-            if (canEnter && realmUnlocked)
+            if (_detailText != null)
             {
-                _departButton.interactable = true;
-                _departButton.GetComponent<Image>().color = new Color(0.2f, 0.5f, 0.3f, 1f);
-                var departTmp = _departButton.GetComponentInChildren<TextMeshProUGUI>();
-                if (departTmp) departTmp.text = "出  发";
+                _detailText.text = $"{map.mapName} — {diff.difficultyName}\n\n{map.description}\n\n" +
+                    $"难度：{diff.difficultyName}\n{diff.description}\n\n" +
+                    $"层数：{diff.mapFloors}层\n" +
+                    $"敌HP倍率：×{diff.enemyHpMultiplier}\n" +
+                    $"敌攻击倍率：×{diff.enemyDamageMultiplier}\n" +
+                    $"精英出现率：{diff.eliteChance * 100}%\n" +
+                    $"Boss阶段数：{diff.bossPhaseCount}\n\n" +
+                    $"掉落倍率：×{diff.lootMultiplier}\n" +
+                    $"掉落品阶提升：+{diff.lootRarityBonus}\n" +
+                    $"金币奖励倍率：×{diff.goldRewardMultiplier}\n\n" +
+                    $"出发需要神识：{diff.requiredShenShi}（当前：{currentShenShi}）\n" +
+                    $"解锁境界：{realmName}（当前：{((RealmLevel)currentRealm).ToString()}）";
+                if (_font) _detailText.font = _font;
             }
-            else
+
+            if (_departButton != null)
             {
-                _departButton.interactable = false;
-                _departButton.GetComponent<Image>().color = new Color(0.2f, 0.2f, 0.2f, 0.5f);
-                var departTmp = _departButton.GetComponentInChildren<TextMeshProUGUI>();
-                if (departTmp)
+                if (canEnter && realmUnlocked)
                 {
-                    string req = "";
-                    if (!realmUnlocked) req += $"需{realmName}境 ";
-                    if (!canEnter) req += $"需神识{diff.requiredShenShi}";
-                    departTmp.text = $"出发({req})";
+                    _departButton.interactable = true;
+                    _departButton.image.color = new Color(0.2f, 0.5f, 0.3f, 1f);
+                    if (_departButtonText) _departButtonText.text = "出  发";
+                }
+                else
+                {
+                    _departButton.interactable = false;
+                    _departButton.image.color = new Color(0.2f, 0.2f, 0.2f, 0.5f);
+                    if (_departButtonText)
+                    {
+                        string req = "";
+                        if (!realmUnlocked) req += $"需{realmName}境 ";
+                        if (!canEnter) req += $"需神识{diff.requiredShenShi}";
+                        _departButtonText.text = $"出发({req})";
+                    }
                 }
             }
         }
 
-        void OnDepart()
+        private void OnDepart()
         {
             if (_selectedMap == null || _selectedDifficulty.difficultyName == null) return;
 
             if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
 
-            // 保存选择到Model
             var arch = CardGameArchitecture.Interface;
             var advModel = arch.GetModel<IAdventureModel>();
             advModel.SelectedMapId = _selectedMap.mapId;
             advModel.SelectedDifficulty = _selectedDifficulty.difficultyType;
 
-            // 设置编队最低神识要求
             var loadoutModel = arch.GetModel<ILoadoutModel>();
             loadoutModel.MinShenShiRequired = _selectedDifficulty.requiredShenShi;
 
-            // 验证编队
             var loadoutSystem = arch.GetSystem<ILoadoutSystem>();
             loadoutSystem.StartAdventure();
 
-            // 切到地图场景
             gameObject.SetActive(false);
             var gm = NueGames.NueDeck.Scripts.Managers.GameManager.Instance;
             var uiMgr = NueGames.NueDeck.Scripts.Managers.UIManager.Instance;
@@ -231,61 +267,5 @@ namespace CardGame.UI
 
             FloatingTip.ShowSuccess($"出发！{_selectedMap.mapName} {_selectedDifficulty.difficultyName}");
         }
-
-        // === 工具方法 ===
-        GameObject CreateText(Transform parent, string text, float size, Color color)
-        {
-            var go = new GameObject("Text");
-            go.transform.SetParent(parent, false);
-            go.AddComponent<RectTransform>();
-            var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = text; tmp.fontSize = size; tmp.color = color;
-            tmp.alignment = TextAlignmentOptions.Center;
-            if (_font) tmp.font = _font;
-            return go;
-        }
-
-        Button CreateButton(Transform parent, string label, Color color)
-        {
-            var go = new GameObject($"Btn_{label}");
-            go.transform.SetParent(parent, false);
-            go.AddComponent<Image>().color = color;
-            var le = go.AddComponent<LayoutElement>();
-            le.preferredHeight = 45;
-            var txtObj = new GameObject("Text");
-            txtObj.transform.SetParent(go.transform, false);
-            var txtRt = txtObj.AddComponent<RectTransform>();
-            txtRt.anchorMin = Vector2.zero; txtRt.anchorMax = Vector2.one;
-            txtRt.offsetMin = Vector2.zero; txtRt.offsetMax = Vector2.zero;
-            var tmp = txtObj.AddComponent<TextMeshProUGUI>();
-            tmp.text = label; tmp.fontSize = 22; tmp.color = new Color(0.95f, 0.85f, 0.4f);
-            tmp.alignment = TextAlignmentOptions.Center;
-            if (_font) tmp.font = _font;
-            return go.AddComponent<Button>();
-        }
-        private void AutoBindReferences()
-        {
-            var panel = transform.Find("Panel");
-            if (panel == null) return;
-            var mapList = panel.Find("MapList");
-            if (mapList != null)
-            {
-                var scroll = mapList.Find("Scroll");
-                if (scroll != null)
-                {
-                    var content = scroll.Find("Viewport/Content");
-                    _mapListRoot = content;
-                }
-            }
-            var detailPanel = panel.Find("DetailPanel");
-            if (detailPanel != null)
-            {
-                _detailText = detailPanel.Find("DetailText")?.GetComponent<TMPro.TextMeshProUGUI>();
-                _departButton = detailPanel.Find("DepartButton")?.GetComponent<UnityEngine.UI.Button>();
-                _backButton = detailPanel.Find("BackButton")?.GetComponent<UnityEngine.UI.Button>();
-            }
-        }
-
     }
-
 }
