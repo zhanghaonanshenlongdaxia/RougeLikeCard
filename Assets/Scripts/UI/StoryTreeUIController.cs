@@ -70,6 +70,8 @@ namespace CardGame.UI
 
             AutoBindReferences();
 
+            WireCloseButton();
+
             PopulateTree();
 
         }
