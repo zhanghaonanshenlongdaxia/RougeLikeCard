@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using QFramework;
 using System.Collections.Generic;
 using System.Linq;
+using CardGame.UI.Cultivation;
 
 using NueUIManager = NueGames.NueDeck.Scripts.Managers.UIManager;
 using Alchemy.Inspector;

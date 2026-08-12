@@ -42,6 +42,13 @@ namespace NueGames.NueDeck.Scripts.Data.Cultivation
         [SerializeField] private CraftBonusType craftBonusType;
         [SerializeField] private float craftBonusValue;
 
+        [Header("Advancement")]
+        [Tooltip("可进阶次数，0=不可进阶。如3表示有3段，每段填充1颗星")]
+        [SerializeField] private int maxAdvancementLevel = 0;
+
+        /// <summary>当前进阶等级（运行时，不序列化）</summary>
+        [System.NonSerialized] private int _currentAdvancementLevel = 0;
+
         #region Properties
         public string NodeId => nodeId;
         public string NodeName => nodeName;
@@ -58,6 +65,8 @@ namespace NueGames.NueDeck.Scripts.Data.Cultivation
         public int PassiveValue => passiveValue;
         public CraftBonusType CraftBonusType => craftBonusType;
         public float CraftBonusValue => craftBonusValue;
+        public int MaxAdvancementLevel => maxAdvancementLevel;
+        public int CurrentAdvancementLevel { get => _currentAdvancementLevel; set => _currentAdvancementLevel = value; }
         #endregion
 
         #region Editor
@@ -77,6 +86,7 @@ namespace NueGames.NueDeck.Scripts.Data.Cultivation
         public void EditPassiveValue(int val) => passiveValue = val;
         public void EditCraftBonusType(CraftBonusType type) => craftBonusType = type;
         public void EditCraftBonusValue(float val) => craftBonusValue = val;
+        public void EditMaxAdvancementLevel(int val) => maxAdvancementLevel = val;
 #endif
         #endregion
     }

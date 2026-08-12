@@ -9,7 +9,7 @@ using CardGame.UI;
 
 namespace CardGame.UI
 {
-    public class CraftUIController : MonoBehaviour, IController
+    public class CraftUIController : MonoBehaviour, IController, LoopScrollDataSource
     {
         [FoldoutGroup("References")]
         [SerializeField] private Transform recipeListRoot;
@@ -21,6 +21,10 @@ namespace CardGame.UI
         [SerializeField] private Button[] tabButtons;
         [SerializeField] private Button backButton;
         [SerializeField] private ScrollRect recipeScroll;
+        private LoopVerticalScrollRect _loopScroll;
+        private LoopScrollPrefabSourceImpl _prefabSource;
+        private GameObject _itemTemplate;
+        private List<RecipeData> _currentRecipes = new List<RecipeData>();
 
         private ICraftSystem _system;
         private IInventorySystem _invSystem;
@@ -164,7 +168,6 @@ namespace CardGame.UI
                 var vpImg = viewport.AddComponent<Image>();
                 vpImg.color = new Color(0, 0, 0, 0.01f);
                 viewport.AddComponent<RectMask2D>();
-                recipeScroll.viewport = vpRt;
 
                 var content = new GameObject("Content");
                 content.transform.SetParent(viewport.transform, false);
@@ -174,10 +177,26 @@ namespace CardGame.UI
                 contentRt.offsetMin = Vector2.zero; contentRt.offsetMax = Vector2.zero;
                 var fitter = content.AddComponent<VerticalLayoutGroup>();
                 fitter.spacing = 3; fitter.childControlWidth = true; fitter.childForceExpandHeight = false;
-                var csf = content.AddComponent<ContentSizeFitter>();
-                csf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-                recipeScroll.content = contentRt;
+
+                // 替换 ScrollRect 为 LoopVerticalScrollRect
+                DestroyImmediate(recipeScroll);
+                // 先 inactive 再 AddComponent，避免 LoopVerticalScrollRect.Awake 编辑态断言
+                listPanel.SetActive(false);
+                _loopScroll = listPanel.AddComponent<LoopVerticalScrollRect>();
+                _loopScroll.horizontal = false;
+                _loopScroll.vertical = true;
+                _loopScroll.viewport = vpRt;
+                _loopScroll.content = contentRt;
                 recipeListRoot = content.transform;
+
+                // 创建模板 + PrefabSource
+                _itemTemplate = CreateRecipeItemTemplate();
+                _itemTemplate.SetActive(false);
+                _prefabSource = new LoopScrollPrefabSourceImpl(_itemTemplate, listPanel.transform);
+                _loopScroll.prefabSource = _prefabSource;
+                _loopScroll.dataSource = this;
+                // 配置完成后激活，Awake 断言通过
+                listPanel.SetActive(true);
             }
 
             // 右侧详情面板
@@ -274,37 +293,12 @@ namespace CardGame.UI
 
         private void ShowRecipes(RecipeType type)
         {
-            if (recipeListRoot == null) return;
+            _currentRecipes = _system.GetAvailableRecipes(type);
 
-            for (int i = recipeListRoot.childCount - 1; i >= 0; i--)
-                Destroy(recipeListRoot.GetChild(i).gameObject);
-
-            var recipes = _system.GetAvailableRecipes(type);
-            foreach (var recipe in recipes)
+            if (_loopScroll != null)
             {
-                var go = new GameObject("Recipe_" + recipe.recipeId);
-                go.transform.SetParent(recipeListRoot);
-                go.AddComponent<RectTransform>();
-                bool canCraft = _system.CanCraft(recipe);
-                go.AddComponent<Image>().color = canCraft ? new Color(0.1f, 0.15f, 0.25f, 1f) : new Color(0.08f, 0.08f, 0.1f, 0.8f);
-
-                var layout = go.AddComponent<VerticalLayoutGroup>();
-                layout.spacing = 2; layout.padding = new RectOffset(5, 5, 3, 3);
-                layout.childControlWidth = true; layout.childForceExpandHeight = false;
-                var le = go.AddComponent<LayoutElement>();
-                le.preferredHeight = 50;
-
-                // 配方名
-                CreateText(go, recipe.name, 16, canCraft ? new Color(0.4f, 0.8f, 0.4f) : new Color(0.6f, 0.3f, 0.3f));
-                // 成功率
-                CreateText(go, $"成功率 {recipe.successRate * 100:F0}%", 12, new Color(0.7f, 0.7f, 0.7f));
-
-                var btn = go.AddComponent<Button>();
-                var captured = recipe;
-                btn.onClick.AddListener(() => {
-                    if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
-                    SelectRecipe(captured);
-                });
+                _loopScroll.totalCount = _currentRecipes.Count;
+                _loopScroll.RefillCells();
             }
 
             if (detailTitle) detailTitle.text = $"请选择配方";
@@ -312,6 +306,65 @@ namespace CardGame.UI
             if (detailMats) detailMats.text = "";
             if (detailResult) detailResult.text = "";
             if (craftButton) { craftButton.interactable = false; craftButton.GetComponent<Image>().color = new Color(0.15f, 0.15f, 0.15f, 1f); }
+        }
+
+        public void ProvideData(Transform transform, int idx)
+        {
+            if (idx < 0 || idx >= _currentRecipes.Count) return;
+            var recipe = _currentRecipes[idx];
+            bool canCraft = _system.CanCraft(recipe);
+
+            var img = transform.GetComponent<Image>();
+            if (img) img.color = canCraft ? new Color(0.1f, 0.15f, 0.25f, 1f) : new Color(0.08f, 0.08f, 0.1f, 0.8f);
+
+            var tmps = transform.GetComponentsInChildren<TextMeshProUGUI>();
+            if (tmps.Length >= 1) tmps[0].text = recipe.name;
+            if (tmps.Length >= 1) tmps[0].color = canCraft ? new Color(0.4f, 0.8f, 0.4f) : new Color(0.6f, 0.3f, 0.3f);
+            if (tmps.Length >= 2) tmps[1].text = $"成功率 {recipe.successRate * 100:F0}%";
+
+            var btn = transform.GetComponent<Button>();
+            if (btn == null) btn = transform.gameObject.AddComponent<Button>();
+            btn.onClick.RemoveAllListeners();
+            var captured = recipe;
+            btn.onClick.AddListener(() => {
+                if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
+                SelectRecipe(captured);
+            });
+        }
+
+        private GameObject CreateRecipeItemTemplate()
+        {
+            var go = new GameObject("RecipeItem");
+            go.AddComponent<RectTransform>();
+            go.AddComponent<Image>().color = new Color(0.1f, 0.15f, 0.25f, 1f);
+
+            var layout = go.AddComponent<VerticalLayoutGroup>();
+            layout.spacing = 2; layout.padding = new RectOffset(5, 5, 3, 3);
+            layout.childControlWidth = true; layout.childForceExpandHeight = false;
+            var le = go.AddComponent<LayoutElement>();
+            le.preferredHeight = 50;
+
+            // 配方名
+            var nameObj = new GameObject("NameText");
+            nameObj.transform.SetParent(go.transform, false);
+            nameObj.AddComponent<RectTransform>();
+            var nameTmp = nameObj.AddComponent<TextMeshProUGUI>();
+            nameTmp.alignment = TextAlignmentOptions.Center;
+            nameTmp.fontSize = 16; nameTmp.color = new Color(0.4f, 0.8f, 0.4f);
+            nameTmp.richText = true;
+            if (_font) nameTmp.font = _font;
+
+            // 成功率
+            var rateObj = new GameObject("RateText");
+            rateObj.transform.SetParent(go.transform, false);
+            rateObj.AddComponent<RectTransform>();
+            var rateTmp = rateObj.AddComponent<TextMeshProUGUI>();
+            rateTmp.alignment = TextAlignmentOptions.Center;
+            rateTmp.fontSize = 12; rateTmp.color = new Color(0.7f, 0.7f, 0.7f);
+            if (_font) rateTmp.font = _font;
+
+            go.AddComponent<Button>();
+            return go;
         }
 
         private void SelectRecipe(RecipeData recipe)

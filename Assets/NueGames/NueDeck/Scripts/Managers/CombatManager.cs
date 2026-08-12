@@ -460,24 +460,12 @@ namespace NueGames.NueDeck.Scripts.Managers
                     CurrentEnemiesList.Add(clone);
                 }
 
-                // 测试模式没有随机遭遇 → 用当前区域的第一个普通遭遇兜底，供背景/胜利对话使用
-                try
-                {
-                    if (GameManager.EncounterData != null &&
-                        GameManager.EncounterData.EnemyEncounterList != null &&
-                        GameManager.EncounterData.EnemyEncounterList.Count > 0)
-                    {
-                        var stage = GameManager.EncounterData.EnemyEncounterList
-                            .Find(s => s.StageId == GameManager.PersistentGameplayData.CurrentStageId) ??
-                            GameManager.EncounterData.EnemyEncounterList[0];
-                        if (stage != null && stage.EnemyEncounterList != null && stage.EnemyEncounterList.Count > 0)
-                            CurrentEncounter = stage.EnemyEncounterList[0];
-                    }
-                }
-                catch (System.Exception e)
-                {
-                    Debug.LogWarning($"[CombatManager] Test mode fallback encounter failed: {e.Message}");
-                }
+                // 测试模式没有随机遭遇 → 用强制敌人列表构建CurrentEncounter，供胜利对话使用
+                CurrentEncounter = new EnemyEncounter();
+                var encounterField = typeof(EnemyEncounter).GetField("enemyList", 
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (encounterField != null)
+                    encounterField.SetValue(CurrentEncounter, new List<EnemyCharacterData>(forcedList));
                 return;
             }
 

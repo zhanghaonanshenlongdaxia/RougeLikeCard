@@ -10,7 +10,7 @@ using CardGame.Audio;
 
 namespace CardGame.UI
 {
-    public class LoadoutUIController : MonoBehaviour, IController
+    public class LoadoutUIController : MonoBehaviour, IController, LoopScrollDataSource
     {
         [FoldoutGroup("References")]
         [SerializeField] private Transform basicCardRoot;
@@ -21,6 +21,10 @@ namespace CardGame.UI
         [SerializeField] private Button startButton;
         [SerializeField] private Button backButton;
         private TMP_FontAsset _font;
+        private LoopVerticalScrollRect _cardPoolLoopScroll;
+        private LoopScrollPrefabSourceImpl _cardPoolPrefabSource;
+        private GameObject _cardItemTemplate;
+        private List<CardData> _cardPoolData = new List<CardData>();
 
         private ILoadoutModel _model;
         private ILoadoutSystem _system;
@@ -87,10 +91,10 @@ namespace CardGame.UI
             // 三栏布局
             CreateSection(panel, "本命功法", 0.02f, 0.05f, 0.3f, 0.88f, out basicCardRoot);
             CreateSection(panel, "已选卡牌", 0.35f, 0.05f, 0.63f, 0.88f, out selectedCardRoot);
-            CreateSection(panel, "可选卡牌池", 0.68f, 0.05f, 0.98f, 0.88f, out cardPoolRoot, true);
+            CreateSection(panel, "可选卡牌池", 0.68f, 0.05f, 0.98f, 0.88f, out cardPoolRoot, true, true);
         }
 
-        private void CreateSection(Transform parent, string title, float xMin, float yMin, float xMax, float yMax, out Transform contentRoot, bool scrollable = true)
+        private void CreateSection(Transform parent, string title, float xMin, float yMin, float xMax, float yMax, out Transform contentRoot, bool scrollable = true, bool useLoopScroll = false)
         {
             var section = new GameObject($"Section_{title}");
             section.transform.SetParent(parent, false);
@@ -115,8 +119,20 @@ namespace CardGame.UI
             {
                 var scrollObj = new GameObject("Scroll");
                 scrollObj.transform.SetParent(section.transform, false);
-                var scroll = scrollObj.AddComponent<ScrollRect>();
-                scroll.horizontal = false; scroll.vertical = true;
+                
+                if (useLoopScroll)
+                {
+                    // 先 inactive 再 AddComponent，避免 LoopVerticalScrollRect.Awake 编辑态断言
+                    scrollObj.SetActive(false);
+                    _cardPoolLoopScroll = scrollObj.AddComponent<LoopVerticalScrollRect>();
+                    _cardPoolLoopScroll.horizontal = false;
+                    _cardPoolLoopScroll.vertical = true;
+                }
+                else
+                {
+                    var scroll = scrollObj.AddComponent<ScrollRect>();
+                    scroll.horizontal = false; scroll.vertical = true;
+                }
 
                 var vp = new GameObject("Viewport");
                 vp.transform.SetParent(scrollObj.transform, false);
@@ -126,7 +142,6 @@ namespace CardGame.UI
                 vpRt.offsetMin = Vector2.zero; vpRt.offsetMax = Vector2.zero;
                 var vpImg = vp.AddComponent<Image>(); vpImg.color = new Color(0.05f, 0.08f, 0.12f, 1f);
                 vp.AddComponent<UnityEngine.UI.Mask>();
-                scroll.viewport = vpRt;
 
                 var content = new GameObject("Content");
                 content.transform.SetParent(vp.transform, false);
@@ -136,9 +151,27 @@ namespace CardGame.UI
                 cRt.offsetMin = Vector2.zero; cRt.offsetMax = Vector2.zero;
                 var cvlg = content.AddComponent<VerticalLayoutGroup>();
                 cvlg.spacing = 3; cvlg.childControlWidth = true; cvlg.childForceExpandHeight = false;
-                var csf = content.AddComponent<ContentSizeFitter>();
-                csf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-                scroll.content = cRt;
+
+                if (useLoopScroll)
+                {
+                    _cardPoolLoopScroll.viewport = vpRt;
+                    _cardPoolLoopScroll.content = cRt;
+                    // 创建模板 + PrefabSource
+                    _cardItemTemplate = CreateCardItemTemplate();
+                    _cardItemTemplate.SetActive(false);
+                    _cardPoolPrefabSource = new LoopScrollPrefabSourceImpl(_cardItemTemplate, scrollObj.transform);
+                    _cardPoolLoopScroll.prefabSource = _cardPoolPrefabSource;
+                    _cardPoolLoopScroll.dataSource = this;
+                    // 配置完成后激活，Awake 断言通过
+                    scrollObj.SetActive(true);
+                }
+                else
+                {
+                    var csf = content.AddComponent<ContentSizeFitter>();
+                    csf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+                    scrollObj.GetComponent<ScrollRect>().viewport = vpRt;
+                    scrollObj.GetComponent<ScrollRect>().content = cRt;
+                }
                 contentRoot = content.transform;
             }
             else
@@ -195,17 +228,82 @@ namespace CardGame.UI
         private void RefreshCardPool()
         {
             if (cardPoolRoot == null) return;
-            ClearChildren(cardPoolRoot);
             var gm = GameManager.Instance;
             if (gm == null) return;
 
+            _cardPoolData.Clear();
             foreach (var card in gm.GameplayData.AllCardsList)
             {
                 if (_model.BasicCardIds.Contains(card.Id)) continue;
                 if (_model.SelectedCardIds.Contains(card.Id)) continue;
-                int cost = GetCardShenShi(card.Id);
-                CreateCardItem(cardPoolRoot, card, false, cost, true);
+                _cardPoolData.Add(card);
             }
+
+            if (_cardPoolLoopScroll != null)
+            {
+                _cardPoolLoopScroll.totalCount = _cardPoolData.Count;
+                _cardPoolLoopScroll.RefillCells();
+            }
+        }
+
+        public void ProvideData(Transform transform, int idx)
+        {
+            if (idx < 0 || idx >= _cardPoolData.Count) return;
+            var card = _cardPoolData[idx];
+            int shenShiCost = GetCardShenShi(card.Id);
+
+            var img = transform.GetComponent<Image>();
+            if (img) img.color = new Color(0.1f, 0.15f, 0.25f, 1f);
+
+            var tmps = transform.GetComponentsInChildren<TextMeshProUGUI>();
+            if (tmps.Length >= 1) tmps[0].text = card.CardName;
+            if (tmps.Length >= 2) tmps[1].text = shenShiCost > 0 ? $"神识:{shenShiCost}" : "本命";
+
+            var btn = transform.GetComponent<Button>();
+            if (btn == null) btn = transform.gameObject.AddComponent<Button>();
+            btn.onClick.RemoveAllListeners();
+            var cardId = card.Id;
+            var cost = shenShiCost;
+            btn.onClick.AddListener(() =>
+            {
+                if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
+                if (_system.SelectCard(cardId, cost))
+                {
+                    UpdateShenShi(_model.CurrentShenShi.Value);
+                    RefreshAll();
+                }
+            });
+        }
+
+        private GameObject CreateCardItemTemplate()
+        {
+            var go = new GameObject("CardItem");
+            go.AddComponent<RectTransform>();
+            go.AddComponent<Image>().color = new Color(0.1f, 0.15f, 0.25f, 1f);
+            var le = go.AddComponent<LayoutElement>();
+            le.preferredHeight = 55;
+
+            var layout = go.AddComponent<VerticalLayoutGroup>();
+            layout.spacing = 2; layout.padding = new RectOffset(5, 5, 3, 3);
+
+            var nameObj = new GameObject("NameText");
+            nameObj.transform.SetParent(go.transform, false);
+            nameObj.AddComponent<RectTransform>();
+            var nameTmp = nameObj.AddComponent<TextMeshProUGUI>();
+            nameTmp.alignment = TextAlignmentOptions.Center;
+            nameTmp.fontSize = 16; nameTmp.color = Color.white;
+            if (_font) nameTmp.font = _font;
+
+            var costObj = new GameObject("CostText");
+            costObj.transform.SetParent(go.transform, false);
+            costObj.AddComponent<RectTransform>();
+            var costTmp = costObj.AddComponent<TextMeshProUGUI>();
+            costTmp.alignment = TextAlignmentOptions.Center;
+            costTmp.fontSize = 12; costTmp.color = new Color(0.3f, 0.6f, 0.9f);
+            if (_font) costTmp.font = _font;
+
+            go.AddComponent<Button>();
+            return go;
         }
 
         private void CreateCardItem(Transform parent, CardData card, bool isSelected, int shenShiCost, bool canInteract)

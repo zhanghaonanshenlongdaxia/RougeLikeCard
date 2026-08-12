@@ -74,7 +74,17 @@ namespace CardGame
                 if (card != null) gm.PersistentGameplayData.CurrentCardsList.Add(card);
             }
 
-            Debug.Log($"[Loadout] 出征! 功法{methodCards.Count} + 神通{equippedAbilities.Count} = {gm.PersistentGameplayData.CurrentCardsList.Count}张");
+            // 如果功法+神通=0张，使用初始牌组兜底
+            if (gm.PersistentGameplayData.CurrentCardsList.Count == 0)
+            {
+                foreach (var card in gm.GameplayData.InitalDeck.CardList)
+                    gm.PersistentGameplayData.CurrentCardsList.Add(card);
+                Debug.Log($"[Loadout] 功法+神通=0张，使用初始牌组兜底: {gm.PersistentGameplayData.CurrentCardsList.Count}张");
+            }
+            else
+            {
+                Debug.Log($"[Loadout] 出征! 功法{methodCards.Count} + 神通{equippedAbilities.Count} = {gm.PersistentGameplayData.CurrentCardsList.Count}张");
+            }
         }
     }
 }

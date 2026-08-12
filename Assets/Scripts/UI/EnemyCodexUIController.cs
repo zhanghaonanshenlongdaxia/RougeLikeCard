@@ -18,10 +18,12 @@ namespace CardGame.UI
     /// 左侧列表（按区域/品阶分类），右侧详情（名字/品阶/HP/技能/背景故事）。
     /// 未解锁的敌人显示???。
     /// </summary>
-    public class EnemyCodexUIController : MonoBehaviour, IController
+    public class EnemyCodexUIController : MonoBehaviour, IController, LoopScrollDataSource
     {
-        private ScrollRect _scrollRect;
+        private LoopVerticalScrollRect _loopScroll;
+        private LoopScrollPrefabSourceImpl _prefabSource;
         private Transform _listContent;
+        private GameObject _itemTemplate;
         private Image _portraitImage;
         private TextMeshProUGUI _nameText;
         private TextMeshProUGUI _tierText;
@@ -99,8 +101,11 @@ namespace CardGame.UI
             var scrollRt = scrollObj.AddComponent<RectTransform>();
             scrollRt.anchorMin = Vector2.zero; scrollRt.anchorMax = Vector2.one;
             scrollRt.offsetMin = new Vector2(5, 5); scrollRt.offsetMax = new Vector2(-5, -5);
-            _scrollRect = scrollObj.AddComponent<ScrollRect>();
-            _scrollRect.horizontal = false;
+            // 先设 inactive 再 AddComponent，避免 LoopVerticalScrollRect.Awake 的编辑态断言（m_Horizontal 默认 true）
+            scrollObj.SetActive(false);
+            _loopScroll = scrollObj.AddComponent<LoopVerticalScrollRect>();
+            _loopScroll.horizontal = false;
+            _loopScroll.vertical = true;
 
             var viewportObj = new GameObject("Viewport");
             viewportObj.transform.SetParent(scrollObj.transform, false);
@@ -110,7 +115,7 @@ namespace CardGame.UI
             viewportRt.pivot = new Vector2(0, 1);
             var viewportImg = viewportObj.AddComponent<Image>(); viewportImg.color = new Color(0.05f, 0.08f, 0.12f, 1f);
             viewportObj.AddComponent<UnityEngine.UI.Mask>();
-            _scrollRect.viewport = viewportRt;
+            _loopScroll.viewport = viewportRt;
 
             var contentObj = new GameObject("Content");
             contentObj.transform.SetParent(viewportObj.transform, false);
@@ -121,10 +126,17 @@ namespace CardGame.UI
             var contentFitter = contentObj.AddComponent<VerticalLayoutGroup>();
             contentFitter.spacing = 2; contentFitter.childAlignment = TextAnchor.UpperCenter;
             contentFitter.childControlWidth = true; contentFitter.childControlHeight = false;
-            var fitter = contentObj.AddComponent<ContentSizeFitter>();
-            fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            _scrollRect.content = contentRt;
+            _loopScroll.content = contentRt;
             _listContent = contentObj.transform;
+
+            // 创建模板 + PrefabSource
+            _itemTemplate = CreateListItemTemplate();
+            _itemTemplate.SetActive(false);
+            _prefabSource = new LoopScrollPrefabSourceImpl(_itemTemplate, scrollObj.transform);
+            _loopScroll.prefabSource = _prefabSource;
+            _loopScroll.dataSource = this;
+            // 配置完成后再激活，此时 m_Horizontal 已是 false，Awake 断言通过
+            scrollObj.SetActive(true);
 
             // Right detail
             var detailPanel = CreateImage("DetailPanel", panel.transform, new Color(0.05f, 0.08f, 0.12f, 0.8f));
@@ -158,26 +170,24 @@ namespace CardGame.UI
             RefreshList();
         }
 
+        private List<EnemyCharacterData> _allEnemies = new List<EnemyCharacterData>();
+
         private void RefreshList()
         {
-            // Clear
-            for (int i = _listContent.childCount - 1; i >= 0; i--)
-                Destroy(_listContent.GetChild(i).gameObject);
-
             // Load all enemy SOs
             var guids = UnityEditor.AssetDatabase.FindAssets("t:EnemyCharacterData", new[]{"Assets/NueGames/NueDeck/Data/Enemies"});
             var codex = this.GetSystem<IEnemyCodexSystem>();
-            var allEnemies = new List<EnemyCharacterData>();
+            _allEnemies.Clear();
 
             foreach (var g in guids)
             {
                 var p = UnityEditor.AssetDatabase.GUIDToAssetPath(g);
                 var e = UnityEditor.AssetDatabase.LoadAssetAtPath<EnemyCharacterData>(p);
-                if (e != null) allEnemies.Add(e);
+                if (e != null) _allEnemies.Add(e);
             }
 
             // Sort by region then tier then name
-            allEnemies.Sort((a, b) => {
+            _allEnemies.Sort((a, b) => {
                 int ra = a.RegionId, rb = b.RegionId;
                 if (ra != rb) return ra.CompareTo(rb);
                 int ta = (int)a.EnemyTier, tb = (int)b.EnemyTier;
@@ -185,50 +195,63 @@ namespace CardGame.UI
                 return a.name.CompareTo(b.name);
             });
 
-            string currentRegion = "";
-            foreach (var enemy in allEnemies)
+            if (_loopScroll != null)
             {
-                string regionName = enemy.RegionId switch {
-                    0 => "山野荒原", 1 => "幽冥秘境", 2 => "万蛊沼泽", 3 => "天魔裂隙", _ => "未知"
-                };
-                if (regionName != currentRegion)
-                {
-                    currentRegion = regionName;
-                    var header = CreateText($"Header_{regionName}", _listContent, $"--- {regionName} ---", 18, new Color(0.5f, 0.6f, 0.8f));
-                    header.alignment = TextAlignmentOptions.Center;
-                }
-
-                bool unlocked = codex != null && codex.IsUnlocked(GetId(enemy));
-                string displayName = unlocked ? GetName(enemy) : "???";
-                string tierStr = unlocked ? $"[{enemy.EnemyTier}]" : "";
-
-                var btnObj = new GameObject($"Enemy_{GetId(enemy)}");
-                btnObj.transform.SetParent(_listContent, false);
-                var btnRt = btnObj.AddComponent<RectTransform>();
-                btnRt.sizeDelta = new Vector2(0, 35);
-                var btnImg = btnObj.AddComponent<Image>();
-                btnImg.color = unlocked ? new Color(0.1f, 0.15f, 0.25f, 1f) : new Color(0.05f, 0.05f, 0.05f, 0.5f);
-                var layout = btnObj.AddComponent<LayoutElement>(); layout.preferredHeight = 35;
-
-                var txtObj = new GameObject("Text");
-                txtObj.transform.SetParent(btnObj.transform, false);
-                var txtRt = txtObj.AddComponent<RectTransform>();
-                txtRt.anchorMin = Vector2.zero; txtRt.anchorMax = Vector2.one;
-                txtRt.offsetMin = new Vector2(10, 0); txtRt.offsetMax = new Vector2(-10, 0);
-                var tmp = txtObj.AddComponent<TextMeshProUGUI>();
-                tmp.text = $"{tierStr} {displayName}";
-                tmp.fontSize = 16; tmp.color = unlocked ? Color.white : new Color(0.4f, 0.4f, 0.4f);
-                tmp.alignment = TextAlignmentOptions.Left;
-                if (_font) tmp.font = _font;
-
-                var btn = btnObj.AddComponent<Button>();
-                var captured = enemy;
-                var capturedUnlocked = unlocked;
-                btn.onClick.AddListener(() => {
-                    if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
-                    ShowDetail(captured, capturedUnlocked);
-                });
+                _loopScroll.totalCount = _allEnemies.Count;
+                _loopScroll.RefillCells();
             }
+        }
+
+        public void ProvideData(Transform transform, int idx)
+        {
+            if (idx < 0 || idx >= _allEnemies.Count) return;
+            var enemy = _allEnemies[idx];
+            var codex = this.GetSystem<IEnemyCodexSystem>();
+            bool unlocked = codex != null && codex.IsUnlocked(GetId(enemy));
+            string displayName = unlocked ? GetName(enemy) : "???";
+            string tierStr = unlocked ? $"[{enemy.EnemyTier}]" : "";
+
+            var img = transform.GetComponent<Image>();
+            if (img) img.color = unlocked ? new Color(0.1f, 0.15f, 0.25f, 1f) : new Color(0.05f, 0.05f, 0.05f, 0.5f);
+
+            var tmps = transform.GetComponentsInChildren<TextMeshProUGUI>();
+            if (tmps.Length > 0)
+            {
+                tmps[0].text = $"{tierStr} {displayName}";
+                tmps[0].color = unlocked ? Color.white : new Color(0.4f, 0.4f, 0.4f);
+            }
+
+            var btn = transform.GetComponent<Button>();
+            if (btn == null) btn = transform.gameObject.AddComponent<Button>();
+            btn.onClick.RemoveAllListeners();
+            var captured = enemy;
+            var capturedUnlocked = unlocked;
+            btn.onClick.AddListener(() => {
+                if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
+                ShowDetail(captured, capturedUnlocked);
+            });
+        }
+
+        private GameObject CreateListItemTemplate()
+        {
+            var go = new GameObject("EnemyItem");
+            go.AddComponent<RectTransform>();
+            var btnImg = go.AddComponent<Image>();
+            btnImg.color = new Color(0.1f, 0.15f, 0.25f, 1f);
+            var layout = go.AddComponent<LayoutElement>(); layout.preferredHeight = 35;
+
+            var txtObj = new GameObject("Text");
+            txtObj.transform.SetParent(go.transform, false);
+            var txtRt = txtObj.AddComponent<RectTransform>();
+            txtRt.anchorMin = Vector2.zero; txtRt.anchorMax = Vector2.one;
+            txtRt.offsetMin = new Vector2(10, 0); txtRt.offsetMax = new Vector2(-10, 0);
+            var tmp = txtObj.AddComponent<TextMeshProUGUI>();
+            tmp.fontSize = 16; tmp.color = Color.white;
+            tmp.alignment = TextAlignmentOptions.Left;
+            if (_font) tmp.font = _font;
+
+            var btn = go.AddComponent<Button>();
+            return go;
         }
 
         private void ShowDetail(EnemyCharacterData enemy, bool unlocked)

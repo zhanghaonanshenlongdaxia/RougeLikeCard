@@ -9,7 +9,7 @@ using CardGame.Audio;
 
 namespace CardGame.UI
 {
-    public class InventoryUIController : MonoBehaviour, IController
+    public class InventoryUIController : MonoBehaviour, IController, LoopScrollDataSource
     {
         [FoldoutGroup("References")]
         [SerializeField] private Transform itemGridRoot;
@@ -22,6 +22,10 @@ namespace CardGame.UI
         private IInventorySystem _system;
         private MaterialType? _currentFilter;
         private TMP_FontAsset _font;
+        private LoopVerticalScrollRect _loopScroll;
+        private LoopScrollPrefabSourceImpl _prefabSource;
+        private GameObject _itemTemplate;
+        private List<InventorySlot> _filteredSlots = new List<InventorySlot>();
 
         public IArchitecture GetArchitecture() => CardGameArchitecture.Interface;
 
@@ -134,7 +138,7 @@ namespace CardGame.UI
                 tabButtons = btns;
             }
 
-            // 物品网格（滚动）
+            // 物品网格（循环滚动）
             if (itemGridRoot == null)
             {
                 var gridPanel = new GameObject("GridPanel");
@@ -144,8 +148,11 @@ namespace CardGame.UI
                 gpRt.offsetMin = Vector2.zero; gpRt.offsetMax = Vector2.zero;
                 gridPanel.AddComponent<Image>().color = new Color(0.05f, 0.08f, 0.12f, 0.8f);
 
-                var scroll = gridPanel.AddComponent<ScrollRect>();
-                scroll.horizontal = false;
+                // 先 inactive 再 AddComponent，避免 LoopVerticalScrollRect.Awake 编辑态断言
+                gridPanel.SetActive(false);
+                _loopScroll = gridPanel.AddComponent<LoopVerticalScrollRect>();
+                _loopScroll.horizontal = false;
+                _loopScroll.vertical = true;
 
                 var viewport = new GameObject("Viewport");
                 viewport.transform.SetParent(gridPanel.transform, false);
@@ -155,7 +162,8 @@ namespace CardGame.UI
                 vpRt.offsetMin = new Vector2(5, 5); vpRt.offsetMax = new Vector2(-5, -5);
                 var vpImg = viewport.AddComponent<Image>();
                 vpImg.color = new Color(0, 0, 0, 0.01f);
-                scroll.viewport = vpRt;
+                viewport.AddComponent<RectMask2D>();
+                _loopScroll.viewport = vpRt;
 
                 var content = new GameObject("Content");
                 content.transform.SetParent(viewport.transform, false);
@@ -168,11 +176,19 @@ namespace CardGame.UI
                 grid.spacing = new Vector2(5, 5);
                 grid.padding = new RectOffset(5, 5, 5, 5);
                 grid.cellSize = new Vector2(130, 130);
-                grid.constraint = GridLayoutGroup.Constraint.Flexible;
-                var csf = content.AddComponent<ContentSizeFitter>();
-                csf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-                scroll.content = contentRt;
+                grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+                grid.constraintCount = 5;
+                _loopScroll.content = contentRt;
                 itemGridRoot = content.transform;
+
+                // 创建模板 + PrefabSource
+                _itemTemplate = CreateSimpleSlot(null);
+                _itemTemplate.SetActive(false);
+                _prefabSource = new LoopScrollPrefabSourceImpl(_itemTemplate, gridPanel.transform);
+                _loopScroll.prefabSource = _prefabSource;
+                _loopScroll.dataSource = this;
+                // 配置完成后激活，Awake 断言通过
+                gridPanel.SetActive(true);
             }
         }
 
@@ -190,42 +206,46 @@ namespace CardGame.UI
 
         public void Refresh()
         {
-            if (itemGridRoot == null) return;
+            if (itemGridRoot == null || _loopScroll == null) return;
 
-            foreach (Transform child in itemGridRoot)
-                Destroy(child.gameObject);
-
+            _filteredSlots.Clear();
             foreach (var slot in _model.Slots)
             {
                 if (slot == null || slot.IsEmpty) continue;
-
                 if (_currentFilter.HasValue && slot.item is MaterialData mat)
                 {
                     if (mat.materialType != _currentFilter.Value) continue;
                 }
-
-                var slotGo = CreateSimpleSlot(itemGridRoot);
-                var tmps = slotGo.GetComponentsInChildren<TextMeshProUGUI>();
-                if (tmps.Length > 0)
-                {
-                    string rarityColor = "";
-                    if (slot.item is MaterialData m)
-                    {
-                        var c = ItemQualityHelper.GetColor(m.quality);
-                        rarityColor = $"<color=#{ColorUtility.ToHtmlStringRGB(c)}>";
-                    }
-                    tmps[0].text = $"{rarityColor}{slot.item.ItemName}</color>\n×{slot.count}";
-                }
-
-                var btn = slotGo.GetComponentInChildren<Button>();
-                if (btn == null) btn = slotGo.AddComponent<Button>();
+                _filteredSlots.Add(slot);
             }
+
+            _loopScroll.totalCount = _filteredSlots.Count;
+            _loopScroll.RefillCells();
+        }
+
+        public void ProvideData(Transform transform, int idx)
+        {
+            if (idx < 0 || idx >= _filteredSlots.Count) return;
+            var slot = _filteredSlots[idx];
+            var tmps = transform.GetComponentsInChildren<TextMeshProUGUI>();
+            if (tmps.Length > 0)
+            {
+                string rarityColor = "";
+                if (slot.item is MaterialData m)
+                {
+                    var c = ItemQualityHelper.GetColor(m.quality);
+                    rarityColor = $"<color=#{ColorUtility.ToHtmlStringRGB(c)}>";
+                }
+                tmps[0].text = $"{rarityColor}{slot.item.ItemName}</color>\n×{slot.count}";
+            }
+            var img = transform.GetComponent<Image>();
+            if (img) img.color = new Color(0.12f, 0.15f, 0.22f, 1f);
         }
 
         private GameObject CreateSimpleSlot(Transform parent)
         {
             var go = new GameObject("ItemSlot");
-            go.transform.SetParent(parent);
+            if (parent != null) go.transform.SetParent(parent);
             go.AddComponent<RectTransform>();
             go.AddComponent<Image>().color = new Color(0.12f, 0.15f, 0.22f, 1f);
 
