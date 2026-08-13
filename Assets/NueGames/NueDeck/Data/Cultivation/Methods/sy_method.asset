@@ -23,34 +23,44 @@ MonoBehaviour:
   nodes:
   - nodeId: sy_lq_1
     nodeName: "\u5316\u4F24\u672F"
-    description: "\u4FEE\u70BC\u57FA\u7840\u6CBB\u7597\u672F\uFF0C\u53EF\u6CBB\u6108\u4F24\u52BF\u3002"
+    description: "\u4E09\u9633\u4E09\u6627\u4E19\u4E01\u70BC\u706B\u8BC0\u5165\u95E8\u795E\u901A\uFF0C\u63D0\u4F9B\u706B\u5C5E\u6027\u57FA\u7840\u5361\u7EC4\u3002"
+    nodeIcon: {fileID: 0}
     realm: 0
     gridIndex: {x: 0, y: 0}
     nodeElement: 0
     unlockType: 0
-    comprehensionCost: 282
+    comprehensionCost: 0
     prerequisites: []
     mutexGroup: 
-    rewardType: 1
-    rewardIds: []
+    rewardType: 0
+    rewardIds:
+    - gen_strike
+    - gen_strike
+    - gen_strike
+    - gen_strike
+    - gen_defend
+    - gen_defend
+    - gen_defend
     passiveStat: 0
     passiveValue: 0
     craftBonusType: 0
     craftBonusValue: 0
-    maxAdvancementLevel: -208
+    maxAdvancementLevel: 0
   - nodeId: sy_lq_2
     nodeName: "\u9A71\u4E91\u8BC0"
     description: "\u9A71\u6563\u4E91\u96FE\uFF0C\u57FA\u7840\u5FA1\u6C14\u4E4B\u6CD5\u3002"
+    nodeIcon: {fileID: 0}
     realm: 0
-    gridIndex: {x: 0, y: 0}
+    gridIndex: {x: 0, y: 1}
     nodeElement: 0
     unlockType: 0
     comprehensionCost: 5
-    prerequisites: []
+    prerequisites:
+    - sy_lq_1
     mutexGroup: 
-    rewardType: 5
+    rewardType: 0
     rewardIds:
-    - da_quyun
+    - 3-Block_Basic
     passiveStat: 0
     passiveValue: 0
     craftBonusType: 0
@@ -59,16 +69,18 @@ MonoBehaviour:
   - nodeId: sy_lq_3
     nodeName: "\u91D1\u4E4C\u89C2"
     description: "\u89C2\u60F3\u91D1\u4E4C\uFF0C\u63D0\u5347\u7075\u6C14\u4E0A\u9650\u3002"
+    nodeIcon: {fileID: 0}
     realm: 0
-    gridIndex: {x: 0, y: 0}
-    nodeElement: 4
+    gridIndex: {x: 0, y: 2}
+    nodeElement: 0
     unlockType: 0
     comprehensionCost: 8
-    prerequisites: []
+    prerequisites:
+    - sy_lq_2
     mutexGroup: 
-    rewardType: 3
+    rewardType: 2
     rewardIds: []
-    passiveStat: 6
+    passiveStat: 3
     passiveValue: 1
     craftBonusType: 0
     craftBonusValue: 0
@@ -76,16 +88,18 @@ MonoBehaviour:
   - nodeId: sy_lq_4
     nodeName: "\u5148\u5929\u7F61\u6C14"
     description: "\u70BC\u5C31\u5148\u5929\u7F61\u6C14\uFF0C\u63D0\u5347\u7075\u6C14\u4E0A\u9650\u3002"
+    nodeIcon: {fileID: 0}
     realm: 0
-    gridIndex: {x: 0, y: 0}
+    gridIndex: {x: 0, y: 3}
     nodeElement: 0
     unlockType: 0
     comprehensionCost: 10
-    prerequisites: []
+    prerequisites:
+    - sy_lq_3
     mutexGroup: 
-    rewardType: 3
+    rewardType: 2
     rewardIds: []
-    passiveStat: 6
+    passiveStat: 3
     passiveValue: 1
     craftBonusType: 0
     craftBonusValue: 0
@@ -93,14 +107,16 @@ MonoBehaviour:
   - nodeId: sy_zj_1
     nodeName: "\u7A81\u7834\xB7\u4EBA\u706B"
     description: "\u51DD\u7EC3\u4EBA\u706B\uFF0C\u8E0F\u5165\u7B51\u57FA\u4E4B\u5883\u3002"
+    nodeIcon: {fileID: 0}
     realm: 1
-    gridIndex: {x: 0, y: 0}
+    gridIndex: {x: 1, y: 0}
     nodeElement: 0
     unlockType: 1
     comprehensionCost: 15
-    prerequisites: []
+    prerequisites:
+    - sy_lq_4
     mutexGroup: 
-    rewardType: 3
+    rewardType: 2
     rewardIds: []
     passiveStat: 1
     passiveValue: 20
@@ -110,15 +126,16 @@ MonoBehaviour:
   - nodeId: sy_jd_1
     nodeName: "\u4E09\u9633\u771F\u8109"
     description: "\u6253\u901A\u4E09\u9633\u7ECF\u8109\uFF0C\u63D0\u5347\u6839\u9AA8\u3002"
+    nodeIcon: {fileID: 0}
     realm: 2
-    gridIndex: {x: 0, y: 0}
-    nodeElement: 4
+    gridIndex: {x: 2, y: 0}
+    nodeElement: 0
     unlockType: 0
     comprehensionCost: 20
     prerequisites:
-    - sy_lq_3
+    - sy_zj_1
     mutexGroup: 
-    rewardType: 3
+    rewardType: 2
     rewardIds: []
     passiveStat: 2
     passiveValue: 3
@@ -128,15 +145,16 @@ MonoBehaviour:
   - nodeId: sy_jd_2a
     nodeName: "\u58F9\xB7\u4E94\u5185\u8574\u706B"
     description: "\u4E94\u810F\u8574\u706B\uFF0C\u63D0\u5347\u5168\u4E94\u7EF4\u3002"
+    nodeIcon: {fileID: 0}
     realm: 2
-    gridIndex: {x: 0, y: 0}
-    nodeElement: 4
-    unlockType: 4
+    gridIndex: {x: 2, y: 1}
+    nodeElement: 0
+    unlockType: 0
     comprehensionCost: 0
     prerequisites:
-    - sy_lq_3
+    - sy_jd_1
     mutexGroup: sy_jd_branch
-    rewardType: 3
+    rewardType: 2
     rewardIds: []
     passiveStat: 1
     passiveValue: 30
@@ -146,15 +164,16 @@ MonoBehaviour:
   - nodeId: sy_jd_2b
     nodeName: "\u8D30\xB7\u4E94\u5185\u8574\u706B"
     description: "\u66F4\u6DF1\u5C42\u7684\u4E94\u5185\u8574\u706B\uFF0C\u5927\u5E45\u63D0\u5347\u5168\u4E94\u7EF4\u3002"
+    nodeIcon: {fileID: 0}
     realm: 2
-    gridIndex: {x: 0, y: 0}
-    nodeElement: 4
-    unlockType: 4
+    gridIndex: {x: 2, y: 2}
+    nodeElement: 0
+    unlockType: 0
     comprehensionCost: 0
     prerequisites:
-    - sy_lq_3
+    - sy_jd_1
     mutexGroup: sy_jd_branch
-    rewardType: 3
+    rewardType: 2
     rewardIds: []
     passiveStat: 1
     passiveValue: 50
@@ -164,15 +183,16 @@ MonoBehaviour:
   - nodeId: sy_jd_2c
     nodeName: "\u53C1\xB7\u4E94\u5185\u8574\u706B"
     description: "\u6700\u6DF1\u5C42\u7684\u4E94\u5185\u8574\u706B\uFF0C\u6781\u5927\u63D0\u5347\u5168\u4E94\u7EF4\u3002"
+    nodeIcon: {fileID: 0}
     realm: 2
-    gridIndex: {x: 0, y: 0}
-    nodeElement: 4
-    unlockType: 4
+    gridIndex: {x: 2, y: 3}
+    nodeElement: 0
+    unlockType: 0
     comprehensionCost: 0
     prerequisites:
-    - sy_lq_3
+    - sy_jd_1
     mutexGroup: sy_jd_branch
-    rewardType: 3
+    rewardType: 2
     rewardIds: []
     passiveStat: 1
     passiveValue: 70
@@ -182,16 +202,18 @@ MonoBehaviour:
   - nodeId: sy_jd_3
     nodeName: "\u5FA1\u771F\u79D8\u5178"
     description: "\u53C2\u609F\u5FA1\u771F\u4E4B\u6CD5\uFF0C\u63D0\u5347\u672F\u6CD5\u5A01\u529B\u3002"
+    nodeIcon: {fileID: 0}
     realm: 2
-    gridIndex: {x: 0, y: 0}
-    nodeElement: 4
+    gridIndex: {x: 2, y: 4}
+    nodeElement: 0
     unlockType: 0
     comprehensionCost: 20
-    prerequisites: []
+    prerequisites:
+    - sy_jd_2a
     mutexGroup: 
-    rewardType: 3
+    rewardType: 2
     rewardIds: []
-    passiveStat: 3
+    passiveStat: 1
     passiveValue: 1
     craftBonusType: 0
     craftBonusValue: 0
@@ -199,15 +221,16 @@ MonoBehaviour:
   - nodeId: sy_jd_4
     nodeName: "\u70C8\u7130\u8BC0"
     description: "\u4FEE\u70BC\u70C8\u7130\u672F\u6CD5\u3002"
+    nodeIcon: {fileID: 0}
     realm: 2
-    gridIndex: {x: 0, y: 0}
-    nodeElement: 4
+    gridIndex: {x: 2, y: 5}
+    nodeElement: 0
     unlockType: 0
     comprehensionCost: 15
     prerequisites:
-    - sy_lq_4
+    - sy_jd_3
     mutexGroup: 
-    rewardType: 1
+    rewardType: 0
     rewardIds:
     - sw_br_ignite
     passiveStat: 0
@@ -218,16 +241,18 @@ MonoBehaviour:
   - nodeId: sy_jd_5
     nodeName: "\u51C0\u706B\u707C\u5FC3"
     description: "\u4EE5\u51C0\u706B\u70BC\u5FC3\uFF0C\u63D0\u5347\u609F\u6027\u3002"
+    nodeIcon: {fileID: 0}
     realm: 2
-    gridIndex: {x: 0, y: 0}
-    nodeElement: 4
+    gridIndex: {x: 2, y: 6}
+    nodeElement: 0
     unlockType: 0
     comprehensionCost: 15
-    prerequisites: []
+    prerequisites:
+    - sy_jd_4
     mutexGroup: 
-    rewardType: 3
+    rewardType: 2
     rewardIds: []
-    passiveStat: 5
+    passiveStat: 3
     passiveValue: 1
     craftBonusType: 0
     craftBonusValue: 0
@@ -235,16 +260,18 @@ MonoBehaviour:
   - nodeId: sy_yy_1
     nodeName: "\u5165\u5B9A\u4E4B\u672F"
     description: "\u4FEE\u70BC\u5165\u5B9A\u4E4B\u6CD5\u3002"
+    nodeIcon: {fileID: 0}
     realm: 3
-    gridIndex: {x: 0, y: 0}
+    gridIndex: {x: 3, y: 0}
     nodeElement: 0
     unlockType: 0
     comprehensionCost: 30
-    prerequisites: []
+    prerequisites:
+    - sy_jd_5
     mutexGroup: 
-    rewardType: 5
+    rewardType: 0
     rewardIds:
-    - da_ruding
+    - 5-Heal_Basic
     passiveStat: 0
     passiveValue: 0
     craftBonusType: 0
@@ -253,16 +280,18 @@ MonoBehaviour:
   - nodeId: sy_yy_2
     nodeName: "\u7075\u606F\u8BC0"
     description: "\u8C03\u606F\u4E4B\u6CD5\uFF0C\u63D0\u5347\u7075\u6C14\u4E0A\u9650\u3002"
+    nodeIcon: {fileID: 0}
     realm: 3
-    gridIndex: {x: 0, y: 0}
+    gridIndex: {x: 3, y: 1}
     nodeElement: 0
     unlockType: 0
     comprehensionCost: 25
-    prerequisites: []
+    prerequisites:
+    - sy_yy_1
     mutexGroup: 
-    rewardType: 5
+    rewardType: 0
     rewardIds:
-    - da_lingxi
+    - 5-Heal_Basic
     passiveStat: 0
     passiveValue: 0
     craftBonusType: 0
@@ -271,16 +300,18 @@ MonoBehaviour:
   - nodeId: sy_yy_3
     nodeName: "\u7384\u725D\u91CD\u751F\u6CD5"
     description: "\u91CD\u751F\u79D8\u6CD5\u3002"
+    nodeIcon: {fileID: 0}
     realm: 3
-    gridIndex: {x: 0, y: 0}
+    gridIndex: {x: 3, y: 2}
     nodeElement: 0
     unlockType: 0
     comprehensionCost: 30
-    prerequisites: []
+    prerequisites:
+    - sy_yy_2
     mutexGroup: 
-    rewardType: 5
+    rewardType: 0
     rewardIds:
-    - da_xuanpi
+    - 5-Heal_Basic
     passiveStat: 0
     passiveValue: 0
     craftBonusType: 0
@@ -289,17 +320,18 @@ MonoBehaviour:
   - nodeId: sy_yy_4a
     nodeName: "\u58F9\xB7\u59CB\u65E5\u771F\u8BC0"
     description: "\u63D0\u5347\u672F\u6CD5\u5A01\u529B\u3002"
+    nodeIcon: {fileID: 0}
     realm: 3
-    gridIndex: {x: 0, y: 0}
-    nodeElement: 4
-    unlockType: 4
+    gridIndex: {x: 3, y: 3}
+    nodeElement: 0
+    unlockType: 0
     comprehensionCost: 0
     prerequisites:
-    - sy_jd_2a
+    - sy_yy_3
     mutexGroup: sy_yy_branch1
-    rewardType: 3
+    rewardType: 2
     rewardIds: []
-    passiveStat: 3
+    passiveStat: 1
     passiveValue: 2
     craftBonusType: 0
     craftBonusValue: 0
@@ -307,17 +339,18 @@ MonoBehaviour:
   - nodeId: sy_yy_4b
     nodeName: "\u8D30\xB7\u711A\u65E5\u771F\u6CD5"
     description: "\u66F4\u5F3A\u7684\u672F\u6CD5\u5A01\u529B\u63D0\u5347\u3002"
+    nodeIcon: {fileID: 0}
     realm: 3
-    gridIndex: {x: 0, y: 0}
-    nodeElement: 4
-    unlockType: 4
+    gridIndex: {x: 3, y: 4}
+    nodeElement: 0
+    unlockType: 0
     comprehensionCost: 0
     prerequisites:
-    - sy_jd_2a
+    - sy_yy_3
     mutexGroup: sy_yy_branch1
-    rewardType: 3
+    rewardType: 2
     rewardIds: []
-    passiveStat: 3
+    passiveStat: 1
     passiveValue: 3
     craftBonusType: 0
     craftBonusValue: 0
@@ -325,17 +358,18 @@ MonoBehaviour:
   - nodeId: sy_yy_5
     nodeName: "\u4E09\u9633\u8D64\u5FC3\u5492"
     description: "\u63D0\u5347\u6CD5\u672F\u5A01\u529B\u3002"
+    nodeIcon: {fileID: 0}
     realm: 3
-    gridIndex: {x: 0, y: 0}
-    nodeElement: 4
+    gridIndex: {x: 3, y: 5}
+    nodeElement: 0
     unlockType: 0
     comprehensionCost: 25
     prerequisites:
-    - sy_jd_4
+    - sy_yy_4a
     mutexGroup: 
-    rewardType: 3
+    rewardType: 2
     rewardIds: []
-    passiveStat: 3
+    passiveStat: 1
     passiveValue: 1
     craftBonusType: 0
     craftBonusValue: 0
@@ -343,14 +377,16 @@ MonoBehaviour:
   - nodeId: sy_hs_1a
     nodeName: "\u58F9\xB7\u711A\u98CE\u672F"
     description: "\u711A\u70E7\u7F61\u98CE\uFF0C\u653B\u51FB\u672F\u6CD5\u3002"
+    nodeIcon: {fileID: 0}
     realm: 4
-    gridIndex: {x: 0, y: 0}
+    gridIndex: {x: 4, y: 0}
     nodeElement: 0
-    unlockType: 4
+    unlockType: 0
     comprehensionCost: 0
-    prerequisites: []
+    prerequisites:
+    - sy_yy_5
     mutexGroup: sy_hs_branch1
-    rewardType: 1
+    rewardType: 0
     rewardIds:
     - sw_br_annihilate
     passiveStat: 0
@@ -361,14 +397,16 @@ MonoBehaviour:
   - nodeId: sy_hs_1b
     nodeName: "\u8D30\xB7\u4E5D\u9633\u795E\u706B\u754C"
     description: "\u4E5D\u9633\u795E\u706B\u9886\u57DF\uFF0C\u7FA4\u653B\u672F\u6CD5\u3002(\u771F\u4ED9)"
+    nodeIcon: {fileID: 0}
     realm: 4
-    gridIndex: {x: 0, y: 0}
-    nodeElement: 4
-    unlockType: 4
+    gridIndex: {x: 4, y: 1}
+    nodeElement: 0
+    unlockType: 0
     comprehensionCost: 0
-    prerequisites: []
+    prerequisites:
+    - sy_yy_5
     mutexGroup: sy_hs_branch1
-    rewardType: 1
+    rewardType: 0
     rewardIds:
     - leg_spirit_chaos
     passiveStat: 0
@@ -379,16 +417,18 @@ MonoBehaviour:
   - nodeId: sy_hs_2
     nodeName: "\u547D\u706B\u7B51\u7075"
     description: "\u4EE5\u547D\u706B\u7B51\u7075\u57FA\uFF0C\u5927\u5E45\u63D0\u5347\u7075\u6C14\u4E0A\u9650\u3002"
+    nodeIcon: {fileID: 0}
     realm: 4
-    gridIndex: {x: 0, y: 0}
+    gridIndex: {x: 4, y: 2}
     nodeElement: 0
     unlockType: 0
     comprehensionCost: 40
-    prerequisites: []
+    prerequisites:
+    - sy_hs_1a
     mutexGroup: 
-    rewardType: 3
+    rewardType: 2
     rewardIds: []
-    passiveStat: 6
+    passiveStat: 3
     passiveValue: 2
     craftBonusType: 0
     craftBonusValue: 0
@@ -396,14 +436,16 @@ MonoBehaviour:
   - nodeId: sy_hs_3
     nodeName: "\u4F10\u6BDB\u6D17\u9AD3"
     description: "\u4F10\u6BDB\u6D17\u9AD3\uFF0C\u63D0\u5347\u4E94\u7EF4\u3002"
+    nodeIcon: {fileID: 0}
     realm: 4
-    gridIndex: {x: 0, y: 0}
+    gridIndex: {x: 4, y: 3}
     nodeElement: 0
     unlockType: 2
     comprehensionCost: 0
-    prerequisites: []
+    prerequisites:
+    - sy_hs_2
     mutexGroup: 
-    rewardType: 3
+    rewardType: 2
     rewardIds: []
     passiveStat: 1
     passiveValue: 50
@@ -413,17 +455,18 @@ MonoBehaviour:
   - nodeId: sy_hs_4a
     nodeName: "\u58F9\xB7\u5FC3\u706B"
     description: "\u964D\u4F4E\u672F\u6CD5\u7075\u6C14\u6D88\u8017\u3002"
+    nodeIcon: {fileID: 0}
     realm: 4
-    gridIndex: {x: 0, y: 0}
-    nodeElement: 4
-    unlockType: 4
+    gridIndex: {x: 4, y: 4}
+    nodeElement: 0
+    unlockType: 0
     comprehensionCost: 0
     prerequisites:
-    - sy_yy_4a
+    - sy_hs_3
     mutexGroup: sy_hs_branch2
-    rewardType: 3
+    rewardType: 2
     rewardIds: []
-    passiveStat: 6
+    passiveStat: 3
     passiveValue: 1
     craftBonusType: 0
     craftBonusValue: 0
@@ -431,17 +474,18 @@ MonoBehaviour:
   - nodeId: sy_hs_4b
     nodeName: "\u8D30\xB7\u5FC3\u708E"
     description: "\u66F4\u6DF1\u5C42\u6B21\u964D\u4F4E\u6D88\u8017\u3002"
+    nodeIcon: {fileID: 0}
     realm: 4
-    gridIndex: {x: 0, y: 0}
-    nodeElement: 4
-    unlockType: 4
+    gridIndex: {x: 4, y: 5}
+    nodeElement: 0
+    unlockType: 0
     comprehensionCost: 0
     prerequisites:
-    - sy_yy_4a
+    - sy_hs_3
     mutexGroup: sy_hs_branch2
-    rewardType: 3
+    rewardType: 2
     rewardIds: []
-    passiveStat: 6
+    passiveStat: 3
     passiveValue: 2
     craftBonusType: 0
     craftBonusValue: 0
@@ -449,17 +493,18 @@ MonoBehaviour:
   - nodeId: sy_hs_5a
     nodeName: "\u58F9\xB7\u771F\u706B\u70BC\u8EAB"
     description: "\u63D0\u5347\u6CD5\u672F\u5A01\u529B\u3002"
+    nodeIcon: {fileID: 0}
     realm: 4
-    gridIndex: {x: 0, y: 0}
-    nodeElement: 4
-    unlockType: 4
+    gridIndex: {x: 4, y: 6}
+    nodeElement: 0
+    unlockType: 0
     comprehensionCost: 0
     prerequisites:
-    - sy_jd_3
+    - sy_hs_4a
     mutexGroup: sy_hs_branch3
-    rewardType: 3
+    rewardType: 2
     rewardIds: []
-    passiveStat: 3
+    passiveStat: 1
     passiveValue: 2
     craftBonusType: 0
     craftBonusValue: 0
@@ -467,17 +512,18 @@ MonoBehaviour:
   - nodeId: sy_hs_5b
     nodeName: "\u8D30\xB7\u706B\u771F\u4E4B\u4F53"
     description: "\u66F4\u9AD8\u5C42\u6B21\u6CD5\u672F\u5A01\u529B\u3002"
+    nodeIcon: {fileID: 0}
     realm: 4
-    gridIndex: {x: 0, y: 0}
-    nodeElement: 4
-    unlockType: 4
+    gridIndex: {x: 4, y: 7}
+    nodeElement: 0
+    unlockType: 0
     comprehensionCost: 0
     prerequisites:
-    - sy_jd_3
+    - sy_hs_4a
     mutexGroup: sy_hs_branch3
-    rewardType: 3
+    rewardType: 2
     rewardIds: []
-    passiveStat: 3
+    passiveStat: 1
     passiveValue: 3
     craftBonusType: 0
     craftBonusValue: 0
@@ -485,15 +531,16 @@ MonoBehaviour:
   - nodeId: sy_hs_6
     nodeName: "\u901A\u5929\u795E\u706B"
     description: "\u901A\u5929\u795E\u706B\u672F\u6CD5\u3002"
+    nodeIcon: {fileID: 0}
     realm: 4
-    gridIndex: {x: 0, y: 0}
-    nodeElement: 4
+    gridIndex: {x: 4, y: 8}
+    nodeElement: 0
     unlockType: 3
     comprehensionCost: 0
     prerequisites:
-    - sy_yy_5
+    - sy_hs_5a
     mutexGroup: 
-    rewardType: 1
+    rewardType: 0
     rewardIds:
     - leg_sword_god2
     passiveStat: 0
@@ -504,14 +551,16 @@ MonoBehaviour:
   - nodeId: sy_hs_7a
     nodeName: "\u58F9\xB7\u5929\u706B\u540C\u4EBA"
     description: "\u63D0\u5347\u673A\u7F18\u3002"
+    nodeIcon: {fileID: 0}
     realm: 4
-    gridIndex: {x: 0, y: 0}
-    nodeElement: 4
-    unlockType: 4
+    gridIndex: {x: 4, y: 9}
+    nodeElement: 0
+    unlockType: 0
     comprehensionCost: 0
-    prerequisites: []
+    prerequisites:
+    - sy_hs_6
     mutexGroup: sy_hs_branch4
-    rewardType: 3
+    rewardType: 2
     rewardIds: []
     passiveStat: 2
     passiveValue: 3
@@ -521,14 +570,16 @@ MonoBehaviour:
   - nodeId: sy_hs_7b
     nodeName: "\u8D30\xB7\u5929\u706B\u540C\u4EBA"
     description: "\u66F4\u6DF1\u5C42\u6B21\u673A\u7F18\u63D0\u5347\u3002"
+    nodeIcon: {fileID: 0}
     realm: 4
-    gridIndex: {x: 0, y: 0}
-    nodeElement: 4
-    unlockType: 4
+    gridIndex: {x: 4, y: 10}
+    nodeElement: 0
+    unlockType: 0
     comprehensionCost: 0
-    prerequisites: []
+    prerequisites:
+    - sy_hs_6
     mutexGroup: sy_hs_branch4
-    rewardType: 3
+    rewardType: 2
     rewardIds: []
     passiveStat: 2
     passiveValue: 5
@@ -538,14 +589,16 @@ MonoBehaviour:
   - nodeId: sy_dj_1
     nodeName: "\u7A81\u7834\xB7\u98DE\u5347"
     description: "\u6E21\u8FC7\u5929\u52AB\uFF0C\u98DE\u5347\u6210\u4ED9\u3002"
+    nodeIcon: {fileID: 0}
     realm: 5
-    gridIndex: {x: 0, y: 0}
+    gridIndex: {x: 5, y: 0}
     nodeElement: 0
     unlockType: 3
     comprehensionCost: 0
-    prerequisites: []
+    prerequisites:
+    - sy_hs_7a
     mutexGroup: 
-    rewardType: 1
+    rewardType: 0
     rewardIds:
     - leg_gen_judgment
     passiveStat: 0

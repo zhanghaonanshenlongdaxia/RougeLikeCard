@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CardGame;
+using CardGame.Audio;
 using NueGames.NueDeck.Scripts.Data.Cultivation;
 using NueGames.NueDeck.Scripts.Enums;
 using QFramework;
@@ -46,6 +47,8 @@ namespace CardGame.UI.Cultivation
 
         [Header("Buttons")]
         [SerializeField] private Button _closeButton;
+        [SerializeField] private Button _activateButton; // 运转按钮
+        [SerializeField] private TextMeshProUGUI _activateButtonText;
 
         private ICultivationSystem _cultSystem;
         private ICultivationModel _cultModel;
@@ -92,6 +95,39 @@ namespace CardGame.UI.Cultivation
             if (_actionButton == null) _actionButton = panel.Find("DetailPanel/ActionButton")?.GetComponent<Button>();
             if (_actionButtonText == null && _actionButton != null) _actionButtonText = _actionButton.transform.Find("Text")?.GetComponent<TextMeshProUGUI>();
             if (_closeButton == null) _closeButton = panel.Find("CloseButton")?.GetComponent<Button>();
+
+            // 运转按钮
+            if (_activateButton == null)
+            {
+                _activateButton = panel.Find("TopBar/ActivateButton")?.GetComponent<Button>();
+                if (_activateButton == null) _activateButton = panel.Find("ActivateButton")?.GetComponent<Button>();
+            }
+            if (_activateButtonText == null && _activateButton != null)
+                _activateButtonText = _activateButton.transform.Find("Text")?.GetComponent<TextMeshProUGUI>();
+            if (_activateButton != null) _activateButton.onClick.AddListener(OnActivate);
+        }
+
+        private void OnActivate()
+        {
+            if (_selectedMethod == null) return;
+            if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
+
+            _cultSystem.SetActiveMethod(_selectedMethod.MethodId);
+            RefreshActiveLabel();
+            RefreshActivateButton();
+            FloatingTip.ShowSuccess($"已运转: {_selectedMethod.MethodName}");
+        }
+
+        private void RefreshActivateButton()
+        {
+            if (_activateButton == null) return;
+            bool isActive = _selectedMethod != null && _selectedMethod.MethodId == _cultModel.ActiveMethodId.Value;
+            if (_activateButtonText != null)
+                _activateButtonText.text = isActive ? "已运转中" : "运转";
+            _activateButton.interactable = !isActive;
+            var img = _activateButton.GetComponent<Image>();
+            if (img != null)
+                img.color = isActive ? new Color(0.15f, 0.3f, 0.15f) : new Color(0.08f, 0.5f, 0.1f);
         }
 
         private void OnDestroy()
@@ -121,6 +157,7 @@ namespace CardGame.UI.Cultivation
             {
                 _selectedMethod = learned[index];
                 RefreshNodeTree();
+                RefreshActivateButton();
             }
         }
 
@@ -129,6 +166,7 @@ namespace CardGame.UI.Cultivation
             RefreshDropdown();
             RefreshComprehension();
             RefreshActiveLabel();
+            RefreshActivateButton();
             if (_selectedMethod == null)
             {
                 var learned = _cultSystem.GetLearnedMethods();
@@ -263,87 +301,37 @@ namespace CardGame.UI.Cultivation
 
                 int count = mergedGroups.Count;
 
-                // === 计算每个 group 的期望 X ===
-                float[] desiredX = new float[count];
-                bool[] hasParent = new bool[count];
-
-                int realmIdx = realms.IndexOf(realm);
-                RealmLevel? prevRealm = realmIdx > 0 ? realms[realmIdx - 1] : (RealmLevel?)null;
-
-                for (int i = 0; i < count; i++)
-                {
-                    var group = mergedGroups[i];
-                    var parentXs = new List<float>();
-
-                    if (prevRealm != null && realmPositions.ContainsKey(prevRealm.Value))
-                    {
-                        foreach (var prevItem in realmPositions[prevRealm.Value])
-                        {
-                            // 检查 group 中任何节点的 prerequisites 是否包含这个上一境界节点
-                            foreach (var node in group)
-                            {
-                                if (node.Prerequisites != null && node.Prerequisites.Contains(prevItem.nodeId))
-                                {
-                                    parentXs.Add(prevItem.x);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    if (parentXs.Count > 0)
-                    {
-                        desiredX[i] = parentXs.Average();
-                        hasParent[i] = true;
-                    }
-                    else
-                    {
-                        desiredX[i] = 0;
-                        hasParent[i] = false;
-                    }
-                }
-
-                // === 排列：有连接的居中，无连接的放两边 ===
+                // === 有属性居中，无属性放两边，整体以 X=0 对称 ===
                 float[] xPositions = new float[count];
-
-                var withParent = new List<(int idx, float x)>();
-                var withoutParent = new List<int>();
-                for (int i = 0; i < count; i++)
                 {
-                    if (hasParent[i])
-                        withParent.Add((i, desiredX[i]));
-                    else
-                        withoutParent.Add(i);
-                }
+                    // 按元素属性分组：有显式元素的放中间，None 的放两边
+                    var hasElement = new List<int>();
+                    var noElement = new List<int>();
+                    for (int i = 0; i < count; i++)
+                    {
+                        var el = mergedGroups[i][0].NodeElement;
+                        if (el != ElementType.None)
+                            hasElement.Add(i);
+                        else
+                            noElement.Add(i);
+                    }
 
-                withParent.Sort((a, b) => a.x.CompareTo(b.x));
+                    // 合并排列顺序：左无属性 → 中有属性 → 右无属性
+                    int leftCount = noElement.Count / 2;
+                    int rightCount = noElement.Count - leftCount;
+                    var leftIds = noElement.GetRange(0, leftCount);
+                    var rightIds = noElement.GetRange(leftCount, rightCount);
 
-                if (withParent.Count > 0)
-                {
-                    // 有连接的居中排列
-                    float centerX = withParent.Average(t => t.x);
-                    int n = withParent.Count;
-                    for (int i = 0; i < n; i++)
-                        xPositions[withParent[i].idx] = centerX + (i - (n - 1) / 2f) * minSpacing;
+                    var orderedIds = new List<int>();
+                    orderedIds.AddRange(leftIds);
+                    orderedIds.AddRange(hasElement);
+                    orderedIds.AddRange(rightIds);
 
-                    // 无连接的放两边
-                    int leftCount = withoutParent.Count / 2;
-                    int rightCount = withoutParent.Count - leftCount;
-                    withoutParent.Sort((a, b) => mergedGroups[a][0].GridIndex.y.CompareTo(mergedGroups[b][0].GridIndex.y));
-
-                    for (int i = 0; i < leftCount; i++)
-                        xPositions[withoutParent[i]] = xPositions[withParent[0].idx] - (leftCount - i) * minSpacing;
-
-                    for (int i = 0; i < rightCount; i++)
-                        xPositions[withoutParent[leftCount + i]] = xPositions[withParent[n - 1].idx] + (i + 1) * minSpacing;
-                }
-                else
-                {
-                    // 全部无连接，等距居中
+                    // 等距排列，居中
                     float rowWidth = count * _itemWidth + (count - 1) * _itemSpacingX;
                     float startX = -rowWidth / 2f + _itemWidth / 2f;
                     for (int i = 0; i < count; i++)
-                        xPositions[i] = startX + i * minSpacing;
+                        xPositions[orderedIds[i]] = startX + i * minSpacing;
                 }
 
                 // === 创建 item ===
@@ -362,10 +350,8 @@ namespace CardGame.UI.Cultivation
                             advLevel++;
 
                     DivineAbilityData ability = null;
-                    if (primaryNode.RewardType == NodeRewardType.DivineAbility && primaryNode.RewardIds != null && primaryNode.RewardIds.Count > 0)
-                        ability = _cultSystem.GetAbilityConfig(primaryNode.RewardIds[0]);
 
-                    ElementType element = primaryNode.NodeElement;
+                    var element = primaryNode.NodeElement;
 
                     var itemGo = Instantiate(_abilityItemPrefab, _treeContent, false);
                     itemGo.name = "Node_" + primaryNode.NodeId;
@@ -586,7 +572,7 @@ namespace CardGame.UI.Cultivation
             Color btnColor;
             if (isUnlocked) { statusText = "已解锁"; btnColor = new Color(0.3f, 0.4f, 0.3f); }
             else if (canUnlock && node.UnlockType == NodeUnlockType.Comprehension) { statusText = "消耗参悟点解锁"; btnColor = new Color(0.08f, 0.55f, 0.1f); }
-            else if (canUnlock && node.UnlockType == NodeUnlockType.MutualExclusion) { statusText = "选择此路线"; btnColor = new Color(0.08f, 0.55f, 0.1f); }
+            else if (canUnlock && node.UnlockType == NodeUnlockType.Comprehension) { statusText = "消耗参悟点解锁"; btnColor = new Color(0.08f, 0.55f, 0.1f); }
             else if (canUnlock) { statusText = UnlockTypeText(node.UnlockType) + " (可尝试)"; btnColor = new Color(0.15f, 0.4f, 0.7f); }
             else { statusText = "前置未满足"; btnColor = new Color(0.25f, 0.25f, 0.3f); }
 
@@ -596,7 +582,7 @@ namespace CardGame.UI.Cultivation
                 _actionButton.image.color = btnColor;
                 if (_actionButtonText) _actionButtonText.text = statusText;
                 _actionButton.onClick.RemoveAllListeners();
-                if (canUnlock && (node.UnlockType == NodeUnlockType.Comprehension || node.UnlockType == NodeUnlockType.MutualExclusion))
+                if (canUnlock && node.UnlockType == NodeUnlockType.Comprehension)
                 {
                     var captured = node;
                     _actionButton.onClick.AddListener(() =>
@@ -617,20 +603,43 @@ namespace CardGame.UI.Cultivation
             if (node.RewardType == NodeRewardType.CraftBonus && node.CraftBonusType != CraftBonusType.None)
                 parts.Add(CraftBonusText(node.CraftBonusType) + " +" + node.CraftBonusValue);
             if (node.RewardType == NodeRewardType.Card && node.RewardIds != null && node.RewardIds.Count > 0)
-                parts.Add("卡牌: " + string.Join(",", node.RewardIds));
-            if (node.RewardType == NodeRewardType.DivineAbility && node.RewardIds != null && node.RewardIds.Count > 0)
-                parts.Add("神通: " + string.Join(",", node.RewardIds));
+            {
+                // 按卡牌ID分组，显示"中文名×数量"，不同卡牌换行
+                var grouped = node.RewardIds
+                    .GroupBy(id => id)
+                    .Select(g => $"{GetCardDisplayName(g.Key)}×{g.Count()}");
+                parts.Add("卡牌:\n" + string.Join("\n", grouped));
+            }
             if (node.RewardType == NodeRewardType.Recipe && node.RewardIds != null && node.RewardIds.Count > 0)
-                parts.Add("丹方: " + string.Join(",", node.RewardIds));
-            return parts.Count > 0 ? string.Join("  ", parts) : "";
+            {
+                var grouped = node.RewardIds
+                    .GroupBy(id => id)
+                    .Select(g => $"{GetRecipeDisplayName(g.Key)}×{g.Count()}");
+                parts.Add("丹方:\n" + string.Join("\n", grouped));
+            }
+            return parts.Count > 0 ? string.Join("\n", parts) : "";
+        }
+
+        private static string GetCardDisplayName(string cardId)
+        {
+            var cards = ResourceCache.GetCardsFromAllList();
+            if (cards == null) return cardId;
+            var card = cards.Find(c => c.Id == cardId);
+            return card != null ? card.CardName : cardId;
+        }
+
+        private static string GetRecipeDisplayName(string recipeId)
+        {
+            var recipes = ResourceCache.GetRecipes();
+            if (recipes == null) return recipeId;
+            var recipe = recipes.Find(r => r.recipeId == recipeId);
+            return recipe != null ? recipe.name : recipeId;
         }
 
         private static string PassiveStatText(PassiveStatType t) => t switch
         {
-            PassiveStatType.MaxHP => "生命上限", PassiveStatType.ShenShi => "神识",
-            PassiveStatType.Strength => "力量", PassiveStatType.Dexterity => "敏捷",
-            PassiveStatType.DrawCount => "抽牌数", PassiveStatType.MaxMana => "灵力上限",
-            PassiveStatType.BlockStart => "初始格挡", _ => "?"
+            PassiveStatType.MaxHP => "生命上限", PassiveStatType.ShenShi => "神识上限",
+            PassiveStatType.MaxMana => "灵力上限", _ => "?"
         };
 
         private static string CraftBonusText(CraftBonusType t) => t switch
@@ -674,7 +683,7 @@ namespace CardGame.UI.Cultivation
         {
             NodeUnlockType.Comprehension => "参悟", NodeUnlockType.Minigame => "小游戏",
             NodeUnlockType.Material => "材料", NodeUnlockType.CombatTrigger => "战斗触发",
-            NodeUnlockType.MutualExclusion => "互斥选择", _ => "?"
+            _ => "?"
         };
         #endregion
     }

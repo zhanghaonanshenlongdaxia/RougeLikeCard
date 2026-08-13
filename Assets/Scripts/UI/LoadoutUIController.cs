@@ -1,315 +1,239 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using QFramework;
 using NueGames.NueDeck.Scripts.Data.Collection;
+using NueGames.NueDeck.Scripts.Enums;
 using NueGames.NueDeck.Scripts.Managers;
 using Alchemy.Inspector;
 using CardGame.Audio;
 
 namespace CardGame.UI
 {
-    public class LoadoutUIController : MonoBehaviour, IController, LoopScrollDataSource
+    /// <summary>
+    /// 卡组重构UI：三栏布局
+    /// 左=基础卡组(首神通7张) | 中=附加卡组(选中的非基础卡牌) | 右=所有卡牌(当前功法拥有的未选中非基础卡牌)
+    /// 右→中添加，中→右移除，确认后保存。
+    /// </summary>
+    public class LoadoutUIController : MonoBehaviour, IController
     {
         [FoldoutGroup("References")]
-        [SerializeField] private Transform basicCardRoot;
-        [SerializeField] private Transform selectedCardRoot;
-        [SerializeField] private Transform cardPoolRoot;
-        [SerializeField] private GameObject cardItemPrefab;
-        [SerializeField] private TextMeshProUGUI shenShiText;
-        [SerializeField] private Button startButton;
+        [SerializeField] private Transform baseDeckRoot;
+        [SerializeField] private Transform extraDeckRoot;
+        [SerializeField] private Transform allCardsRoot;
+        [SerializeField] private Button confirmButton;
         [SerializeField] private Button backButton;
-        private TMP_FontAsset _font;
-        private LoopVerticalScrollRect _cardPoolLoopScroll;
-        private LoopScrollPrefabSourceImpl _cardPoolPrefabSource;
-        private GameObject _cardItemTemplate;
-        private List<CardData> _cardPoolData = new List<CardData>();
+        [SerializeField] private TextMeshProUGUI infoText;
 
+        private TMP_FontAsset _font;
         private ILoadoutModel _model;
-        private ILoadoutSystem _system;
+
+        // 当前功法首神通的卡牌ID列表
+        private List<string> _baseCardIds = new List<string>();
+        // 当前功法所有已解锁卡牌ID列表（含基础+额外）
+        private List<string> _allUnlockedCardIds = new List<string>();
+        // 待确认的附加卡牌（从所有卡牌移到附加卡组的）
+        private List<string> _pendingExtra = new List<string>();
 
         public IArchitecture GetArchitecture() => CardGameArchitecture.Interface;
 
         private void Awake()
         {
             _model = this.GetModel<ILoadoutModel>();
-            _system = this.GetSystem<ILoadoutSystem>();
             _font = UnityEngine.Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
             AutoBindReferences();
             UIHelper.EnsureCloseButton(this, OnBackButton);
         }
 
-
-        private void CreateSection(Transform parent, string title, float xMin, float yMin, float xMax, float yMax, out Transform contentRoot, bool scrollable = true, bool useLoopScroll = false)
-        {
-            var section = new GameObject($"Section_{title}");
-            section.transform.SetParent(parent, false);
-            var sRt = section.AddComponent<RectTransform>();
-            sRt.anchorMin = new Vector2(xMin, yMin); sRt.anchorMax = new Vector2(xMax, yMax);
-            sRt.offsetMin = Vector2.zero; sRt.offsetMax = Vector2.zero;
-            section.AddComponent<Image>().color = new Color(0.05f, 0.08f, 0.12f, 0.8f);
-
-            var vlg = section.AddComponent<VerticalLayoutGroup>();
-            vlg.spacing = 3; vlg.padding = new RectOffset(5, 5, 5, 5);
-            vlg.childControlWidth = true; vlg.childForceExpandHeight = false;
-
-            var tObj = new GameObject("SectionTitle");
-            tObj.transform.SetParent(section.transform, false);
-            var tTmp = tObj.AddComponent<TextMeshProUGUI>();
-            tTmp.text = title; tTmp.fontSize = 18; tTmp.color = new Color(0.9f, 0.8f, 0.3f);
-            tTmp.alignment = TextAlignmentOptions.Left;
-            if (_font) tTmp.font = _font;
-            var tLe = tObj.AddComponent<LayoutElement>(); tLe.preferredHeight = 25;
-
-            if (scrollable)
-            {
-                var scrollObj = new GameObject("Scroll");
-                scrollObj.transform.SetParent(section.transform, false);
-                
-                if (useLoopScroll)
-                {
-                    // 先 inactive 再 AddComponent，避免 LoopVerticalScrollRect.Awake 编辑态断言
-                    scrollObj.SetActive(false);
-                    _cardPoolLoopScroll = scrollObj.AddComponent<LoopVerticalScrollRect>();
-                    _cardPoolLoopScroll.horizontal = false;
-                    _cardPoolLoopScroll.vertical = true;
-                }
-                else
-                {
-                    var scroll = scrollObj.AddComponent<ScrollRect>();
-                    scroll.horizontal = false; scroll.vertical = true;
-                }
-
-                var vp = new GameObject("Viewport");
-                vp.transform.SetParent(scrollObj.transform, false);
-                var vpRt = vp.AddComponent<RectTransform>();
-                vpRt.anchorMin = Vector2.zero; vpRt.anchorMax = Vector2.one;
-                vpRt.pivot = new Vector2(0, 1);
-                vpRt.offsetMin = Vector2.zero; vpRt.offsetMax = Vector2.zero;
-                var vpImg = vp.AddComponent<Image>(); vpImg.color = new Color(0.05f, 0.08f, 0.12f, 1f);
-                vp.AddComponent<UnityEngine.UI.Mask>();
-
-                var content = new GameObject("Content");
-                content.transform.SetParent(vp.transform, false);
-                var cRt = content.AddComponent<RectTransform>();
-                cRt.anchorMin = new Vector2(0, 1); cRt.anchorMax = new Vector2(1, 1);
-                cRt.pivot = new Vector2(0, 1);
-                cRt.offsetMin = Vector2.zero; cRt.offsetMax = Vector2.zero;
-                var cvlg = content.AddComponent<VerticalLayoutGroup>();
-                cvlg.spacing = 3; cvlg.childControlWidth = true; cvlg.childForceExpandHeight = false;
-
-                if (useLoopScroll)
-                {
-                    _cardPoolLoopScroll.viewport = vpRt;
-                    _cardPoolLoopScroll.content = cRt;
-                    // 创建模板 + PrefabSource
-                    _cardItemTemplate = CreateCardItemTemplate();
-                    _cardItemTemplate.SetActive(false);
-                    _cardPoolPrefabSource = new LoopScrollPrefabSourceImpl(_cardItemTemplate, scrollObj.transform);
-                    _cardPoolLoopScroll.prefabSource = _cardPoolPrefabSource;
-                    _cardPoolLoopScroll.dataSource = this;
-                    // 配置完成后激活，Awake 断言通过
-                    scrollObj.SetActive(true);
-                }
-                else
-                {
-                    var csf = content.AddComponent<ContentSizeFitter>();
-                    csf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-                    scrollObj.GetComponent<ScrollRect>().viewport = vpRt;
-                    scrollObj.GetComponent<ScrollRect>().content = cRt;
-                }
-                contentRoot = content.transform;
-            }
-            else
-            {
-                var content = new GameObject("Content");
-                content.transform.SetParent(section.transform, false);
-                var cRt = content.AddComponent<RectTransform>();
-                content.AddComponent<VerticalLayoutGroup>().spacing = 3;
-                contentRoot = content.transform;
-            }
-        }
-
         private void OnEnable()
         {
-            if (_model != null)
-                _model.CurrentShenShi.RegisterWithInitValue(UpdateShenShi).UnRegisterWhenGameObjectDestroyed(gameObject);
+            CacheCardData();
+            _pendingExtra = new List<string>(_model.SelectedCardIds);
             RefreshAll();
         }
 
-        private void UpdateShenShi(int value)
+        private void CacheCardData()
         {
-            if (shenShiText) shenShiText.text = $"神识: {value}/{_model.MaxShenShi.Value}";
+            var cultSystem = this.GetSystem<ICultivationSystem>();
+            var activeMethod = cultSystem.GetMethodConfig(this.GetModel<ICultivationModel>().ActiveMethodId.Value ?? "");
+
+            // 基础卡牌 = 首神通的7张
+            _baseCardIds.Clear();
+            if (activeMethod?.Nodes != null)
+            {
+                var firstNode = activeMethod.Nodes
+                    .Where(n => n.Realm == RealmLevel.LianQi)
+                    .OrderBy(n => n.GridIndex.y)
+                    .FirstOrDefault();
+                if (firstNode?.RewardIds != null)
+                    _baseCardIds.AddRange(firstNode.RewardIds);
+            }
+
+            // 所有已解锁卡牌
+            _allUnlockedCardIds = cultSystem.GetActiveMethodCards();
         }
 
         private void RefreshAll()
         {
-            RefreshBasicCards();
-            RefreshSelectedCards();
-            RefreshCardPool();
+            RefreshBaseDeck();
+            RefreshExtraDeck();
+            RefreshAllCards();
+            UpdateInfo();
         }
 
-        private void RefreshBasicCards()
+        /// <summary>左侧：基础卡组（首神通7张，逐张显示）</summary>
+        private void RefreshBaseDeck()
         {
-            if (basicCardRoot == null) return;
-            ClearChildren(basicCardRoot);
-            foreach (var cardId in _model.BasicCardIds)
+            if (baseDeckRoot == null) return;
+            ClearChildren(baseDeckRoot);
+
+            foreach (var cardId in _baseCardIds)
+                CreateCardItem(baseDeckRoot, GetCardName(cardId), cardId, false, 0, false);
+        }
+
+        /// <summary>中间：附加卡组（选中的非基础卡牌，可移除）</summary>
+        private void RefreshExtraDeck()
+        {
+            if (extraDeckRoot == null) return;
+            ClearChildren(extraDeckRoot);
+
+            if (_pendingExtra.Count == 0)
             {
-                var card = FindCard(cardId);
-                if (card != null) CreateCardItem(basicCardRoot, card, false, 0, false);
+                CreateText(extraDeckRoot, "从右侧添加卡牌", 14, new Color(0.5f, 0.5f, 0.55f));
+                return;
+            }
+
+            // 逐张显示
+            foreach (var cardId in _pendingExtra)
+            {
+                CreateCardItem(extraDeckRoot, GetCardName(cardId), cardId, true, 0, true);
             }
         }
 
-        private void RefreshSelectedCards()
+        /// <summary>右侧：所有卡牌（当前功法拥有的、未选中的非基础卡牌）</summary>
+        private void RefreshAllCards()
         {
-            if (selectedCardRoot == null) return;
-            ClearChildren(selectedCardRoot);
-            foreach (var cardId in _model.SelectedCardIds)
+            if (allCardsRoot == null) return;
+            ClearChildren(allCardsRoot);
+
+            // 排除基础卡牌 + 已在附加卡组中的
+            var available = _allUnlockedCardIds
+                .Where(id => !_baseCardIds.Contains(id))
+                .Where(id => !_pendingExtra.Contains(id))
+                .ToList();
+
+            if (available.Count == 0)
             {
-                var card = FindCard(cardId);
-                if (card != null) CreateCardItem(selectedCardRoot, card, true, GetCardShenShi(cardId), true);
+                CreateText(allCardsRoot, "解锁更多神通获得额外卡牌", 14, new Color(0.5f, 0.5f, 0.55f));
+                return;
+            }
+
+            foreach (var cardId in available)
+            {
+                CreateCardItem(allCardsRoot, GetCardName(cardId), cardId, false, 0, true);
             }
         }
 
-        private void RefreshCardPool()
+        /// <summary>创建单个卡牌item</summary>
+        private void CreateCardItem(Transform parent, string name, string cardId, bool isExtra, int count, bool interactable)
         {
-            if (cardPoolRoot == null) return;
-            var gm = GameManager.Instance;
-            if (gm == null) return;
-
-            _cardPoolData.Clear();
-            foreach (var card in gm.GameplayData.AllCardsList)
-            {
-                if (_model.BasicCardIds.Contains(card.Id)) continue;
-                if (_model.SelectedCardIds.Contains(card.Id)) continue;
-                _cardPoolData.Add(card);
-            }
-
-            if (_cardPoolLoopScroll != null)
-            {
-                _cardPoolLoopScroll.totalCount = _cardPoolData.Count;
-                if (_cardPoolLoopScroll != null && _cardPoolLoopScroll.prefabSource != null) if (_cardPoolLoopScroll != null && _cardPoolLoopScroll.prefabSource != null) _cardPoolLoopScroll.RefillCells();
-            }
-        }
-
-        public void ProvideData(Transform transform, int idx)
-        {
-            if (idx < 0 || idx >= _cardPoolData.Count) return;
-            var card = _cardPoolData[idx];
-            int shenShiCost = GetCardShenShi(card.Id);
-
-            var img = transform.GetComponent<Image>();
-            if (img) img.color = new Color(0.1f, 0.15f, 0.25f, 1f);
-
-            var tmps = transform.GetComponentsInChildren<TextMeshProUGUI>();
-            if (tmps.Length >= 1) tmps[0].text = card.CardName;
-            if (tmps.Length >= 2) tmps[1].text = shenShiCost > 0 ? $"神识:{shenShiCost}" : "本命";
-
-            var btn = transform.GetComponent<Button>();
-            if (btn == null) btn = transform.gameObject.AddComponent<Button>();
-            btn.onClick.RemoveAllListeners();
-            var cardId = card.Id;
-            var cost = shenShiCost;
-            btn.onClick.AddListener(() =>
-            {
-                if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
-                if (_system.SelectCard(cardId, cost))
-                {
-                    UpdateShenShi(_model.CurrentShenShi.Value);
-                    RefreshAll();
-                }
-            });
-        }
-
-        private GameObject CreateCardItemTemplate()
-        {
-            var go = new GameObject("CardItem");
+            var go = new GameObject("Card_" + cardId);
+            go.transform.SetParent(parent, false);
             go.AddComponent<RectTransform>();
-            go.AddComponent<Image>().color = new Color(0.1f, 0.15f, 0.25f, 1f);
-            var le = go.AddComponent<LayoutElement>();
-            le.preferredHeight = 55;
+            go.AddComponent<Image>().color = isExtra ? new Color(0.15f, 0.25f, 0.15f, 1f) : new Color(0.06f, 0.1f, 0.15f, 0.9f);
+            go.AddComponent<LayoutElement>().preferredHeight = 40;
 
-            var layout = go.AddComponent<VerticalLayoutGroup>();
-            layout.spacing = 2; layout.padding = new RectOffset(5, 5, 3, 3);
+            var hlg = go.AddComponent<HorizontalLayoutGroup>();
+            hlg.spacing = 5; hlg.padding = new RectOffset(5, 5, 3, 3);
+            hlg.childControlWidth = true; hlg.childForceExpandWidth = false;
 
-            var nameObj = new GameObject("NameText");
-            nameObj.transform.SetParent(go.transform, false);
-            nameObj.AddComponent<RectTransform>();
-            var nameTmp = nameObj.AddComponent<TextMeshProUGUI>();
-            nameTmp.alignment = TextAlignmentOptions.Center;
-            nameTmp.fontSize = 16; nameTmp.color = Color.white;
-            if (_font) nameTmp.font = _font;
+            var nameTmp = CreateText(go.transform, name, 14, Color.white);
+            var le = nameTmp.gameObject.AddComponent<LayoutElement>();
+            le.flexibleWidth = 1;
 
-            var costObj = new GameObject("CostText");
-            costObj.transform.SetParent(go.transform, false);
-            costObj.AddComponent<RectTransform>();
-            var costTmp = costObj.AddComponent<TextMeshProUGUI>();
-            costTmp.alignment = TextAlignmentOptions.Center;
-            costTmp.fontSize = 12; costTmp.color = new Color(0.3f, 0.6f, 0.9f);
-            if (_font) costTmp.font = _font;
-
-            go.AddComponent<Button>();
-            return go;
-        }
-
-        private void CreateCardItem(Transform parent, CardData card, bool isSelected, int shenShiCost, bool canInteract)
-        {
-            var go = new GameObject("Card_" + card.Id);
-            go.transform.SetParent(parent);
-            go.AddComponent<RectTransform>();
-            go.AddComponent<Image>().color = isSelected ? new Color(0.15f, 0.25f, 0.15f, 1f) : new Color(0.1f, 0.15f, 0.25f, 1f);
-            var le = go.AddComponent<LayoutElement>();
-            le.preferredHeight = 55;
-
-            var layout = go.AddComponent<VerticalLayoutGroup>();
-            layout.spacing = 2; layout.padding = new RectOffset(5, 5, 3, 3);
-
-            CreateText(go, card.CardName, 16, Color.white);
-            string costStr = shenShiCost > 0 ? $"神识:{shenShiCost}" : "本命";
-            CreateText(go, costStr, 12, shenShiCost > 0 ? new Color(0.3f, 0.6f, 0.9f) : new Color(0.6f, 0.6f, 0.6f));
-
-            if (canInteract)
+            if (interactable)
             {
-                var btn = go.AddComponent<Button>();
-                var cardId = card.Id;
-                var cost = shenShiCost;
-                if (isSelected)
+                if (isExtra)
                 {
+                    // 附加卡组：显示"移除"按钮
+                    var btn = CreateButton(go.transform, "移除", new Color(0.5f, 0.2f, 0.2f));
+                    var capturedId = cardId;
                     btn.onClick.AddListener(() =>
                     {
                         if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
-                        _system.DeselectCard(cardId, cost);
-                        UpdateShenShi(_model.CurrentShenShi.Value);
+                        _pendingExtra.Remove(capturedId);
                         RefreshAll();
                     });
                 }
                 else
                 {
+                    // 所有卡牌：显示"添加"按钮
+                    var btn = CreateButton(go.transform, "添加", new Color(0.2f, 0.5f, 0.2f));
+                    var capturedId = cardId;
                     btn.onClick.AddListener(() =>
                     {
                         if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
-                        if (_system.SelectCard(cardId, cost))
-                        {
-                            UpdateShenShi(_model.CurrentShenShi.Value);
-                            RefreshAll();
-                        }
+                        _pendingExtra.Add(capturedId);
+                        RefreshAll();
                     });
                 }
             }
         }
 
-        private int GetCardShenShi(string cardId)
+        private void UpdateInfo()
         {
-            var card = FindCard(cardId);
-            if (card == null) return 1;
-            return (int)card.Rarity + 1 + card.PowerTier;
+            if (infoText == null) return;
+            int total = _baseCardIds.Count + _pendingExtra.Count;
+            infoText.text = $"卡组总数: {total}张 (基础{_baseCardIds.Count} + 附加{_pendingExtra.Count})";
         }
 
-        private CardData FindCard(string cardId)
+        private void OnConfirm()
         {
-            var gm = GameManager.Instance;
-            return gm?.GameplayData.AllCardsList.Find(c => c.Id == cardId);
+            if (GameAudioManager.Instance != null) GameAudioManager.Instance.PlaySFX(SFXType.UIClick);
+
+            _model.SelectedCardIds.Clear();
+            foreach (var id in _pendingExtra)
+                _model.SelectedCardIds.Add(id);
+
+            int total = _baseCardIds.Count + _pendingExtra.Count;
+            FloatingTip.ShowSuccess($"卡组已确认，共{total}张");
+            RefreshAll();
+        }
+
+        // === UI Helpers ===
+
+        private TextMeshProUGUI CreateText(Transform parent, string text, float size, Color color)
+        {
+            var go = new GameObject("Text");
+            go.transform.SetParent(parent, false);
+            go.AddComponent<RectTransform>();
+            var tmp = go.AddComponent<TextMeshProUGUI>();
+            tmp.text = text; tmp.fontSize = size; tmp.color = color;
+            tmp.alignment = TextAlignmentOptions.Center;
+            if (_font) tmp.font = _font;
+            return tmp;
+        }
+
+        private Button CreateButton(Transform parent, string label, Color color)
+        {
+            var go = new GameObject("Btn_" + label);
+            go.transform.SetParent(parent, false);
+            go.AddComponent<RectTransform>();
+            go.AddComponent<Image>().color = color;
+            go.AddComponent<LayoutElement>().preferredWidth = 50;
+            CreateText(go.transform, label, 13, Color.white);
+            var btn = go.AddComponent<Button>();
+            return btn;
+        }
+
+        private string GetCardName(string cardId)
+        {
+            var cards = ResourceCache.GetCardsFromAllList();
+            if (cards == null) return cardId;
+            var card = cards.Find(c => c.Id == cardId);
+            return card != null ? card.CardName : cardId;
         }
 
         private void ClearChildren(Transform t)
@@ -318,51 +242,24 @@ namespace CardGame.UI
                 Destroy(t.GetChild(i).gameObject);
         }
 
-        private void CreateText(GameObject parent, string text, float size, Color color)
-        {
-            var go = new GameObject("Text");
-            go.transform.SetParent(parent.transform);
-            go.AddComponent<RectTransform>();
-            var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = text; tmp.alignment = TextAlignmentOptions.Center;
-            tmp.fontSize = size; tmp.color = color;
-            if (_font) tmp.font = _font;
-        }
-
-        public void OnStartAdventure()
-        {
-            _system.StartAdventure();
-        }
-
         public void OnBackButton()
         {
             gameObject.SetActive(false);
         }
+
         private void AutoBindReferences()
         {
             var panel = transform.Find("Panel");
             if (panel == null) return;
-            if (basicCardRoot == null) basicCardRoot = panel.Find("Section_本命功法/ScrollView/Viewport/Content");
-            if (selectedCardRoot == null) selectedCardRoot = panel.Find("Section_已选卡牌/ScrollView/Viewport/Content");
-            if (cardPoolRoot == null) cardPoolRoot = panel.Find("Section_可选卡牌池/ScrollView/Viewport/Content");
-            if (shenShiText == null) shenShiText = panel.Find("Header/ShenShiText")?.GetComponent<TMPro.TextMeshProUGUI>();
-        
-            // Get LoopScrollRect from prefab (pre-configured)
-            var poolSection = panel.Find("Section_可选卡牌池");
-            if (poolSection != null && _cardPoolLoopScroll == null)
-            {
-                var scrollObj = poolSection.Find("ScrollView");
-                if (scrollObj != null)
-                {
-                    _cardPoolLoopScroll = scrollObj.GetComponent<LoopVerticalScrollRect>();
-                    _cardPoolLoopScroll.dataSource = this;
-                    _cardItemTemplate = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/UI/Base/Loadout/CardItem.prefab");
-                    _cardPoolPrefabSource = new LoopScrollPrefabSourceImpl(_cardItemTemplate, scrollObj);
-                    _cardPoolLoopScroll.prefabSource = _cardPoolPrefabSource;
-                }
-            }
+
+            if (baseDeckRoot == null) baseDeckRoot = panel.Find("Section_当前卡组/ScrollView/Viewport/Content");
+            if (extraDeckRoot == null) extraDeckRoot = panel.Find("Section_待确认/ScrollView/Viewport/Content");
+            if (allCardsRoot == null) allCardsRoot = panel.Find("Section_可选卡牌/ScrollView/Viewport/Content");
+            if (infoText == null) infoText = panel.Find("Header/InfoText")?.GetComponent<TextMeshProUGUI>();
+            if (confirmButton == null) confirmButton = panel.Find("ConfirmButton")?.GetComponent<Button>();
+            if (backButton == null) backButton = panel.Find("CloseButton")?.GetComponent<Button>();
+
+            if (confirmButton != null) confirmButton.onClick.AddListener(OnConfirm);
         }
-
     }
-
 }

@@ -16,6 +16,8 @@ namespace NueGames.NueDeck.Scripts.Data.Cultivation
         [SerializeField] private string nodeId;
         [SerializeField] private string nodeName;
         [SerializeField][TextArea] private string description;
+        [Tooltip("神通图标。多阶段神通只需第一阶段设置，全阶段共用")]
+        [SerializeField] private Sprite nodeIcon;
 
         [Header("Tree Position")]
         [SerializeField] private RealmLevel realm;
@@ -58,6 +60,7 @@ namespace NueGames.NueDeck.Scripts.Data.Cultivation
         public string NodeId => nodeId;
         public string NodeName => nodeName;
         public string Description => description;
+        public Sprite NodeIcon => nodeIcon;
         public RealmLevel Realm => realm;
         public Vector2 GridIndex => gridIndex;
         public ElementType NodeElement => nodeElement;
@@ -80,6 +83,7 @@ namespace NueGames.NueDeck.Scripts.Data.Cultivation
         public void EditNodeId(string id) => nodeId = id;
         public void EditNodeName(string name) => nodeName = name;
         public void EditDescription(string desc) => description = desc;
+        public void EditNodeIcon(Sprite icon) => nodeIcon = icon;
         public void EditRealm(RealmLevel r) => realm = r;
         public void EditGridIndex(Vector2 idx) => gridIndex = idx;
         public void EditNodeElement(ElementType el) => nodeElement = el;

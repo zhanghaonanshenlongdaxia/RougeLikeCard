@@ -96,6 +96,22 @@ namespace CardGame
             _model.LearnedMethodIds.Add(methodId);
             Debug.Log($"[Cultivation] Learned method: {methodId}");
 
+            // 自动解锁练气期下标0的首个神通（基础卡组来源）
+            var method = GetMethodConfig(methodId);
+            if (method?.Nodes != null)
+            {
+                var firstNode = method.Nodes
+                    .Where(n => n.Realm == RealmLevel.LianQi)
+                    .OrderBy(n => n.GridIndex.y)
+                    .FirstOrDefault();
+                if (firstNode != null && !_model.UnlockedNodeIds.Contains(firstNode.NodeId))
+                {
+                    _model.UnlockedNodeIds.Add(firstNode.NodeId);
+                    ApplyNodeRewards(firstNode);
+                    Debug.Log($"[Cultivation] Auto-unlocked first node: {firstNode.NodeName} ({firstNode.NodeId})");
+                }
+            }
+
             // 第一本功法自动设为当前
             if (string.IsNullOrEmpty(_model.ActiveMethodId.Value))
                 _model.ActiveMethodId.Value = methodId;
@@ -183,13 +199,7 @@ namespace CardGame
                             this.GetSystem<ICraftSystem>().UnlockRecipe(id);
                     break;
 
-                case NodeRewardType.DivineAbility:
-                    if (node.RewardIds != null)
-                        foreach (var id in node.RewardIds)
-                            LearnAbility(id);
-                    break;
-
-                // Card, PassiveStat, CraftBonus, SpecialSkill 都是被动查询，不需要在解锁时执行
+                // Card, PassiveStat, CraftBonus 都是被动查询，不需要在解锁时执行
             }
         }
         #endregion

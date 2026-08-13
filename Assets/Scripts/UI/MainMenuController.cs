@@ -92,16 +92,17 @@ namespace CardGame.UI
             var gm = NueGames.NueDeck.Scripts.Managers.GameManager.Instance;
             if (gm != null) gm.InitGameplayData();
 
-            // 给玩家一本初始功法 (火法) 并自动设为当前
+            // 给玩家初始功法并自动设为当前
             var arch = CardGameArchitecture.Interface;
             var cultSystem = arch.GetSystem<ICultivationSystem>();
             cultSystem.LearnMethod("sy_method"); // 三阳三昧丙丁炼火诀
             cultSystem.LearnMethod("th_method"); // 太和十六洞天
-            cultSystem.SetActiveMethod("sy_method");
+            cultSystem.LearnMethod("cc_method"); // 长春功
+            cultSystem.SetActiveMethod("cc_method");
             // 给一些初始参悟点
             arch.GetModel<ICultivationModel>().ComprehensionPoints.Value = 20;
 
-            FloatingTip.ShowSuccess("开始新游戏，已获得《三阳三昧丙丁炼火诀》");
+            FloatingTip.ShowSuccess("开始新游戏，已获得三本初始功法");
             var sceneChanger = FindObjectOfType<NueGames.NueDeck.Scripts.Utils.SceneChanger>();
             if (sceneChanger != null) sceneChanger.OpenBaseScene();
             else UnityEngine.SceneManagement.SceneManager.LoadScene(2);

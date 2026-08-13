@@ -119,7 +119,7 @@ namespace NueGames.NueDeck.Scripts.Managers
         }
 
         /// <summary>
-        /// 应用功法被动属性 (MaxHP/ShenShi/Strength/Dexterity/DrawCount/MaxMana/BlockStart)
+        /// 应用功法被动属性 (MaxHP/神识上限/灵力上限)
         /// </summary>
         private void ApplyCultivationPassives()
         {
@@ -147,22 +147,9 @@ namespace NueGames.NueDeck.Scripts.Managers
                         var loadout = this.GetModel<ILoadoutModel>();
                         loadout.MaxShenShi.Value += kv.Value;
                         break;
-                    case NueGames.NueDeck.Scripts.Enums.PassiveStatType.Strength:
-                        player.CharacterStats.ApplyStatus(NueGames.NueDeck.Scripts.Enums.StatusType.Strength, kv.Value);
-                        break;
-                    case NueGames.NueDeck.Scripts.Enums.PassiveStatType.Dexterity:
-                        player.CharacterStats.ApplyStatus(NueGames.NueDeck.Scripts.Enums.StatusType.Dexterity, kv.Value);
-                        break;
-                    case NueGames.NueDeck.Scripts.Enums.PassiveStatType.DrawCount:
-                        if (bm != null) bm.DrawCount.Value += kv.Value;
-                        if (gm != null) gm.PersistentGameplayData.DrawCount += kv.Value;
-                        break;
                     case NueGames.NueDeck.Scripts.Enums.PassiveStatType.MaxMana:
                         if (bm != null) bm.MaxMana.Value += kv.Value;
                         if (gm != null) gm.PersistentGameplayData.MaxMana += kv.Value;
-                        break;
-                    case NueGames.NueDeck.Scripts.Enums.PassiveStatType.BlockStart:
-                        player.CharacterStats.ApplyStatus(NueGames.NueDeck.Scripts.Enums.StatusType.Block, kv.Value);
                         break;
                 }
                 Debug.Log($"[Combat] Cultivation passive: {kv.Key} +{kv.Value}");

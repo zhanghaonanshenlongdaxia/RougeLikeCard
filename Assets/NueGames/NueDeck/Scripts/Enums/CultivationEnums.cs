@@ -28,42 +28,34 @@ namespace NueGames.NueDeck.Scripts.Enums
         Comprehension,     // 消耗参悟点直接解锁
         Minigame,           // 小游戏突破 (技巧+运气)
         Material,           // 需要特殊材料搭配
-        CombatTrigger,      // 战斗中几率触发突破
-        MutualExclusion     // 互斥选择点 (选了一个同组其他节点永久锁定)
+        CombatTrigger       // 战斗中几率触发突破
     }
 
     /// <summary>节点奖励类型</summary>
     public enum NodeRewardType
     {
-        None,
-        Card,               // 解锁卡牌 (加入功法基础牌组)
+        Card,               // 解锁卡牌 (加入功法基础牌组，可为1~多张)
         Recipe,             // 解锁丹方/图纸
-        PassiveStat,        // 被动属性提升
-        CraftBonus,         // 炼丹/炼器加成
-        DivineAbility,      // 解锁神通
-        SpecialSkill        // 特殊技能 (非战斗)
+        PassiveStat,        // 被动属性提升 (MaxHP/神识上限/灵力上限)
+        CraftBonus          // 炼丹/炼器加成 (成功率/品质，独立计算)
     }
 
     /// <summary>被动属性类型</summary>
     public enum PassiveStatType
     {
         None,
-        MaxHP,
-        ShenShi,
-        Strength,
-        Dexterity,
-        DrawCount,
-        MaxMana,
-        BlockStart
+        MaxHP,              // 生命上限
+        ShenShi,            // 神识上限
+        MaxMana             // 灵力上限
     }
 
-    /// <summary>炼制加成类型</summary>
+    /// <summary>炼制加成类型 (独立于属性，单独计算)</summary>
     public enum CraftBonusType
     {
         None,
-        AlchemySuccess,
-        AlchemyQuality,
-        ForgingSuccess,
-        ForgingQuality
+        AlchemySuccess,     // 炼丹成功率
+        AlchemyQuality,     // 炼丹品质
+        ForgingSuccess,     // 炼器成功率
+        ForgingQuality      // 炼器品质
     }
 }

@@ -107,7 +107,11 @@ namespace CardGame.UI
                 else if (name == "ForgingButton") { forgingButton = btn; btn.onClick.AddListener(OnForging); }
                 else if (name == "RitualButton") { ritualButton = btn; btn.onClick.AddListener(OnRitual); }
                 else if (name == "InventoryButton") { inventoryButton = btn; btn.onClick.AddListener(OnInventory); }
-                else if (name == "LoadoutButton") { loadoutButton = btn; btn.onClick.AddListener(OnLoadout); }
+                else if (name == "LoadoutButton") { loadoutButton = btn; btn.onClick.AddListener(OnLoadout);
+                    // 更新按钮文字为"卡组重构"
+                    var tmp = btn.GetComponentInChildren<TextMeshProUGUI>();
+                    if (tmp != null) tmp.text = "卡组重构";
+                }
                 else if (name == "CodexButton") { btn.onClick.AddListener(OnCodex); }
                 else if (name == "AdventureButton") { adventureButton = btn; btn.onClick.AddListener(OnAdventure); }
             }

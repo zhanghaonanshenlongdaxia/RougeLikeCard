@@ -1,0 +1,221 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 845131dd76f49af43a38fcb9b7479b68, type: 3}
+  m_Name: cc_method
+  m_EditorClassIdentifier: 
+  methodId: cc_method
+  methodName: "\u957F\u6625\u529F"
+  description: "\u6728\u5C5E\u6027\u529F\u6CD5\uFF0C\u4EE5\u6728\u7075\u4E4B\u6C14\u6E29\u517B\u7ECF\u8109\uFF0C\u64C5\u6301\u4E45\u6062\u590D\u3002\u4FEE\u70BC\u8005\u5982\u8349\u6728\u9022\u6625\uFF0C\u751F\u751F\u4E0D\u606F\u3002\u6B64\u4E3A\u6B8B\u7BC7\uFF0C\u4EC5\u53EF\u4FEE\u81F3\u7B51\u57FA\u3002"
+  icon: {fileID: 0}
+  element: 2
+  grade: 1
+  maxRealm: 1
+  quality: 0
+  nodes:
+  - nodeId: cc_lq_1
+    nodeName: "\u56DE\u6625\u672F"
+    description: "\u957F\u6625\u529F\u5165\u95E8\u795E\u901A\uFF0C\u63D0\u4F9B\u6728\u5C5E\u6027\u57FA\u7840\u5361\u7EC4\u3002"
+    nodeIcon: {fileID: 0}
+    realm: 0
+    gridIndex: {x: 0, y: 0}
+    nodeElement: 0
+    unlockType: 0
+    comprehensionCost: 0
+    prerequisites: []
+    mutexGroup: 
+    rewardType: 0
+    rewardIds:
+    - bd_th_spike
+    - bd_th_spike
+    - bd_th_spike
+    - bd_th_spike
+    - bd_su_shield2
+    - bd_su_shield2
+    - bd_su_shield2
+    passiveStat: 0
+    passiveValue: 0
+    craftBonusType: 0
+    craftBonusValue: 0
+    maxAdvancementLevel: 0
+  - nodeId: cc_lq_2
+    nodeName: "\u6728\u7532\u672F"
+    description: "\u4EE5\u6728\u6C14\u51DD\u7532\uFF0C\u57FA\u7840\u9632\u62A4\u4E4B\u6CD5\u3002"
+    nodeIcon: {fileID: 0}
+    realm: 0
+    gridIndex: {x: 0, y: 1}
+    nodeElement: 0
+    unlockType: 0
+    comprehensionCost: 5
+    prerequisites: []
+    mutexGroup: 
+    rewardType: 0
+    rewardIds:
+    - bd_th_bramble
+    passiveStat: 0
+    passiveValue: 0
+    craftBonusType: 0
+    craftBonusValue: 0
+    maxAdvancementLevel: 0
+  - nodeId: cc_lq_3
+    nodeName: "\u8574\u7075\u8BC0"
+    description: "\u5F15\u6728\u7075\u4E4B\u6C14\u5165\u4F53\uFF0C\u63D0\u5347\u7075\u529B\u4E0A\u9650\u3002"
+    nodeIcon: {fileID: 0}
+    realm: 0
+    gridIndex: {x: 0, y: 2}
+    nodeElement: 0
+    unlockType: 0
+    comprehensionCost: 8
+    prerequisites:
+    - cc_lq_2
+    mutexGroup: 
+    rewardType: 2
+    rewardIds: []
+    passiveStat: 3
+    passiveValue: 1
+    craftBonusType: 0
+    craftBonusValue: 0
+    maxAdvancementLevel: 0
+  - nodeId: cc_lq_4
+    nodeName: "\u9752\u6728\u529F"
+    description: "\u5F3A\u5316\u4F53\u8D28\uFF0C\u63D0\u5347\u751F\u547D\u4E0A\u9650\u3002"
+    nodeIcon: {fileID: 0}
+    realm: 0
+    gridIndex: {x: 0, y: 3}
+    nodeElement: 0
+    unlockType: 0
+    comprehensionCost: 10
+    prerequisites:
+    - cc_lq_3
+    mutexGroup: 
+    rewardType: 2
+    rewardIds: []
+    passiveStat: 1
+    passiveValue: 10
+    craftBonusType: 0
+    craftBonusValue: 0
+    maxAdvancementLevel: 0
+  - nodeId: cc_lq_5
+    nodeName: "\u56FA\u6839\u6CD5"
+    description: "\u624E\u6839\u5927\u5730\uFF0C\u8FDB\u4E00\u6B65\u63D0\u5347\u7075\u529B\u3002"
+    nodeIcon: {fileID: 0}
+    realm: 0
+    gridIndex: {x: 0, y: 4}
+    nodeElement: 0
+    unlockType: 0
+    comprehensionCost: 8
+    prerequisites:
+    - cc_lq_4
+    mutexGroup: 
+    rewardType: 2
+    rewardIds: []
+    passiveStat: 3
+    passiveValue: 1
+    craftBonusType: 0
+    craftBonusValue: 0
+    maxAdvancementLevel: 0
+  - nodeId: cc_zj_1
+    nodeName: "\u7A81\u7834\xB7\u957F\u6625"
+    description: "\u51DD\u805A\u6728\u7075\u4E4B\u6C14\uFF0C\u51B2\u7834\u7B51\u57FA\u74F6\u9888\u3002"
+    nodeIcon: {fileID: 0}
+    realm: 1
+    gridIndex: {x: 1, y: 0}
+    nodeElement: 0
+    unlockType: 1
+    comprehensionCost: 15
+    prerequisites:
+    - cc_lq_5
+    mutexGroup: 
+    rewardType: 2
+    rewardIds: []
+    passiveStat: 1
+    passiveValue: 20
+    craftBonusType: 0
+    craftBonusValue: 0
+    maxAdvancementLevel: 0
+  - nodeId: cc_zj_2a
+    nodeName: "\u67AF\u6728\u9022\u6625"
+    description: "\u4E13\u6CE8\u6062\u590D\u4E4B\u9053\uFF0C\u5927\u5E45\u63D0\u5347\u751F\u547D\u4E0A\u9650\u3002"
+    nodeIcon: {fileID: 0}
+    realm: 1
+    gridIndex: {x: 1, y: 1}
+    nodeElement: 0
+    unlockType: 0
+    comprehensionCost: 0
+    prerequisites:
+    - cc_zj_1
+    mutexGroup: cc_zj_branch
+    rewardType: 2
+    rewardIds: []
+    passiveStat: 1
+    passiveValue: 30
+    craftBonusType: 0
+    craftBonusValue: 0
+    maxAdvancementLevel: 0
+  - nodeId: cc_zj_2b
+    nodeName: "\u94C1\u6728\u4E4B\u8EAF"
+    description: "\u4E13\u6CE8\u9632\u5FA1\u4E4B\u9053\uFF0C\u517C\u987E\u751F\u547D\u4E0E\u7075\u529B\u3002"
+    nodeIcon: {fileID: 0}
+    realm: 1
+    gridIndex: {x: 1, y: 2}
+    nodeElement: 0
+    unlockType: 0
+    comprehensionCost: 0
+    prerequisites:
+    - cc_zj_1
+    mutexGroup: cc_zj_branch
+    rewardType: 2
+    rewardIds: []
+    passiveStat: 1
+    passiveValue: 15
+    craftBonusType: 0
+    craftBonusValue: 0
+    maxAdvancementLevel: 0
+  - nodeId: cc_zj_3
+    nodeName: "\u8346\u68D8\u62A4\u4F53"
+    description: "\u4EE5\u6728\u523A\u53CD\u4F24\uFF0C\u4E60\u5F97\u8346\u68D8\u672F\u3002"
+    nodeIcon: {fileID: 0}
+    realm: 1
+    gridIndex: {x: 1, y: 3}
+    nodeElement: 0
+    unlockType: 0
+    comprehensionCost: 15
+    prerequisites:
+    - cc_zj_2a
+    mutexGroup: 
+    rewardType: 0
+    rewardIds:
+    - bd_th_spike
+    passiveStat: 0
+    passiveValue: 0
+    craftBonusType: 0
+    craftBonusValue: 0
+    maxAdvancementLevel: 0
+  - nodeId: cc_zj_4
+    nodeName: "\u81EA\u6108\u672F"
+    description: "\u4E60\u5F97\u81EA\u6108\u4E4B\u672F\uFF0C\u6218\u6597\u4E2D\u6301\u7EED\u6062\u590D\u3002"
+    nodeIcon: {fileID: 0}
+    realm: 1
+    gridIndex: {x: 1, y: 4}
+    nodeElement: 0
+    unlockType: 0
+    comprehensionCost: 15
+    prerequisites:
+    - cc_zj_3
+    mutexGroup: 
+    rewardType: 0
+    rewardIds:
+    - bd_su_regen
+    passiveStat: 0
+    passiveValue: 0
+    craftBonusType: 0
+    craftBonusValue: 0
+    maxAdvancementLevel: 0
