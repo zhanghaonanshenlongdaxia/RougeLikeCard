@@ -1,3 +1,4 @@
+using System.Linq;
 using QFramework;
 using UnityEngine;
 
@@ -54,36 +55,56 @@ namespace CardGame
             var gm = NueGames.NueDeck.Scripts.Managers.GameManager.Instance;
             if (gm == null) return;
 
-            // 出征卡组 = 功法基础卡 + 功法自带神通卡 + 自选神通卡
+            // 出征卡组 = 功法基础卡 + 玩家自选附加卡 + 装备神通卡
             gm.PersistentGameplayData.CurrentCardsList.Clear();
 
-            // 1. 功法基础卡 + 功法自带神通卡 (从当前装备功法的已解锁节点获取)
             var cultSystem = this.GetSystem<ICultivationSystem>();
-            var methodCards = cultSystem.GetActiveMethodCards();
-            foreach (var cardId in methodCards)
+            var cultModel = this.GetModel<ICultivationModel>();
+            var activeMethod = cultSystem.GetMethodConfig(cultModel.ActiveMethodId.Value ?? "");
+            var allCards = ResourceCache.GetCardsFromAllList();
+
+            // 1. 功法基础卡：当前功法首神通的卡牌（LoadoutUI左侧固定显示的那批）
+            var baseCardIds = new System.Collections.Generic.List<string>();
+            if (activeMethod?.Nodes != null)
             {
-                var card = gm.GameplayData.AllCardsList.Find(c => c.Id == cardId);
+                var firstNode = activeMethod.Nodes
+                    .FindAll(n => n.Realm == RealmLevel.LianQi)
+                    .OrderBy(n => n.GridIndex.y)
+                    .FirstOrDefault();
+                if (firstNode?.RewardIds != null)
+                    baseCardIds.AddRange(firstNode.RewardIds);
+            }
+            foreach (var cardId in baseCardIds)
+            {
+                var card = allCards.Find(c => c.Id == cardId);
                 if (card != null) gm.PersistentGameplayData.CurrentCardsList.Add(card);
             }
 
-            // 2. 自选神通卡 (玩家从已学神通中选配的，受能量上限限制)
+            // 2. 玩家自选附加卡（LoadoutUI中间栏，从已解锁卡牌中选配的）
+            foreach (var cardId in model.SelectedCardIds)
+            {
+                var card = allCards.Find(c => c.Id == cardId);
+                if (card != null) gm.PersistentGameplayData.CurrentCardsList.Add(card);
+            }
+
+            // 3. 装备的神通卡
             var equippedAbilities = cultSystem.GetEquippedAbilities();
             foreach (var ability in equippedAbilities)
             {
-                var card = gm.GameplayData.AllCardsList.Find(c => c.Id == ability.CardId);
+                var card = allCards.Find(c => c.Id == ability.CardId);
                 if (card != null) gm.PersistentGameplayData.CurrentCardsList.Add(card);
             }
 
-            // 如果功法+神通=0张，使用初始牌组兜底
+            // 兜底：如果什么都没有，使用初始牌组
             if (gm.PersistentGameplayData.CurrentCardsList.Count == 0)
             {
                 foreach (var card in gm.GameplayData.InitalDeck.CardList)
                     gm.PersistentGameplayData.CurrentCardsList.Add(card);
-                Debug.Log($"[Loadout] 功法+神通=0张，使用初始牌组兜底: {gm.PersistentGameplayData.CurrentCardsList.Count}张");
+                Debug.Log($"[Loadout] 无功法无选卡，使用初始牌组兜底: {gm.PersistentGameplayData.CurrentCardsList.Count}张");
             }
             else
             {
-                Debug.Log($"[Loadout] 出征! 功法{methodCards.Count} + 神通{equippedAbilities.Count} = {gm.PersistentGameplayData.CurrentCardsList.Count}张");
+                Debug.Log($"[Loadout] 出征! 基础{baseCardIds.Count} + 自选{model.SelectedCardIds.Count} + 神通{equippedAbilities.Count} = {gm.PersistentGameplayData.CurrentCardsList.Count}张");
             }
         }
     }

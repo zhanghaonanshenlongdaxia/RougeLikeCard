@@ -24,6 +24,7 @@ namespace NueGames.NueDeck.Editor
         #region Cache Card Data
         private static CardData CachedCardData { get; set; }
         private List<CardData> AllCardDataList { get; set; }
+        private HashSet<string> _activeMethodCardIds = new HashSet<string>();
         private CardData SelectedCardData { get; set; }
         private string CardId { get; set; }
         private string CardName{ get; set; }
@@ -82,6 +83,7 @@ namespace NueGames.NueDeck.Editor
         {
             AllCardDataList?.Clear();
             AllCardDataList = ListExtentions.GetAllInstances<CardData>().ToList();
+            CacheActiveMethodCardIds();
             
             if (CachedCardData)
             {
@@ -91,6 +93,25 @@ namespace NueGames.NueDeck.Editor
             }
             
             Selection.selectionChanged += Repaint;
+        }
+
+        /// <summary>缓存所有功法中RewardType=Card的卡牌ID，用于列表排序和高亮</summary>
+        private void CacheActiveMethodCardIds()
+        {
+            _activeMethodCardIds.Clear();
+            var methodGuids = AssetDatabase.FindAssets("t:CultivationMethodData");
+            foreach (var guid in methodGuids)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                var method = AssetDatabase.LoadAssetAtPath<NueGames.NueDeck.Scripts.Data.Cultivation.CultivationMethodData>(path);
+                if (method?.Nodes == null) continue;
+                foreach (var node in method.Nodes)
+                {
+                    if (node.RewardType == NueGames.NueDeck.Scripts.Enums.NodeRewardType.Card && node.RewardIds != null)
+                        foreach (var id in node.RewardIds)
+                            _activeMethodCardIds.Add(id);
+                }
+            }
         }
 
         private void OnDisable()
@@ -118,33 +139,45 @@ namespace NueGames.NueDeck.Editor
         private Vector2 _allCardButtonsScrollPos;
         private void DrawAllCardButtons()
         {
-            _allCardButtonsScrollPos = EditorGUILayout.BeginScrollView(_allCardButtonsScrollPos, GUILayout.Width(150), GUILayout.ExpandHeight(true));
-            EditorGUILayout.BeginVertical("box", GUILayout.Width(150), GUILayout.ExpandHeight(true));
+            _allCardButtonsScrollPos = EditorGUILayout.BeginScrollView(_allCardButtonsScrollPos, GUILayout.Width(200), GUILayout.ExpandHeight(true));
+            EditorGUILayout.BeginVertical("box", GUILayout.Width(200), GUILayout.ExpandHeight(true));
             
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Cards",EditorStyles.boldLabel,GUILayout.Width(50),GUILayout.Height(20));
+            EditorGUILayout.LabelField("卡牌列表",EditorStyles.boldLabel,GUILayout.Width(70),GUILayout.Height(20));
             
             GUILayout.FlexibleSpace();
             
             var oldColor = GUI.backgroundColor;
             GUI.backgroundColor = Color.blue;
-            if (GUILayout.Button("Refresh",GUILayout.Width(75),GUILayout.Height(20)))
+            if (GUILayout.Button("刷新",GUILayout.Width(60),GUILayout.Height(20)))
                 RefreshCardData();
             GUI.backgroundColor = oldColor;
             
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Separator();
 
-            foreach (var data in AllCardDataList)
-                if (GUILayout.Button(data.CardName,GUILayout.MaxWidth(150)))
+            // 排序：当前功法卡牌排最前面
+            var sortedList = AllCardDataList
+                .OrderByDescending(c => _activeMethodCardIds.Contains(c.Id))
+                .ThenBy(c => c.CardName)
+                .ToList();
+
+            var oldBtnColor = GUI.backgroundColor;
+            foreach (var data in sortedList)
+            {
+                bool isMethodCard = _activeMethodCardIds.Contains(data.Id);
+                GUI.backgroundColor = isMethodCard ? new Color(0.9f, 0.7f, 0.2f) : oldBtnColor;
+                if (GUILayout.Button((isMethodCard ? "★ " : "") + data.CardName, GUILayout.MaxWidth(200)))
                 {
                     SelectedCardData = data;
                     _serializedObject = new SerializedObject(SelectedCardData);
                     CacheCardData();
                     GUI.FocusControl(null);
                 }
+            }
+            GUI.backgroundColor = oldBtnColor;
 
-            if (GUILayout.Button("+",GUILayout.MaxWidth(150)))
+            if (GUILayout.Button("+ 新建卡牌",GUILayout.MaxWidth(200)))
             {
                 CreateNewCard();
             }
@@ -179,7 +212,7 @@ namespace NueGames.NueDeck.Editor
             EditorGUILayout.BeginVertical("box", GUILayout.ExpandHeight(true));
             if (!SelectedCardData)
             {
-                EditorGUILayout.LabelField("Select card");
+                EditorGUILayout.LabelField("请选择卡牌");
                 EditorGUILayout.EndVertical();
                 return;
             }
@@ -216,43 +249,49 @@ namespace NueGames.NueDeck.Editor
 
         private void ChangeId()
         {
-            CardId = EditorGUILayout.TextField("Card Id:", CardId);
+            CardId = EditorGUILayout.TextField("卡牌ID:", CardId);
         }
         private void ChangeCardName()
         {
-            CardName = EditorGUILayout.TextField("Card Name:", CardName);
+            CardName = EditorGUILayout.TextField("卡牌名称:", CardName);
         }
         private void ChangeManaCost()
         {
-            ManaCost = EditorGUILayout.IntField("Mana Cost:", ManaCost);
+            ManaCost = EditorGUILayout.IntField("灵力消耗:", ManaCost);
         }
         
         private void ChangeRarity()
         { 
-            CardRarity = (RarityType) EditorGUILayout.EnumPopup("Rarity: ",CardRarity,GUILayout.Width(250));
+            // 显示中文品质名
+            var rarityNames = new[] { "黄", "玄", "地", "天" };
+            var rarityValues = new[] { RarityType.Common, RarityType.Uncommon, RarityType.Rare, RarityType.Legendary };
+            var currentIndex = System.Array.IndexOf(rarityValues, CardRarity);
+            if (currentIndex < 0) currentIndex = 0;
+            var newIndex = EditorGUILayout.Popup("品质:", currentIndex, rarityNames, GUILayout.Width(250));
+            CardRarity = rarityValues[newIndex];
         }
         private void ChangeCardSprite()
         {
             EditorGUILayout.BeginHorizontal();
-            CardSprite = (Sprite)EditorGUILayout.ObjectField("Card Sprite:", CardSprite,typeof(Sprite));
+            CardSprite = (Sprite)EditorGUILayout.ObjectField("卡牌图片:", CardSprite,typeof(Sprite));
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
         }
         private void ChangeUsableWithoutTarget()
         {
-            UsableWithoutTarget = EditorGUILayout.Toggle("Usable Without Target:", UsableWithoutTarget);
+            UsableWithoutTarget = EditorGUILayout.Toggle("无需选目标即可使用:", UsableWithoutTarget);
         }
         
         private void ChangeExhaustAfterPlay()
         {
-            ExhaustAfterPlay = EditorGUILayout.Toggle("Exhaust after play", ExhaustAfterPlay);
+            ExhaustAfterPlay = EditorGUILayout.Toggle("打出后消耗:", ExhaustAfterPlay);
         }
         
         private bool _isGeneralSettingsFolded;
         private Vector2 _generalSettingsScrollPos;
         private void ChangeGeneralSettings()
         {
-            _isGeneralSettingsFolded = EditorGUILayout.BeginFoldoutHeaderGroup(_isGeneralSettingsFolded, "General Settings");
+            _isGeneralSettingsFolded = EditorGUILayout.BeginFoldoutHeaderGroup(_isGeneralSettingsFolded, "基本设置");
             if (_isGeneralSettingsFolded)
             {
             ChangeId();
@@ -278,7 +317,7 @@ namespace NueGames.NueDeck.Editor
         private Vector2 _cardActionScrollPos;
         private void ChangeCardActionDataList()
         {
-            _isCardActionDataListFolded =EditorGUILayout.BeginFoldoutHeaderGroup(_isCardActionDataListFolded, "Card Actions");
+            _isCardActionDataListFolded =EditorGUILayout.BeginFoldoutHeaderGroup(_isCardActionDataListFolded, "卡牌效果");
             if (_isCardActionDataListFolded)
             {
                 _cardActionScrollPos = EditorGUILayout.BeginScrollView(_cardActionScrollPos,GUILayout.ExpandWidth(true));
@@ -296,7 +335,7 @@ namespace NueGames.NueDeck.Editor
                     idStyle.fixedHeight = 25;
                     idStyle.fontStyle = FontStyle.Bold;
                     idStyle.normal.textColor = Color.white;
-                    EditorGUILayout.LabelField($"Action Index: {i}",idStyle);
+                    EditorGUILayout.LabelField($"效果序号: {i}",idStyle);
                     
                     GUILayout.FlexibleSpace();
                     
@@ -305,17 +344,26 @@ namespace NueGames.NueDeck.Editor
                     
                     EditorGUILayout.EndHorizontal();
                     EditorGUILayout.Separator();
-                    var newActionType = (CardActionType)EditorGUILayout.EnumPopup("Action Type",cardActionData.CardActionType,GUILayout.Width(250));
+                    var actionTypes = new[] { "攻击", "治疗", "格挡", "增加力量", "增加最大生命", "抽牌", "获得灵力", "吸血", "眩晕", "消耗", "施加虚弱", "施加脆弱", "施加易伤", "增加敏捷", "反伤" };
+                    var actionValues = (CardActionType[])System.Enum.GetValues(typeof(CardActionType));
+                    var currentActionIdx = System.Array.IndexOf(actionValues, cardActionData.CardActionType);
+                    if (currentActionIdx < 0) currentActionIdx = 0;
+                    var newActionIdx = EditorGUILayout.Popup("效果类型", currentActionIdx, actionTypes, GUILayout.Width(250));
+                    var newActionType = actionValues[newActionIdx];
 
                     if (newActionType != CardActionType.Exhaust)
                     {
-                        var newActionTarget = (ActionTargetType)EditorGUILayout.EnumPopup("Target Type",cardActionData.ActionTargetType,GUILayout.Width(250));
-                        var newActionValue = EditorGUILayout.FloatField("Action Value: ",cardActionData.ActionValue);
+                        var targetTypes = new[] { "敌方", "友方", "全体敌方", "全体友方", "随机敌方", "随机友方" };
+                        var targetValues = (ActionTargetType[])System.Enum.GetValues(typeof(ActionTargetType));
+                        var currentTargetIdx = System.Array.IndexOf(targetValues, cardActionData.ActionTargetType);
+                        if (currentTargetIdx < 0) currentTargetIdx = 0;
+                        var newTargetIdx = EditorGUILayout.Popup("目标类型", currentTargetIdx, targetTypes, GUILayout.Width(250));
+                        cardActionData.EditActionTarget(targetValues[newTargetIdx]);
+                        var newActionValue = EditorGUILayout.FloatField("数值: ",cardActionData.ActionValue);
                         cardActionData.EditActionValue(newActionValue);
-                        cardActionData.EditActionTarget(newActionTarget);
                     }
                     
-                    var newActionDelay = EditorGUILayout.FloatField("Action Delay: ",cardActionData.ActionDelay);
+                    var newActionDelay = EditorGUILayout.FloatField("延迟: ",cardActionData.ActionDelay);
                     
                     cardActionData.EditActionDelay(newActionDelay);
                     cardActionData.EditActionType(newActionType);
@@ -325,7 +373,7 @@ namespace NueGames.NueDeck.Editor
                 foreach (var cardActionData in _removedList)
                     CardActionDataList.Remove(cardActionData);
 
-                if (GUILayout.Button("+",GUILayout.Width(50),GUILayout.Height(50)))
+                if (GUILayout.Button("+ 添加效果",GUILayout.Width(80),GUILayout.Height(50)))
                     CardActionDataList.Add(new CardActionData());
                 
                 EditorGUILayout.EndHorizontal();
@@ -340,7 +388,7 @@ namespace NueGames.NueDeck.Editor
       
         private void ChangeCardDescriptionDataList()
         {
-            _isDescriptonDataListFolded =EditorGUILayout.BeginFoldoutHeaderGroup(_isDescriptonDataListFolded, "Description");
+            _isDescriptonDataListFolded =EditorGUILayout.BeginFoldoutHeaderGroup(_isDescriptonDataListFolded, "描述");
             if (_isDescriptonDataListFolded)
             {
                 _descriptionDataScrollPos = EditorGUILayout.BeginScrollView(_descriptionDataScrollPos,GUILayout.ExpandWidth(true));
@@ -352,14 +400,14 @@ namespace NueGames.NueDeck.Editor
                     
                     EditorGUILayout.BeginVertical("box", GUILayout.Width(175), GUILayout.Height(100));
                     EditorGUILayout.BeginHorizontal();
-                    descriptionData.EditUseModifier(EditorGUILayout.ToggleLeft("Use Modifier", descriptionData.UseModifier,
+                    descriptionData.EditUseModifier(EditorGUILayout.ToggleLeft("使用数值修饰", descriptionData.UseModifier,
                         GUILayout.Width(125), GUILayout.Height(25)));
                     GUILayout.FlexibleSpace();
                     if (GUILayout.Button("X", GUILayout.Width(25), GUILayout.Height(25)))
                         _removedList.Add(descriptionData);
                     EditorGUILayout.EndHorizontal();
                     
-                    descriptionData.EditEnableOverrideColor(EditorGUILayout.ToggleLeft("Override Color", descriptionData.EnableOverrideColor,
+                    descriptionData.EditEnableOverrideColor(EditorGUILayout.ToggleLeft("自定义颜色", descriptionData.EnableOverrideColor,
                         GUILayout.Width(125), GUILayout.Height(25)));
                     
                     EditorGUILayout.Space(5);
@@ -370,7 +418,7 @@ namespace NueGames.NueDeck.Editor
                         EditorGUILayout.BeginVertical();
                         EditorGUILayout.Separator();
                         descriptionData.EditOverrideColor(EditorGUILayout.ColorField(descriptionData.OverrideColor));
-                        descriptionData.EditOverrideColorOnValueScaled(EditorGUILayout.ToggleLeft("Color on scale", descriptionData.OverrideColorOnValueScaled,
+                        descriptionData.EditOverrideColorOnValueScaled(EditorGUILayout.ToggleLeft("数值变化时变色", descriptionData.OverrideColorOnValueScaled,
                             GUILayout.Width(125), GUILayout.Height(25)));
                         EditorGUILayout.EndVertical();
                         EditorGUILayout.EndHorizontal();
@@ -385,14 +433,19 @@ namespace NueGames.NueDeck.Editor
                         var clampedIndex = Mathf.Clamp(descriptionData.ModifiedActionValueIndex, 0,
                             CardActionDataList.Count - 1);
                         descriptionData.EditModifiedActionValueIndex(
-                            EditorGUILayout.IntField("Action Index:",clampedIndex));
+                            EditorGUILayout.IntField("效果序号:",clampedIndex));
                        
-                        descriptionData.EditModiferStats((StatusType)EditorGUILayout.EnumPopup("Scale Type:",descriptionData.ModiferStats));
-                        descriptionData.EditUsePrefixOnModifiedValues(EditorGUILayout.ToggleLeft("Use prefix on scale", descriptionData.UsePrefixOnModifiedValue,
+                        var statNames = new[] { "无", "格挡", "中毒", "力量", "敏捷", "眩晕", "虚弱", "脆弱", "易伤", "反伤" };
+                        var statValues = (StatusType[])System.Enum.GetValues(typeof(StatusType));
+                        var currentStatIdx = System.Array.IndexOf(statValues, descriptionData.ModiferStats);
+                        if (currentStatIdx < 0) currentStatIdx = 0;
+                        var newStatIdx = EditorGUILayout.Popup("属性类型:", currentStatIdx, statNames);
+                        descriptionData.EditModiferStats(statValues[newStatIdx]);
+                        descriptionData.EditUsePrefixOnModifiedValues(EditorGUILayout.ToggleLeft("数值前缀", descriptionData.UsePrefixOnModifiedValue,
                             GUILayout.Width(125), GUILayout.Height(25)));
                         if (descriptionData.UsePrefixOnModifiedValue)
                             descriptionData.EditPrefixOnModifiedValues(
-                                EditorGUILayout.TextField("Prefix:",descriptionData.ModifiedValuePrefix));
+                                EditorGUILayout.TextField("前缀:",descriptionData.ModifiedValuePrefix));
                         
                         EditorGUILayout.EndVertical();
                     }
@@ -440,7 +493,7 @@ namespace NueGames.NueDeck.Editor
                 headStyle.normal.textColor = Color.white;
                 EditorGUILayout.BeginVertical();
                 
-                EditorGUILayout.LabelField("Description Preview",headStyle);
+                EditorGUILayout.LabelField("描述预览",headStyle);
                 EditorGUILayout.Separator();
                 EditorGUILayout.LabelField(str.ToString());
                 EditorGUILayout.Separator();
@@ -458,7 +511,7 @@ namespace NueGames.NueDeck.Editor
         private bool _isSpecialKeywordsFolded;
         private void ChangeSpecialKeywords()
         {
-            _isSpecialKeywordsFolded =EditorGUILayout.BeginFoldoutHeaderGroup(_isSpecialKeywordsFolded, "Special Keywords");
+            _isSpecialKeywordsFolded =EditorGUILayout.BeginFoldoutHeaderGroup(_isSpecialKeywordsFolded, "特殊关键词（Tooltip提示）");
             if (_isSpecialKeywordsFolded)
             {
             EditorGUILayout.BeginVertical("box");
@@ -471,7 +524,9 @@ namespace NueGames.NueDeck.Editor
                 if ((StatusType)i == StatusType.None) continue;
                 EditorGUILayout.BeginVertical(GUILayout.Width(100));
                 var hasKey = SpecialKeywordsList.Contains((StatusType)i);
-                EditorGUILayout.LabelField(((StatusType)i).ToString());
+                var displayNames = new[] { "无", "格挡", "中毒", "力量", "敏捷", "眩晕", "虚弱", "脆弱", "易伤", "反伤" };
+                var displayName = i < displayNames.Length ? displayNames[i] : ((StatusType)i).ToString();
+                EditorGUILayout.LabelField(displayName);
                 var newValue = EditorGUILayout.Toggle(hasKey);
                 if (newValue)
                 {
@@ -493,7 +548,12 @@ namespace NueGames.NueDeck.Editor
         }
         private void ChangeAudioActionType()
         {
-            AudioType = (AudioActionType)EditorGUILayout.EnumPopup("Audio Type:",AudioType);
+            var audioNames = new[] { "攻击", "撕咬", "格挡", "按钮", "抽牌", "饮用", "敌人死亡", "治疗", "中毒", "能力", "挥舞" };
+            var audioValues = (AudioActionType[])System.Enum.GetValues(typeof(AudioActionType));
+            var currentIdx = System.Array.IndexOf(audioValues, AudioType);
+            if (currentIdx < 0) currentIdx = 0;
+            var newIdx = EditorGUILayout.Popup("音效类型:", currentIdx, audioNames);
+            AudioType = audioValues[newIdx];
         }
 
        
@@ -520,6 +580,7 @@ namespace NueGames.NueDeck.Editor
             ClearCachedCardData();
             AllCardDataList?.Clear();
             AllCardDataList = ListExtentions.GetAllInstances<CardData>().ToList();
+            CacheActiveMethodCardIds();
         }
         #endregion
 #endif

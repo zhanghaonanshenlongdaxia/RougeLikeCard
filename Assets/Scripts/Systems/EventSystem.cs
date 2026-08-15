@@ -433,8 +433,8 @@ namespace CardGame
             string result;
             if (stick < 15) { result = "下签 无奖励"; }
             else if (stick < 40) { int g = cost; BattleModel.CurrentGold.Value += g; pd.CurrentGold = BattleModel.CurrentGold.Value; result = $"中签 +{g}灵石"; }
-            else if (stick < 65) { GrantRandomMaterial(0); result = "中签 获得凡品灵材"; }
-            else if (stick < 82) { GrantRandomMaterial(1); result = "上签 获得灵品灵材"; }
+            else if (stick < 65) { GrantRandomMaterial(0); result = "中签 获得黄品灵材"; }
+            else if (stick < 82) { GrantRandomMaterial(1); result = "上签 获得玄品灵材"; }
             else if (stick < 92) { var c = LoadRandomCard(pd); if (c != null) pd.CurrentCardsList.Add(c); result = $"上签 获得卡牌 {c?.CardName}"; }
             else if (stick < 98) { var p = LoadRandomPotion(); if (p != null) PotionSystem.ObtainPotion(p); result = "上上签 获得药水"; }
             else { var r = LoadRandomRelic(); if (r != null) RelicSystem.AddRelic(r); result = $"上上签 获得遗物 {r?.name}!"; }
@@ -453,9 +453,9 @@ namespace CardGame
             string result;
             if (wheel < 90) { result = "空区"; }
             else if (wheel < 150) { int g = cost; BattleModel.CurrentGold.Value += g; pd.CurrentGold = BattleModel.CurrentGold.Value; result = $"灵石区 +{g}灵石"; }
-            else if (wheel < 210) { GrantRandomMaterial(0); result = "凡品灵材区"; }
+            else if (wheel < 210) { GrantRandomMaterial(0); result = "黄品灵材区"; }
             else if (wheel < 260) { int g = cost * 2; BattleModel.CurrentGold.Value += g; pd.CurrentGold = BattleModel.CurrentGold.Value; result = $"双倍灵石区 +{g}灵石"; }
-            else if (wheel < 300) { GrantRandomMaterial(1); result = "灵品灵材区"; }
+            else if (wheel < 300) { GrantRandomMaterial(1); result = "玄品灵材区"; }
             else if (wheel < 335) { var c = LoadRandomCard(pd); if (c != null) pd.CurrentCardsList.Add(c); result = $"卡牌区 {c?.CardName}"; }
             else if (wheel < 350) { var p = LoadRandomPotion(); if (p != null) PotionSystem.ObtainPotion(p); result = "药水区"; }
             else { var r = LoadRandomRelic(); if (r != null) RelicSystem.AddRelic(r); result = $"遗物区 {r?.name}!"; }
@@ -542,7 +542,7 @@ namespace CardGame
             {
                 // 稀有宝箱
                 int roll = Random.Range(0, 3);
-                if (roll == 0) { GrantRandomMaterial(1); result = "稀有宝箱 获得灵品灵材"; }
+                if (roll == 0) { GrantRandomMaterial(1); result = "稀有宝箱 获得玄品灵材"; }
                 else if (roll == 1) { var c = LoadRandomCard(pd); if (c != null) pd.CurrentCardsList.Add(c); result = $"稀有宝箱 获得卡牌 {c?.CardName}"; }
                 else { var p = LoadRandomPotion(); if (p != null) PotionSystem.ObtainPotion(p); result = "稀有宝箱 获得药水"; }
             }
@@ -563,8 +563,8 @@ namespace CardGame
             else if (roll < 50) { BattleModel.CurrentGold.Value += cost; pd.CurrentGold = BattleModel.CurrentGold.Value; result = $"回本 +{cost}灵石"; }
             else if (roll < 70) { int g = cost * 2; BattleModel.CurrentGold.Value += g; pd.CurrentGold = BattleModel.CurrentGold.Value; result = $"小奖 +{g}灵石"; }
             else if (roll < 85) { int g = cost * 3; BattleModel.CurrentGold.Value += g; pd.CurrentGold = BattleModel.CurrentGold.Value; result = $"中奖 +{g}灵石"; }
-            else if (roll < 92) { GrantRandomMaterial(0); result = "获得凡品灵材"; }
-            else if (roll < 96) { GrantRandomMaterial(1); result = "获得灵品灵材"; }
+            else if (roll < 92) { GrantRandomMaterial(0); result = "获得黄品灵材"; }
+            else if (roll < 96) { GrantRandomMaterial(1); result = "获得玄品灵材"; }
             else if (roll < 99) { var r = LoadRandomRelic(); if (r != null) RelicSystem.AddRelic(r); result = $"获得遗物 {r?.name}"; }
             else { int g = cost * 10; BattleModel.CurrentGold.Value += g; pd.CurrentGold = BattleModel.CurrentGold.Value; result = $"大奖 +{g}灵石!"; }
 
@@ -599,8 +599,8 @@ namespace CardGame
             string result;
             if (zone < 25) { result = "落入空区"; }
             else if (zone < 50) { int g = cost; BattleModel.CurrentGold.Value += g; pd.CurrentGold = BattleModel.CurrentGold.Value; result = $"灵石区 +{g}灵石"; }
-            else if (zone < 70) { GrantRandomMaterial(0); result = "灵材区 获得凡品灵材"; }
-            else if (zone < 85) { GrantRandomMaterial(1); result = "灵材区 获得灵品灵材"; }
+            else if (zone < 70) { GrantRandomMaterial(0); result = "灵材区 获得黄品灵材"; }
+            else if (zone < 85) { GrantRandomMaterial(1); result = "灵材区 获得玄品灵材"; }
             else if (zone < 95) { var p = LoadRandomPotion(); if (p != null) PotionSystem.ObtainPotion(p); result = "药水区 获得药水"; }
             else { var c = LoadRandomCard(pd); if (c != null) pd.CurrentCardsList.Add(c); result = $"卡牌区 获得卡牌 {c?.CardName}"; }
 
@@ -618,8 +618,8 @@ namespace CardGame
             string result;
             if (hit < 35) { result = "套空"; }
             else if (hit < 60) { int g = cost; BattleModel.CurrentGold.Value += g; pd.CurrentGold = BattleModel.CurrentGold.Value; result = $"套中小灵兽 +{g}灵石"; }
-            else if (hit < 80) { GrantRandomMaterial(0); result = "套中灵兔 获得凡品灵材"; }
-            else if (hit < 92) { GrantRandomMaterial(1); result = "套中灵狐 获得灵品灵材"; }
+            else if (hit < 80) { GrantRandomMaterial(0); result = "套中灵兔 获得黄品灵材"; }
+            else if (hit < 92) { GrantRandomMaterial(1); result = "套中灵狐 获得玄品灵材"; }
             else if (hit < 98) { var p = LoadRandomPotion(); if (p != null) PotionSystem.ObtainPotion(p); result = "套中灵鹿 获得药水"; }
             else { var r = LoadRandomRelic(); if (r != null) RelicSystem.AddRelic(r); result = $"套中灵龙 获得遗物 {r?.name}!"; }
 
@@ -637,9 +637,9 @@ namespace CardGame
             string result;
             if (shot < 30) { result = "射偏"; }
             else if (shot < 55) { int g = cost; BattleModel.CurrentGold.Value += g; pd.CurrentGold = BattleModel.CurrentGold.Value; result = $"击中蓝气球 +{g}灵石"; }
-            else if (shot < 75) { GrantRandomMaterial(0); result = "击中绿气球 获得凡品灵材"; }
+            else if (shot < 75) { GrantRandomMaterial(0); result = "击中绿气球 获得黄品灵材"; }
             else if (shot < 88) { int g = cost * 2; BattleModel.CurrentGold.Value += g; pd.CurrentGold = BattleModel.CurrentGold.Value; result = $"击中黄气球 +{g}灵石"; }
-            else if (shot < 96) { GrantRandomMaterial(1); result = "击中紫气球 获得灵品灵材"; }
+            else if (shot < 96) { GrantRandomMaterial(1); result = "击中紫气球 获得玄品灵材"; }
             else { int g = cost * 5; BattleModel.CurrentGold.Value += g; pd.CurrentGold = BattleModel.CurrentGold.Value; result = $"击中金气球 +{g}灵石!"; }
 
             Debug.Log($"[MiniBalloon] 消耗{cost}灵石 → {result}");

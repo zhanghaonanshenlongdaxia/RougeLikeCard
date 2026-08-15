@@ -32,7 +32,7 @@ namespace CardGame
         public float eliteChance = 0.2f;        // 精英出现率
         public int bossPhaseCount = 1;          // Boss阶段数
         public float lootMultiplier = 1f;       // 掉落数量倍率
-        public int lootRarityBonus = 0;         // 掉落品阶提升(0=凡品,1=灵品,2=玄品,3=仙品)
+        public int lootRarityBonus = 0;         // 掉落品阶提升(0=黄,1=玄,2=地,3=天)
         public int goldRewardMultiplier = 1;    // 金币奖励倍率
     }
 

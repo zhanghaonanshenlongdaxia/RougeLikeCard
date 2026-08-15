@@ -83,14 +83,21 @@ namespace CardGame.UI
             UpdateInfo();
         }
 
-        /// <summary>左侧：基础卡组（首神通7张，逐张显示）</summary>
+        /// <summary>左侧：基础卡组（首神通7张，按品质排序）</summary>
         private void RefreshBaseDeck()
         {
             if (baseDeckRoot == null) return;
             ClearChildren(baseDeckRoot);
 
-            foreach (var cardId in _baseCardIds)
-                CreateCardItem(baseDeckRoot, GetCardName(cardId), cardId, false, 0, false);
+            // 按品质排序
+            var sorted = _baseCardIds
+                .Select(id => ResourceCache.GetCardsFromAllList()?.Find(c => c.Id == id))
+                .Where(c => c != null)
+                .OrderByDescending(c => (int)c.Rarity)
+                .ToList();
+
+            foreach (var card in sorted)
+                CreateCardItem(baseDeckRoot, $"{card.CardName} [{GetRarityName(card.Rarity)}]", card.Id, false, 0, false);
         }
 
         /// <summary>中间：附加卡组（选中的非基础卡牌，可移除）</summary>
@@ -112,7 +119,7 @@ namespace CardGame.UI
             }
         }
 
-        /// <summary>右侧：所有卡牌（当前功法拥有的、未选中的非基础卡牌）</summary>
+        /// <summary>右侧：所有卡牌（当前功法拥有的、未选中的非基础卡牌），已解锁排最上+按品质排序</summary>
         private void RefreshAllCards()
         {
             if (allCardsRoot == null) return;
@@ -130,19 +137,59 @@ namespace CardGame.UI
                 return;
             }
 
-            foreach (var cardId in available)
+            // 获取卡牌数据并按品质排序（Legendary > Rare > Uncommon > Common）
+            var cardDataList = available
+                .Select(id => {
+                    var cards = ResourceCache.GetCardsFromAllList();
+                    return cards?.Find(c => c.Id == id);
+                })
+                .Where(c => c != null)
+                .OrderByDescending(c => (int)c.Rarity)
+                .ToList();
+
+            foreach (var card in cardDataList)
             {
-                CreateCardItem(allCardsRoot, GetCardName(cardId), cardId, false, 0, true);
+                CreateCardItem(allCardsRoot, $"{card.CardName} [{GetRarityName(card.Rarity)}]", card.Id, false, 0, true);
             }
         }
 
-        /// <summary>创建单个卡牌item</summary>
+        private string GetRarityName(RarityType rarity)
+        {
+            return rarity switch
+            {
+                RarityType.Common => "黄",
+                RarityType.Uncommon => "玄",
+                RarityType.Rare => "地",
+                RarityType.Legendary => "天",
+                _ => "?"
+            };
+        }
+
+        /// <summary>创建单个卡牌item，背景色按品质区分</summary>
         private void CreateCardItem(Transform parent, string name, string cardId, bool isExtra, int count, bool interactable)
         {
+            // 获取卡牌品质
+            var cards = ResourceCache.GetCardsFromAllList();
+            var cardData = cards?.Find(c => c.Id == cardId);
+            var rarity = cardData?.Rarity ?? RarityType.Common;
+            
+            Color bgColor;
+            if (isExtra)
+                bgColor = new Color(0.15f, 0.25f, 0.15f, 1f); // 附加卡组绿色
+            else
+                bgColor = rarity switch
+                {
+                    RarityType.Common => new Color(0.1f, 0.12f, 0.16f, 0.95f),
+                    RarityType.Uncommon => new Color(0.08f, 0.18f, 0.1f, 0.95f),
+                    RarityType.Rare => new Color(0.15f, 0.08f, 0.18f, 0.95f),
+                    RarityType.Legendary => new Color(0.2f, 0.14f, 0.04f, 0.95f),
+                    _ => new Color(0.06f, 0.1f, 0.15f, 0.9f)
+                };
+
             var go = new GameObject("Card_" + cardId);
             go.transform.SetParent(parent, false);
             go.AddComponent<RectTransform>();
-            go.AddComponent<Image>().color = isExtra ? new Color(0.15f, 0.25f, 0.15f, 1f) : new Color(0.06f, 0.1f, 0.15f, 0.9f);
+            go.AddComponent<Image>().color = bgColor;
             go.AddComponent<LayoutElement>().preferredHeight = 40;
 
             var hlg = go.AddComponent<HorizontalLayoutGroup>();

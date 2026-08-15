@@ -32,7 +32,7 @@ namespace CardGame
 
         static string RarityName(int level) => level switch
         {
-            0 => "凡品", 1 => "灵品", 2 => "玄品", 3 => "仙品", _ => "凡品"
+            0 => "黄", 1 => "玄", 2 => "地", 3 => "天", _ => "黄"
         };
 
         public int PreviewRarityLevel(List<(MaterialData material, int count)> offerings)

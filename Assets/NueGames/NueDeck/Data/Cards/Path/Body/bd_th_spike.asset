@@ -19,8 +19,8 @@ MonoBehaviour:
   rarity: 0
   quality: 0
   usableWithoutTarget: 1
-  exhaustAfterPlay: 1
-  isPowerCard: 1
+  exhaustAfterPlay: 0
+  isPowerCard: 0
   cardActionDataList:
   - cardActionType: 14
     actionTargetType: 1

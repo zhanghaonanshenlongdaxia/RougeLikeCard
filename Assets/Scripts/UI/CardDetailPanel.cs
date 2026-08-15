@@ -179,10 +179,10 @@ namespace CardGame.UI
         {
             return rarity switch
             {
-                RarityType.Common => "凡品",
-                RarityType.Uncommon => "灵品",
-                RarityType.Rare => "玄品",
-                RarityType.Legendary => "仙品",
+                RarityType.Common => "黄",
+                RarityType.Uncommon => "玄",
+                RarityType.Rare => "地",
+                RarityType.Legendary => "天",
                 _ => rarity.ToString()
             };
         }

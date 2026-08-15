@@ -1,6 +1,7 @@
 ﻿using System;
 using NueGames.NueDeck.Scripts.Enums;
 using NueGames.NueDeck.Scripts.Managers;
+using NueGames.NueDeck.Scripts.UI;
 using UnityEngine;
 
 namespace NueGames.NueDeck.Scripts.Utils
@@ -9,23 +10,25 @@ namespace NueGames.NueDeck.Scripts.Utils
     {
         [SerializeField] private InventoryTypes inventoryType;
         
-        private UIManager UIManager => UIManager.Instance;
-        
         public void OpenInventory()
         {
+            if (CollectionManager.Instance == null) return;
+
+            var pileView = PileViewCanvas.GetOrCreate();
+
             switch (inventoryType)
             {
                 case InventoryTypes.CurrentDeck:
-                    UIManager.OpenInventory(GameManager.Instance.PersistentGameplayData.CurrentCardsList,"Current Cards");
+                    pileView.Show(GameManager.Instance.PersistentGameplayData.CurrentCardsList, "当前卡组");
                     break;
                 case InventoryTypes.DrawPile:
-                    UIManager.OpenInventory(CollectionManager.Instance.DrawPile,"Draw Pile");
+                    pileView.Show(CollectionManager.Instance.DrawPile, "抽牌堆");
                     break;
                 case InventoryTypes.DiscardPile:
-                    UIManager.OpenInventory(CollectionManager.Instance.DiscardPile,"Discard Pile");
+                    pileView.Show(CollectionManager.Instance.DiscardPile, "弃牌堆");
                     break;
                 case InventoryTypes.ExhaustPile:
-                    UIManager.OpenInventory(CollectionManager.Instance.ExhaustPile,"Exhaust Pile");
+                    pileView.Show(CollectionManager.Instance.ExhaustPile, "消耗堆");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

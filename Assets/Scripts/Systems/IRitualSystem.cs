@@ -10,7 +10,7 @@ namespace CardGame
     {
         public string itemTypeName; // "丹药"/"法宝"/"卡牌"/"配方"/"材料"
         public string itemName;
-        public int rarityLevel;     // 0=凡品/Common, 1=灵品/Uncommon, 2=玄品/Rare, 3=仙品/Legendary
+        public int rarityLevel;     // 0=黄/Common, 1=玄/Uncommon, 2=地/Rare, 3=天/Legendary
         public bool isLuckyUp;      // 是否触发了品阶提升
         public int luckyUpLevels;   // 提升了几阶
     }

@@ -163,8 +163,8 @@ namespace CardGame.UI
             else if (roll < 50) { goldReward = _cost; result = $"回本 +{goldReward}灵石"; for (int i = 0; i < 3; i++) _slotReels[i].text = "●"; }
             else if (roll < 70) { goldReward = _cost * 2; result = $"小奖 +{goldReward}灵石"; for (int i = 0; i < 3; i++) _slotReels[i].text = "▲"; }
             else if (roll < 85) { goldReward = _cost * 3; result = $"中奖 +{goldReward}灵石"; for (int i = 0; i < 3; i++) _slotReels[i].text = "★"; }
-            else if (roll < 92) { result = "凡品灵材!"; _slotReels[0].text = "◆"; _slotReels[1].text = "◆"; _slotReels[2].text = "●"; }
-            else if (roll < 96) { result = "灵品灵材!"; _slotReels[0].text = "★"; _slotReels[1].text = "★"; _slotReels[2].text = "◆"; }
+            else if (roll < 92) { result = "黄品灵材!"; _slotReels[0].text = "◆"; _slotReels[1].text = "◆"; _slotReels[2].text = "●"; }
+            else if (roll < 96) { result = "玄品灵材!"; _slotReels[0].text = "★"; _slotReels[1].text = "★"; _slotReels[2].text = "◆"; }
             else if (roll < 99) { result = "获得遗物!"; for (int i = 0; i < 3; i++) _slotReels[i].text = "✦"; }
             else { goldReward = _cost * 10; result = $"大奖! +{goldReward}灵石!!"; for (int i = 0; i < 3; i++) _slotReels[i].text = "✦"; }
 
@@ -223,7 +223,7 @@ namespace CardGame.UI
 
         void BuildPinball()
         {
-            var zoneNames = new[] { "空区", "灵石区", "凡品", "灵品", "药水区", "卡牌区" };
+            var zoneNames = new[] { "空区", "灵石区", "黄", "玄", "药水区", "卡牌区" };
             var zoneColors = new[] {
                 new Color(0.2f, 0.2f, 0.2f, 1f),
                 new Color(0.8f, 0.7f, 0.2f, 1f),
@@ -289,7 +289,7 @@ namespace CardGame.UI
             ball.anchorMin = new Vector2(zoneCenter - 0.05f, 0.15f);
             ball.anchorMax = new Vector2(zoneCenter + 0.05f, 0.25f);
 
-            var zoneNames = new[] { "空区", "灵石区", "凡品灵材", "灵品灵材", "药水区", "卡牌区" };
+            var zoneNames = new[] { "空区", "灵石区", "黄品灵材", "玄品灵材", "药水区", "卡牌区" };
             _resultText.text = $"弹珠落入: {zoneNames[zone]}";
 
             _confirmButton.interactable = true;
@@ -347,8 +347,8 @@ namespace CardGame.UI
 
             if (hit < 35) { targetIdx = -1; result = "套空!"; }
             else if (hit < 60) { targetIdx = 0; result = "套中灵兔 +灵石"; }
-            else if (hit < 80) { targetIdx = 1; result = "套中灵狐 获得凡品灵材"; }
-            else if (hit < 92) { targetIdx = 2; result = "套中灵鹿 获得灵品灵材"; }
+            else if (hit < 80) { targetIdx = 1; result = "套中灵狐 获得黄品灵材"; }
+            else if (hit < 92) { targetIdx = 2; result = "套中灵鹿 获得玄品灵材"; }
             else if (hit < 98) { targetIdx = 2; result = "套中灵鹿 获得药水"; }
             else { targetIdx = 3; result = "套中灵龙! 获得遗物!"; }
 
@@ -414,9 +414,9 @@ namespace CardGame.UI
 
             if (shot < 30) { balloonIdx = -1; result = "射偏!"; }
             else if (shot < 55) { balloonIdx = 0; result = "击中蓝气球 +灵石"; }
-            else if (shot < 75) { balloonIdx = 1; result = "击中绿气球 获得凡品灵材"; }
+            else if (shot < 75) { balloonIdx = 1; result = "击中绿气球 获得黄品灵材"; }
             else if (shot < 88) { balloonIdx = 2; result = "击中黄气球 +双倍灵石"; }
-            else if (shot < 96) { balloonIdx = 3; result = "击中紫气球 获得灵品灵材"; }
+            else if (shot < 96) { balloonIdx = 3; result = "击中紫气球 获得玄品灵材"; }
             else { balloonIdx = 4; result = "击中金气球! +五倍灵石!!"; }
 
             if (balloonIdx >= 0)
@@ -468,8 +468,8 @@ namespace CardGame.UI
 
             if (stick < 15) { _lotteryStick.text = "下签"; _lotteryStick.color = new Color(0.5f, 0.5f, 0.5f); result = "下签 无奖励"; }
             else if (stick < 40) { goldReward = _cost; _lotteryStick.text = "中签"; _lotteryStick.color = new Color(0.6f, 0.4f, 0.2f); result = $"中签 +{goldReward}灵石"; }
-            else if (stick < 65) { _lotteryStick.text = "中签"; _lotteryStick.color = new Color(0.6f, 0.4f, 0.2f); result = "中签 获得凡品灵材"; }
-            else if (stick < 82) { _lotteryStick.text = "上签"; _lotteryStick.color = new Color(0.2f, 0.7f, 0.3f); result = "上签 获得灵品灵材"; }
+            else if (stick < 65) { _lotteryStick.text = "中签"; _lotteryStick.color = new Color(0.6f, 0.4f, 0.2f); result = "中签 获得黄品灵材"; }
+            else if (stick < 82) { _lotteryStick.text = "上签"; _lotteryStick.color = new Color(0.2f, 0.7f, 0.3f); result = "上签 获得玄品灵材"; }
             else if (stick < 92) { _lotteryStick.text = "上签"; _lotteryStick.color = new Color(0.2f, 0.7f, 0.3f); result = "上签 获得卡牌"; }
             else if (stick < 98) { _lotteryStick.text = "上上签"; _lotteryStick.color = new Color(0.9f, 0.2f, 0.3f); result = "上上签 获得药水"; }
             else { _lotteryStick.text = "上上签"; _lotteryStick.color = new Color(1f, 0.85f, 0f); result = "上上签! 获得遗物!!"; }
@@ -486,7 +486,7 @@ namespace CardGame.UI
 
         void BuildWheel()
         {
-            var wheelZones = new[] { "空区", "灵石", "凡品", "双倍", "灵品", "卡牌", "药水", "遗物" };
+            var wheelZones = new[] { "空区", "灵石", "黄", "双倍", "玄", "卡牌", "药水", "遗物" };
             var zoneColors = new[] {
                 new Color(0.3f, 0.3f, 0.3f, 1f), new Color(0.8f, 0.7f, 0.2f, 1f),
                 new Color(0.2f, 0.6f, 0.3f, 1f), new Color(0.8f, 0.6f, 0.2f, 1f),
@@ -548,7 +548,7 @@ namespace CardGame.UI
             _wheelPointer.anchorMin = new Vector2(zoneCenter - 0.05f, 0.75f);
             _wheelPointer.anchorMax = new Vector2(zoneCenter + 0.05f, 0.85f);
 
-            var zoneNames = new[] { "空区", "灵石区", "凡品灵材", "双倍灵石", "灵品灵材", "卡牌区", "药水区", "遗物区" };
+            var zoneNames = new[] { "空区", "灵石区", "黄品灵材", "双倍灵石", "玄品灵材", "卡牌区", "药水区", "遗物区" };
             _resultText.text = $"转盘停在: {zoneNames[zone]}";
 
             _confirmButton.interactable = true;

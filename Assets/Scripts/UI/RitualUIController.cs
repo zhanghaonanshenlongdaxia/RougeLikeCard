@@ -151,7 +151,7 @@ namespace CardGame.UI
             {
                 int level = _ritualSystem.PreviewRarityLevel(_selectedMaterials);
                 string outputType = _ritualSystem.PreviewOutputType(_selectedMaterials);
-                string levelName = level switch { 0 => "凡品", 1 => "灵品", 2 => "玄品", 3 => "仙品", _ => "凡品" };
+                string levelName = level switch { 0 => "黄", 1 => "玄", 2 => "地", 3 => "天", _ => "黄" };
                 _previewText.text = $"预估品阶: {levelName}\n产出类型: {outputType}\n(10%概率+1品阶, 5%概率+2品阶)";
                 _sacrificeBtn.interactable = true;
             }
@@ -167,7 +167,7 @@ namespace CardGame.UI
 
             if (result != null)
             {
-                string levelName = result.rarityLevel switch { 0 => "凡品", 1 => "灵品", 2 => "玄品", 3 => "仙品", _ => "?" };
+                string levelName = result.rarityLevel switch { 0 => "黄", 1 => "玄", 2 => "地", 3 => "天", _ => "?" };
                 string lucky = result.isLuckyUp ? $" ★运气爆棚!+{result.luckyUpLevels}品阶!" : "";
                 _resultText.text = $"祭祀结果{lucky}\n获得{result.itemTypeName}: {result.itemName} [{levelName}]";
                 FloatingTip.ShowSuccess($"祭祀获得: {result.itemName}");
