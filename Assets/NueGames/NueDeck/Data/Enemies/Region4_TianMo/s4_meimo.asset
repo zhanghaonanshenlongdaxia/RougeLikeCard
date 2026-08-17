@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: s4_meimo
   m_EditorClassIdentifier: 
   characterID: s4_meimo
-  characterName: "\u9B45\u9B54"
+  characterName: "\u5929\u9B54\u5973"
   characterDescription: 
   maxHealth: 39
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
@@ -42,6 +42,7 @@ MonoBehaviour:
       maxActionValue: 10
   enemyTier: 0
   regionId: 3
+  realmLevel: 3
   enemyDescription: "\u4EE5\u9B45\u60D1\u4E3A\u751F\u7684\u9B54\u5973\u3002debuff\u914D\u5408\u56DE\u8840\u3002"
   enemyPortrait: {fileID: 0}
   encounterDialogue: "\u563B\u563B\u2026\u2026\u770B\u6211\u597D\u770B\u5417\uFF1F\n\u2026\u2026\u90A3\u5C31\u591A\u966A\u966A\u6211\u2026\u2026"

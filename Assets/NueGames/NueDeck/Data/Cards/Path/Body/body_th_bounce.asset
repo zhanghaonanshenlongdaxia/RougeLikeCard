@@ -15,7 +15,7 @@ MonoBehaviour:
   id: body_th_bounce
   cardName: "\u53CD\u9707"
   manaCost: 1
-  cardSprite: {fileID: 21300000, guid: 8510ca3a47f6c23479e9992c04455698, type: 3}
+  cardSprite: {fileID: 21300000, guid: 706000101c1f86a4dbdcb383cc5741ed, type: 3}
   rarity: 0
   quality: 0
   usableWithoutTarget: 1

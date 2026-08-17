@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: alchemy_jingxue
   name: "\u7CBE\u8840\u4E39\u65B9"
-  description: "\u4EE5\u7CBE\u8840\u85E4\u4E0E\u87E0\u6843\u9152\u70BC\u5236\u7684\u7CBE\u8840\u4E39\u65B9\u3002"
+  description: "\u8346\u8840\u85E4\u4E0E\u87E0\u6843\u9152\u70BC\u5236\u7684\u7CBE\u8840\u4E39\u3002"
   recipeType: 0
   outputType: 0
   outputItemId: body_su_spring

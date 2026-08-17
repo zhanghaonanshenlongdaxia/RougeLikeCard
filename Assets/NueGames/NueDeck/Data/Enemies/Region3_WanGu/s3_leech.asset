@@ -45,6 +45,7 @@ MonoBehaviour:
       maxActionValue: 2
   enemyTier: 0
   regionId: 2
+  realmLevel: 2
   enemyDescription: "\u6CBC\u6CFD\u4E2D\u7684\u5438\u8840\u86ED\u3002\u653B\u51FB\u9644\u5E26\u5438\u8840\u4E0E\u4E2D\u6BD2\u3002"
   enemyPortrait: {fileID: 0}
   encounterDialogue: "\u5636\u2026\u2026\uFF08\u8680\u8840\u86ED\u4ECE\u6C34\u4E2D\u6251\u6765\uFF09"

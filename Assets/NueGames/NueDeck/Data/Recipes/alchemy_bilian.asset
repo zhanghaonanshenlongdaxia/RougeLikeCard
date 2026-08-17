@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: alchemy_bilian
   name: "\u78A7\u83B2\u4E39\u65B9"
-  description: "\u4EE5\u78A7\u7075\u82B1\u4E0E\u51DD\u9B42\u77F3\u70BC\u5236\u7684\u5B89\u9B42\u4E39\u65B9\u3002"
+  description: "\u78A7\u7075\u82B1\u4E0E\u51DD\u9B42\u77F3\u70BC\u5236\u7684\u5B89\u9B42\u4E39\u3002"
   recipeType: 0
   outputType: 0
   outputItemId: body_su_turtle
@@ -22,10 +22,8 @@ MonoBehaviour:
   ingredients:
   - materialId: herb_bilinghua
     count: 1
-  - materialId: soul_ning
+  - materialId: water_bingjing
     count: 1
-  - materialId: water_minglu
-    count: 1
-  successRate: 0.6
+  successRate: 0.5
   unlockByDefault: 0
   quality: 0

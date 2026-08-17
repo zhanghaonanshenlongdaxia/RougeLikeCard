@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: ritual_xuruo
   name: "\u865A\u5F31\u7389\u7B3A"
-  description: "\u4EE5\u5F52\u5143\u9B42\u77F3\u4E0E\u65AD\u80A0\u8349\u732E\u796D\u7684\u865A\u5F31\u7389\u7B3A\u3002"
+  description: "\u5F52\u5143\u9B42\u77F3\u4E0E\u7834\u9B42\u77F3\u732E\u796D\u7684\u865A\u5F31\u7389\u7B3A\u3002"
   recipeType: 2
   outputType: 2
   outputItemId: potion_weak
@@ -22,9 +22,7 @@ MonoBehaviour:
   ingredients:
   - materialId: soul_guiyuan
     count: 1
-  - materialId: herb_duanhun
-    count: 1
-  - materialId: frag_mowang
+  - materialId: soul_pohun
     count: 1
   successRate: 0.7
   unlockByDefault: 0

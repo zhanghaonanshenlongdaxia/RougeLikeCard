@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab029cd18e56ce43856e99494bf8415, type: 3}
+  m_Name: ore_qingtong
+  m_EditorClassIdentifier: 
+  materialId: ore_qingtong
+  name: "\u9752\u94DC\u7CBE"
+  description: "\u70BC\u5236\u6CD5\u5668\u7684\u57FA\u7840\u5408\u91D1\uFF0C\u8272\u6CFD\u9752\u4EAE\u3002"
+  icon: {fileID: 21300000, guid: 9e66add69efc1d14ca6ba0d2c7ab0151, type: 3}
+  materialType: 8
+  rarity: 0
+  quality: 0
+  regionId: 0
+  sourceEnemyId: 
+  dropWeight: 100
+  minDropCount: 1
+  maxDropCount: 1
+  weight: 1
+  stackable: 1
+  maxStack: 99

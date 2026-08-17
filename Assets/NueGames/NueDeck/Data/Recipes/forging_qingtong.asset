@@ -14,16 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: forging_qingtong
   name: "\u9752\u94DC\u5668\u56FE"
-  description: "\u4EE5\u9752\u94DC\u7CBE\u4E0E\u677E\u5FC3\u6728\u953B\u9020\u7684\u9752\u94DC\u5668\u56FE\u3002"
+  description: "\u9752\u94DC\u7CBE\u4E0E\u6C89\u9999\u67CF\u5FC3\u953B\u9020\u7684\u9752\u94DC\u5668\u3002"
   recipeType: 1
   outputType: 1
-  outputItemId: relic_snake_ring
+  outputItemId: relic_anger_stone
   outputCount: 1
   ingredients:
   - materialId: ore_qingtong
     count: 2
-  - materialId: wood_songxinmu
+  - materialId: wood_baixiang
     count: 1
-  successRate: 0.85
+  successRate: 0.8
   unlockByDefault: 0
   quality: 0

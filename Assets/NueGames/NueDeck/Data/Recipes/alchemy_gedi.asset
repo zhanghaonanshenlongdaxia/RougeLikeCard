@@ -14,16 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: alchemy_gedi
   name: "\u56FA\u672C\u4E39\u65B9"
-  description: "\u4EE5\u767E\u5E74\u4F55\u9996\u4E4C\u4E0E\u7389\u9732\u70BC\u5236\u7684\u56FA\u672C\u4E39\u65B9\u3002"
+  description: "\u9EC4\u7CBE\u4E0E\u7389\u9732\u70BC\u5236\u7684\u56FA\u672C\u4E39\u3002"
   recipeType: 0
   outputType: 0
   outputItemId: body_su_breath
   outputCount: 1
   ingredients:
-  - materialId: herb_heishouwu
-    count: 1
-  - materialId: herb_lingzhi
-    count: 1
+  - materialId: herb_huangjing
+    count: 2
   - materialId: water_lu
     count: 1
   successRate: 0.8

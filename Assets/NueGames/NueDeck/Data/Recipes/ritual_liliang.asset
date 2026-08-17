@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: ritual_liliang
   name: "\u529B\u91CF\u7389\u7B3A"
-  description: "\u4EE5\u805A\u9B42\u7389\u4E0E\u9EC4\u7CBE\u732E\u796D\u7684\u529B\u91CF\u7389\u7B3A\u3002"
+  description: "\u805A\u9B42\u7389\u4E0E\u9EC4\u7CBE\u732E\u796D\u7684\u529B\u91CF\u7389\u7B3A\u3002"
   recipeType: 2
   outputType: 2
   outputItemId: potion_strength
@@ -23,8 +23,6 @@ MonoBehaviour:
   - materialId: soul_ju
     count: 1
   - materialId: herb_huangjing
-    count: 1
-  - materialId: frag_gujuan
     count: 1
   successRate: 0.8
   unlockByDefault: 1

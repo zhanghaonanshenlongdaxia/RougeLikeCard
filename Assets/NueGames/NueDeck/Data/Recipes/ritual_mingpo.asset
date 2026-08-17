@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: ritual_mingpo
   name: "\u51A5\u9B44\u7389\u7B3A"
-  description: "\u4EE5\u51A5\u9B44\u7389\u4E0E\u51A5\u9B44\u82B1\u732E\u796D\u7684\u51A5\u9B44\u7389\u7B3A\u3002"
+  description: "\u51A5\u9B44\u7389\u4E0E\u5996\u5370\u788E\u7247\u732E\u796D\u7684\u51A5\u9B44\u7389\u7B3A\u3002"
   recipeType: 2
   outputType: 2
   outputItemId: potion_strength
@@ -22,10 +22,8 @@ MonoBehaviour:
   ingredients:
   - materialId: soul_mingpo
     count: 1
-  - materialId: herb_mingpo
+  - materialId: frag_yaoyin
     count: 1
-  - materialId: water_minghe
-    count: 1
-  successRate: 0.5
+  successRate: 0.45
   unlockByDefault: 0
   quality: 0

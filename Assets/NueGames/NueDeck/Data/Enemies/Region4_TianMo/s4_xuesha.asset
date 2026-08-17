@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: s4_xuesha
   m_EditorClassIdentifier: 
   characterID: s4_xuesha
-  characterName: "\u8840\u715E"
+  characterName: "\u8840\u715E\u9B54"
   characterDescription: 
   maxHealth: 44
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
@@ -42,6 +42,7 @@ MonoBehaviour:
       maxActionValue: 10
   enemyTier: 0
   regionId: 3
+  realmLevel: 3
   enemyDescription: "\u4EE5\u8840\u4E3A\u98DF\u7684\u9B54\u7269\u3002\u653B\u51FB\u9644\u5E26\u5438\u8840\u3002"
   enemyPortrait: {fileID: 0}
   encounterDialogue: "\u4F60\u7684\u8840\u2026\u2026\u771F\u9999\u2026\u2026"

@@ -13,17 +13,17 @@ MonoBehaviour:
   m_Name: forging_heiyu
   m_EditorClassIdentifier: 
   recipeId: forging_heiyu
-  name: "\u58A8\u7389\u5668\u56FE"
-  description: "\u4EE5\u58A8\u7389\u4E0E\u6A80\u7075\u6728\u953B\u9020\u7684\u58A8\u7389\u5668\u56FE\u3002"
+  name: "\u9ED1\u7389\u5668\u56FE"
+  description: "\u9ED1\u7389\u77F3\u4E0E\u94F6\u76AE\u6866\u7075\u953B\u9020\u7684\u9ED1\u7389\u5668\u3002"
   recipeType: 1
   outputType: 1
   outputItemId: relic_gold_armor
   outputCount: 1
   ingredients:
   - materialId: ore_heiyu
-    count: 2
-  - materialId: wood_tanlingmu
     count: 1
-  successRate: 0.7
+  - materialId: wood_yinpi
+    count: 1
+  successRate: 0.55
   unlockByDefault: 0
   quality: 0

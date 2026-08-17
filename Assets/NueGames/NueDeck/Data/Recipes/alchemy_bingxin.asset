@@ -14,15 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: alchemy_bingxin
   name: "\u51B0\u5FC3\u4E39\u65B9"
-  description: "\u4EE5\u51B0\u5FC3\u8349\u4E0E\u51B0\u6676\u6C34\u70BC\u5236\u7684\u51B0\u5FC3\u4E39\u65B9\u3002"
+  description: "\u51B0\u6676\u6C34\u4E0E\u5BD2\u591C\u9732\u70BC\u5236\u7684\u51B0\u5FC3\u4E39\u3002"
   recipeType: 0
   outputType: 0
   outputItemId: body_th_iron
   outputCount: 1
   ingredients:
-  - materialId: herb_bingxin
-    count: 2
   - materialId: water_bingjing
+    count: 1
+  - materialId: water_hanye
+    count: 1
+  - materialId: herb_fuling
     count: 1
   successRate: 0.6
   unlockByDefault: 0

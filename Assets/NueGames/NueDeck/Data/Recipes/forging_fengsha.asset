@@ -14,15 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: forging_fengsha
   name: "\u98CE\u7802\u5668\u56FE"
-  description: "\u4EE5\u98CE\u7802\u77F3\u4E0E\u6866\u7075\u6728\u953B\u9020\u7684\u98CE\u7802\u5668\u56FE\u3002"
+  description: "\u98CE\u7802\u77F3\u4E0E\u5782\u4E1D\u7075\u67F3\u953B\u9020\u7684\u98CE\u7802\u5668\u3002"
   recipeType: 1
   outputType: 1
-  outputItemId: relic_war_horn
+  outputItemId: relic_gold_armor
   outputCount: 1
   ingredients:
   - materialId: ore_fengsha
     count: 2
-  - materialId: wood_hualingmu
+  - materialId: wood_chui
     count: 1
   successRate: 0.8
   unlockByDefault: 0

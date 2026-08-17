@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: s1_tianfen
   m_EditorClassIdentifier: 
   characterID: s1_tianfen
-  characterName: "\u5929\u9B54\u5206\u8EAB"
+  characterName: "\u5929\u9B54\u86CA"
   characterDescription: 
   maxHealth: 95
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
@@ -53,10 +53,12 @@ MonoBehaviour:
     - actionType: 6
       minActionValue: 2
       maxActionValue: 2
+  deathSoundProfile: {fileID: 11400000, guid: 8bb66d93a3451544585ed328c3cd4ec1, type: 2}
   enemyTier: 1
   regionId: 0
+  realmLevel: 0
   enemyDescription: "\u5929\u9B54\u7684\u4E00\u7F15\u5206\u8EAB\uFF0C\u8574\u542B\u5929\u9B54\u90E8\u5206\u529B\u91CF\u3002\u8840\u91CF\u8FC7\u534A\u540E\u88C2\u9699\u7206\u53D1\uFF0C\u5168debuff\u914D\u5408\u591A\u6BB5\u653B\u51FB\u3002"
-  enemyPortrait: {fileID: 0}
+  enemyPortrait: {fileID: 21300000, guid: d0a322df2b6d3ac41a0ed0513a540784, type: 3}
   encounterDialogue: "\uFF08\u865A\u7A7A\u4E2D\u88C2\u5F00\u4E00\u9053\u7F1D\u9699\uFF0C\u5929\u9B54\u5206\u8EAB\u8D70\u51FA\uFF09\n\u6709\u8DA3\u2026\u2026\u4F60\u5F15\u6765\u4E86\u672C\u5EA7\u7684\u6CE8\u610F\u2026\u2026\n\u8BA9\u672C\u5EA7\u770B\u770B\u4F60\u7684\u6781\u9650\u5728\u54EA\u91CC\u3002"
   victoryDialogue: "\u4E0D\u9519\u2026\u2026\n\u4F60\u5F15\u8D77\u4E86\u672C\u5EA7\u7684\u5174\u8DA3\u2026\u2026\n\u4E0B\u6B21\u89C1\u9762\u2026\u2026\u4FBF\u662F\u4F60\u7684\u672B\u65E5\u2026\u2026\n\uFF08\u5206\u8EAB\u5316\u4E3A\u788E\u7247\u6D88\u6563\uFF09"
   phaseList: []
@@ -67,3 +69,4 @@ MonoBehaviour:
   subordinateId: 
   summonInterval: 3
   summonCount: 1
+  bodyScale: 2.5

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: s1_archer
   m_EditorClassIdentifier: 
   characterID: s1_archer
-  characterName: "\u5F13\u624B"
+  characterName: "\u7FCE\u7FBD\u96C0"
   characterDescription: 
   maxHealth: 14
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
@@ -43,10 +43,12 @@ MonoBehaviour:
     - actionType: 0
       minActionValue: 3
       maxActionValue: 3
+  deathSoundProfile: {fileID: 11400000, guid: aedae1e92847cb5458c4538571bd17f7, type: 2}
   enemyTier: 0
   regionId: 0
+  realmLevel: 0
   enemyDescription: "\u5C71\u4E2D\u730E\u6237\u51FA\u8EAB\u7684\u5F13\u624B\uFF0C\u64C5\u957F\u8FDC\u7A0B\u5C04\u51FB\u3002\u7BAD\u77E2\u5E26\u7834\u7532\u4E4B\u529B\u3002"
-  enemyPortrait: {fileID: 21300000, guid: 9180f1169facedb4294b8ad2646f69fc, type: 3}
+  enemyPortrait: {fileID: 21300000, guid: b4a85d33fc594a640a9a90cd0d63cc82, type: 3}
   encounterDialogue: "\u7AD9\u4F4F\uFF01\u8BA9\u6211\u770B\u770B\u4F60\u7684\u7834\u7EFD\u5728\u54EA\u91CC\u2026\u2026"
   victoryDialogue: "\u5F13\u7BAD\u624B\uFF0C\u8FD1\u8EAB\u4FBF\u65E0\u7528\u3002"
   phaseList: []
@@ -57,3 +59,4 @@ MonoBehaviour:
   subordinateId: 
   summonInterval: 3
   summonCount: 1
+  bodyScale: 0.9

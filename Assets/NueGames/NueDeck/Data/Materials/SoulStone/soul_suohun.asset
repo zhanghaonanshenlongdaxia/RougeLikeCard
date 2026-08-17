@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab029cd18e56ce43856e99494bf8415, type: 3}
+  m_Name: soul_suohun
+  m_EditorClassIdentifier: 
+  materialId: soul_suohun
+  name: "\u9501\u9B42\u7389"
+  description: "\u80FD\u9501\u4F4F\u9B42\u9B44\u4E0D\u6563\u7684\u7075\u7389\u3002\u9632\u6B62\u9B42\u9B44\u6D88\u6563\u3002"
+  icon: {fileID: 21300000, guid: af8c4d201bbd74a478e21eff6ae54798, type: 3}
+  materialType: 9
+  rarity: 0
+  quality: 2
+  regionId: 1
+  sourceEnemyId: 
+  dropWeight: 100
+  minDropCount: 1
+  maxDropCount: 1
+  weight: 1
+  stackable: 1
+  maxStack: 99

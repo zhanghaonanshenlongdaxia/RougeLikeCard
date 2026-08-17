@@ -87,25 +87,9 @@ namespace CardGame.UI
 
         void OnNewGame()
         {
-            SaveSystem.DeleteSave();
-            // 初始化新游戏数据
-            var gm = NueGames.NueDeck.Scripts.Managers.GameManager.Instance;
-            if (gm != null) gm.InitGameplayData();
-
-            // 给玩家初始功法并自动设为当前
-            var arch = CardGameArchitecture.Interface;
-            var cultSystem = arch.GetSystem<ICultivationSystem>();
-            cultSystem.LearnMethod("sy_method"); // 三阳三昧丙丁炼火诀
-            cultSystem.LearnMethod("th_method"); // 太和十六洞天
-            cultSystem.LearnMethod("cc_method"); // 长春功
-            cultSystem.SetActiveMethod("cc_method");
-            // 给一些初始参悟点
-            arch.GetModel<ICultivationModel>().ComprehensionPoints.Value = 20;
-
-            FloatingTip.ShowSuccess("开始新游戏，已获得三本初始功法");
-            var sceneChanger = FindObjectOfType<NueGames.NueDeck.Scripts.Utils.SceneChanger>();
-            if (sceneChanger != null) sceneChanger.OpenBaseScene();
-            else UnityEngine.SceneManagement.SceneManager.LoadScene(2);
+            // 弹出角色选择面板
+            var panel = CardGame.UI.CharacterSelectPanel.GetOrCreate();
+            panel.Show();
         }
 
         void OnCodex()

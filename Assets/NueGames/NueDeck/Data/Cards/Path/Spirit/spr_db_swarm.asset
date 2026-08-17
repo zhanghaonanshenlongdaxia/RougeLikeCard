@@ -15,7 +15,7 @@ MonoBehaviour:
   id: spr_db_swarm
   cardName: "\u4E07\u86CA\u566C\u5FC3"
   manaCost: 2
-  cardSprite: {fileID: 21300000, guid: 04684b85c9246b945a48b41d9ec2f4be, type: 3}
+  cardSprite: {fileID: 21300000, guid: a31d9857d920f7341924aad832af86bd, type: 3}
   rarity: 2
   quality: 2
   usableWithoutTarget: 0

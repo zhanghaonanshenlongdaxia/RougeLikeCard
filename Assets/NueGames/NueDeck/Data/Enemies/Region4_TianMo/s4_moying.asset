@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: s4_moying
   m_EditorClassIdentifier: 
   characterID: s4_moying
-  characterName: "\u9B54\u5F71"
+  characterName: "\u9B54\u5F71\u523A\u5BA2"
   characterDescription: 
   maxHealth: 53
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
@@ -42,6 +42,7 @@ MonoBehaviour:
       maxActionValue: 10
   enemyTier: 0
   regionId: 3
+  realmLevel: 3
   enemyDescription: "\u6697\u5F71\u4E2D\u7684\u9B54\u7269\u3002\u591A\u6BB5\u653B\u51FB\u3002"
   enemyPortrait: {fileID: 0}
   encounterDialogue: "\uFF08\u9B54\u5F71\u4ECE\u9634\u5F71\u4E2D\u6251\u51FA\uFF09"

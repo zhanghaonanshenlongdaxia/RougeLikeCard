@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: s4_mogui
   m_EditorClassIdentifier: 
   characterID: s4_mogui
-  characterName: "\u9B54\u9B3C"
+  characterName: "\u9B54\u9B3C\u5C06"
   characterDescription: 
   maxHealth: 36
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
@@ -45,6 +45,7 @@ MonoBehaviour:
       maxActionValue: 5
   enemyTier: 0
   regionId: 3
+  realmLevel: 3
   enemyDescription: "\u7EAF\u7CB9\u7684\u9B54\u9B3C\u3002\u653B\u51FB\u914D\u5408\u53CCdebuff\u3002"
   enemyPortrait: {fileID: 0}
   encounterDialogue: "\u6840\u6840\u2026\u2026\u6050\u60E7\u5427\uFF01"

@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: alchemy_shenxing
   name: "\u8C03\u606F\u4E39\u65B9"
-  description: "\u4EE5\u96EA\u53C2\u4E0E\u832F\u82D3\u70BC\u5236\u7684\u8C03\u606F\u4E39\u65B9\u3002"
+  description: "\u96EA\u53C2\u4E0E\u832F\u82D3\u70BC\u5236\u7684\u8C03\u606F\u4E39\u3002"
   recipeType: 0
   outputType: 0
   outputItemId: body_su_breath
   outputCount: 1
   ingredients:
-  - materialId: herb_snowginseng
+  - materialId: herb_yinchen
     count: 1
   - materialId: herb_fuling
     count: 1

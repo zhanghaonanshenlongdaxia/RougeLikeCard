@@ -15,7 +15,7 @@ MonoBehaviour:
   id: bd_su_immortal
   cardName: "\u4E0D\u706D\u4F53"
   manaCost: 3
-  cardSprite: {fileID: 21300000, guid: 04684b85c9246b945a48b41d9ec2f4be, type: 3}
+  cardSprite: {fileID: 21300000, guid: e3bebb6726e45bd439ed6893bb068760, type: 3}
   rarity: 2
   quality: 2
   usableWithoutTarget: 1

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: s4_xuegui
   m_EditorClassIdentifier: 
   characterID: s4_xuegui
-  characterName: "\u8840\u9B3C"
+  characterName: "\u8840\u715E\u9B3C"
   characterDescription: 
   maxHealth: 39
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
@@ -42,6 +42,7 @@ MonoBehaviour:
       maxActionValue: 10
   enemyTier: 0
   regionId: 3
+  realmLevel: 3
   enemyDescription: "\u8840\u715E\u6210\u5F62\u7684\u6076\u9B3C\u3002\u653B\u51FB\u9644\u5E26\u5438\u8840\u3002"
   enemyPortrait: {fileID: 0}
   encounterDialogue: "\u8840\u2026\u2026\u90FD\u662F\u8840\u2026\u2026"

@@ -40,17 +40,20 @@ MonoBehaviour:
     - actionType: 0
       minActionValue: 7
       maxActionValue: 10
+  deathSoundProfile: {fileID: 11400000, guid: 06bec0839d8f10b47bbf760af9f71620, type: 2}
   enemyTier: 0
   regionId: 0
+  realmLevel: 0
   enemyDescription: "\u5C71\u6D77\u95F4\u5076\u5F97\u673A\u7F18\u5F00\u4E86\u7075\u667A\u7684\u91CE\u732A\uFF0C\u76AE\u7CD9\u8089\u539A\u3002\u66B4\u6012\u65F6\u4F4E\u5934\u731B\u51B2\uFF0C\u52BF\u4E0D\u53EF\u6321\u3002"
-  enemyPortrait: {fileID: 0}
+  enemyPortrait: {fileID: 21300000, guid: 42cbc0f23aa4b4c4ca4f0d98acef9c13, type: 3}
   encounterDialogue: "\u54FC\u54FC\uFF01\uFF08\u91CE\u732A\u5996\u5228\u7740\u8E44\u5B50\uFF0C\u773C\u4E2D\u51F6\u5149\u6BD5\u9732\uFF09"
   victoryDialogue: "\u597D\u4E00\u5934\u86EE\u725B\uFF01"
   phaseList: []
-  spawnType: 2
+  spawnType: 0
   spawnCount: 2
   commanderId: 
   subordinateMode: 0
   subordinateId: s1_vulture
   summonInterval: 3
   summonCount: 1
+  bodyScale: 2.2

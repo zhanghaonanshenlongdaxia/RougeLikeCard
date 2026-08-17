@@ -15,7 +15,7 @@ MonoBehaviour:
   id: body_th_thorns
   cardName: "\u8346\u68D8\u7532"
   manaCost: 2
-  cardSprite: {fileID: 21300000, guid: 04684b85c9246b945a48b41d9ec2f4be, type: 3}
+  cardSprite: {fileID: 21300000, guid: 706000101c1f86a4dbdcb383cc5741ed, type: 3}
   rarity: 2
   quality: 2
   usableWithoutTarget: 1

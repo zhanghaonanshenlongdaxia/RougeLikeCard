@@ -40,10 +40,12 @@ MonoBehaviour:
     - actionType: 0
       minActionValue: 7
       maxActionValue: 10
+  deathSoundProfile: {fileID: 11400000, guid: d24ab129364ba104c8070a2354369123, type: 2}
   enemyTier: 0
   regionId: 0
+  realmLevel: 0
   enemyDescription: "\u5343\u5E74\u7384\u9F9F\uFF0C\u9F9F\u58F3\u575A\u5982\u78D0\u77F3\u3002\u51E0\u4E4E\u4E0D\u4E3B\u52A8\u653B\u51FB\uFF0C\u4F46\u6781\u96BE\u88AB\u6740\u6B7B\u3002"
-  enemyPortrait: {fileID: 0}
+  enemyPortrait: {fileID: 21300000, guid: 54144b9a0e7e4b042a57423c2950c8c0, type: 3}
   encounterDialogue: "\u2026\u2026\uFF08\u7384\u9F9F\u7F13\u7F13\u63A2\u51FA\u5934\uFF0C\u6F20\u7136\u770B\u7740\u4F60\uFF09"
   victoryDialogue: "\u7F29\u5934\u4E4C\u9F9F\uFF0C\u770B\u4F60\u7F29\u5230\u51E0\u65F6\uFF01"
   phaseList: []
@@ -54,3 +56,4 @@ MonoBehaviour:
   subordinateId: 
   summonInterval: 3
   summonCount: 1
+  bodyScale: 1.3

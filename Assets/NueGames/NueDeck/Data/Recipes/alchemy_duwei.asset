@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: alchemy_duwei
   name: "\u675C\u8861\u4E39\u65B9"
-  description: "\u4EE5\u675C\u8861\u4E0E\u6BD2\u6CC9\u6C34\u70BC\u5236\u7684\u675C\u8861\u4E39\u65B9\u3002"
+  description: "\u675C\u8861\u8349\u4E0E\u98CE\u7075\u9732\u70BC\u5236\u7684\u675C\u8861\u4E39\u3002"
   recipeType: 0
   outputType: 0
   outputItemId: spr_db_poison
@@ -22,8 +22,8 @@ MonoBehaviour:
   ingredients:
   - materialId: herb_duwei
     count: 2
-  - materialId: water_duquan
+  - materialId: water_fenglu
     count: 1
-  successRate: 0.75
+  successRate: 0.7
   unlockByDefault: 0
   quality: 0

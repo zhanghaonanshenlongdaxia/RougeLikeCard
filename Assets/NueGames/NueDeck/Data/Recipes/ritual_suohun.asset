@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: ritual_suohun
   name: "\u9501\u9B42\u7389\u7B3A"
-  description: "\u4EE5\u9501\u9B42\u7389\u4E0E\u53E4\u7B26\u6B8B\u7247\u732E\u796D\u7684\u9501\u9B42\u7389\u7B3A\u3002"
+  description: "\u9501\u9B42\u7389\u4E0E\u7075\u7EB9\u6B8B\u7247\u732E\u796D\u7684\u9501\u9B42\u7389\u7B3A\u3002"
   recipeType: 2
   outputType: 2
   outputItemId: potion_block
@@ -22,7 +22,7 @@ MonoBehaviour:
   ingredients:
   - materialId: soul_suohun
     count: 1
-  - materialId: frag_gufu
+  - materialId: frag_lingwen
     count: 1
   successRate: 0.5
   unlockByDefault: 0

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: alchemy_qingxin
   name: "\u6E05\u5FC3\u4E39\u65B9"
-  description: "\u4EE5\u832F\u82D3\u4E0E\u7389\u9732\u70BC\u5236\u7684\u6E05\u5FC3\u4E39\u65B9\u3002"
+  description: "\u832F\u82D3\u4E0E\u7389\u9732\u70BC\u5236\u7684\u6E05\u5FC3\u4E39\u3002"
   recipeType: 0
   outputType: 0
   outputItemId: 4_draw_basic

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: alchemy_qixue
   name: "\u6C14\u8840\u4E39\u65B9"
-  description: "\u4EE5\u9EC4\u7CBE\u4E0E\u51AC\u866B\u590F\u8349\u70BC\u5236\u7684\u6C14\u8840\u4E39\u65B9\u3002"
+  description: "\u9EC4\u7CBE\u4E0E\u51AC\u866B\u590F\u8349\u70BC\u5236\u7684\u6C14\u8840\u4E39\u3002"
   recipeType: 0
   outputType: 0
   outputItemId: 5_heal_basic

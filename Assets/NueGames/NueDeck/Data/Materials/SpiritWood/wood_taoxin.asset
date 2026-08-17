@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab029cd18e56ce43856e99494bf8415, type: 3}
+  m_Name: wood_taoxin
+  m_EditorClassIdentifier: 
+  materialId: wood_taoxin
+  name: "\u964D\u5996\u6843\u5FC3"
+  description: "\u7075\u6843\u6811\u7684\u5FC3\u6750\uFF0C\u5929\u7136\u514B\u90AA\u3002\u9A71\u90AA\u5723\u54C1\u3002"
+  icon: {fileID: 21300000, guid: 17af3fcc38f195345bfb4b182a185cbc, type: 3}
+  materialType: 11
+  rarity: 0
+  quality: 0
+  regionId: 2
+  sourceEnemyId: 
+  dropWeight: 100
+  minDropCount: 1
+  maxDropCount: 1
+  weight: 1
+  stackable: 1
+  maxStack: 99

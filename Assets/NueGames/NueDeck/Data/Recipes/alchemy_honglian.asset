@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: alchemy_honglian
   name: "\u7EA2\u83B2\u4E39\u65B9"
-  description: "\u4EE5\u706B\u7EA2\u83B2\u4E0E\u708E\u6CC9\u6C34\u70BC\u5236\u7684\u7EA2\u83B2\u4E39\u65B9\u3002"
+  description: "\u7EA2\u83B2\u8349\u4E0E\u706B\u7075\u6DB2\u70BC\u5236\u7684\u7EA2\u83B2\u4E39\u3002"
   recipeType: 0
   outputType: 0
   outputItemId: jian_br_charge
@@ -22,8 +22,8 @@ MonoBehaviour:
   ingredients:
   - materialId: herb_honglian
     count: 1
-  - materialId: water_yanquan
+  - materialId: water_huoluo
     count: 1
-  successRate: 0.55
+  successRate: 0.5
   unlockByDefault: 0
   quality: 0

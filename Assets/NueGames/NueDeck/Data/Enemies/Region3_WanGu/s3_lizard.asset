@@ -42,12 +42,13 @@ MonoBehaviour:
       maxActionValue: 10
   enemyTier: 0
   regionId: 2
+  realmLevel: 2
   enemyDescription: "\u6CBC\u6CFD\u4E2D\u7684\u6BD2\u8725\u8734\u3002\u6BD2\u4E0E\u653B\u51FB\u4EA4\u66FF\u3002"
   enemyPortrait: {fileID: 0}
   encounterDialogue: "\u5636\u2026\u2026\uFF08\u6BD2\u8725\u5410\u7740\u4FE1\u5B50\uFF09"
   victoryDialogue: "\u8725\u8734\uFF1F\u6253\u6B7B\uFF01"
   phaseList: []
-  spawnType: 3
+  spawnType: 0
   spawnCount: 1
   commanderId: 
   subordinateMode: 0

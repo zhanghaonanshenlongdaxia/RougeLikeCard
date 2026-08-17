@@ -14,17 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: ritual_gedi
   name: "\u683C\u6321\u7389\u7B3A"
-  description: "\u4EE5\u5B9A\u795E\u7389\u4E0E\u7384\u94C1\u77FF\u732E\u796D\u7684\u683C\u6321\u7389\u7B3A\u3002"
+  description: "\u51DD\u9B42\u77F3\u4E0E\u4E91\u6BCD\u77F3\u732E\u796D\u7684\u683C\u6321\u7389\u7B3A\u3002"
   recipeType: 2
   outputType: 2
   outputItemId: potion_block
   outputCount: 1
   ingredients:
-  - materialId: soul_dingshen
+  - materialId: soul_ning
     count: 1
-  - materialId: ore_xuantie
-    count: 1
-  - materialId: frag_zhenfa
+  - materialId: ore_yunmu
     count: 1
   successRate: 0.7
   unlockByDefault: 0

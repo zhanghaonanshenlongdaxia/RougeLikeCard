@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 7_power_strength
   cardName: "\u529B\u9B44\u8BC0"
   manaCost: 2
-  cardSprite: {fileID: 21300000, guid: a0c75614ede963a46af4bc352b3faabd, type: 3}
+  cardSprite: {fileID: 21300000, guid: 75670cefe50ec9a4fbbfaa20675794ac, type: 3}
   rarity: 0
   quality: 0
   usableWithoutTarget: 1

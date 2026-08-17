@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: alchemy_lingli
   name: "\u7075\u529B\u4E39\u65B9"
-  description: "\u4EE5\u7075\u6676\u77F3\u4E0E\u7075\u6CC9\u6C34\u70BC\u5236\u7684\u805A\u7075\u4E39\u65B9\u3002"
+  description: "\u7075\u6676\u77F3\u4E0E\u7075\u6CC9\u6C34\u70BC\u5236\u7684\u805A\u7075\u4E39\u3002"
   recipeType: 0
   outputType: 0
   outputItemId: 8_skill_earnMana
   outputCount: 1
   ingredients:
-  - materialId: ore_lingjing
+  - materialId: ore_gutie
     count: 2
   - materialId: water_quan
     count: 1

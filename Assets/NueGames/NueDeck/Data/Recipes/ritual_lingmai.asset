@@ -14,15 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: ritual_lingmai
   name: "\u7075\u8109\u7389\u7B3A"
-  description: "\u4EE5\u7075\u8109\u6676\u4E0E\u5730\u8109\u7CBE\u534E\u732E\u796D\u7684\u7075\u8109\u7389\u7B3A\u3002"
+  description: "\u7075\u8109\u7ED3\u6676\u4E0E\u5730\u8109\u51DD\u9AD3\u732E\u796D\u7684\u7075\u8109\u7389\u7B3A\u3002"
   recipeType: 2
   outputType: 2
   outputItemId: potion_heal
   outputCount: 3
   ingredients:
-  - materialId: treasure_0
+  - materialId: treasure_lingmai
     count: 1
-  - materialId: treasure_1
+  - materialId: treasure_dimai
     count: 1
   successRate: 0.35
   unlockByDefault: 0

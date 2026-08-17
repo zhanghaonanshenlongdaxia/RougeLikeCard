@@ -8,14 +8,21 @@ namespace CardGame
     /// </summary>
     public enum MaterialType
     {
-        SpiritHerb,    // 灵草
-        Ore,           // 矿石
-        DemonCore,     // 妖丹
-        SoulStone,     // 魂石
-        SpiritWater,   // 灵水
-        Fragment,      // 残片
-        SpiritWood,    // 灵木
-        BeastBone,     // 灵兽骨
+        // 妖兽掉落
+        BeastHide,      // 妖兽皮
+        BeastFang,      // 妖兽牙/爪
+        BeastScale,     // 妖兽鳞/甲
+        BeastFur,       // 妖兽毛/羽
+        BeastBone,      // 妖兽骨
+        BeastOrgan,     // 妖兽脏器
+        DemonCore,      // 妖丹（仅金丹以上）
+        // 非妖兽材料
+        SpiritHerb,     // 灵草
+        Ore,            // 矿石
+        SoulStone,      // 魂石
+        SpiritWater,    // 灵水
+        SpiritWood,     // 灵木
+        Fragment,       // 残片
         HeavenlyTreasure // 天材地宝
     }
 
@@ -39,6 +46,16 @@ namespace CardGame
         public ItemQuality quality = ItemQuality.LianQi_T1;
         [Tooltip("产出区域：0=山野荒原 1=幽冥秘境 2=万蛊沼泽 3=天魔裂隙 -1=通用")]
         public int regionId = -1;
+        [Tooltip("妖兽材料专用：所属妖兽的EnemyCharacterData资产名(无后缀)")]
+        public string sourceEnemyId;
+
+        [Header("掉率")]
+        [Tooltip("掉落权重：越高越容易掉。常规部位=100，稀有部位(如脏器)=30，妖丹=5")]
+        [Range(1, 1000)] public int dropWeight = 100;
+        [Tooltip("单次掉落最小数量")]
+        public int minDropCount = 1;
+        [Tooltip("单次掉落最大数量")]
+        public int maxDropCount = 1;
 
         [Header("属性")]
         [Tooltip("单个占用的负重")]

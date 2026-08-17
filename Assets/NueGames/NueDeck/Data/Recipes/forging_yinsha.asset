@@ -13,17 +13,17 @@ MonoBehaviour:
   m_Name: forging_yinsha
   m_EditorClassIdentifier: 
   recipeId: forging_yinsha
-  name: "\u94F6\u7802\u5668\u56FE"
-  description: "\u4EE5\u94F6\u7802\u4E0E\u6842\u7075\u6728\u953B\u9020\u7684\u94F6\u7802\u5668\u56FE\u3002"
+  name: "\u9634\u715E\u5668\u56FE"
+  description: "\u9634\u715E\u77F3\u4E0E\u964D\u5996\u6843\u5FC3\u953B\u9020\u7684\u9634\u715E\u5668\u3002"
   recipeType: 1
   outputType: 1
-  outputItemId: relic_anger_stone
+  outputItemId: relic_gold_armor
   outputCount: 1
   ingredients:
   - materialId: ore_yinsha
     count: 2
-  - materialId: wood_guilingmu
+  - materialId: wood_taoxin
     count: 1
-  successRate: 0.75
+  successRate: 0.65
   unlockByDefault: 0
   quality: 0

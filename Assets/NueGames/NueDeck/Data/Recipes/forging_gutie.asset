@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: forging_gutie
   name: "\u53E4\u94C1\u5668\u56FE"
-  description: "\u4EE5\u53E4\u94C1\u4E0E\u6960\u7075\u6728\u953B\u9020\u7684\u53E4\u94C1\u5668\u56FE\u3002"
+  description: "\u53E4\u94C1\u7802\u4E0E\u94C1\u9AA8\u6986\u7075\u953B\u9020\u7684\u53E4\u94C1\u5668\u3002"
   recipeType: 1
   outputType: 1
   outputItemId: relic_snake_ring
@@ -22,8 +22,8 @@ MonoBehaviour:
   ingredients:
   - materialId: ore_gutie
     count: 2
-  - materialId: wood_nanlingmu
+  - materialId: wood_tiegu
     count: 1
-  successRate: 0.75
+  successRate: 0.7
   unlockByDefault: 0
   quality: 0

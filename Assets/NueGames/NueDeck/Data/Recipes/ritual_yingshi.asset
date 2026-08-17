@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: ritual_yingshi
   name: "\u5F71\u9B42\u7389\u7B3A"
-  description: "\u4EE5\u5F71\u9B42\u77F3\u4E0E\u6697\u6676\u9B42\u77F3\u732E\u796D\u7684\u5F71\u9B42\u7389\u7B3A\u3002"
+  description: "\u5F71\u9B42\u77F3\u4E0E\u6697\u6676\u9B42\u77F3\u732E\u796D\u7684\u5F71\u9B42\u7389\u7B3A\u3002"
   recipeType: 2
   outputType: 2
   outputItemId: potion_energy
@@ -24,6 +24,6 @@ MonoBehaviour:
     count: 1
   - materialId: soul_anjing
     count: 1
-  successRate: 0.8
+  successRate: 0.65
   unlockByDefault: 0
   quality: 0

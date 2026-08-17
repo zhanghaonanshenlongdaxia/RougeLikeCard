@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab029cd18e56ce43856e99494bf8415, type: 3}
+  m_Name: water_pantao
+  m_EditorClassIdentifier: 
+  materialId: water_pantao
+  name: "\u87E0\u6843\u9152"
+  description: "\u87E0\u6843\u917F\u6210\u7684\u7075\u9152\uFF0C\u7425\u73C0\u8272\u3002\u996E\u7528\u540E\u53EF\u6062\u590D\u7075\u529B\u3002"
+  icon: {fileID: 21300000, guid: 771c4e3c6a6d15e438fd5586e7b9a060, type: 3}
+  materialType: 10
+  rarity: 0
+  quality: 1
+  regionId: 0
+  sourceEnemyId: 
+  dropWeight: 100
+  minDropCount: 1
+  maxDropCount: 1
+  weight: 1
+  stackable: 1
+  maxStack: 99

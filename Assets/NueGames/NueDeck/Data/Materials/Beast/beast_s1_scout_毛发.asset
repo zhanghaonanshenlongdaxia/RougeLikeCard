@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab029cd18e56ce43856e99494bf8415, type: 3}
+  m_Name: "beast_s1_scout_\u6BDB\u53D1"
+  m_EditorClassIdentifier: 
+  materialId: "beast_s1_scout_\u6BDB\u53D1"
+  name: "\u65A5\u5019\u6BDB\u53D1"
+  description: "\u65A5\u5019\u7684\u6BDB\u53D1\uFF0C\u4ECE\u6218\u5229\u54C1\u4E2D\u83B7\u5F97\u3002"
+  icon: {fileID: 21300000, guid: e8f9fe055d4167c43b80f131b2b1de4d, type: 3}
+  materialType: 3
+  rarity: 0
+  quality: 0
+  regionId: 0
+  sourceEnemyId: s1_scout
+  dropWeight: 70
+  minDropCount: 1
+  maxDropCount: 1
+  weight: 1
+  stackable: 1
+  maxStack: 99

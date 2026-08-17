@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: s4_duo
   m_EditorClassIdentifier: 
   characterID: s4_duo
-  characterName: "\u5815\u843D\u4FEE\u58EB"
+  characterName: "\u5815\u843D\u771F\u541B"
   characterDescription: 
   maxHealth: 41
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
@@ -45,6 +45,7 @@ MonoBehaviour:
       maxActionValue: 5
   enemyTier: 0
   regionId: 3
+  realmLevel: 3
   enemyDescription: "\u5815\u5165\u9B54\u9053\u7684\u4FEE\u58EB\uFF0C\u4FDD\u7559\u90E8\u5206\u795E\u901A\u3002\u653B\u51FB\u9AD8\u4E14\u80FD\u81EA\u6108\u3002"
   enemyPortrait: {fileID: 0}
   encounterDialogue: "\u672C\u5EA7\u2026\u2026\u66FE\u4E5F\u662F\u5B97\u95E8\u7FD8\u695A\u2026\u2026\n\u5982\u4ECA\u2026\u2026\u5760\u5165\u9B54\u9053\u2026\u2026"

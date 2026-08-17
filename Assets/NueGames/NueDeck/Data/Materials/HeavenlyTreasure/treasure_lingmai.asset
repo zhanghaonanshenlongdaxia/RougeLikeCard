@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab029cd18e56ce43856e99494bf8415, type: 3}
+  m_Name: treasure_lingmai
+  m_EditorClassIdentifier: 
+  materialId: treasure_lingmai
+  name: "\u7075\u8109\u7ED3\u6676"
+  description: "\u7075\u8109\u6838\u5FC3\u5904\u7684\u7ED3\u6676\uFF0C\u8574\u542B\u6700\u7EAF\u51C0\u7684\u7075\u529B\u3002\u4FEE\u70BC\u65F6\u63E1\u4E8E\u624B\u4E2D\u53EF\u52A0\u901F\u6062\u590D\u3002"
+  icon: {fileID: 21300000, guid: ad21e6df092c21648b811e189c3565f1, type: 3}
+  materialType: 13
+  rarity: 0
+  quality: 0
+  regionId: -1
+  sourceEnemyId: 
+  dropWeight: 100
+  minDropCount: 1
+  maxDropCount: 1
+  weight: 1
+  stackable: 1
+  maxStack: 99

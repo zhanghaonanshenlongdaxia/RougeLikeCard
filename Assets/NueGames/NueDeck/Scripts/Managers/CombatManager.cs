@@ -46,6 +46,8 @@ namespace NueGames.NueDeck.Scripts.Managers
 
         public EnemyEncounter CurrentEncounter { get; private set; }
         public List<CardGame.MaterialData> LastDroppedMaterials { get; private set; } = new List<CardGame.MaterialData>();
+        /// <summary>本场战斗所有敌人数据快照（死亡后仍可读取用于掉落）</summary>
+        private List<EnemyCharacterData> _combatEnemySnapshot = new List<EnemyCharacterData>();
         
         public CombatStateType CurrentCombatStateType
         {
@@ -573,6 +575,14 @@ namespace NueGames.NueDeck.Scripts.Managers
                 if (dataField != null) dataField.SetValue(clone, spawnList[i]);
                 clone.BuildCharacter();
                 
+                // 赋值死亡音效
+                if (spawnList[i].DeathSoundProfile != null)
+                {
+                    var deathField = typeof(EnemyBase).GetField("deathSoundProfileData", 
+                        System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    deathField?.SetValue(clone, spawnList[i].DeathSoundProfile);
+                }
+                
                 // 相同敌人分配不同技能起始偏移
                 AssignAbilityOffset(clone, spawnList[i], typeCounter2);
                 // 应用动态难度缩放（基于敌人数量 + 楼层）
@@ -585,6 +595,12 @@ namespace NueGames.NueDeck.Scripts.Managers
                 
                 CurrentEnemiesList.Add(clone);
             }
+
+            // 快照：记录所有敌人数据，供掉落使用（敌人死亡后从CurrentEnemiesList移除）
+            _combatEnemySnapshot.Clear();
+            foreach (var e in CurrentEnemiesList)
+                if (e != null && e.EnemyCharacterData != null)
+                    _combatEnemySnapshot.Add(e.EnemyCharacterData);
         }
 
         /// <summary>应用强度递增+多怪平衡倍率</summary>
@@ -624,7 +640,49 @@ namespace NueGames.NueDeck.Scripts.Managers
             {
                 var clone = Instantiate(GameManager.PersistentGameplayData.AllyList[i], AllyPosList.Count >= i ? AllyPosList[i] : AllyPosList[0]);
                 clone.BuildCharacter();
+
+                // 替换玩家立绘为新游戏时选择的形象
+                ApplyPlayerPortrait(clone);
+
                 CurrentAlliesList.Add(clone);
+            }
+        }
+
+        /// <summary>用新游戏时选择的立绘替换玩家sprite</summary>
+        private void ApplyPlayerPortrait(AllyBase ally)
+        {
+            if (!PlayerPrefs.HasKey("SelectedPortraitIndex")) return;
+            int index = PlayerPrefs.GetInt("SelectedPortraitIndex", -1);
+            if (index < 0) return;
+
+            // 加载玩家立绘
+            Sprite portrait = null;
+#if UNITY_EDITOR
+            var guids = UnityEditor.AssetDatabase.FindAssets("t:Texture2D", new[] { "Assets/NueGames/NueDeck/Sprites/PlayerPortraits" });
+            if (index < guids.Length)
+            {
+                var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[index]);
+                portrait = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>(path);
+            }
+#else
+            var sprites = Resources.LoadAll<Sprite>("PlayerPortraits");
+            if (index < sprites.Length) portrait = sprites[index];
+#endif
+            if (portrait == null) return;
+
+            // 找到玩家SpriteRenderer并替换
+            var sr = ally.GetComponentInChildren<SpriteRenderer>(true);
+            if (sr != null)
+            {
+                sr.sprite = portrait;
+                // 调整缩放使其合适显示
+                var texW = portrait.texture.width;
+                var texH = portrait.texture.height;
+                float targetHeight = 1.5f; // 世界单位
+                float scale = targetHeight / (texH / 100f);
+                sr.transform.localScale = new Vector3(scale, scale, 1);
+                sr.transform.localPosition = new Vector3(0, 0, -1);
+                Debug.Log($"[PlayerPortrait] Replaced with {portrait.name}, scale={scale}");
             }
         }
         private void LoseCombat()
@@ -874,16 +932,16 @@ namespace NueGames.NueDeck.Scripts.Managers
             {
                 sr.sprite = enemyData.EnemyPortrait;
 
-                // 调整 scale：原始敌人 64x68px PPU=100 → 0.64x0.68 世界单位
-                // 立绘 256x341px PPU=100 → 2.56x3.41 世界单位，scale=0.25 → 0.64x0.85
                 var t = sr.transform;
-                float targetHeight = 1.0f; // 接近原始敌人高度
+                float targetHeight = 1.0f;
                 float spriteHeight = enemyData.EnemyPortrait.rect.height / enemyData.EnemyPortrait.pixelsPerUnit;
                 float scale = targetHeight / spriteHeight;
-                // 朝左（敌人面对玩家，玩家在左边）
+                // 应用体型缩放
+                scale *= enemyData.BodyScale;
+                // 朝左
                 t.localScale = new Vector3(-scale, scale, 1f);
 
-                Debug.Log($"[EnemySprite] {enemyData.CharacterName}: scale={scale}, height={spriteHeight}, facing left");
+                Debug.Log($"[EnemySprite] {enemyData.CharacterName}: scale={scale}, bodyScale={enemyData.BodyScale}, height={spriteHeight}");
             }
         }
 
@@ -901,47 +959,100 @@ namespace NueGames.NueDeck.Scripts.Managers
                 // 获取难度倍率
                 var diff = GetCurrentDifficulty();
                 float lootMult = diff?.lootMultiplier ?? 1f;
-                int rarityBonus = diff?.lootRarityBonus ?? 0;
                 int goldMult = diff?.goldRewardMultiplier ?? 1;
 
                 var allMaterials = CardGame.ResourceCache.GetMaterials();
                 var allRecipes = CardGame.ResourceCache.GetRecipes().FindAll(r => !r.unlockByDefault && !craftSystem.IsRecipeUnlocked(r.recipeId));
 
-                // 根据敌人品阶决定掉落
-                bool hasElite = false;
-                bool hasBoss = false;
-                int regionId = 0;
-                foreach (var enemy in CurrentEnemiesList)
+                LastDroppedMaterials.Clear();
+
+                // 每个敌人掉自己的妖兽材料（仿怪物猎人掉率）
+                foreach (var enemyData in _combatEnemySnapshot)
                 {
-                    if (enemy == null || enemy.EnemyCharacterData == null) continue;
-                    if (enemy.EnemyCharacterData.EnemyTier == EnemyTier.Elite) hasElite = true;
-                    if (enemy.EnemyCharacterData.EnemyTier == EnemyTier.Boss) hasBoss = true;
-                    regionId = enemy.EnemyCharacterData.RegionId;
+                    var enemyId = enemyData.name; // SO资产名
+
+                    // 找这个敌人的妖兽材料
+                    var beastMats = allMaterials.FindAll(m => m.sourceEnemyId == enemyId);
+                    if (beastMats.Count == 0) continue;
+
+                    // 掉落次数：Normal 3次, Elite 5次, Boss 8次
+                    int rollCount = enemyData.EnemyTier == EnemyTier.Boss ? 8
+                                  : enemyData.EnemyTier == EnemyTier.Elite ? 5 : 3;
+                    rollCount = Mathf.RoundToInt(rollCount * lootMult);
+
+                    // 已掉落的部位记录（同部位重复掉率递减）
+                    var droppedCounts = new System.Collections.Generic.Dictionary<string, int>();
+
+                    for (int i = 0; i < rollCount; i++)
+                    {
+                        // 加权随机选部位
+                        var weightedMats = new System.Collections.Generic.List<(MaterialData mat, float weight)>();
+                        float totalWeight = 0;
+                        foreach (var bm in beastMats)
+                        {
+                            // 基础权重
+                            float w = bm.dropWeight;
+                            // 已掉落过的部位权重递减：每掉1次权重×0.6
+                            string key = bm.materialType.ToString();
+                            if (droppedCounts.ContainsKey(key))
+                                w *= Mathf.Pow(0.6f, droppedCounts[key]);
+                            weightedMats.Add((bm, w));
+                            totalWeight += w;
+                        }
+
+                        if (totalWeight <= 0) break;
+
+                        // 随机选
+                        float roll = UnityEngine.Random.Range(0f, totalWeight);
+                        float accum = 0;
+                        MaterialData chosen = null;
+                        foreach (var (mat2, w2) in weightedMats)
+                        {
+                            accum += w2;
+                            if (roll <= accum) { chosen = mat2; break; }
+                        }
+                        if (chosen == null) continue;
+
+                        // 掉落数量
+                        int count = UnityEngine.Random.Range(chosen.minDropCount, chosen.maxDropCount + 1);
+
+                        inventorySystem.AddItem(chosen, count);
+                        for (int j = 0; j < count; j++) LastDroppedMaterials.Add(chosen);
+
+                        // 记录该部位掉落次数
+                        string typeKey = chosen.materialType.ToString();
+                        if (!droppedCounts.ContainsKey(typeKey)) droppedCounts[typeKey] = 0;
+                        droppedCounts[typeKey]++;
+
+                        Debug.Log($"[掉落] {enemyData.CharacterName} → {chosen.name} ×{count} (weight={chosen.dropWeight}, 第{droppedCounts[typeKey]}次)");
+                    }
                 }
 
-                // 材料掉落 — 应用难度倍率
-                LastDroppedMaterials.Clear();
-                int baseMatCount = hasBoss ? 3 : hasElite ? 2 : 1;
-                int matCount = Mathf.RoundToInt(baseMatCount * lootMult);
-                
-                // 品质计算：根据敌人品阶决定基础品质，rarityBonus提升品阶
-                int baseQualityVal = hasBoss ? (int)NueGames.NueDeck.Scripts.Enums.ItemQuality.JinDan_T1
-                                   : hasElite ? (int)NueGames.NueDeck.Scripts.Enums.ItemQuality.ZhuJi_T1
-                                   : (int)NueGames.NueDeck.Scripts.Enums.ItemQuality.LianQi_T1;
-                int targetQualityVal = Mathf.Min(19, baseQualityVal + rarityBonus);
-                var targetQuality = (NueGames.NueDeck.Scripts.Enums.ItemQuality)targetQualityVal;
-                
-                var candidateMats = allMaterials.Where(m => m.quality == targetQuality && (m.regionId == regionId || m.regionId == -1)).ToList();
-                if (candidateMats.Count == 0) // 没找到指定品质，按旧rarity降级
-                    candidateMats = allMaterials.Where(m => m.regionId == regionId || m.regionId == -1).ToList();
-                
-                for (int i = 0; i < matCount && candidateMats.Count > 0; i++)
+                // 非妖兽材料掉落：少量额外材料
+                bool hasElite2 = false;
+                bool hasBoss2 = false;
+                foreach (var enemyData in _combatEnemySnapshot)
                 {
-                    var mat = candidateMats[UnityEngine.Random.Range(0, candidateMats.Count)];
-                    inventorySystem.AddItem(mat, 1);
-                    LastDroppedMaterials.Add(mat);
-                    Debug.Log($"[掉落] 材料: {mat.name} ×1 (品质:{NueGames.NueDeck.Scripts.Enums.ItemQualityHelper.GetDisplayName(targetQuality)}, 难度倍率:×{lootMult})");
+                    if (enemyData.EnemyTier == EnemyTier.Elite) hasElite2 = true;
+                    if (enemyData.EnemyTier == EnemyTier.Boss) hasBoss2 = true;
                 }
+                int extraMats = hasBoss2 ? 2 : hasElite2 ? 1 : 0;
+                extraMats = Mathf.RoundToInt(extraMats * lootMult);
+                if (extraMats > 0)
+                {
+                    var nonBeastMats = allMaterials.FindAll(m => string.IsNullOrEmpty(m.sourceEnemyId));
+                    for (int i = 0; i < extraMats && nonBeastMats.Count > 0; i++)
+                    {
+                        var mat = nonBeastMats[UnityEngine.Random.Range(0, nonBeastMats.Count)];
+                        inventorySystem.AddItem(mat, 1);
+                        LastDroppedMaterials.Add(mat);
+                        Debug.Log($"[掉落] 材料: {mat.name} ×1");
+                    }
+                }
+
+                // 临时变量用于后续逻辑
+                bool hasElite = hasElite2;
+                bool hasBoss = hasBoss2;
 
                 // 配方掉落：精英50%概率，Boss必掉 — 高难度增加概率
                 if (allRecipes.Count > 0)

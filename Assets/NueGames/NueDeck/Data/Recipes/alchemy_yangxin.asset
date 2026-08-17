@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: alchemy_yangxin
   name: "\u517B\u5FC3\u4E39\u65B9"
-  description: "\u4EE5\u517B\u5FC3\u83B2\u4E0E\u6D17\u5FC3\u6CC9\u70BC\u5236\u7684\u517B\u5FC3\u4E39\u65B9\u3002"
+  description: "\u517B\u5FC3\u83B2\u4E0E\u87E0\u6843\u9152\u70BC\u5236\u7684\u517B\u5FC3\u4E39\u3002"
   recipeType: 0
   outputType: 0
   outputItemId: body_su_turtle
@@ -22,8 +22,8 @@ MonoBehaviour:
   ingredients:
   - materialId: herb_yangxin
     count: 1
-  - materialId: water_shenxin
+  - materialId: water_pantao
     count: 1
-  successRate: 0.6
+  successRate: 0.5
   unlockByDefault: 0
   quality: 0

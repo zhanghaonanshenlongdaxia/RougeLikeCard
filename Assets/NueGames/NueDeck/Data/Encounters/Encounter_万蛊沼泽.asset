@@ -53,12 +53,10 @@ MonoBehaviour:
       - {fileID: 11400000, guid: 105e59b6efbd63e48b645931e6a7cd77, type: 2}
     - targetBackgroundType: 0
       enemyList:
-      - {fileID: 11400000, guid: 105e59b6efbd63e48b645931e6a7cd77, type: 2}
-      - {fileID: 11400000, guid: 222e75a56e7d3214bb83d39a654bea8d, type: 2}
+      - {fileID: 11400000, guid: d0cc17cca0ebfac44aa06e4ce7133be1, type: 2}
     - targetBackgroundType: 0
       enemyList:
-      - {fileID: 11400000, guid: a3e988acd96287240a901a7d96949f53, type: 2}
-      - {fileID: 11400000, guid: 7becd263275eba5469c871bc56db2f67, type: 2}
+      - {fileID: 11400000, guid: 105e59b6efbd63e48b645931e6a7cd77, type: 2}
     eliteEncounterList:
     - targetBackgroundType: 0
       enemyList:

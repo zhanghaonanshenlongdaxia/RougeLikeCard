@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: alchemy_zhishe
   name: "\u6B62\u8840\u4E39\u65B9"
-  description: "\u4EE5\u51E4\u5C3E\u8568\u4E0E\u7D2B\u82CF\u53F6\u70BC\u5236\u7684\u6B62\u8840\u4E39\u65B9\u3002"
+  description: "\u51E4\u5C3E\u8568\u4E0E\u7D2B\u82CF\u53F6\u70BC\u5236\u7684\u6B62\u8840\u4E39\u3002"
   recipeType: 0
   outputType: 0
   outputItemId: 5_heal_basic
   outputCount: 1
   ingredients:
-  - materialId: herb_fern
+  - materialId: herb_fuling
     count: 2
   - materialId: herb_zisu
     count: 1

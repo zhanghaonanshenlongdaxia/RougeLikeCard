@@ -64,7 +64,7 @@ namespace NueGames.NueDeck.Scripts.UI.Reward
             {
                 case RewardType.Gold:
                     var rewardGold = rewardContainerData.GetRandomGoldReward(out var goldRewardData);
-                    rewardClone.BuildReward(goldRewardData.RewardSprite,goldRewardData.RewardDescription);
+                    rewardClone.BuildReward(GetRewardIcon(RewardType.Gold), goldRewardData.RewardDescription);
                     rewardClone.RewardButton.onClick.AddListener(()=>GetGoldReward(rewardClone,rewardGold));
                     break;
                 case RewardType.Card:
@@ -84,7 +84,7 @@ namespace NueGames.NueDeck.Scripts.UI.Reward
                         }
                     }
                     var cardRewardData = rewardContainerData.CardRewardDataList[0];
-                    rewardClone.BuildReward(cardRewardData.RewardSprite, cardRewardData.RewardDescription);
+                    rewardClone.BuildReward(GetRewardIcon(RewardType.Card), cardRewardData.RewardDescription);
                     rewardClone.RewardButton.onClick.AddListener(()=>GetCardReward(rewardClone, _cardRewardList.Count));
                     break;
                 case RewardType.Relic:
@@ -107,13 +107,12 @@ namespace NueGames.NueDeck.Scripts.UI.Reward
                                 grouped[mat.name] = (prev.mat, prev.count + 1);
                             }
                         }
-                        var matRewardData = rewardContainerData.GoldRewardDataList[0];
                         foreach (var kvp in grouped)
                         {
                             var matClone = Instantiate(rewardContainerPrefab, rewardRoot);
                             _currentRewardsList.Add(matClone);
                             var displayName = $"{kvp.Value.mat.ItemName} ×{kvp.Value.count}";
-                            matClone.BuildReward(matRewardData.RewardSprite, displayName);
+                            matClone.BuildReward(kvp.Value.mat.icon != null ? kvp.Value.mat.icon : GetRewardIcon(RewardType.Material), displayName);
                             // 材料已经在DropLoot中添加到背包，这里只是展示
                             var capturedClone = matClone;
                             matClone.RewardButton.onClick.AddListener(() =>
@@ -260,6 +259,24 @@ namespace NueGames.NueDeck.Scripts.UI.Reward
                 }
             );
         }
-        
+
+        /// <summary>按奖励类型获取对应图标</summary>
+        private Sprite GetRewardIcon(RewardType type)
+        {
+            string iconPath = type switch
+            {
+                RewardType.Gold => "Assets/NueGames/NueDeck/Sprites/CardIcons/IncreaseMaxHealth.png",
+                RewardType.Card => "Assets/NueGames/NueDeck/Sprites/CardIcons/Draw.png",
+                RewardType.Material => "Assets/NueGames/NueDeck/Sprites/CardIcons/Heal.png",
+                _ => null
+            };
+            if (string.IsNullOrEmpty(iconPath)) return null;
+#if UNITY_EDITOR
+            return UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>(iconPath);
+#else
+            return null;
+#endif
+        }
+
     }
 }

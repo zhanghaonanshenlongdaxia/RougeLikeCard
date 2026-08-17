@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CardGame;
 using NueGames.NueDeck.Scripts.Characters;
 using NueGames.NueDeck.Scripts.Data.Containers;
 using NueGames.NueDeck.Scripts.Enums;
@@ -16,15 +17,20 @@ namespace NueGames.NueDeck.Scripts.Data.Characters
         [SerializeField] private EnemyBase enemyPrefab;
         [SerializeField] private bool followAbilityPattern;
         [SerializeField] private List<EnemyAbilityData> enemyAbilityList;
+        [Tooltip("死亡音效配置")]
+        [SerializeField] private SoundProfileData deathSoundProfile;
         public List<EnemyAbilityData> EnemyAbilityList => enemyAbilityList;
 
         public EnemyBase EnemyPrefab => enemyPrefab;
+        public SoundProfileData DeathSoundProfile => deathSoundProfile;
 
         [Header("Enemy Identity")]
         [Tooltip("品阶：普通/精英/Boss")]
         [SerializeField] private EnemyTier enemyTier = EnemyTier.Normal;
         [Tooltip("区域序号：0=山野荒原 1=幽冥秘境 2=万蛊沼泽 3=天魔裂隙")]
         [SerializeField] private int regionId;
+        [Tooltip("妖兽境界：决定掉落材料品质")]
+        [SerializeField] private RealmLevel realmLevel = RealmLevel.LianQi;
         [Tooltip("背景故事（图鉴用，长文本）")]
         [SerializeField] [TextArea(3, 8)] private string enemyDescription;
         [Tooltip("立绘大图（图鉴用）")]
@@ -56,8 +62,13 @@ namespace NueGames.NueDeck.Scripts.Data.Characters
         [Tooltip("召唤模式：每次召唤数量")]
         [SerializeField] private int summonCount = 1;
 
+        [Header("Visual")]
+        [Tooltip("体型缩放：1=标准(蝴蝶大小)，2=两倍大，2.5=熊的大小。影响立绘显示大小")]
+        [SerializeField] private float bodyScale = 1f;
+
         public EnemyTier EnemyTier => enemyTier;
         public int RegionId => regionId;
+        public RealmLevel RealmLevel => realmLevel;
         public string EnemyDescription => enemyDescription;
         public Sprite EnemyPortrait => enemyPortrait;
         public string EncounterDialogue => encounterDialogue;
@@ -72,6 +83,7 @@ namespace NueGames.NueDeck.Scripts.Data.Characters
         public string SubordinateId => subordinateId;
         public int SummonInterval => summonInterval;
         public int SummonCount => summonCount;
+        public float BodyScale => bodyScale;
 
         /// <summary>Expose followAbilityPattern for phase-aware EnemyBase</summary>
         public bool FollowAbilityPatternCheck() => followAbilityPattern;
@@ -122,8 +134,10 @@ namespace NueGames.NueDeck.Scripts.Data.Characters
 
         #region Editor
 #if UNITY_EDITOR
+        public void EditDeathSoundProfile(SoundProfileData profile) => deathSoundProfile = profile;
         public void EditEnemyTier(EnemyTier tier) => enemyTier = tier;
         public void EditRegionId(int id) => regionId = id;
+        public void EditRealmLevel(RealmLevel r) => realmLevel = r;
         public void EditEnemyDescription(string desc) => enemyDescription = desc;
         public void EditEnemyPortrait(Sprite s) => enemyPortrait = s;
         public void EditEncounterDialogue(string d) => encounterDialogue = d;
@@ -135,6 +149,7 @@ namespace NueGames.NueDeck.Scripts.Data.Characters
         public void EditSubordinateId(string id) => subordinateId = id;
         public void EditSummonInterval(int n) => summonInterval = n;
         public void EditSummonCount(int c) => summonCount = c;
+        public void EditBodyScale(float s) => bodyScale = s;
 #endif
         #endregion
     }

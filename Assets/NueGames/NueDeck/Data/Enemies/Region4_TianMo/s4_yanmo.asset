@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: s4_yanmo
   m_EditorClassIdentifier: 
   characterID: s4_yanmo
-  characterName: "\u708E\u9B54"
+  characterName: "\u708E\u9B54\u5C06"
   characterDescription: 
   maxHealth: 34
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
@@ -42,6 +42,7 @@ MonoBehaviour:
       maxActionValue: 10
   enemyTier: 0
   regionId: 3
+  realmLevel: 3
   enemyDescription: "\u70C8\u706B\u5316\u5F62\u7684\u9B54\u7269\u3002\u653B\u51FB\u9AD8\u4E14\u5E26\u6613\u4F24\u3002"
   enemyPortrait: {fileID: 0}
   encounterDialogue: "\u547C\u547C\u2014\u2014\uFF01\uFF08\u708E\u9B54\u6D51\u8EAB\u70C8\u7130\uFF09\n\u70E7\u6210\u7070\u70EC\u5427\uFF01"

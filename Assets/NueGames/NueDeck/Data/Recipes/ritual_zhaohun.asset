@@ -14,17 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: ritual_zhaohun
   name: "\u62DB\u9B42\u7389\u7B3A"
-  description: "\u4EE5\u62DB\u9B42\u94C3\u77F3\u4E0E\u51A5\u9B44\u82B1\u732E\u796D\u7684\u62DB\u9B42\u7389\u7B3A\u3002"
+  description: "\u7EB3\u9B42\u73E0\u4E0E\u53E4\u7B26\u6B8B\u7247\u732E\u796D\u7684\u62DB\u9B42\u7389\u7B3A\u3002"
   recipeType: 2
   outputType: 2
   outputItemId: potion_heal
   outputCount: 2
   ingredients:
-  - materialId: soul_zhaohun
+  - materialId: soul_na
     count: 1
-  - materialId: herb_guijiao
-    count: 1
-  - materialId: frag_jianyi
+  - materialId: frag_gufu
     count: 1
   successRate: 0.5
   unlockByDefault: 0

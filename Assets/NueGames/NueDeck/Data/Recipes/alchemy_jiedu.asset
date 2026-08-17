@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: alchemy_jiedu
   name: "\u89E3\u6BD2\u4E39\u65B9"
-  description: "\u4EE5\u51E4\u5C3E\u8568\u4E0E\u7075\u6CC9\u6C34\u70BC\u5236\u7684\u89E3\u6BD2\u4E39\u65B9\u3002"
+  description: "\u767D\u9644\u5B50\u4E0E\u7075\u6CC9\u6C34\u70BC\u5236\u7684\u89E3\u6BD2\u4E39\u3002"
   recipeType: 0
   outputType: 0
   outputItemId: card_frail
   outputCount: 1
   ingredients:
-  - materialId: herb_fern
-    count: 3
+  - materialId: herb_baifu
+    count: 2
   - materialId: water_quan
     count: 1
   successRate: 0.9

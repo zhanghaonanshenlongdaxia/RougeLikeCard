@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab029cd18e56ce43856e99494bf8415, type: 3}
+  m_Name: herb_huangjing
+  m_EditorClassIdentifier: 
+  materialId: herb_huangjing
+  name: "\u9EC4\u7CBE"
+  description: "\u751F\u957F\u4E8E\u8352\u539F\u7684\u8865\u6C14\u7075\u836F\uFF0C\u6027\u5473\u7518\u5E73\u3002"
+  icon: {fileID: 21300000, guid: e509b536f536a474eb29765de3094779, type: 3}
+  materialType: 7
+  rarity: 0
+  quality: 0
+  regionId: 0
+  sourceEnemyId: 
+  dropWeight: 100
+  minDropCount: 1
+  maxDropCount: 1
+  weight: 1
+  stackable: 1
+  maxStack: 99

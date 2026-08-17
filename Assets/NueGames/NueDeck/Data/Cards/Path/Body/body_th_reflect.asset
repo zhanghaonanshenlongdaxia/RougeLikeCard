@@ -15,7 +15,7 @@ MonoBehaviour:
   id: body_th_reflect
   cardName: "\u53CD\u9707\u8BC0"
   manaCost: 1
-  cardSprite: {fileID: 21300000, guid: 1ff30701a92bdf24e802aeecfcb1eff8, type: 3}
+  cardSprite: {fileID: 21300000, guid: 706000101c1f86a4dbdcb383cc5741ed, type: 3}
   rarity: 1
   quality: 1
   usableWithoutTarget: 1

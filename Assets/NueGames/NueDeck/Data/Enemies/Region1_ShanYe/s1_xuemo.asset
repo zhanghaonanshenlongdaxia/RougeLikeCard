@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: s1_xuemo
   m_EditorClassIdentifier: 
   characterID: s1_xuemo
-  characterName: "\u8840\u9B54"
+  characterName: "\u8840\u7FFC\u8760\u738B"
   characterDescription: 
   maxHealth: 77
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
@@ -53,10 +53,12 @@ MonoBehaviour:
     - actionType: 6
       minActionValue: 2
       maxActionValue: 2
+  deathSoundProfile: {fileID: 11400000, guid: 26a84d3072f1a7d468f841e0acf8831a, type: 2}
   enemyTier: 1
   regionId: 0
+  realmLevel: 0
   enemyDescription: "\u4EE5\u8840\u4E3A\u98DF\u7684\u8840\u9B54\uFF0C\u653B\u51FB\u9644\u5E26\u5438\u8840\u3002\u8840\u91CF\u8FC7\u534A\u540E\u55DC\u8840\uFF0C\u5438\u8840\u91CF\u66B4\u589E\u3002"
-  enemyPortrait: {fileID: 0}
+  enemyPortrait: {fileID: 21300000, guid: 5ddd9ceb50cc0924c99476c4a563b771, type: 3}
   encounterDialogue: "\uFF08\u8840\u9B54\u4ECE\u8840\u6C60\u4E2D\u5347\u8D77\uFF0C\u6D51\u8EAB\u8D64\u7EA2\uFF09\n\u4F60\u7684\u8840\u2026\u2026\u95FB\u8D77\u6765\u5F88\u9999\u2026\u2026\n\u8BA9\u6211\u5C1D\u5C1D\uFF01"
   victoryDialogue: "\u6211\u7684\u8840\u2026\u2026\u5E72\u4E86\u2026\u2026\n\u4E0D\u53EF\u80FD\u2026\u2026\u8840\u9B54\u5C82\u4F1A\u8D25\u7ED9\u2026\u2026\n\u5931\u8840\u8FC7\u591A\u2026\u2026\n\uFF08\u8840\u9B54\u5316\u4E3A\u5E72\u67AF\u7684\u8EAF\u58F3\u788E\u88C2\uFF09"
   phaseList: []
@@ -67,3 +69,4 @@ MonoBehaviour:
   subordinateId: 
   summonInterval: 3
   summonCount: 1
+  bodyScale: 2

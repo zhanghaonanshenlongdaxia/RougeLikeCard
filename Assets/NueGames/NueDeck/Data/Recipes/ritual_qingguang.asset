@@ -14,16 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: ritual_qingguang
   name: "\u9752\u5149\u7389\u7B3A"
-  description: "\u4EE5\u9752\u5149\u9B42\u7389\u4E0E\u51A5\u9732\u732E\u796D\u7684\u9752\u5149\u7389\u7B3A\u3002"
+  description: "\u9752\u5149\u9B42\u7389\u4E0E\u5BD2\u591C\u9732\u732E\u796D\u7684\u9752\u5149\u7389\u7B3A\u3002"
   recipeType: 2
   outputType: 2
-  outputItemId: potion_block
+  outputItemId: potion_heal
   outputCount: 1
   ingredients:
   - materialId: soul_qingguang
     count: 1
-  - materialId: water_minglu
+  - materialId: water_hanye
     count: 1
-  successRate: 0.8
+  successRate: 0.7
   unlockByDefault: 0
   quality: 0

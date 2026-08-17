@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: s1_rogue
   m_EditorClassIdentifier: 
   characterID: s1_rogue
-  characterName: "\u9006\u4FEE\u8005"
+  characterName: "\u90AA\u4FEE\u86DB"
   characterDescription: 
   maxHealth: 22
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
@@ -40,10 +40,12 @@ MonoBehaviour:
     - actionType: 0
       minActionValue: 7
       maxActionValue: 10
+  deathSoundProfile: {fileID: 11400000, guid: b18f764d65d42194392567a77782c2cf, type: 2}
   enemyTier: 0
   regionId: 0
+  realmLevel: 0
   enemyDescription: "\u9006\u7EC3\u529F\u6CD5\u8D70\u706B\u5165\u9B54\u7684\u4FEE\u58EB\uFF0C\u5FC3\u667A\u5DF2\u4E71\uFF0C\u89C1\u4EBA\u4FBF\u780D\u3002\u8089\u8EAB\u88AB\u9B54\u6C14\u4FB5\u8680\uFF0C\u529B\u5927\u65E0\u7A77\u3002"
-  enemyPortrait: {fileID: 0}
+  enemyPortrait: {fileID: 21300000, guid: 42ebe8a936fd41b4c800333a86fc1fb8, type: 3}
   encounterDialogue: "\u529F\u6CD5\u2026\u2026\u6211\u7684\u529F\u6CD5\u2026\u2026\u90FD\u7ED9\u6211\u2026\u2026"
   victoryDialogue: "\u9006\u7EC3\u529F\u6CD5\uFF0C\u5BB3\u4EBA\u5BB3\u5DF1\uFF0C\u4ECA\u65E5\u4FBF\u4E3A\u4F60\u8D85\u5EA6\u3002"
   phaseList: []
@@ -54,3 +56,4 @@ MonoBehaviour:
   subordinateId: 
   summonInterval: 3
   summonCount: 1
+  bodyScale: 1

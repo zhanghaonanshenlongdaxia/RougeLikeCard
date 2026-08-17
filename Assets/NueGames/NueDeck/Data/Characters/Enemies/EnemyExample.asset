@@ -26,8 +26,10 @@ MonoBehaviour:
     - actionType: 0
       minActionValue: 0
       maxActionValue: 0
+  deathSoundProfile: {fileID: 0}
   enemyTier: 0
   regionId: 0
+  realmLevel: 0
   enemyDescription: 
   enemyPortrait: {fileID: 0}
   encounterDialogue: 
@@ -40,3 +42,4 @@ MonoBehaviour:
   subordinateId: 
   summonInterval: 3
   summonCount: 1
+  bodyScale: 1

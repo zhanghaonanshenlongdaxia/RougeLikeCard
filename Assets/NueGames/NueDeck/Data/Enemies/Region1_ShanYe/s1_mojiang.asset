@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: s1_mojiang
   m_EditorClassIdentifier: 
   characterID: s1_mojiang
-  characterName: "\u9B54\u5C06"
+  characterName: "\u9B54\u7532\u517D"
   characterDescription: 
   maxHealth: 93
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
@@ -53,10 +53,12 @@ MonoBehaviour:
     - actionType: 6
       minActionValue: 2
       maxActionValue: 2
+  deathSoundProfile: {fileID: 11400000, guid: 4ef33bdde9df6314e8e37fca82aac431, type: 2}
   enemyTier: 1
   regionId: 0
+  realmLevel: 0
   enemyDescription: "\u5929\u9B54\u88C2\u9699\u6E17\u51FA\u7684\u9B54\u5C06\u6B8B\u5F71\u3002\u653B\u9632\u5747\u8861\uFF0C\u8840\u91CF\u516D\u6210\u540E\u9B54\u5316\uFF0C\u653B\u51FB\u529B\u66B4\u589E\u3002"
-  enemyPortrait: {fileID: 0}
+  enemyPortrait: {fileID: 21300000, guid: e04c9ceb1e58d674a94e7e44cf520e63, type: 3}
   encounterDialogue: "\uFF08\u9B54\u5C06\u7684\u5F71\u5B50\u4ECE\u5730\u9762\u5347\u8D77\uFF0C\u9B54\u6C14\u6ED4\u5929\uFF09\n\u533A\u533A\u877C\u8681\u2026\u2026\n\u4E5F\u6562\u963B\u6321\u672C\u5C06\u7684\u53BB\u8DEF\uFF1F"
   victoryDialogue: "\u9B54\u2026\u2026\u6C14\u6563\u4E86\u2026\u2026\n\u770B\u6765\u2026\u2026\u8FD9\u5177\u6B8B\u8EAF\u2026\u2026\u4E5F\u5230\u5934\u4E86\u2026\u2026\n\uFF08\u9B54\u5C06\u5316\u4E3A\u9ED1\u70DF\u6D88\u6563\uFF09"
   phaseList: []
@@ -67,3 +69,4 @@ MonoBehaviour:
   subordinateId: 
   summonInterval: 3
   summonCount: 1
+  bodyScale: 2.5

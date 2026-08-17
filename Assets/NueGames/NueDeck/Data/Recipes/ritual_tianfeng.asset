@@ -14,15 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: ritual_tianfeng
   name: "\u5929\u98CE\u7389\u7B3A"
-  description: "\u4EE5\u5929\u98CE\u9AD3\u4E0E\u5730\u7075\u6D8E\u732E\u796D\u7684\u5929\u98CE\u7389\u7B3A\u3002"
+  description: "\u5929\u98CE\u9AD3\u6DB2\u4E0E\u5730\u7075\u7518\u6D8E\u732E\u796D\u7684\u5929\u98CE\u7389\u7B3A\u3002"
   recipeType: 2
   outputType: 2
-  outputItemId: potion_block
+  outputItemId: potion_energy
   outputCount: 3
   ingredients:
-  - materialId: treasure_6
+  - materialId: treasure_zhuoshai
     count: 1
-  - materialId: treasure_7
+  - materialId: treasure_zhuixing
     count: 1
   successRate: 0.3
   unlockByDefault: 0

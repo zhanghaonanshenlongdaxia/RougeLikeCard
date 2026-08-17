@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: s1_scout
   m_EditorClassIdentifier: 
   characterID: s1_scout
-  characterName: "\u65A5\u5019"
+  characterName: "\u63A2\u8DEF\u9F20"
   characterDescription: 
   maxHealth: 22
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
@@ -40,10 +40,12 @@ MonoBehaviour:
     - actionType: 0
       minActionValue: 7
       maxActionValue: 10
+  deathSoundProfile: {fileID: 11400000, guid: a67f5d4698c68cf40af0e9262de3359f, type: 2}
   enemyTier: 0
   regionId: 0
+  realmLevel: 0
   enemyDescription: "\u6E38\u8361\u5728\u5C71\u91CE\u7684\u65A5\u5019\uFF0C\u64C5\u957F\u4FA6\u5BDF\u4E0E\u9A9A\u6270\u3002\u8EAB\u6CD5\u7075\u6D3B\u4F46\u653B\u51FB\u4E0D\u9AD8\u3002"
-  enemyPortrait: {fileID: 0}
+  enemyPortrait: {fileID: 21300000, guid: bce2bdc50f9e00543a1a45fe65f72a1e, type: 3}
   encounterDialogue: "\u5618\u2026\u2026\u522B\u52A8\uFF0C\u6211\u5148\u63A2\u63A2\u4F60\u7684\u5E95\u3002"
   victoryDialogue: "\u63A2\u4EC0\u4E48\u5E95\uFF0C\u53D7\u6B7B\u5427\uFF01"
   phaseList: []
@@ -54,3 +56,4 @@ MonoBehaviour:
   subordinateId: 
   summonInterval: 3
   summonCount: 1
+  bodyScale: 0.9

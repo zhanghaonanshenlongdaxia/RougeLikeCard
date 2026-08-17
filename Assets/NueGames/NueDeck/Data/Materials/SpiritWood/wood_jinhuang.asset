@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab029cd18e56ce43856e99494bf8415, type: 3}
+  m_Name: wood_jinhuang
+  m_EditorClassIdentifier: 
+  materialId: wood_jinhuang
+  name: "\u91D1\u4E1D\u6960\u7687"
+  description: "\u91D1\u4E1D\u6960\u4E2D\u7684\u7687\u54C1\uFF0C\u6574\u68F5\u53EA\u6709\u62C7\u6307\u7C97\u5FC3\u6750\u53EF\u7528\u3002\u4EF7\u503C\u8FDE\u57CE\u3002"
+  icon: {fileID: 21300000, guid: 17af3fcc38f195345bfb4b182a185cbc, type: 3}
+  materialType: 11
+  rarity: 0
+  quality: 2
+  regionId: 0
+  sourceEnemyId: 
+  dropWeight: 100
+  minDropCount: 1
+  maxDropCount: 1
+  weight: 1
+  stackable: 1
+  maxStack: 99

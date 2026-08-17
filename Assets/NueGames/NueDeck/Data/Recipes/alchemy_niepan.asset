@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: alchemy_niepan
   name: "\u6D85\u69C3\u4E39\u65B9"
-  description: "\u4EE5\u6D85\u69C3\u679C\u4E0E\u4E09\u5149\u795E\u6C34\u70BC\u5236\u7684\u6D85\u69C3\u4E39\u65B9\u3002"
+  description: "\u6D85\u69C3\u82B1\u4E0E\u708E\u6CC9\u6C34\u70BC\u5236\u7684\u6D85\u69C3\u4E39\u3002"
   recipeType: 0
   outputType: 0
   outputItemId: body_su_gold
@@ -22,10 +22,8 @@ MonoBehaviour:
   ingredients:
   - materialId: herb_niepan
     count: 1
-  - materialId: water_sanguang
+  - materialId: water_yanquan
     count: 1
-  - materialId: core_heifeng
-    count: 1
-  successRate: 0.25
+  successRate: 0.3
   unlockByDefault: 0
   quality: 0

@@ -14,15 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeId: forging_baitie
   name: "\u767D\u94C1\u5668\u56FE"
-  description: "\u4EE5\u767D\u94C1\u77FF\u4E0E\u6843\u6728\u7075\u953B\u9020\u7684\u767D\u94C1\u5668\u56FE\u3002"
+  description: "\u767D\u94C1\u77FF\u4E0E\u8D64\u677E\u5FC3\u6750\u953B\u9020\u7684\u767D\u94C1\u5668\u3002"
   recipeType: 1
   outputType: 1
-  outputItemId: relic_war_horn
+  outputItemId: relic_snake_ring
   outputCount: 1
   ingredients:
   - materialId: ore_baitie
     count: 2
-  - materialId: wood_taomuling
+  - materialId: wood_chisong
     count: 1
   successRate: 0.85
   unlockByDefault: 1

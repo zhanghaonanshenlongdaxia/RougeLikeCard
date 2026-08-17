@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: forging_xuantie
   m_EditorClassIdentifier: 
   recipeId: forging_xuantie
-  name: "\u7384\u94C1\u5251\u56FE"
-  description: "\u4EE5\u7384\u94C1\u77FF\u4E0E\u677E\u5FC3\u6728\u953B\u9020\u7684\u7384\u94C1\u5251\u56FE\u3002"
+  name: "\u7384\u94C1\u5668\u56FE"
+  description: "\u7384\u94C1\u77FF\u4E0E\u7FE0\u8282\u7075\u7AF9\u953B\u9020\u7684\u7384\u94C1\u5668\u3002"
   recipeType: 1
   outputType: 1
   outputItemId: relic_war_horn
@@ -22,9 +22,7 @@ MonoBehaviour:
   ingredients:
   - materialId: ore_xuantie
     count: 3
-  - materialId: wood_songxinmu
-    count: 1
-  - materialId: bone_0
+  - materialId: wood_zhu
     count: 1
   successRate: 0.7
   unlockByDefault: 1

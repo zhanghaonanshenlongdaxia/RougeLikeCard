@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: s1_slime
   m_EditorClassIdentifier: 
   characterID: s1_slime
-  characterName: "\u7C98\u6DB2\u602A"
+  characterName: "\u8150\u6CE5\u602A"
   characterDescription: 
   maxHealth: 22
   enemyPrefab: {fileID: 243822687015991123, guid: c973aeb67e007d54c97fd480d7f50773, type: 3}
@@ -43,10 +43,12 @@ MonoBehaviour:
     - actionType: 5
       minActionValue: 1
       maxActionValue: 1
+  deathSoundProfile: {fileID: 11400000, guid: 9ad664a862f1fe14795221251b709416, type: 2}
   enemyTier: 0
   regionId: 0
+  realmLevel: 0
   enemyDescription: "\u65E0\u5B9A\u5F62\u7684\u7C98\u6DB2\u751F\u7269\uFF0C\u4F1A\u8150\u8680\u88C5\u5907\u62A4\u7532\u3002\u770B\u4F3C\u65E0\u5BB3\u5B9E\u5219\u4EE4\u4EBA\u5934\u75BC\u3002"
-  enemyPortrait: {fileID: 0}
+  enemyPortrait: {fileID: 21300000, guid: 7100ca02754028446b7f64a8e854319a, type: 3}
   encounterDialogue: "\u5495\u565C\u2026\u2026\uFF08\u7C98\u6DB2\u602A\u8815\u52A8\u7740\uFF0C\u53D1\u51FA\u9ECF\u817B\u7684\u58F0\u54CD\uFF09"
   victoryDialogue: "\u6076\u5FC3\u7684\u4E1C\u897F\u3002"
   phaseList: []
@@ -57,3 +59,4 @@ MonoBehaviour:
   subordinateId: 
   summonInterval: 3
   summonCount: 1
+  bodyScale: 1
