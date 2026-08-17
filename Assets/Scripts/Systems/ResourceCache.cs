@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using NueGames.NueDeck.Scripts.Data.Containers;
 using NueGames.NueDeck.Scripts.Enums;
 using UnityEngine;
 
@@ -17,6 +19,7 @@ namespace CardGame
         private static List<PotionData> _potions;
         private static List<EventData> _events;
         private static List<NueGames.NueDeck.Scripts.Data.Collection.CardData> _cards;
+        private static Dictionary<int, EncounterData> _encountersByRegion;
 
         public static void Init()
         {
@@ -93,6 +96,23 @@ namespace CardGame
                 var c = UnityEditor.AssetDatabase.LoadAssetAtPath<NueGames.NueDeck.Scripts.Data.Collection.CardData>(path);
                 if (c != null) _cards.Add(c);
             }
+
+            // EncounterData by region
+            _encountersByRegion = new Dictionary<int, EncounterData>();
+            var encNames = new[] { "山野荒原", "幽冥秘境", "万蛊沼泽", "天魔裂隙" };
+            for (int i = 0; i < encNames.Length; i++)
+            {
+                var encPath = $"Assets/NueGames/NueDeck/Data/Encounters/Encounter_{encNames[i]}.asset";
+                var enc = UnityEditor.AssetDatabase.LoadAssetAtPath<EncounterData>(encPath);
+                if (enc != null)
+                {
+                    _encountersByRegion[i] = enc;
+                }
+                else
+                {
+                    Debug.LogWarning($"[ResourceCache] EncounterData not found: {encPath}");
+                }
+            }
         }
 #else
         static void LoadFromResources()
@@ -103,6 +123,15 @@ namespace CardGame
             _potions = new List<PotionData>(Resources.LoadAll<PotionData>("Data/Potions"));
             _events = new List<EventData>(Resources.LoadAll<EventData>("Data/Events"));
             _cards = new List<NueGames.NueDeck.Scripts.Data.Collection.CardData>(Resources.LoadAll<NueGames.NueDeck.Scripts.Data.Collection.CardData>("Data/Cards"));
+
+            _encountersByRegion = new Dictionary<int, EncounterData>();
+            var encArr = Resources.LoadAll<EncounterData>("Data/Encounters");
+            var encNames = new[] { "山野荒原", "幽冥秘境", "万蛊沼泽", "天魔裂隙" };
+            for (int i = 0; i < encNames.Length; i++)
+            {
+                var enc = System.Array.Find(encArr, e => e.name.Contains(encNames[i]));
+                if (enc != null) _encountersByRegion[i] = enc;
+            }
         }
 #endif
 
@@ -140,6 +169,16 @@ namespace CardGame
         {
             if (!_initialized) Init();
             return _events ?? new List<EventData>();
+        }
+
+        /// <summary>根据regionId获取对应的EncounterData</summary>
+        public static EncounterData GetEncounterData(int regionId)
+        {
+            if (!_initialized) Init();
+            if (_encountersByRegion != null && _encountersByRegion.TryGetValue(regionId, out var enc))
+                return enc;
+            Debug.LogWarning($"[ResourceCache] No EncounterData for regionId={regionId}");
+            return null;
         }
 
         public static RelicData GetRandomRelic()

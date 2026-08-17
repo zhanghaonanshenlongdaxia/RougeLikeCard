@@ -29,47 +29,49 @@ MonoBehaviour:
     enemyEncounterList:
     - targetBackgroundType: 0
       enemyList:
-      - {fileID: 11400000, guid: dfb61b7e6cf230f409a992f3a2e0e0d3, type: 2}
-      - {fileID: 11400000, guid: 48753a99794ef1147a2c033f70c8cb92, type: 2}
+      - {fileID: 11400000, guid: 222e75a56e7d3214bb83d39a654bea8d, type: 2}
     - targetBackgroundType: 0
       enemyList:
-      - {fileID: 11400000, guid: 6614ef4664171284fbcd31039ff52088, type: 2}
-      - {fileID: 11400000, guid: 0a51d68a6f2fdea49aa2b24aba8dd8ed, type: 2}
-      - {fileID: 11400000, guid: 86f1a39fd043003438da5ee055ee945f, type: 2}
+      - {fileID: 11400000, guid: 69f002329561f6b4b8af3e5bb7b30953, type: 2}
+    - targetBackgroundType: 0
+      enemyList:
+      - {fileID: 11400000, guid: 22b006983921d93409d98f5857f5b1b2, type: 2}
+    - targetBackgroundType: 0
+      enemyList:
+      - {fileID: 11400000, guid: 960b32ca51c633f42b090ace556db4c1, type: 2}
+    - targetBackgroundType: 0
+      enemyList:
+      - {fileID: 11400000, guid: 7becd263275eba5469c871bc56db2f67, type: 2}
     - targetBackgroundType: 0
       enemyList:
       - {fileID: 11400000, guid: d0cc17cca0ebfac44aa06e4ce7133be1, type: 2}
-      - {fileID: 11400000, guid: dfb61b7e6cf230f409a992f3a2e0e0d3, type: 2}
-      - {fileID: 11400000, guid: c7bbba803ff7f4842b82ae0de8caa13c, type: 2}
     - targetBackgroundType: 0
       enemyList:
       - {fileID: 11400000, guid: a3e988acd96287240a901a7d96949f53, type: 2}
-      - {fileID: 11400000, guid: fe244a5116b8a4741baf54f3c60de9bd, type: 2}
     - targetBackgroundType: 0
       enemyList:
-      - {fileID: 11400000, guid: 48753a99794ef1147a2c033f70c8cb92, type: 2}
-      - {fileID: 11400000, guid: 1f2a92db29c07e440991ead6193203ab, type: 2}
-      - {fileID: 11400000, guid: ca54d6bac3e1a684ca0414ae19275a61, type: 2}
+      - {fileID: 11400000, guid: 105e59b6efbd63e48b645931e6a7cd77, type: 2}
     - targetBackgroundType: 0
       enemyList:
-      - {fileID: 11400000, guid: 39eb3128a5450bd46b47e6f9d0d63abf, type: 2}
-      - {fileID: 11400000, guid: f217310f16be24a43b4806a30c3acbfe, type: 2}
-      - {fileID: 11400000, guid: 3476c39fdabe3af41909b6299c18da6c, type: 2}
+      - {fileID: 11400000, guid: 105e59b6efbd63e48b645931e6a7cd77, type: 2}
+      - {fileID: 11400000, guid: 222e75a56e7d3214bb83d39a654bea8d, type: 2}
     - targetBackgroundType: 0
       enemyList:
-      - {fileID: 11400000, guid: 793f23bd7c21cd74cbc2911ac81a4a61, type: 2}
       - {fileID: 11400000, guid: a3e988acd96287240a901a7d96949f53, type: 2}
-      - {fileID: 11400000, guid: 6244d0c27c6b5b14da10c1847efa0556, type: 2}
+      - {fileID: 11400000, guid: 7becd263275eba5469c871bc56db2f67, type: 2}
+    eliteEncounterList:
+    - targetBackgroundType: 0
+      enemyList:
       - {fileID: 11400000, guid: e402ade73a29fb743977831931589212, type: 2}
     - targetBackgroundType: 0
       enemyList:
-      - {fileID: 11400000, guid: 39eb3128a5450bd46b47e6f9d0d63abf, type: 2}
+      - {fileID: 11400000, guid: ed3a21d7ad683ed468a36f95996d3186, type: 2}
     - targetBackgroundType: 0
       enemyList:
-      - {fileID: 11400000, guid: bd4fd2b6c9f454b4690034dd1bfeaed8, type: 2}
-      - {fileID: 11400000, guid: 69b975fc6acb81e49a8961d0ed020738, type: 2}
-      - {fileID: 11400000, guid: a0b1c837ec1d9f1428b54ecd1e7d5275, type: 2}
+      - {fileID: 11400000, guid: 46b5cbc35dd3f57429a01913e6500af4, type: 2}
     - targetBackgroundType: 0
       enemyList:
-      - {fileID: 11400000, guid: 222e75a56e7d3214bb83d39a654bea8d, type: 2}
-      - {fileID: 11400000, guid: 6614ef4664171284fbcd31039ff52088, type: 2}
+      - {fileID: 11400000, guid: 4169fbbe0387f954bb35f0540bc90fa0, type: 2}
+    - targetBackgroundType: 0
+      enemyList:
+      - {fileID: 11400000, guid: 358e52806cb1e9b409d48a19ac8e20b1, type: 2}

@@ -63,7 +63,14 @@ namespace CardGame.UI
 
             var battleModel = arch.GetModel<IBattleModel>();
             bool canBreak = realmSystem.CanBreakthrough();
-            if (_costText) _costText.text = $"突破至：{next.realmName}\n\n灵石：{next.goldCost}（持有 {battleModel.CurrentGold.Value}）\n材料：{ItemQualityHelper.GetDisplayName(next.requiredQuality)} × {next.materialCount}\n丹药：{next.requiredPotionId}\n\n奖励：+{next.hpBonus} HP / +{next.shenShiBonus} 神识上限\n\n{next.description}";
+            // 丹药名通过ID查找
+            string potionName = next.requiredPotionId;
+            if (!string.IsNullOrEmpty(next.requiredPotionId))
+            {
+                var potion = CardGame.ResourceCache.GetPotions().Find(p => p.potionId == next.requiredPotionId);
+                if (potion != null) potionName = potion.name;
+            }
+            if (_costText) _costText.text = $"突破至：{next.realmName}\n\n灵石：{next.goldCost}（持有 {battleModel.CurrentGold.Value}）\n材料：{ItemQualityHelper.GetDisplayName(next.requiredQuality)} × {next.materialCount}\n丹药：{potionName}\n\n奖励：+{next.hpBonus} HP / +{next.shenShiBonus} 神识上限\n\n{next.description}";
 
             if (_breakthroughBtn)
             {

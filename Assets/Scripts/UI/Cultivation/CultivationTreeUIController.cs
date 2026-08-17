@@ -623,17 +623,17 @@ namespace CardGame.UI.Cultivation
         private static string GetCardDisplayName(string cardId)
         {
             var cards = ResourceCache.GetCardsFromAllList();
-            if (cards == null) return cardId;
+            if (cards == null) return "未知";
             var card = cards.Find(c => c.Id == cardId);
-            return card != null ? card.CardName : cardId;
+            return card != null ? card.CardName : "未知";
         }
 
         private static string GetRecipeDisplayName(string recipeId)
         {
             var recipes = ResourceCache.GetRecipes();
-            if (recipes == null) return recipeId;
+            if (recipes == null) return "未知";
             var recipe = recipes.Find(r => r.recipeId == recipeId);
-            return recipe != null ? recipe.name : recipeId;
+            return recipe != null ? recipe.name : "未知";
         }
 
         private static string PassiveStatText(PassiveStatType t) => t switch

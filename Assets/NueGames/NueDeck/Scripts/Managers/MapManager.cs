@@ -204,8 +204,21 @@ namespace NueGames.NueDeck.Scripts.Managers
             switch (node.nodeType)
             {
                 case MapNodeType.Combat:
+                    this.GetModel<IBattleModel>().CurrentCombatNodeType = MapNodeType.Combat;
+                    this.GetModel<IBattleModel>().IsFinalEncounter = false;
+                    GameManager.PersistentGameplayData.IsFinalEncounter = false;
+                    EnterCombat();
+                    break;
                 case MapNodeType.Elite:
+                    this.GetModel<IBattleModel>().CurrentCombatNodeType = MapNodeType.Elite;
+                    this.GetModel<IBattleModel>().IsFinalEncounter = false;
+                    GameManager.PersistentGameplayData.IsFinalEncounter = false;
+                    EnterCombat();
+                    break;
                 case MapNodeType.Boss:
+                    this.GetModel<IBattleModel>().CurrentCombatNodeType = MapNodeType.Boss;
+                    this.GetModel<IBattleModel>().IsFinalEncounter = true;
+                    GameManager.PersistentGameplayData.IsFinalEncounter = true;
                     EnterCombat();
                     break;
                 case MapNodeType.Shop:

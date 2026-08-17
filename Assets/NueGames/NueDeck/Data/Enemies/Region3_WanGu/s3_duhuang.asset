@@ -93,3 +93,10 @@ MonoBehaviour:
       - actionType: 2
         minActionValue: 2
         maxActionValue: 2
+  spawnType: 0
+  spawnCount: 2
+  commanderId: 
+  subordinateMode: 0
+  subordinateId: 
+  summonInterval: 3
+  summonCount: 1

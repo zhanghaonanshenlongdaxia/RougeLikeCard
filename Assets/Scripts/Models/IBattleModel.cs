@@ -21,6 +21,9 @@ namespace CardGame
         bool IsFinalEncounter { get; set; }
         int MaxCardOnHand { get; set; }
 
+        /// <summary>当前战斗节点类型（地图场景设置，战斗场景读取）</summary>
+        MapNodeType CurrentCombatNodeType { get; set; }
+
         /// <summary>事件预存的力量加成（下场战斗生效后清零）</summary>
         int PendingStrengthBonus { get; set; }
         /// <summary>事件预存的敏捷加成（下场战斗生效后清零）</summary>

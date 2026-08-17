@@ -43,8 +43,8 @@ namespace CardGame.Editor
                         difficultyType = DifficultyType.Hard,
                         difficultyName = "困难",
                         description = "敌人更强，精英怪更多，需要一定卡牌实力。",
-                        requiredShenShi = 20,
-                        mapFloors = 10, mapColumns = 3,
+                        requiredShenShi = 0,
+                        mapFloors = 12, mapColumns = 3,
                         enemyHpMultiplier = 1.3f, enemyDamageMultiplier = 1.3f,
                         eliteChance = 0.3f, bossPhaseCount = 2,
                         lootMultiplier = 1.3f, lootRarityBonus = 1, goldRewardMultiplier = 2

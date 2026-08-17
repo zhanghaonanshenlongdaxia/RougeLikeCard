@@ -10,9 +10,9 @@ namespace CardGame
     {
         static readonly MapNodeType[] NormalFloorTypes = 
         {
-            MapNodeType.Combat, MapNodeType.Combat, MapNodeType.Combat,
-            MapNodeType.Event, MapNodeType.Event,
-            MapNodeType.Shop, MapNodeType.Campfire, MapNodeType.Treasure
+            MapNodeType.Combat, MapNodeType.Combat, MapNodeType.Combat, MapNodeType.Combat,
+            MapNodeType.Event,
+            MapNodeType.Shop, MapNodeType.Campfire
         };
 
         static readonly MapNodeType[] EliteFloorTypes =
@@ -76,30 +76,21 @@ namespace CardGame
 
         static MapNodeType GetRandomNodeType(int floor, int totalFloors)
         {
-            // 每5层有概率出精英
-            if (floor % 5 == 0 && floor < totalFloors)
-            {
-                if (Random.value < 0.3f)
-                    return MapNodeType.Elite;
-            }
+            // Boss层前一层强制精英
+            if (floor == totalFloors - 1)
+                return MapNodeType.Elite;
 
-            // 每3层可能有商店或篝火
-            if (floor % 3 == 0)
-            {
-                float r = Random.value;
-                if (r < 0.3f) return MapNodeType.Shop;
-                if (r < 0.6f) return MapNodeType.Campfire;
-            }
+            // 每4层出1个精英
+            if (floor % 4 == 0 && floor < totalFloors - 1)
+                return MapNodeType.Elite;
 
-            // 偶尔出宝箱
-            if (floor > 2 && Random.value < 0.08f)
-                return MapNodeType.Treasure;
-
-            // 偶尔出事件
-            if (Random.value < 0.2f)
-                return MapNodeType.Event;
-
-            return NormalFloorTypes[Random.Range(0, NormalFloorTypes.Length)];
+            // 节点类型权重：战斗60% / 事件15% / 商店10% / 篝火10% / 宝箱5%
+            float r = Random.value;
+            if (r < 0.60f) return MapNodeType.Combat;
+            if (r < 0.75f) return MapNodeType.Event;
+            if (r < 0.85f) return MapNodeType.Shop;
+            if (r < 0.95f) return MapNodeType.Campfire;
+            return MapNodeType.Treasure;
         }
 
         static void ConnectNodes(GameMap map, int maxColumns)

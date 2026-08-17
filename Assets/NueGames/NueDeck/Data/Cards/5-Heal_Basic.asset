@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 5-Heal_Basic
   m_EditorClassIdentifier: 
   id: 5_heal_basic
-  cardName: "\u56DE\u8840"
+  cardName: "\u56DE\u6625\u672F"
   manaCost: 1
   cardSprite: {fileID: 21300000, guid: f071ce71140638f469d6a10acc1a1b67, type: 3}
   rarity: 0

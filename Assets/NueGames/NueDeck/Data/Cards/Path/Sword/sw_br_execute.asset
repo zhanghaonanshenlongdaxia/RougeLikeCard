@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: sw_br_execute
   m_EditorClassIdentifier: 
   id: sw_br_execute
-  cardName: "\u5904\u51B3"
+  cardName: "\u8BDB\u4ED9\u65A9"
   manaCost: 3
   cardSprite: {fileID: 21300000, guid: 04684b85c9246b945a48b41d9ec2f4be, type: 3}
   rarity: 2

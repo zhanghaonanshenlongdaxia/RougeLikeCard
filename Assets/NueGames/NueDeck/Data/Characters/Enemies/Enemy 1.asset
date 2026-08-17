@@ -33,3 +33,17 @@ MonoBehaviour:
     - actionType: 3
       minActionValue: 5
       maxActionValue: 8
+  enemyTier: 0
+  regionId: 0
+  enemyDescription: 
+  enemyPortrait: {fileID: 0}
+  encounterDialogue: 
+  victoryDialogue: 
+  phaseList: []
+  spawnType: 0
+  spawnCount: 2
+  commanderId: 
+  subordinateMode: 0
+  subordinateId: 
+  summonInterval: 3
+  summonCount: 1

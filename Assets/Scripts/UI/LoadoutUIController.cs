@@ -278,9 +278,9 @@ namespace CardGame.UI
         private string GetCardName(string cardId)
         {
             var cards = ResourceCache.GetCardsFromAllList();
-            if (cards == null) return cardId;
+            if (cards == null) return "未知";
             var card = cards.Find(c => c.Id == cardId);
-            return card != null ? card.CardName : cardId;
+            return card != null ? card.CardName : "未知";
         }
 
         private void ClearChildren(Transform t)

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 3-Block_Basic
   m_EditorClassIdentifier: 
   id: 3_block_basic
-  cardName: "\u57FA\u7840\u683C\u6321"
+  cardName: "\u7075\u6C14\u76FE"
   manaCost: 1
   cardSprite: {fileID: -1513487178384027574, guid: a707003c96586cc41b22ae32a9cdb636, type: 3}
   rarity: 0

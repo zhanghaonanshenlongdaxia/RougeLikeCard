@@ -279,8 +279,24 @@ namespace CardGame.UI
             var loadoutSystem = arch.GetSystem<ILoadoutSystem>();
             loadoutSystem.StartAdventure();
 
-            gameObject.SetActive(false);
+            // 根据地图regionId切换遭遇表
             var gm = NueGames.NueDeck.Scripts.Managers.GameManager.Instance;
+            if (gm != null)
+            {
+                var encounterData = CardGame.ResourceCache.GetEncounterData(_selectedMap.regionId);
+                if (encounterData != null)
+                {
+                    var encField = typeof(NueGames.NueDeck.Scripts.Managers.GameManager)
+                        .GetField("encounterData", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    if (encField != null)
+                    {
+                        encField.SetValue(gm, encounterData);
+                        Debug.Log($"[AdventureMap] 切换遭遇表: regionId={_selectedMap.regionId} ({_selectedMap.mapName})");
+                    }
+                }
+            }
+
+            gameObject.SetActive(false);
             var uiMgr = NueGames.NueDeck.Scripts.Managers.UIManager.Instance;
             if (uiMgr != null && gm != null)
                 uiMgr.ChangeScene(gm.SceneData.mapSceneIndex);

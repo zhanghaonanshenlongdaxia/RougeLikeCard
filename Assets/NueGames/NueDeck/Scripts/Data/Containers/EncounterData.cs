@@ -19,7 +19,7 @@ namespace NueGames.NueDeck.Scripts.Data.Containers
         public bool EncounterRandomlyAtStage => encounterRandomlyAtStage;
         public List<EnemyEncounterStage> EnemyEncounterList => enemyEncounterList;
 
-        public EnemyEncounter GetEnemyEncounter(int stageId = 0,int encounterId =0,bool isFinal = false)
+        public EnemyEncounter GetEnemyEncounter(int stageId = 0, int encounterId = 0, bool isFinal = false)
         {
             var selectedStage = EnemyEncounterList.First(x => x.StageId == stageId);
             if (isFinal) return selectedStage.BossEncounterList.RandomItem();
@@ -27,6 +27,18 @@ namespace NueGames.NueDeck.Scripts.Data.Containers
             return EncounterRandomlyAtStage
                 ? selectedStage.EnemyEncounterList.RandomItem()
                 : selectedStage.EnemyEncounterList[encounterId] ?? selectedStage.EnemyEncounterList.RandomItem();
+        }
+
+        /// <summary>按类型获取遭遇池</summary>
+        public List<EnemyEncounter> GetEncounterPool(int stageId, CardGame.MapNodeType nodeType)
+        {
+            var selectedStage = EnemyEncounterList.First(x => x.StageId == stageId);
+            return nodeType switch
+            {
+                CardGame.MapNodeType.Elite => selectedStage.EliteEncounterList,
+                CardGame.MapNodeType.Boss => selectedStage.BossEncounterList,
+                _ => selectedStage.EnemyEncounterList
+            };
         }
         
     }
@@ -39,10 +51,12 @@ namespace NueGames.NueDeck.Scripts.Data.Containers
         [SerializeField] private int stageId;
         [SerializeField] private List<EnemyEncounter> bossEncounterList;
         [SerializeField] private List<EnemyEncounter> enemyEncounterList;
+        [SerializeField] private List<EnemyEncounter> eliteEncounterList;
         public string Name => name;
         public int StageId => stageId;
         public List<EnemyEncounter> BossEncounterList => bossEncounterList;
         public List<EnemyEncounter> EnemyEncounterList => enemyEncounterList;
+        public List<EnemyEncounter> EliteEncounterList => eliteEncounterList;
     }
     
     

@@ -55,6 +55,9 @@ namespace CardGame
             var gm = NueGames.NueDeck.Scripts.Managers.GameManager.Instance;
             if (gm == null) return;
 
+            // 重置遭遇记录（新冒险开始）
+            this.GetModel<IEncounterModel>().Reset();
+
             // 出征卡组 = 功法基础卡 + 玩家自选附加卡 + 装备神通卡
             gm.PersistentGameplayData.CurrentCardsList.Clear();
 

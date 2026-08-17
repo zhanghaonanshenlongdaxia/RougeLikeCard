@@ -53,3 +53,10 @@ MonoBehaviour:
   encounterDialogue: "\u5636\u5636\u2026\u2026\uFF08\u86CA\u8681\u7FA4\u6D8C\u6765\uFF09"
   victoryDialogue: "\u8682\u8681\uFF1F\u8E29\u6B7B\uFF01"
   phaseList: []
+  spawnType: 2
+  spawnCount: 2
+  commanderId: 
+  subordinateMode: 0
+  subordinateId: s3_lizard
+  summonInterval: 3
+  summonCount: 1

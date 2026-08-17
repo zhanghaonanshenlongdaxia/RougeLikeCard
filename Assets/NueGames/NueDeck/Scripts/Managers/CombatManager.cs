@@ -45,6 +45,7 @@ namespace NueGames.NueDeck.Scripts.Managers
         public AllyBase CurrentMainAlly => CurrentAlliesList.Count>0 ? CurrentAlliesList[0] : null;
 
         public EnemyEncounter CurrentEncounter { get; private set; }
+        public List<CardGame.MaterialData> LastDroppedMaterials { get; private set; } = new List<CardGame.MaterialData>();
         
         public CombatStateType CurrentCombatStateType
         {
@@ -456,31 +457,166 @@ namespace NueGames.NueDeck.Scripts.Managers
                 return;
             }
 
-            CurrentEncounter = GameManager.EncounterData.GetEnemyEncounter(
+            // 按节点类型从对应池子抽取遭遇（不重复）
+            var encounterModel = this.GetModel<IEncounterModel>();
+            var battleModel = this.GetModel<IBattleModel>();
+            var currentCombatNodeType = battleModel.CurrentCombatNodeType;
+            var encounterPool = GameManager.EncounterData.GetEncounterPool(
                 GameManager.PersistentGameplayData.CurrentStageId,
-                GameManager.PersistentGameplayData.CurrentEncounterId,
-                GameManager.PersistentGameplayData.IsFinalEncounter);
+                currentCombatNodeType);
+
+            if (encounterPool == null || encounterPool.Count == 0)
+            {
+                // 兜底：旧的随机逻辑
+                CurrentEncounter = GameManager.EncounterData.GetEnemyEncounter(
+                    GameManager.PersistentGameplayData.CurrentStageId,
+                    GameManager.PersistentGameplayData.CurrentEncounterId,
+                    GameManager.PersistentGameplayData.IsFinalEncounter);
+            }
+            else
+            {
+                bool isElite = currentCombatNodeType == MapNodeType.Elite;
+                bool isBoss = currentCombatNodeType == MapNodeType.Boss;
+                var usedSet = isElite ? encounterModel.UsedEliteEncounters : encounterModel.UsedNormalEncounters;
+
+                // 过滤未用遭遇
+                var available = new List<int>();
+                for (int idx = 0; idx < encounterPool.Count; idx++)
+                {
+                    if (!usedSet.Contains(idx))
+                        available.Add(idx);
+                }
+
+                // 全部用完则重置
+                if (available.Count == 0)
+                {
+                    usedSet.Clear();
+                    for (int idx = 0; idx < encounterPool.Count; idx++)
+                        available.Add(idx);
+                }
+
+                int chosenIdx = available[UnityEngine.Random.Range(0, available.Count)];
+                CurrentEncounter = encounterPool[chosenIdx];
+
+                // 标记已用（Boss不标记，可重复）
+                if (!isBoss)
+                    usedSet.Add(chosenIdx);
+
+                Debug.Log($"[CombatManager] 遭遇池={currentCombatNodeType}, 选中#{chosenIdx}, 剩余{available.Count - 1}");
+            }
             
             var enemyList = CurrentEncounter.EnemyList;
             var typeCounter2 = new System.Collections.Generic.Dictionary<string, int>();
-            for (var i = 0; i < enemyList.Count; i++)
+
+            // 按生成模式展开敌人列表
+            var spawnList = new List<EnemyCharacterData>();
+            foreach (var enemyData in enemyList)
             {
-                var clone = Instantiate(enemyList[i].EnemyPrefab, EnemyPosList.Count >= i ? EnemyPosList[i] : EnemyPosList[0]);
+                if (enemyData == null) continue;
+                switch (enemyData.SpawnType)
+                {
+                    case EnemySpawnType.Solo:
+                        spawnList.Add(enemyData);
+                        break;
+                    case EnemySpawnType.Multiple:
+                        for (int j = 0; j < enemyData.SpawnCount; j++)
+                            spawnList.Add(enemyData);
+                        break;
+                    case EnemySpawnType.Commander:
+                        spawnList.Add(enemyData);
+                        // 从属(WithCommander模式)也加入生成列表
+                        if (!string.IsNullOrEmpty(enemyData.SubordinateId))
+                        {
+                            var subData = FindEnemyDataById(enemyData.SubordinateId);
+                            if (subData != null && subData.SpawnType == EnemySpawnType.Subordinate
+                                && subData.SubordinateMode == SubordinateSpawnMode.WithCommander)
+                            {
+                                for (int j = 0; j < subData.SpawnCount; j++)
+                                    spawnList.Add(subData);
+                            }
+                        }
+                        break;
+                    case EnemySpawnType.Subordinate:
+                        // SummonByCommander 的从属跳过（由主将召唤）
+                        // WithCommander 的从属已由上面的 Commander 逻辑处理
+                        // 如果从属在遭遇表中单独出现（没有对应主将），按 Solo 处理
+                        spawnList.Add(enemyData);
+                        break;
+                }
+            }
+
+            int totalSpawnCount = spawnList.Count;
+
+            // 强度递增倍率
+            int combatCount = encounterModel.CombatCount;
+            float hpScale = 1f + combatCount * 0.08f;
+            float dmgScale = 1f + combatCount * 0.05f;
+
+            // 多怪平衡系数
+            float groupHpMult = totalSpawnCount switch
+            {
+                1 => 1f,
+                2 => 0.75f,
+                3 => 0.6f,
+                _ => 0.5f
+            };
+
+            Debug.Log($"[CombatManager] 敌人数={totalSpawnCount}, 战斗次数={combatCount}, HP×{hpScale}×{groupHpMult}(组), 伤害×{dmgScale}");
+
+            for (var i = 0; i < totalSpawnCount; i++)
+            {
+                if (i >= EnemyPosList.Count) break;
+                var clone = Instantiate(spawnList[i].EnemyPrefab, EnemyPosList[i]);
                 // Override enemyCharacterData with the correct SO from encounter list
                 var dataField = typeof(EnemyBase).GetField("enemyCharacterData", 
                     System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                if (dataField != null) dataField.SetValue(clone, enemyList[i]);
+                if (dataField != null) dataField.SetValue(clone, spawnList[i]);
                 clone.BuildCharacter();
                 
                 // 相同敌人分配不同技能起始偏移
-                AssignAbilityOffset(clone, enemyList[i], typeCounter2);
+                AssignAbilityOffset(clone, spawnList[i], typeCounter2);
                 // 应用动态难度缩放（基于敌人数量 + 楼层）
-                ApplyDynamicScaling(clone, enemyList.Count);
+                ApplyDynamicScaling(clone, totalSpawnCount);
+                // 应用强度递增 + 多怪平衡
+                ApplyPowerScaling(clone, hpScale * groupHpMult, dmgScale);
+                // 应用选图难度倍率
                 ApplyDifficultyMultiplier(clone);
-                ApplyEnemySprite(clone, enemyList[i]);
+                ApplyEnemySprite(clone, spawnList[i]);
                 
                 CurrentEnemiesList.Add(clone);
             }
+        }
+
+        /// <summary>应用强度递增+多怪平衡倍率</summary>
+        private void ApplyPowerScaling(EnemyBase enemy, float hpMult, float dmgMult)
+        {
+            if (enemy.CharacterStats == null) return;
+            int baseMaxHp = enemy.CharacterStats.MaxHealth;
+            int newMaxHp = Mathf.RoundToInt(baseMaxHp * hpMult);
+            enemy.CharacterStats.IncreaseMaxHealth(newMaxHp - baseMaxHp);
+            enemy.CharacterStats.SetCurrentHealth(newMaxHp);
+            // 伤害倍率通过修改敌人技能值实现比较复杂，暂存在 enemy 上供后续使用
+            // 当前先只改HP，伤害递增待后续实现
+        }
+
+        /// <summary>根据敌人ID查找EnemyCharacterData（编辑器和打包都可用）</summary>
+        private EnemyCharacterData FindEnemyDataById(string enemyId)
+        {
+#if UNITY_EDITOR
+            var guids = UnityEditor.AssetDatabase.FindAssets("t:EnemyCharacterData");
+            foreach (var g in guids)
+            {
+                var path = UnityEditor.AssetDatabase.GUIDToAssetPath(g);
+                var ed = UnityEditor.AssetDatabase.LoadAssetAtPath<EnemyCharacterData>(path);
+                if (ed != null && ed.name == enemyId) return ed;
+            }
+            return null;
+#else
+            var allEnemies = Resources.LoadAll<EnemyCharacterData>("Data/Enemies");
+            foreach (var ed in allEnemies)
+                if (ed.name == enemyId) return ed;
+            return null;
+#endif
         }
         private void BuildAllies()
         {
@@ -538,9 +674,13 @@ namespace NueGames.NueDeck.Scripts.Managers
         private void WinCombat()
         {
             if (CurrentCombatStateType == CombatStateType.EndCombat) return;
-          
+
             this.GetSystem<IBattleSystem>().WinCombat();
             CurrentCombatStateType = CombatStateType.EndCombat;
+
+            // 战斗次数+1（用于后续敌人强度递增）
+            var encounterModel = this.GetModel<IEncounterModel>();
+            encounterModel.CombatCount++;
            
             foreach (var allyBase in CurrentAlliesList)
             {
@@ -609,6 +749,9 @@ namespace NueGames.NueDeck.Scripts.Managers
                 // 战斗胜利后掉落材料+配方
                 DropLoot();
 
+                // 在奖励界面显示材料掉落
+                UIManager.RewardCanvas.BuildReward(RewardType.Material);
+
                 // 自动存档
                 CardGame.SaveSystem.Save();
             }
@@ -648,11 +791,12 @@ namespace NueGames.NueDeck.Scripts.Managers
 
             if (enemy.CharacterStats != null)
             {
-                // HP倍率
                 int baseMaxHp = enemy.CharacterStats.MaxHealth;
+                int baseCurrentHp = enemy.CharacterStats.CurrentHealth;
                 int newMaxHp = Mathf.RoundToInt(baseMaxHp * diff.enemyHpMultiplier);
+                int newCurrentHp = Mathf.RoundToInt(baseCurrentHp * diff.enemyHpMultiplier);
                 enemy.CharacterStats.IncreaseMaxHealth(newMaxHp - baseMaxHp);
-                enemy.CharacterStats.Damage(0); // 触发更新
+                enemy.CharacterStats.SetCurrentHealth(newCurrentHp);
                 
                 Debug.Log($"[Difficulty] {enemy.EnemyCharacterData?.CharacterName}: HP {baseMaxHp}→{newMaxHp} (×{diff.enemyHpMultiplier})");
             }
@@ -776,6 +920,7 @@ namespace NueGames.NueDeck.Scripts.Managers
                 }
 
                 // 材料掉落 — 应用难度倍率
+                LastDroppedMaterials.Clear();
                 int baseMatCount = hasBoss ? 3 : hasElite ? 2 : 1;
                 int matCount = Mathf.RoundToInt(baseMatCount * lootMult);
                 
@@ -794,6 +939,7 @@ namespace NueGames.NueDeck.Scripts.Managers
                 {
                     var mat = candidateMats[UnityEngine.Random.Range(0, candidateMats.Count)];
                     inventorySystem.AddItem(mat, 1);
+                    LastDroppedMaterials.Add(mat);
                     Debug.Log($"[掉落] 材料: {mat.name} ×1 (品质:{NueGames.NueDeck.Scripts.Enums.ItemQualityHelper.GetDisplayName(targetQuality)}, 难度倍率:×{lootMult})");
                 }
 

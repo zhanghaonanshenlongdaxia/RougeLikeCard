@@ -60,3 +60,10 @@ MonoBehaviour:
   encounterDialogue: "\uFF08\u7384\u6BD2\u4ECE\u6BD2\u96FE\u4E2D\u8D70\u51FA\uFF09\n\u611F\u53D7\u2026\u2026\u7384\u6BD2\u4E4B\u529B\u2026\u2026"
   victoryDialogue: "\u7384\u6BD2\u2026\u2026\u5C3D\u6563\u2026\u2026\n\uFF08\u7384\u6BD2\u6D88\u6563\uFF09"
   phaseList: []
+  spawnType: 0
+  spawnCount: 2
+  commanderId: 
+  subordinateMode: 0
+  subordinateId: 
+  summonInterval: 3
+  summonCount: 1

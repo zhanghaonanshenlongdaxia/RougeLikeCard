@@ -172,16 +172,38 @@ namespace CardGame.UI
                 int have = _invSystem.GetItemCount(ing.materialId);
                 bool enough = have >= ing.count;
                 string status = enough ? "<color=#4CAF50>✓</color>" : "<color=#F44336>✗</color>";
-                matsStr += $"  {status} {ing.materialId} ×{ing.count} (持有:{have})\n";
+                var mat = ResourceCache.GetMaterials().Find(m => m.materialId == ing.materialId);
+                string matName = mat != null ? mat.ItemName : ing.materialId;
+                matsStr += $"  {status} {matName} ×{ing.count} (持有:{have})\n";
             }
             if (detailMats) detailMats.text = matsStr;
 
-            // 产出信息
+            // 产出信息 — 通过ID查找中文名
+            string outputName = "";
+            switch (recipe.outputType)
+            {
+                case RecipeOutputType.Card:
+                    var card = ResourceCache.GetCardsFromAllList().Find(c => c.Id == recipe.outputItemId);
+                    outputName = card != null ? card.CardName : "未知";
+                    break;
+                case RecipeOutputType.Relic:
+                    var relic = ResourceCache.GetRelics().Find(r => r.relicId == recipe.outputItemId);
+                    outputName = relic != null ? relic.name : "未知";
+                    break;
+                case RecipeOutputType.Potion:
+                    var potion = ResourceCache.GetPotions().Find(p => p.potionId == recipe.outputItemId);
+                    outputName = potion != null ? potion.name : "未知";
+                    break;
+                case RecipeOutputType.Material:
+                    var mat = ResourceCache.GetMaterials().Find(m => m.materialId == recipe.outputItemId);
+                    outputName = mat != null ? mat.ItemName : "未知";
+                    break;
+            }
             string outputStr = recipe.outputType switch {
-                RecipeOutputType.Card => $"产出: 卡牌 ×{recipe.outputCount}",
-                RecipeOutputType.Relic => $"产出: 法宝 ×{recipe.outputCount}",
-                RecipeOutputType.Potion => $"产出: 丹药 ×{recipe.outputCount}",
-                RecipeOutputType.Material => $"产出: 材料 ×{recipe.outputCount}",
+                RecipeOutputType.Card => $"产出: {outputName} ×{recipe.outputCount}",
+                RecipeOutputType.Relic => $"产出: {outputName} ×{recipe.outputCount}",
+                RecipeOutputType.Potion => $"产出: {outputName} ×{recipe.outputCount}",
+                RecipeOutputType.Material => $"产出: {outputName} ×{recipe.outputCount}",
                 _ => $"产出: ×{recipe.outputCount}"
             };
             if (detailResult) detailResult.text = outputStr;

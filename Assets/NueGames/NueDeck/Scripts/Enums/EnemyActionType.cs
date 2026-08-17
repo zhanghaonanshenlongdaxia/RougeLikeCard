@@ -8,6 +8,7 @@
         Block,
         ApplyWeak,
         ApplyFrail,
-        ApplyVulnerable
+        ApplyVulnerable,
+        Summon
     }
 }

@@ -40,6 +40,22 @@ namespace NueGames.NueDeck.Scripts.Data.Characters
         [Tooltip("多阶段配置。留空=单阶段（使用 enemyAbilityList）。按顺序填血量阈值，如 [0.6, 0.3]")]
         [SerializeField] private List<EnemyPhaseData> phaseList;
 
+        [Header("Spawn Settings")]
+        [Tooltip("生成模式：单独/复数/主将/从属")]
+        [SerializeField] private EnemySpawnType spawnType = EnemySpawnType.Solo;
+        [Tooltip("复数类型：生成数量")]
+        [SerializeField] private int spawnCount = 2;
+        [Tooltip("从属类型：所属主将的敌人ID")]
+        [SerializeField] private string commanderId;
+        [Tooltip("从属类型：生成模式")]
+        [SerializeField] private SubordinateSpawnMode subordinateMode = SubordinateSpawnMode.WithCommander;
+        [Tooltip("主将类型：召唤的从属敌人ID（ResourceCache中查找）")]
+        [SerializeField] private string subordinateId;
+        [Tooltip("召唤模式：每隔N回合召唤一次（通过技能轮转实现）")]
+        [SerializeField] private int summonInterval = 3;
+        [Tooltip("召唤模式：每次召唤数量")]
+        [SerializeField] private int summonCount = 1;
+
         public EnemyTier EnemyTier => enemyTier;
         public int RegionId => regionId;
         public string EnemyDescription => enemyDescription;
@@ -48,6 +64,14 @@ namespace NueGames.NueDeck.Scripts.Data.Characters
         public string VictoryDialogue => victoryDialogue;
         public bool HasPhases => phaseList != null && phaseList.Count > 0;
         public List<EnemyPhaseData> PhaseList => phaseList;
+
+        public EnemySpawnType SpawnType => spawnType;
+        public int SpawnCount => spawnCount;
+        public string CommanderId => commanderId;
+        public SubordinateSpawnMode SubordinateMode => subordinateMode;
+        public string SubordinateId => subordinateId;
+        public int SummonInterval => summonInterval;
+        public int SummonCount => summonCount;
 
         /// <summary>Expose followAbilityPattern for phase-aware EnemyBase</summary>
         public bool FollowAbilityPatternCheck() => followAbilityPattern;
@@ -104,6 +128,13 @@ namespace NueGames.NueDeck.Scripts.Data.Characters
         public void EditEnemyPortrait(Sprite s) => enemyPortrait = s;
         public void EditEncounterDialogue(string d) => encounterDialogue = d;
         public void EditVictoryDialogue(string d) => victoryDialogue = d;
+        public void EditSpawnType(EnemySpawnType t) => spawnType = t;
+        public void EditSpawnCount(int c) => spawnCount = c;
+        public void EditCommanderId(string id) => commanderId = id;
+        public void EditSubordinateMode(SubordinateSpawnMode m) => subordinateMode = m;
+        public void EditSubordinateId(string id) => subordinateId = id;
+        public void EditSummonInterval(int n) => summonInterval = n;
+        public void EditSummonCount(int c) => summonCount = c;
 #endif
         #endregion
     }

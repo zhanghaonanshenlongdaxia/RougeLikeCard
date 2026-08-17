@@ -4,6 +4,7 @@
     {
         Gold,
         Card,
-        Relic
+        Relic,
+        Material
     }
 }

@@ -68,14 +68,69 @@ namespace NueGames.NueDeck.Scripts.UI.Reward
                     rewardClone.RewardButton.onClick.AddListener(()=>GetGoldReward(rewardClone,rewardGold));
                     break;
                 case RewardType.Card:
-                    var rewardCardList = rewardContainerData.GetRandomCardRewardList(out var cardRewardData);
+                    // 从 ResourceCache 的 158 张卡牌库中随机抽 3 张
+                    var allCards = CardGame.ResourceCache.GetCardsFromAllList();
                     _cardRewardList.Clear();
-                    foreach (var cardData in rewardCardList)
-                        _cardRewardList.Add(cardData);
-                    rewardClone.BuildReward(cardRewardData.RewardSprite,cardRewardData.RewardDescription);
-                    rewardClone.RewardButton.onClick.AddListener(()=>GetCardReward(rewardClone,3));
+                    if (allCards.Count > 0)
+                    {
+                        // 随机抽3张不重复
+                        var pool = new List<NueGames.NueDeck.Scripts.Data.Collection.CardData>(allCards);
+                        int pickCount = Mathf.Min(3, pool.Count);
+                        for (int i = 0; i < pickCount; i++)
+                        {
+                            var card = pool[UnityEngine.Random.Range(0, pool.Count)];
+                            _cardRewardList.Add(card);
+                            pool.Remove(card);
+                        }
+                    }
+                    var cardRewardData = rewardContainerData.CardRewardDataList[0];
+                    rewardClone.BuildReward(cardRewardData.RewardSprite, cardRewardData.RewardDescription);
+                    rewardClone.RewardButton.onClick.AddListener(()=>GetCardReward(rewardClone, _cardRewardList.Count));
                     break;
                 case RewardType.Relic:
+                    break;
+                case RewardType.Material:
+                    // 材料奖励：从 CombatManager.LastDroppedMaterials 获取
+                    var droppedMats = NueGames.NueDeck.Scripts.Managers.CombatManager.Instance.LastDroppedMaterials;
+                    if (droppedMats != null && droppedMats.Count > 0)
+                    {
+                        // 按材料ID分组显示
+                        var grouped = new Dictionary<string, (CardGame.MaterialData mat, int count)>();
+                        foreach (var mat in droppedMats)
+                        {
+                            if (mat == null) continue;
+                            if (!grouped.ContainsKey(mat.name))
+                                grouped[mat.name] = (mat, 1);
+                            else
+                            {
+                                var prev = grouped[mat.name];
+                                grouped[mat.name] = (prev.mat, prev.count + 1);
+                            }
+                        }
+                        var matRewardData = rewardContainerData.GoldRewardDataList[0];
+                        foreach (var kvp in grouped)
+                        {
+                            var matClone = Instantiate(rewardContainerPrefab, rewardRoot);
+                            _currentRewardsList.Add(matClone);
+                            var displayName = $"{kvp.Value.mat.ItemName} ×{kvp.Value.count}";
+                            matClone.BuildReward(matRewardData.RewardSprite, displayName);
+                            // 材料已经在DropLoot中添加到背包，这里只是展示
+                            var capturedClone = matClone;
+                            matClone.RewardButton.onClick.AddListener(() =>
+                            {
+                                _currentRewardsList.Remove(capturedClone);
+                                Destroy(capturedClone.gameObject);
+                            });
+                        }
+                        // 销毁最初创建的空 rewardClone
+                        _currentRewardsList.Remove(rewardClone);
+                        Destroy(rewardClone.gameObject);
+                    }
+                    else
+                    {
+                        _currentRewardsList.Remove(rewardClone);
+                        Destroy(rewardClone.gameObject);
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(rewardType), rewardType, null);

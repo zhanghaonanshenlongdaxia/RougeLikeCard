@@ -17,6 +17,7 @@ namespace CardGame
         public int CurrentEncounterId { get; set; } = 0;
         public bool IsFinalEncounter { get; set; } = false;
         public int MaxCardOnHand { get; set; } = 10;
+        public MapNodeType CurrentCombatNodeType { get; set; } = MapNodeType.Combat;
         public int PendingStrengthBonus { get; set; } = 0;
         public int PendingDexterityBonus { get; set; } = 0;
         public int PendingEnemyWeak { get; set; } = 0;

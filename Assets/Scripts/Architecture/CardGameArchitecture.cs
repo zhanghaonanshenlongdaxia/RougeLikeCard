@@ -22,6 +22,7 @@ namespace CardGame
             RegisterModel<IMetaModel>(new MetaModel());
             RegisterModel<IStoryModel>(new StoryModel());
             RegisterModel<ICultivationModel>(new CultivationModel());
+            RegisterModel<IEncounterModel>(new EncounterModel());
             RegisterSystem<IBattleSystem>(new BattleSystem());
             RegisterSystem<ICardSystem>(new CardSystem());
             RegisterSystem<IRelicSystem>(new RelicSystem());

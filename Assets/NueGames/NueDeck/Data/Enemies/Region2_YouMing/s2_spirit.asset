@@ -54,3 +54,10 @@ MonoBehaviour:
   encounterDialogue: "\u545C\u2026\u2026\u672C\u9B42\u5DF2\u5728\u6B64\u6E38\u8361\u5343\u5E74\u2026\u2026"
   victoryDialogue: "\u5343\u5E74\u4EA1\u9B42\uFF0C\u4ECA\u65E5\u8D85\u5EA6\u3002"
   phaseList: []
+  spawnType: 2
+  spawnCount: 2
+  commanderId: 
+  subordinateMode: 0
+  subordinateId: s2_ghoul
+  summonInterval: 3
+  summonCount: 1

@@ -26,3 +26,17 @@ MonoBehaviour:
     - actionType: 0
       minActionValue: 0
       maxActionValue: 0
+  enemyTier: 0
+  regionId: 0
+  enemyDescription: 
+  enemyPortrait: {fileID: 0}
+  encounterDialogue: 
+  victoryDialogue: 
+  phaseList: []
+  spawnType: 0
+  spawnCount: 2
+  commanderId: 
+  subordinateMode: 0
+  subordinateId: 
+  summonInterval: 3
+  summonCount: 1
