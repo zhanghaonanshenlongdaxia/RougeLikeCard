@@ -174,6 +174,7 @@ namespace NueGames.NueDeck.Scripts.Data.Collection
         /// <summary>将文本中第一个出现的 oldNum 替换为 newNum</summary>
         private static string ReplaceFirstNumber(string text, int oldNum, int newNum)
         {
+            if (oldNum == newNum) return text;
             var pattern = oldNum.ToString();
             var idx = text.IndexOf(pattern);
             if (idx < 0) return text;

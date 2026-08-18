@@ -675,10 +675,9 @@ namespace NueGames.NueDeck.Scripts.Managers
             if (sr != null)
             {
                 sr.sprite = portrait;
-                // 调整缩放使其合适显示
                 var texW = portrait.texture.width;
                 var texH = portrait.texture.height;
-                float targetHeight = 1.5f; // 世界单位
+                float targetHeight = 1.0f; // 缩小到原来的2/3
                 float scale = targetHeight / (texH / 100f);
                 sr.transform.localScale = new Vector3(scale, scale, 1);
                 sr.transform.localPosition = new Vector3(0, 0, -1);
