@@ -40,6 +40,7 @@ MonoBehaviour:
     - actionType: 0
       minActionValue: 7
       maxActionValue: 10
+  deathSoundProfile: {fileID: 11400000, guid: 6d52b37efc527e64887d946396f9bca2, type: 2}
   enemyTier: 0
   regionId: 0
   realmLevel: 0
@@ -55,3 +56,4 @@ MonoBehaviour:
   subordinateId: 
   summonInterval: 3
   summonCount: 1
+  bodyScale: 1
