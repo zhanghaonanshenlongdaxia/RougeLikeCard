@@ -37,6 +37,33 @@ namespace NueGames.NueDeck.Scripts.UI.Reward
 
         public ChoicePanel ChoicePanel => choicePanel;
         
+        private void Awake()
+        {
+            AutoBindReferences();
+        }
+        
+        private void AutoBindReferences()
+        {
+            // 通过路径查找choice2DCardSpawnRoot
+            if (choice2DCardSpawnRoot == null)
+                choice2DCardSpawnRoot = transform.Find("ChoicePanel/Midground/RewardRoot/Viewport/ChoiceCardUIRoot");
+            if (choice2DCardSpawnRoot == null)
+                choice2DCardSpawnRoot = transform.Find("ChoicePanel/Midground/Foreground/ChoiceCardUIRoot");
+            if (choice2DCardSpawnRoot == null)
+                choice2DCardSpawnRoot = transform.Find("ChoicePanel/ChoiceCardUIRoot");
+            
+            // rewardRoot
+            if (rewardRoot == null)
+                rewardRoot = transform.Find("CombatRewardPanel/Midground/RewardRoot/Viewport/Content");
+            
+            // choicePanel
+            if (choicePanel == null)
+            {
+                var cp = transform.Find("ChoicePanel");
+                if (cp != null) choicePanel = cp.GetComponent<ChoicePanel>();
+            }
+        }
+        
         #region Public Methods
 
         public void PrepareCanvas()
