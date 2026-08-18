@@ -152,6 +152,7 @@ namespace NueGames.NueDeck.Scripts.Characters
         public void Damage(int value, bool canPierceArmor = false, CharacterStats attacker = null)
         {
             if (IsDeath) return;
+            if (value <= 0) return; // 负数或0不造成伤害，避免加血bug
             OnTakeDamageAction?.Invoke();
             var remainingDamage = value;
 
