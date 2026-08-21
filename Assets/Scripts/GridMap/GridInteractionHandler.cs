@@ -35,13 +35,13 @@ namespace CardGame
 
                 case GridInteractType.Npc:
                     Debug.Log($"[GridInteract] NPC对话: {cell.interactTargetId}");
-                    FloatingTip.Show("与NPC对话（剧情系统待接入）");
+                    Story.StoryService.StartDialogue(cell.interactTargetId);
                     GridInteractionEvents.TriggerInteractionComplete(cell, "npc");
                     break;
 
                 case GridInteractType.StoryTrigger:
                     Debug.Log($"[GridInteract] 剧情触发: {cell.interactTargetId}");
-                    FloatingTip.Show("剧情触发（Yarn待接入）");
+                    Story.StoryService.StartDialogue(cell.interactTargetId);
                     GridInteractionEvents.TriggerInteractionComplete(cell, "story");
                     break;
 

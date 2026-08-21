@@ -1,0 +1,57 @@
+title: Start
+tags:
+position: 0,0
+---
+<<declare $story_met_sanxiu = false>>
+<<declare $story_sanxiu_warned = false>>
+<<declare $story_discovered_spirit_eye = false>>
+<<if $story_met_sanxiu == true>>
+陈洛: 又是你？上次多谢指点了。
+-> 告辞
+    <<jump npc_sanxiu_talk>>
+-> 打听黑松岭
+    <<jump npc_sanxiu_talk>>
+<<else>>
+陈洛: 这位前辈请了，在下只是个采药的。
+散修: 哼，采药的能走到这儿？你身上有灵气波动，修了几天了？
+-> 谦虚应对
+    陈洛: 前辈慧眼，只是照着一卷残书胡乱吐纳了几日。
+    散修: 残书？嘿，胆子不小。练岔了气脉，神仙也救不了你。
+    <<set_flag met_sanxiu true>>
+    -> 多谢前辈提醒
+        <<jump npc_sanxiu_talk>>
+-> 转移话题
+    陈洛: 前辈可知这黑松岭深处的路数？
+    散修: 岭子深处有片灵眼，灵气足，可也养了不干净的东西。
+    <<set_flag met_sanxiu true>>
+    -> 记下了
+        <<jump npc_sanxiu_talk>>
+<<endif>>
+===
+
+title: npc_sanxiu_talk
+tags:
+position: 200,0
+---
+散修: 子时前出岭，别贪。岭口的灯火是人间的，深处的黑不是。
+-> 多谢指点
+    陈洛: 前辈的教诲，在下记下了。
+-> 试探对方
+    散修: 问那么多做什么？我不过是个人间的过客罢了。
+===
+
+title: story_discover_spirit_eye
+tags:
+position: 400,0
+---
+月光下，山谷凹成一只浅碗，雾气沉在碗底泛着微光。
+谷底有一株翠色草叶，随雾起伏，像呼吸。
+-> 悄悄靠近
+    <<if $story_sanxiu_warned == true>>
+    脑中响起散修的话："子时前出岭，别贪。"
+    <<endif>>
+    灵气顺着鼻息涌进来，四肢百骸像泡在温水里。
+    <<set_flag discovered_spirit_eye true>>
+-> 不为所动，先退出山谷
+    谨慎不是胆小。灵眼再亮，也要有命花才作数。
+===

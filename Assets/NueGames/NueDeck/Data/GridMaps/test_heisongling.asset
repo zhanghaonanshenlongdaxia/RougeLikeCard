@@ -64,7 +64,7 @@ MonoBehaviour:
     ground: 0
     overlay: 0
     interactType: 2
-    interactTargetId: npc_sanxiu_01
+    interactTargetId: Start
     isWalkable: 1
     isExplored: 0
     moveCost: 1
