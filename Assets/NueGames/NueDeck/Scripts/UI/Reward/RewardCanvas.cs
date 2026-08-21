@@ -226,7 +226,7 @@ namespace NueGames.NueDeck.Scripts.UI.Reward
         }
         #endregion
 
-        private void OnContinue()
+        public void OnContinue()
         {
             // 隐藏继续按钮
             if (continueButtonObject) continueButtonObject.SetActive(false);
@@ -240,6 +240,10 @@ namespace NueGames.NueDeck.Scripts.UI.Reward
                 ShowEvacuateChoice();
                 return;
             }
+
+            // BattleLauncher格子战斗：胜利后返回格子地图（已处理）
+            if (CardGame.BattleLauncher.HandleBattleWinContinue())
+                return;
 
             // 返回地图场景
             var sceneChanger = FindObjectOfType<SceneChanger>();

@@ -687,7 +687,10 @@ namespace NueGames.NueDeck.Scripts.Managers
         private void LoseCombat()
         {
             if (CurrentCombatStateType == CombatStateType.EndCombat) return;
-            
+
+            // BattleLauncher格子战斗失败：清除待处理状态（死亡流程照常走）
+            CardGame.BattleLauncher.HandleBattleLose();
+
             this.GetSystem<IBattleSystem>().LoseCombat();
             CurrentCombatStateType = CombatStateType.EndCombat;
             
@@ -735,9 +738,12 @@ namespace NueGames.NueDeck.Scripts.Managers
             this.GetSystem<IBattleSystem>().WinCombat();
             CurrentCombatStateType = CombatStateType.EndCombat;
 
-            // 战斗次数+1（用于后续敌人强度递增）
-            var encounterModel = this.GetModel<IEncounterModel>();
-            encounterModel.CombatCount++;
+            // 战斗次数+1（用于后续敌人强度递增）——格子地图战斗不计入StS冒险进度
+            if (!CardGame.BattleLauncher.HasPendingBattle)
+            {
+                var encounterModel = this.GetModel<IEncounterModel>();
+                encounterModel.CombatCount++;
+            }
            
             foreach (var allyBase in CurrentAlliesList)
             {
@@ -796,7 +802,9 @@ namespace NueGames.NueDeck.Scripts.Managers
             }
             else
             {
-                GameManager.PersistentGameplayData.CurrentEncounterId++;
+                // 格子地图战斗不推进StS遭遇进度
+                if (!CardGame.BattleLauncher.HasPendingBattle)
+                    GameManager.PersistentGameplayData.CurrentEncounterId++;
                 UIManager.CombatCanvas.gameObject.SetActive(false);
                 UIManager.RewardCanvas.gameObject.SetActive(true);
                 UIManager.RewardCanvas.PrepareCanvas();
