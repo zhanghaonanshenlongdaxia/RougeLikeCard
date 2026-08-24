@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Yarn.Unity;
 
@@ -20,8 +21,10 @@ namespace CardGame.Story
         public static StoryService Instance => _instance;
 
         DialogueRunner _runner;
-        StoryDialoguePresenter _presenter;
+        BubbleDialoguePresenter _presenter;
+        StoryDialoguePresenter _legacyPresenter;
         YarnProject _project;
+        TimeConditionalDialogue _router;
 
         void Awake()
         {
@@ -34,7 +37,7 @@ namespace CardGame.Story
             DontDestroyOnLoad(gameObject);
         }
 
-        /// <summary>启动指定Yarn节点</summary>
+        /// <summary>启动指定Yarn节点（经过时间/境界条件路由）</summary>
         public static void StartDialogue(string nodeName)
         {
             var inst = EnsureInstance();
@@ -44,6 +47,53 @@ namespace CardGame.Story
                 return;
             }
             inst.RunNode(nodeName);
+        }
+
+        /// <summary>带条件路由启动：按当前境界/时间选择NPC节点（觅长生式）</summary>
+        public static void StartNpcDialogue(string npcId)
+        {
+            var inst = EnsureInstance();
+            if (inst == null) return;
+
+            var resolved = inst._router?.ResolveNode(npcId);
+            if (resolved == null)
+            {
+                Debug.Log($"[Story] NPC {npcId} 当前无可播对话（限时已过或无兜底）");
+                CardGame.UI.FloatingTip.Show("……（对方没有理会你）");
+                return;
+            }
+            inst.RunNode(resolved);
+        }
+
+        void RunNode(string nodeName)
+        {
+            if (_runner == null)
+            {
+                Setup();
+                if (_runner == null)
+                {
+                    Debug.LogError("[Story] YarnProject未配置，无法运行剧情");
+                    return;
+                }
+            }
+
+            // 一次性节点标记
+            if (nodeName.StartsWith("once_"))
+                SetVariable($"story_once_{nodeName}", true);
+
+            _ = _runner.StartDialogue(nodeName);
+        }
+
+        /// <summary>扫描YarnStory目录的.yarn文件注册节点名</summary>
+        void RegisterNodeNames()
+        {
+#if UNITY_EDITOR
+            var yarnDir = Application.dataPath + "/YarnStory";
+            if (!System.IO.Directory.Exists(yarnDir)) return;
+            foreach (var file in System.IO.Directory.GetFiles(yarnDir, "*.yarn"))
+                NodeNameRegistry.RegisterFromYarnText(System.IO.File.ReadAllText(file));
+            Debug.Log($"[Story] 已注册 {NodeNameRegistry.All.Count()} 个Yarn节点");
+#endif
         }
 
         /// <summary>设置Yarn变量（$前缀自动补全）</summary>
@@ -90,28 +140,18 @@ namespace CardGame.Story
                 return;
             }
 
-            _presenter = StoryDialoguePresenter.Create(transform);
+            _presenter = BubbleDialoguePresenter.Create(transform);
             _runner = gameObject.AddComponent<DialogueRunner>();
             _runner.autoStart = false;
             _runner.SetProject(_project);
             _runner.DialoguePresenters = new[] { (DialoguePresenterBase)_presenter };
+            _router = new TimeConditionalDialogue(_runner);
+
+            // 扫描Yarn源文件注册节点名（时间窗口路由需要枚举节点）
+            RegisterNodeNames();
 
             RegisterCommands();
             Debug.Log("[Story] StoryService初始化完成");
-        }
-
-        void RunNode(string nodeName)
-        {
-            if (_runner == null)
-            {
-                Setup();
-                if (_runner == null)
-                {
-                    Debug.LogError("[Story] YarnProject未配置，无法运行剧情");
-                    return;
-                }
-            }
-            _ = _runner.StartDialogue(nodeName);
         }
 
         // ===================== 游戏指令注册 =====================
@@ -157,6 +197,13 @@ namespace CardGame.Story
                 if (!name.StartsWith("$")) name = "$story_" + name;
                 (_runner.Dialogue.VariableStorage as InMemoryVariableStorage)?.SetValue(name, b);
                 Debug.Log($"[Story] 指令set_flag: {name}={b}");
+            });
+
+            // <<emotion 角色名 表情>> — 切换立绘表情(normal/happy/sad/angry/surprised)
+            _runner.AddCommandHandler<string, string>("emotion", (characterName, emotion) =>
+            {
+                _presenter?.SetEmotion(characterName, emotion);
+                Debug.Log($"[Story] 指令emotion: {characterName}={emotion}");
             });
         }
     }

@@ -1,0 +1,57 @@
+title: qingshi_yaopu
+tags: default
+---
+
+// 青石镇·回春堂药铺（基础对话）
+回春堂药铺掌柜: 小洛，今日的药材还没晒呢。
+<<emotion 陈洛 normal>>
+陈洛: 掌柜的，我这就去后院翻晒。
+<<emotion 回春堂药铺掌柜 happy>>
+回春堂药铺掌柜: 嗯，仔细些，别叫露水沤了。
+<<set_flag visited_yaopu true>>
+===
+
+title: qingshi_yaopu_r0_d0_3
+tags: default
+---
+
+// 药铺·练气期开局限定（前3天）：掌柜提起母亲的药钱
+回春堂药铺掌柜: 小洛，你娘的药钱……还差着些。
+<<emotion 陈洛 sad>>
+陈洛: 我知道……月底前一定凑齐。
+回春堂药铺掌柜: 唉，难为你了。这孩子。
+<<set_flag yaopu_debt_talked true>>
+===
+
+title: qingshi_yaopu_night
+tags: default
+---
+
+// 药铺·夜晚专属：铺子已关门
+陈洛: （铺门已经落了闩，掌柜的想必歇下了。）
+<<set_flag yaopu_night_visit true>>
+===
+
+title: qingshi_mother
+tags: default
+---
+
+// 青石镇·陈家小院（基础对话）
+母亲: 洛儿……咳咳……今日回来得早。
+<<emotion 陈洛 happy>>
+陈洛: 娘，您躺着，我去把药煎上。
+母亲: 别总为我操心，你自己也要顾着身子……
+<<set_flag visited_mother true>>
+===
+
+title: qingshi_mother_d0_5
+tags: default
+---
+
+// 母亲·开局5天内：病情加重的剧情
+<<emotion 陈洛 sad>>
+母亲: 洛儿……娘这身子，怕是拖累你了……
+陈洛: 娘别说这种话！我一定找到治病的方法。
+母亲: 傻孩子……咳咳……
+<<set_flag mother_worse_talked true>>
+===

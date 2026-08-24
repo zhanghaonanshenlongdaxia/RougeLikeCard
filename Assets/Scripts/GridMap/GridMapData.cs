@@ -36,6 +36,55 @@ namespace CardGame
     }
 
     /// <summary>
+    /// 多格建筑/大型物件类型（RPGMaker式建筑件）
+    /// </summary>
+    public enum GridStructureType
+    {
+        House = 0,      // 房屋（含药铺/民宅，2x3典型）
+        Shop = 1,       // 店铺（带招牌）
+        Temple = 2,     // 庙宇/祠堂
+        BigTree = 3,    // 大树
+        Mountain = 4,   // 山体（3x2+）
+        Lake = 5,       // 湖泊（3x2+）
+        Cave = 6,       // 洞穴
+        Fence = 7,      // 围栏段
+        Well = 8,       // 水井（1x1）
+        Gate = 9        // 门楼
+    }
+
+    /// <summary>
+    /// 多格建筑件 — 占据 width×height 格，一张立绘跨格渲染
+    /// </summary>
+    [Serializable]
+    public class GridStructure
+    {
+        public GridStructureType type = GridStructureType.House;
+
+        [Header("锚点（占地区域左下角格坐标）")]
+        public Vector2Int anchor;
+
+        [Header("占地尺寸（格）")]
+        public int width = 2;
+        public int height = 3;
+
+        [Header("立绘名（Resources/GridMapArt/下，如 struct_house1）")]
+        public string artName;
+
+        [Header("立绘超出占地的高度（像素，用于屋顶等悬垂视觉，默认=height格高）")]
+        public float artHeightCells = 0f;   // 0=与占地同高
+
+        [Header("是否阻挡（footprint格子不可通行）")]
+        public bool blocksMovement = true;
+
+        [Header("交互（站在建筑格子或邻格触发；空=纯装饰）")]
+        public GridInteractType interactType = GridInteractType.None;
+        public string interactTargetId;
+
+        [Header("NPC型建筑：立绘改为NPC人物")]
+        public bool isNpc = false;
+    }
+
+    /// <summary>
     /// 格子交互类型
     /// </summary>
     public enum GridInteractType
@@ -132,6 +181,9 @@ namespace CardGame
         [Header("交互格子")]
         public List<GridCell> interactCells = new List<GridCell>();
 
+        [Header("多格建筑件（房屋/湖泊/山体等）")]
+        public List<GridStructure> structures = new List<GridStructure>();
+
         /// <summary>获取地表类型</summary>
         public GroundType GetGround(int x, int y)
         {
@@ -154,6 +206,56 @@ namespace CardGame
         public GridCell GetInteractCell(int x, int y)
         {
             return interactCells.Find(c => c.x == x && c.y == y);
+        }
+
+        /// <summary>建筑件是否覆盖指定格（阻挡判定用）</summary>
+        public GridStructure GetStructureAt(int x, int y)
+        {
+            foreach (var s in structures)
+            {
+                if (!s.blocksMovement) continue;
+                if (x >= s.anchor.x && x < s.anchor.x + s.width &&
+                    y >= s.anchor.y && y < s.anchor.y + s.height)
+                    return s;
+            }
+            return null;
+        }
+
+        /// <summary>应用建筑件：把占地格标记为不可通行+附加交互</summary>
+        public void ApplyStructures()
+        {
+            foreach (var s in structures)
+            {
+                for (int dx = 0; dx < s.width; dx++)
+                {
+                    for (int dy = 0; dy < s.height; dy++)
+                    {
+                        int x = s.anchor.x + dx;
+                        int y = s.anchor.y + dy;
+                        if (x < 0 || x >= width || y < 0 || y >= height) continue;
+
+                        // 交互型建筑占地格可站立交互；纯阻挡建筑不可通行
+                        if (s.interactType != GridInteractType.None)
+                        {
+                            var cell = GetInteractCell(x, y);
+                            if (cell == null)
+                            {
+                                cell = new GridCell(x, y)
+                                {
+                                    interactType = s.interactType,
+                                    interactTargetId = s.interactTargetId
+                                };
+                                interactCells.Add(cell);
+                            }
+                            else
+                            {
+                                cell.interactType = s.interactType;
+                                cell.interactTargetId = s.interactTargetId;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>是否可通行</summary>

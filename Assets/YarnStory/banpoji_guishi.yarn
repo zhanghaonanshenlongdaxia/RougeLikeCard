@@ -1,0 +1,54 @@
+title: banpoji_stall1
+tags: default
+---
+
+// 半坡集·摊位一（收灵材）
+收灵材的摊主: 这位道友，可有妖兽材料出手？皮骨鳞甲，来者不拒。
+陈洛: 我看看……
+收灵材的摊主: 好货色！按集里的规矩，公平价钱。
+<<set_flag banpoji_stall1_talked true>>
+===
+
+title: banpoji_stall2
+tags: default
+---
+
+// 半坡集·摊位二（杂货）
+杂货摊主: 丹方图纸、法器残片，都是各地收来的物件。道友随便看。
+陈洛: （摊上的东西鱼龙混杂，得仔细分辨。）
+<<set_flag banpoji_stall2_talked true>>
+===
+
+title: banpoji_zhoubanhu_friend
+tags: default
+---
+
+// 半坡集·周半壶的旧识
+跛脚老修士: 你这后生面生得很……嗯？你身上有股酒气，是半壶那老东西的酒？
+陈洛: 前辈认识周半壶？
+跛脚老修士: 认识？当年一起从死人堆里爬出来的交情。他现在人呢？
+陈洛: 他在青石镇外隐居。
+跛脚老修士: ……让他少喝点。有些债，人是讨不到他头上来的。
+<<set_flag met_zhoubanhu_friend true>>
+===
+
+title: guishi_trader
+tags: default
+---
+
+// 鬼市·灵石兑换（明线经济）
+鬼市掌柜: 灵石换金银，金银换灵石。小子，换多少？
+陈洛: （娘的药钱……）
+<<set_flag guishi_trader_talked true>>
+===
+
+title: guishi_mysterious
+tags: default
+---
+
+// 鬼市·神秘摊主（情报：黑松岭灵眼）
+蒙面摊主: 想听个消息么？黑松岭深处，出了灵眼。采药人去了七成……
+陈洛: 灵眼？
+蒙面摊主: 百年灵气聚成的一口泉眼。能不能博到机缘，看你命硬不硬。
+<<set_flag heard_spirit_eye true>>
+===

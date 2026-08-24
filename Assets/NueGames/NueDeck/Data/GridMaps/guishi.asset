@@ -1,0 +1,136 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5893f8ed557242f4dadac95deaaef474, type: 3}
+  m_Name: guishi
+  m_EditorClassIdentifier: 
+  mapId: guishi
+  mapName: "\u9B3C\u5E02"
+  description: "\u9B3C\u5E02"
+  width: 12
+  height: 9
+  groundArray: 050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000200000002000000020000000200000002000000020000000200000002000000020000000200000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000050000000500000005000000
+  overlayArray: 030000000300000003000000030000000300000003000000030000000300000003000000030000000300000003000000030000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000030000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000030000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000030000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000030000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000030000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000030000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000030000000300000003000000030000000300000003000000030000000300000003000000030000000300000003000000
+  spawnPoint: {x: 1, y: 4}
+  exitPoints:
+  - {x: 1, y: 4}
+  interactCells:
+  - x: 6
+    y: 2
+    ground: 0
+    overlay: 0
+    interactType: 3
+    interactTargetId: "\u9B42\u77F3"
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 1
+    y: 4
+    ground: 0
+    overlay: 0
+    interactType: 6
+    interactTargetId: exit
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 3
+    y: 4
+    ground: 0
+    overlay: 0
+    interactType: 2
+    interactTargetId: guishi_trader
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 3
+    y: 5
+    ground: 0
+    overlay: 0
+    interactType: 2
+    interactTargetId: guishi_trader
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 4
+    y: 4
+    ground: 0
+    overlay: 0
+    interactType: 2
+    interactTargetId: guishi_trader
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 4
+    y: 5
+    ground: 0
+    overlay: 0
+    interactType: 2
+    interactTargetId: guishi_trader
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 7
+    y: 5
+    ground: 0
+    overlay: 0
+    interactType: 2
+    interactTargetId: guishi_mysterious
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 7
+    y: 6
+    ground: 0
+    overlay: 0
+    interactType: 2
+    interactTargetId: guishi_mysterious
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 8
+    y: 5
+    ground: 0
+    overlay: 0
+    interactType: 2
+    interactTargetId: guishi_mysterious
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 8
+    y: 6
+    ground: 0
+    overlay: 0
+    interactType: 2
+    interactTargetId: guishi_mysterious
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  structures:
+  - type: 1
+    anchor: {x: 3, y: 4}
+    width: 2
+    height: 2
+    artName: struct_house1
+    artHeightCells: 0.3
+    blocksMovement: 1
+    interactType: 2
+    interactTargetId: guishi_trader
+    isNpc: 0
+  - type: 1
+    anchor: {x: 7, y: 5}
+    width: 2
+    height: 2
+    artName: struct_house1
+    artHeightCells: 0.3
+    blocksMovement: 1
+    interactType: 2
+    interactTargetId: guishi_mysterious
+    isNpc: 0

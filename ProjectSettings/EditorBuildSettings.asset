@@ -26,4 +26,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/5- GridMap.unity
     guid: 00ed7e38ee7119f4dabde13a9bb39a1b
+  - enabled: 1
+    path: Assets/Scenes/6- WorldMap.unity
+    guid: 45427f7733604b0449290c0ef9e0cf84
   m_configObjects: {}

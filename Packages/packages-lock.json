@@ -22,6 +22,12 @@
       },
       "url": "https://packages.unity.cn"
     },
+    "com.annulusgames.alchemy": {
+      "version": "file:com.annulusgames.alchemy",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.code-philosophy.hybridclr": {
       "version": "https://github.com/focus-creative-games/hybridclr_unity.git",
       "depth": 0,
@@ -333,13 +339,12 @@
       "url": "https://packages.unity.cn"
     },
     "me.qiankanglai.loopscrollrect": {
-      "version": "https://github.com/qiankanglai/LoopScrollRect.git",
+      "version": "file:me.qiankanglai.loopscrollrect",
       "depth": 0,
-      "source": "git",
+      "source": "embedded",
       "dependencies": {
         "com.unity.ugui": "1.0.0"
-      },
-      "hash": "cb18906158c4ddcef902e23fe84e0c275cd6da04"
+      }
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",

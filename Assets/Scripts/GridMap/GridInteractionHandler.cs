@@ -34,8 +34,8 @@ namespace CardGame
                     break;
 
                 case GridInteractType.Npc:
-                    Debug.Log($"[GridInteract] NPC对话: {cell.interactTargetId}");
-                    Story.StoryService.StartDialogue(cell.interactTargetId);
+                    Debug.Log($"[GridInteract] NPC对话(条件路由): {cell.interactTargetId}");
+                    Story.StoryService.StartNpcDialogue(cell.interactTargetId);
                     GridInteractionEvents.TriggerInteractionComplete(cell, "npc");
                     break;
 
@@ -53,7 +53,7 @@ namespace CardGame
 
                 case GridInteractType.Exit:
                     Debug.Log("[GridInteract] 到达撤离点");
-                    FloatingTip.Show("到达撤离点（撤离功能待接入）");
+                    HandleExit(cell);
                     GridInteractionEvents.TriggerInteractionComplete(cell, "exit");
                     break;
             }
@@ -119,6 +119,51 @@ namespace CardGame
             }
 #endif
             return null;
+        }
+
+        /// <summary>
+        /// 撤离/出口 — 三种路由：
+        /// 秘境内("next_floor"=下一层 / "realm_clear"=通关) / 普通(回世界地图)
+        /// </summary>
+        void HandleExit(GridCell cell)
+        {
+            var arch = CardGameArchitecture.Interface;
+            var realmModel = arch.GetModel<ISecretRealmModel>();
+            bool inRealm = !string.IsNullOrEmpty(realmModel.ActiveRealmId.Value);
+
+            if (inRealm)
+            {
+                if (cell.interactTargetId == "next_floor")
+                {
+                    // 推进下一层：换图重载
+                    var realmSys = arch.GetSystem<ISecretRealmSystem>();
+                    if (realmSys.AdvanceFloor())
+                    {
+                        var mapId = realmSys.GetCurrentFloorMapId();
+                        FloatingTip.ShowSuccess("深入下一层……");
+                        GridMapSceneLoader.PendingGridMapId = mapId;
+                        UnityEngine.SceneManagement.SceneManager.LoadScene("5- GridMap");
+                        return;
+                    }
+                    // 已到顶：此出口应配realm_clear，走通关
+                }
+
+                if (cell.interactTargetId == "realm_clear")
+                {
+                    arch.GetSystem<ISecretRealmSystem>().ClearRealm();
+                    return;
+                }
+
+                if (cell.interactTargetId == "retreat")
+                {
+                    arch.GetSystem<ISecretRealmSystem>().RetreatRealm();
+                    return;
+                }
+            }
+
+            // 普通撤离：回世界地图
+            SaveSystem.Save();
+            GridMapSceneLoader.ExitToWorldMap();
         }
 
         public IArchitecture GetArchitecture() => CardGameArchitecture.Interface;

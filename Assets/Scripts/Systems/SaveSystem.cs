@@ -53,6 +53,15 @@ namespace CardGame
                 equippedAbilityIds = new List<string>(),
                 acquiredAbilityBookIds = new List<string>(),
                 acquiredMethodFragmentIds = new List<string>(),
+                // GameTime
+                gameTimeYear = 1,
+                gameTimeMonth = 1,
+                gameTimeDay = 1,
+                gameTimeShichen = 4,
+                gameTimeTotalDays = 0,
+                // WorldMap
+                worldLocationId = "",
+                unlockedLocations = new List<string>(),
             };
 
             // 卡牌
@@ -136,6 +145,25 @@ namespace CardGame
                 data.equippedAbilityIds = new List<string>(cultModel.EquippedAbilityIds);
                 data.acquiredAbilityBookIds = new List<string>(cultModel.AcquiredAbilityBookIds);
                 data.acquiredMethodFragmentIds = new List<string>(cultModel.AcquiredMethodFragmentIds);
+            }
+
+            // 游戏时间
+            var timeModel = arch.GetModel<IGameTimeModel>();
+            if (timeModel != null)
+            {
+                data.gameTimeYear = timeModel.Year.Value;
+                data.gameTimeMonth = timeModel.Month.Value;
+                data.gameTimeDay = timeModel.Day.Value;
+                data.gameTimeShichen = timeModel.Shichen.Value;
+                data.gameTimeTotalDays = timeModel.TotalDays.Value;
+            }
+
+            // 世界地图
+            var worldModel = arch.GetModel<IWorldMapModel>();
+            if (worldModel != null)
+            {
+                data.worldLocationId = worldModel.CurrentLocationId.Value;
+                data.unlockedLocations = new List<string>(worldModel.UnlockedLocationIds);
             }
 
             try
@@ -306,6 +334,27 @@ namespace CardGame
                         foreach (var id in data.acquiredMethodFragmentIds) cultModel2.AcquiredMethodFragmentIds.Add(id);
                 }
 
+                // 恢复游戏时间
+                var timeModel = arch.GetModel<IGameTimeModel>();
+                if (timeModel != null)
+                {
+                    timeModel.Year.Value = data.gameTimeYear;
+                    timeModel.Month.Value = data.gameTimeMonth;
+                    timeModel.Day.Value = data.gameTimeDay;
+                    timeModel.Shichen.Value = data.gameTimeShichen;
+                    timeModel.TotalDays.Value = data.gameTimeTotalDays;
+                }
+
+                // 恢复世界地图
+                var worldModel = arch.GetModel<IWorldMapModel>();
+                if (worldModel != null)
+                {
+                    worldModel.CurrentLocationId.Value = data.worldLocationId ?? "";
+                    worldModel.UnlockedLocationIds.Clear();
+                    if (data.unlockedLocations != null)
+                        foreach (var id in data.unlockedLocations) worldModel.UnlockedLocationIds.Add(id);
+                }
+
                 Debug.Log("[Save] 存档加载成功");
                 return true;
             }
@@ -358,6 +407,17 @@ namespace CardGame
         public List<string> equippedAbilityIds;
         public List<string> acquiredAbilityBookIds;
         public List<string> acquiredMethodFragmentIds;
+
+        // GameTime
+        public int gameTimeYear;
+        public int gameTimeMonth;
+        public int gameTimeDay;
+        public int gameTimeShichen;
+        public int gameTimeTotalDays;
+
+        // WorldMap
+        public string worldLocationId;
+        public List<string> unlockedLocations;
 
         [Serializable]
         public class InventoryItemEntry

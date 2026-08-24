@@ -74,10 +74,8 @@ namespace CardGame.UI
             {
                 SaveSystem.Load();
                 FloatingTip.ShowSuccess("存档加载成功");
-                // 进入基地
-                var sceneChanger = FindObjectOfType<NueGames.NueDeck.Scripts.Utils.SceneChanger>();
-                if (sceneChanger != null) sceneChanger.OpenBaseScene();
-                else UnityEngine.SceneManagement.SceneManager.LoadScene(2);
+                // 进入世界地图（新玩法主场景）
+                UnityEngine.SceneManagement.SceneManager.LoadScene("6- WorldMap");
             }
             else
             {

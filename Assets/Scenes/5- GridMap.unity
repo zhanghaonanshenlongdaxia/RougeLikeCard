@@ -375,7 +375,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4fa7a915325bbc4a950eb97e06fb264, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testMapData: {fileID: 11400000, guid: f6ce8dd6620abb34482aaa76c087b55e, type: 2}
+  testMapData: {fileID: 11400000, guid: 3928986715c9ed841b57b53bbdbf7c3f, type: 2}
 --- !u!4 &785398917
 Transform:
   m_ObjectHideFlags: 0

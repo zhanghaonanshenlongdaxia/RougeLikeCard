@@ -1,0 +1,200 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5893f8ed557242f4dadac95deaaef474, type: 3}
+  m_Name: banpoji
+  m_EditorClassIdentifier: 
+  mapId: banpoji
+  mapName: "\u534A\u5761\u96C6"
+  description: "\u534A\u5761\u96C6"
+  width: 14
+  height: 10
+  groundArray: 0100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+  overlayArray: 0300000003000000030000000300000003000000030000000300000003000000030000000300000003000000030000000300000003000000030000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000300000003000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030000000300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000030000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000300000003000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030000000300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000030000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000300000003000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030000000300000003000000030000000300000003000000030000000300000003000000030000000300000003000000030000000300000003000000
+  spawnPoint: {x: 1, y: 5}
+  exitPoints:
+  - {x: 1, y: 5}
+  interactCells:
+  - x: 5
+    y: 3
+    ground: 0
+    overlay: 0
+    interactType: 1
+    interactTargetId: s1_wolf
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 9
+    y: 7
+    ground: 0
+    overlay: 0
+    interactType: 3
+    interactTargetId: "\u7075\u8349"
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 12
+    y: 4
+    ground: 0
+    overlay: 0
+    interactType: 3
+    interactTargetId: "\u7075\u8349"
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 1
+    y: 5
+    ground: 0
+    overlay: 0
+    interactType: 6
+    interactTargetId: exit
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 3
+    y: 5
+    ground: 0
+    overlay: 0
+    interactType: 2
+    interactTargetId: banpoji_stall1
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 3
+    y: 6
+    ground: 0
+    overlay: 0
+    interactType: 2
+    interactTargetId: banpoji_stall1
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 4
+    y: 5
+    ground: 0
+    overlay: 0
+    interactType: 2
+    interactTargetId: banpoji_stall1
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 4
+    y: 6
+    ground: 0
+    overlay: 0
+    interactType: 2
+    interactTargetId: banpoji_stall1
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 7
+    y: 6
+    ground: 0
+    overlay: 0
+    interactType: 2
+    interactTargetId: banpoji_stall2
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 7
+    y: 7
+    ground: 0
+    overlay: 0
+    interactType: 2
+    interactTargetId: banpoji_stall2
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 8
+    y: 6
+    ground: 0
+    overlay: 0
+    interactType: 2
+    interactTargetId: banpoji_stall2
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 8
+    y: 7
+    ground: 0
+    overlay: 0
+    interactType: 2
+    interactTargetId: banpoji_stall2
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 10
+    y: 3
+    ground: 0
+    overlay: 0
+    interactType: 2
+    interactTargetId: banpoji_zhoubanhu_friend
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 10
+    y: 4
+    ground: 0
+    overlay: 0
+    interactType: 2
+    interactTargetId: banpoji_zhoubanhu_friend
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 11
+    y: 3
+    ground: 0
+    overlay: 0
+    interactType: 2
+    interactTargetId: banpoji_zhoubanhu_friend
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  - x: 11
+    y: 4
+    ground: 0
+    overlay: 0
+    interactType: 2
+    interactTargetId: banpoji_zhoubanhu_friend
+    isWalkable: 1
+    isExplored: 0
+    moveCost: 1
+  structures:
+  - type: 1
+    anchor: {x: 3, y: 5}
+    width: 2
+    height: 2
+    artName: struct_house1
+    artHeightCells: 0.3
+    blocksMovement: 1
+    interactType: 2
+    interactTargetId: banpoji_stall1
+    isNpc: 0
+  - type: 1
+    anchor: {x: 7, y: 6}
+    width: 2
+    height: 2
+    artName: struct_house1
+    artHeightCells: 0.3
+    blocksMovement: 1
+    interactType: 2
+    interactTargetId: banpoji_stall2
+    isNpc: 0
+  - type: 0
+    anchor: {x: 10, y: 3}
+    width: 2
+    height: 2
+    artName: struct_house1
+    artHeightCells: 0.3
+    blocksMovement: 1
+    interactType: 2
+    interactTargetId: banpoji_zhoubanhu_friend
+    isNpc: 0

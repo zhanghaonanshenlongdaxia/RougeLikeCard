@@ -201,10 +201,12 @@ namespace CardGame.UI
             cultSystem.SetActiveMethod("cc_method");
             arch.GetModel<ICultivationModel>().ComprehensionPoints.Value = 20;
 
+            // 世界地图+时间初始化（新玩法：冒险RPG从世界地图开始）
+            arch.GetSystem<IWorldMapSystem>().InitNewGame();
+
             FloatingTip.ShowSuccess("开始新游戏，已获得三本初始功法");
-            var sceneChanger = FindObjectOfType<NueGames.NueDeck.Scripts.Utils.SceneChanger>();
-            if (sceneChanger != null) sceneChanger.OpenBaseScene();
-            else UnityEngine.SceneManagement.SceneManager.LoadScene(2);
+            // 进入世界地图（青石镇起点）
+            UnityEngine.SceneManagement.SceneManager.LoadScene("6- WorldMap");
         }
 
         public static CharacterSelectPanel GetOrCreate()

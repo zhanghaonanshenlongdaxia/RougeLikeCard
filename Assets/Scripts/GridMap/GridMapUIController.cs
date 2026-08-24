@@ -27,6 +27,21 @@ namespace CardGame
         bool _isMoving;
         Sprite _playerPortrait;
 
+        // 多格建筑+悬浮实体（RPGMaker式）
+        readonly List<EntityVisual> _entities = new List<EntityVisual>();
+        RectTransform _playerTokenRt;
+        Vector2 _cellSize = new Vector2(84, 84);
+        Vector2 _cellSpacing = Vector2.zero;
+
+        /// <summary>悬浮实体（建筑/NPC/玩家token），Y大的渲染在上层（RPGMaker遮挡规则）</summary>
+        class EntityVisual
+        {
+            public RectTransform rt;
+            public Image img;
+            public int sortY;
+            public bool isPlayer;
+        }
+
         public Vector2Int PlayerPos => _playerPos;
         public GridMapData MapData => _mapData;
 
@@ -75,6 +90,7 @@ namespace CardGame
 
             if (titleText != null) titleText.text = data.mapName;
             LoadBackground(data);
+            data.ApplyStructures();
             BuildGrid(data);
 
             // 战后返回：玩家站在被击败敌人的格子上，敌人已清除
@@ -89,6 +105,7 @@ namespace CardGame
                 }
                 Debug.Log($"[GridMap] 战后返回: 玩家位于({winCell.Value.x},{winCell.Value.y})，敌人已清除");
             }
+            BuildEntities(data);
             PlacePlayer(winCell ?? data.spawnPoint);
         }
 
@@ -123,6 +140,8 @@ namespace CardGame
             {
                 layout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
                 layout.constraintCount = data.width;
+                _cellSize = layout.cellSize;
+                _cellSpacing = layout.spacing;
             }
 
             _cellItems = new GridCellItem[data.width, data.height];
@@ -136,7 +155,7 @@ namespace CardGame
                     {
                         ground = data.GetGround(x, y),
                         overlay = data.GetOverlay(x, y),
-                        isWalkable = data.IsWalkable(x, y),
+                        isWalkable = data.IsWalkable(x, y) && data.GetStructureAt(x, y) == null,
                         moveCost = data.GetMoveCost(x, y),
                         isExplored = true
                     };
@@ -173,11 +192,115 @@ namespace CardGame
             }
         }
 
+        #region 多格建筑与悬浮实体（RPGMaker式）
+
+        /// <summary>构建建筑件+NPC+玩家token悬浮层</summary>
+        void BuildEntities(GridMapData data)
+        {
+            ClearEntities();
+
+            // 建筑件
+            foreach (var s in data.structures)
+            {
+                var sprite = s.isNpc
+                    ? GridMapArt.LoadProp($"npc_{s.interactTargetId}")
+                    : GridMapArt.LoadProp(s.artName);
+                if (sprite == null && !s.isNpc) continue; // 无立绘的建筑跳过（纯格子显示）
+
+                var go = new GameObject($"Struct_{s.type}_{s.anchor.x}_{s.anchor.y}", typeof(RectTransform), typeof(Image));
+                go.transform.SetParent(gridContainer, false);
+                // 关键：脱离GridLayoutGroup自动布局（否则位置尺寸被强制重置为单格）
+                go.AddComponent<LayoutElement>().ignoreLayout = true;
+                var rt = go.transform as RectTransform;
+                // 与格子同基准：anchor=左上(0,1)，pivot=中心
+                rt.anchorMin = rt.anchorMax = new Vector2(0, 1);
+                rt.pivot = new Vector2(0.5f, 0.5f);
+
+                // 尺寸：占地宽×(占地高+悬垂高)
+                float w = s.width * _cellSize.x + (s.width - 1) * _cellSpacing.x;
+                float hCells = s.height + (s.artHeightCells > 0 ? s.artHeightCells : 0);
+                float h = hCells * _cellSize.y + (hCells - 1) * _cellSpacing.y;
+                rt.sizeDelta = new Vector2(w, h);
+
+                // 位置：锚点格中心（垂直方向对齐占地底部，悬垂向上延伸）
+                var anchorPos = CellToAnchoredPosition(s.anchor.x, s.anchor.y);
+                float bottomOffset = h - s.height * _cellSize.y; // 悬垂部分
+                rt.anchoredPosition = anchorPos + new Vector2(0, bottomOffset * 0.5f);
+
+                var img = go.GetComponent<Image>();
+                img.sprite = sprite;
+                img.raycastTarget = false;
+                img.preserveAspect = true;
+
+                _entities.Add(new EntityVisual { rt = rt, img = img, sortY = s.anchor.y, isPlayer = false });
+            }
+
+            // 玩家token（悬浮，Y排序）
+            var pgo = new GameObject("PlayerToken", typeof(RectTransform), typeof(Image));
+            pgo.transform.SetParent(gridContainer, false);
+            pgo.AddComponent<LayoutElement>().ignoreLayout = true;
+            _playerTokenRt = pgo.transform as RectTransform;
+            _playerTokenRt.anchorMin = _playerTokenRt.anchorMax = new Vector2(0, 1);
+            _playerTokenRt.pivot = new Vector2(0.5f, 0.5f);
+            _playerTokenRt.sizeDelta = new Vector2(_cellSize.x * 0.9f, _cellSize.y * 0.9f);
+            var pimg = pgo.GetComponent<Image>();
+            pimg.sprite = _playerPortrait;
+            pimg.raycastTarget = false;
+            pimg.preserveAspect = true;
+            if (_playerPortrait == null) pimg.color = new Color(0.95f, 0.85f, 0.3f, 0.95f);
+
+            _entities.Add(new EntityVisual { rt = _playerTokenRt, img = pimg, sortY = 0, isPlayer = true });
+
+            SortEntities();
+        }
+
+        void ClearEntities()
+        {
+            foreach (var e in _entities)
+                if (e.rt != null) Destroy(e.rt.gameObject);
+            _entities.Clear();
+            _playerTokenRt = null;
+        }
+
+        /// <summary>格子坐标 → Content局部anchoredPosition（Content pivot=左上角基准）</summary>
+        Vector2 CellToAnchoredPosition(int x, int y)
+        {
+            // GridLayout: x = cell/2 + x*step；y = -cell/2 - (height-1-y)*step
+            float stepX = _cellSize.x + _cellSpacing.x;
+            float stepY = _cellSize.y + _cellSpacing.y;
+            float px = _cellSize.x * 0.5f + x * stepX;
+            float py = -_cellSize.y * 0.5f - (_mapData.height - 1 - y) * stepY;
+            return new Vector2(px, py);
+        }
+
+        /// <summary>Y轴排序：y大（南侧/近处）的后渲染=显示在上层</summary>
+        void SortEntities()
+        {
+            var sorted = new List<EntityVisual>(_entities);
+            sorted.Sort((a, b) => a.sortY.CompareTo(b.sortY));
+            foreach (var e in sorted)
+                e.rt.SetAsLastSibling();
+        }
+
+        /// <summary>移动玩家token到格子并重排序</summary>
+        void MovePlayerToken(Vector2Int cell)
+        {
+            if (_playerTokenRt == null) return;
+            _playerTokenRt.anchoredPosition = CellToAnchoredPosition(cell.x, cell.y);
+            var pe = _entities.Find(e => e.isPlayer);
+            if (pe != null)
+            {
+                pe.sortY = cell.y;
+                SortEntities();
+            }
+        }
+
+        #endregion
+
         void PlacePlayer(Vector2Int spawn)
         {
             _playerPos = spawn;
-            var item = GetItem(spawn.x, spawn.y);
-            if (item != null) item.SetPlayerHere(true, _playerPortrait);
+            MovePlayerToken(spawn);
             RefreshHighlights();
             UpdateInfoText();
         }
@@ -272,13 +395,10 @@ namespace CardGame
 
             foreach (var step in path)
             {
-                var prevItem = GetItem(_playerPos.x, _playerPos.y);
-                if (prevItem != null) prevItem.SetPlayerHere(false, null);
                 _playerPos = step;
+                MovePlayerToken(step);
 
                 var item = GetItem(step.x, step.y);
-                if (item != null) item.SetPlayerHere(true, _playerPortrait);
-
                 var cell = item != null ? item.Cell : null;
                 if (cell != null) OnCellEntered(cell);
 

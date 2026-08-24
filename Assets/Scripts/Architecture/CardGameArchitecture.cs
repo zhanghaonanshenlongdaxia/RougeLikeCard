@@ -23,6 +23,9 @@ namespace CardGame
             RegisterModel<IStoryModel>(new StoryModel());
             RegisterModel<ICultivationModel>(new CultivationModel());
             RegisterModel<IEncounterModel>(new EncounterModel());
+            RegisterModel<IGameTimeModel>(new GameTimeModel());
+            RegisterModel<IWorldMapModel>(new WorldMapModel());
+            RegisterModel<ISecretRealmModel>(new SecretRealmModel());
             RegisterSystem<IBattleSystem>(new BattleSystem());
             RegisterSystem<ICardSystem>(new CardSystem());
             RegisterSystem<IRelicSystem>(new RelicSystem());
@@ -40,6 +43,9 @@ namespace CardGame
             RegisterSystem<IStorySystem>(new StorySystem());
             RegisterSystem<IRitualSystem>(new RitualSystem());
             RegisterSystem<ICultivationSystem>(new CultivationSystem());
+            RegisterSystem<IGameTimeSystem>(new GameTimeSystem());
+            RegisterSystem<IWorldMapSystem>(new WorldMapSystem());
+            RegisterSystem<ISecretRealmSystem>(new SecretRealmSystem());
         }
     }
 }

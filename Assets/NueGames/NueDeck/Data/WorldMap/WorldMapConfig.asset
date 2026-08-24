@@ -1,0 +1,109 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec3467856729ac24d896e6bdb5a0c721, type: 3}
+  m_Name: WorldMapConfig
+  m_EditorClassIdentifier: 
+  worldName: "\u4E5D\u5DDE\u4FEE\u4ED9\u754C"
+  startLocationId: qingshi_town
+  locations:
+  - locationId: qingshi_town
+    locationName: "\u9752\u77F3\u9547"
+    description: "\u51E1\u4EBA\u5C0F\u9547\uFF0C\u836F\u94FA\u6797\u7ACB\u3002\u9648\u6D1B\u5728\u8FD9\u91CC\u957F\u5927\uFF0C\u6BCD\u4EB2\u5367\u75C5\u5728\u5E8A\u3002"
+    locationType: 0
+    uiPosition: {x: 0.22, y: 0.3}
+    unlockRealm: 0
+    gridMapId: qingshi_town
+    hiddenUntilUnlocked: 0
+  - locationId: heisongling
+    locationName: "\u9ED1\u677E\u5CAD"
+    description: "\u5916\u56F4\u677E\u6797\u5BC6\u5E03\uFF0C\u6DF1\u5904\u7075\u773C\u6240\u5728\u3002\u78A7\u78F7\u86C7\u5996\u76D8\u8E1E\uFF0C\u91C7\u836F\u4EBA\u591A\u6709\u53BB\u65E0\u56DE\u3002"
+    locationType: 2
+    uiPosition: {x: 0.4, y: 0.55}
+    unlockRealm: 0
+    gridMapId: test_heisongling
+    hiddenUntilUnlocked: 0
+  - locationId: banpoji
+    locationName: "\u534A\u5761\u96C6"
+    description: "\u6563\u4FEE\u81EA\u53D1\u5F62\u6210\u7684\u96C6\u5E02\uFF0C\u89C4\u77E9\u68EE\u4E25\u3002\u5468\u534A\u58F6\u7684\u8001\u670B\u53CB\u5728\u6B64\u3002"
+    locationType: 6
+    uiPosition: {x: 0.55, y: 0.35}
+    unlockRealm: 0
+    gridMapId: banpoji
+    hiddenUntilUnlocked: 0
+  - locationId: guishi
+    locationName: "\u9B3C\u5E02"
+    description: "\u53EA\u5728\u5B50\u65F6\u5F00\u5F20\u7684\u5730\u4E0B\u9ED1\u5E02\uFF0C\u7075\u77F3\u6362\u91D1\u94F6\uFF0C\u4EC0\u4E48\u90FD\u6709\u5356\u3002"
+    locationType: 6
+    uiPosition: {x: 0.32, y: 0.15}
+    unlockRealm: 0
+    gridMapId: guishi
+    hiddenUntilUnlocked: 0
+  - locationId: qingyun_sect
+    locationName: "\u9752\u4E91\u5B97"
+    description: "\u65B9\u5706\u5343\u91CC\u7B2C\u4E00\u5927\u5B97\uFF0C\u95E8\u4E0B\u5F1F\u5B50\u4E09\u5343\u3002\u6BCF\u5341\u5E74\u6536\u5F92\u4E00\u6B21\u3002"
+    locationType: 1
+    uiPosition: {x: 0.72, y: 0.68}
+    unlockRealm: 1
+    gridMapId: 
+    hiddenUntilUnlocked: 0
+  - locationId: player_home
+    locationName: "\u6D1E\u5E9C"
+    description: "\u9648\u6D1B\u5728\u9752\u77F3\u9547\u5916\u7684\u843D\u811A\u5904\uFF0C\u70BC\u4E39\u4FEE\u70BC\u4E4B\u5730\u3002"
+    locationType: 5
+    uiPosition: {x: 0.18, y: 0.5}
+    unlockRealm: 0
+    gridMapId: 
+    hiddenUntilUnlocked: 0
+  - locationId: secret_realm_1
+    locationName: "\u843D\u661F\u79D8\u5883"
+    description: "\u767E\u5E74\u4E00\u5F00\u7684\u4E0A\u53E4\u79D8\u5883\uFF0C\u4F20\u95FB\u85CF\u6709\u91D1\u4E39\u4FEE\u58EB\u7684\u6D1E\u5E9C\u9057\u4EA7\u3002"
+    locationType: 4
+    uiPosition: {x: 0.85, y: 0.3}
+    unlockRealm: 1
+    gridMapId: 
+    hiddenUntilUnlocked: 0
+  paths:
+  - fromId: qingshi_town
+    toId: heisongling
+    walkDays: 1
+    flyDays: 1
+    flyOnly: 0
+  - fromId: qingshi_town
+    toId: guishi
+    walkDays: 1
+    flyDays: 1
+    flyOnly: 0
+  - fromId: qingshi_town
+    toId: player_home
+    walkDays: 1
+    flyDays: 1
+    flyOnly: 0
+  - fromId: heisongling
+    toId: banpoji
+    walkDays: 2
+    flyDays: 1
+    flyOnly: 0
+  - fromId: banpoji
+    toId: qingyun_sect
+    walkDays: 2
+    flyDays: 1
+    flyOnly: 0
+  - fromId: qingyun_sect
+    toId: secret_realm_1
+    walkDays: 5
+    flyDays: 1
+    flyOnly: 1
+  - fromId: heisongling
+    toId: secret_realm_1
+    walkDays: 3
+    flyDays: 1
+    flyOnly: 0
